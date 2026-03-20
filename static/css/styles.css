@@ -24,3 +24,54 @@ html {
   font-variant-numeric: tabular-nums;
 }
 
+/* Global button animations */
+button,
+a.rounded-2xl,
+a.rounded-xl {
+  transition:
+    transform 220ms ease,
+    box-shadow 220ms ease,
+    filter 220ms ease,
+    background-color 220ms ease,
+    border-color 220ms ease,
+    color 220ms ease;
+  will-change: transform;
+}
+
+button:hover,
+a.rounded-2xl:hover,
+a.rounded-xl:hover {
+  transform: translateY(-2px);
+}
+
+button:active,
+a.rounded-2xl:active,
+a.rounded-xl:active {
+  transform: translateY(0) scale(0.98);
+}
+
+button:focus-visible,
+a.rounded-2xl:focus-visible,
+a.rounded-xl:focus-visible {
+  outline: 2px solid rgba(64, 145, 108, 0.45);
+  outline-offset: 2px;
+}
+
+/* Slightly stronger glow for already highlighted CTAs */
+button.shadow-glow:hover,
+a.shadow-glow:hover {
+  box-shadow:
+    0 0 0 1px rgba(64, 145, 108, 0.35),
+    0 18px 36px rgba(45, 106, 79, 0.25);
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  button,
+  a.rounded-2xl,
+  a.rounded-xl {
+    transition: none !important;
+    transform: none !important;
+  }
+}
+
