@@ -1,0 +1,458 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }} — {{ brand }}{% endblock %}
+
+{% block content %}
+  <!-- HERO -->
+  <section class="relative isolate">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black via-brand/10 to-brand2/20"></div>
+    <div class="absolute inset-0 -z-10">
+      <div class="h-full w-full bg-[radial-gradient(circle_at_20%_30%,rgba(233,196,106,0.22),transparent_42%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.25),transparent_45%)]"></div>
+    </div>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-12 md:pt-20 md:pb-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div class="lg:col-span-7">
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90" data-animate="fadeInUp">
+            <i data-lucide="sparkles" class="h-4 w-4 text-accent"></i>
+            Озеленение частных участков под ключ
+          </div>
+          <h1 class="mt-5 text-white text-4xl md:text-5xl font-semibold leading-[1.05]" data-animate="fadeInUp">
+            Создаём готовое озеленение за 7-10 дней
+          </h1>
+          <p class="mt-5 text-white/75 text-base md:text-lg max-w-2xl" data-animate="fadeInUp">
+            Работаем на стадии завершения строительства или берём в работу уже готовый участок. Растения адаптированы к сибирскому климату.
+          </p>
+
+          <div class="mt-7 flex flex-col sm:flex-row gap-3" data-animate="fadeInUp">
+            <button
+              type="button"
+              data-open-modal="ozelenenie_ready_project"
+              data-modal-title="Рассчитать готовый проект"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+            >
+              Рассчитать готовый проект
+            </button>
+            <button
+              type="button"
+              data-open-modal="ozelenenie_mini_project"
+              data-modal-title="Получить концепцию участка"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-white font-semibold hover:bg-white/10 transition"
+            >
+              Получить концепцию участка
+            </button>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5" data-animate="fadeInUp">
+          <div class="rounded-3xl border border-white/15 bg-white/90 backdrop-blur p-6">
+            <div class="h-52 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20 flex items-center justify-center">
+              <div class="text-center">
+                <div class="text-white/90 font-semibold">FULL-SCREEN VIDEO PLACEHOLDER</div>
+                <div class="mt-2 text-xs text-white/70">Участок после стройки → готовый сад (до/после)</div>
+              </div>
+            </div>
+            <div class="mt-5 grid grid-cols-2 gap-3">
+              <div class="rounded-2xl border border-black/5 bg-white p-4 hover:shadow-glow transition">
+                <div class="text-sm font-semibold">7-10 дней</div>
+                <div class="text-xs text-slate-600 mt-1">реализация</div>
+              </div>
+              <div class="rounded-2xl border border-black/5 bg-white p-4 hover:shadow-glow transition">
+                <div class="text-sm font-semibold">Адаптация</div>
+                <div class="text-xs text-slate-600 mt-1">к Сибири</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Когда к нам обращаться -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-white p-8 md:p-12" data-animate="fadeInUp">
+        <h2 class="text-3xl font-semibold leading-tight">Когда к нам обращаться</h2>
+        <div class="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="lg:col-span-7">
+            <p class="text-slate-600 text-base">
+              Идеальный момент — когда стройка подходит к завершению. На этом этапе можно избежать переделок: правильно спланировать уровни, подготовить основание и сразу заложить удобный в уходе сад.
+            </p>
+            <div class="mt-5 flex flex-wrap gap-3">
+              <div class="rounded-2xl border border-black/5 bg-white px-4 py-2 text-sm font-semibold">Не поздно начать</div>
+              <div class="rounded-2xl border border-black/5 bg-white px-4 py-2 text-sm font-semibold">Не нужно переделывать готовое</div>
+              <div class="rounded-2xl border border-black/5 bg-white px-4 py-2 text-sm font-semibold">Можно сразу спланировать газон и посадки</div>
+              <div class="rounded-2xl border border-black/5 bg-white px-4 py-2 text-sm font-semibold">Результат быстрее и дешевле</div>
+            </div>
+
+            <button
+              type="button"
+              data-open-modal="ozelenenie_assess_upload"
+              data-modal-title="Заказать аудит участка"
+              class="mt-6 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+            >
+              Заказать аудит участка
+            </button>
+          </div>
+
+          <div class="lg:col-span-5">
+            <div class="rounded-3xl border border-black/5 overflow-hidden">
+              <div class="h-56 bg-gradient-to-br from-black/90 via-black/30 to-brand2/20 flex items-end p-5">
+                <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur px-4 py-3 text-white">
+                  Визуальная схема: дом построен → коммуникации → дорожки → начинается озеленение
+                </div>
+              </div>
+            </div>
+            <div class="mt-3 text-sm text-slate-600">
+              Заглушка: план-график перехода от стройки к озеленению.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Выберите формат работы -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
+        <h2 class="text-3xl font-semibold leading-tight">Выбирайте формат, который подходит именно вам</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">
+          Поймаем нужный момент, подберём сценарий работ и доведём до результата без хаоса и переделок.
+        </p>
+
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <details class="group rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <summary class="cursor-pointer list-none">
+              <div class="flex items-center justify-between">
+                <div class="text-lg font-semibold">Под ключ</div>
+                <i data-lucide="chevron-down" class="h-5 w-5 text-brand"></i>
+              </div>
+              <div class="mt-2 text-sm text-slate-600">Берём всё на себя — от схемы до готового участка</div>
+            </summary>
+            <div class="mt-4 space-y-2 text-sm text-slate-600">
+              <div>• Выезд и оценка объекта</div>
+              <div>• Подбор газона и растений</div>
+              <div>• Реализация</div>
+              <div>• Запуск и рекомендации по уходу</div>
+            </div>
+            <button type="button" data-open-modal="ozelenenie_ready_project" class="mt-5 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+              Рассчитать проект под ключ
+            </button>
+          </details>
+
+          <details class="group rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <summary class="cursor-pointer list-none">
+              <div class="flex items-center justify-between">
+                <div class="text-lg font-semibold">Комбинированная реализация</div>
+                <i data-lucide="chevron-down" class="h-5 w-5 text-brand"></i>
+              </div>
+              <div class="mt-2 text-sm text-slate-600">Аудит участка, зонирование и профессиональная часть работ</div>
+            </summary>
+            <div class="mt-4 space-y-2 text-sm text-slate-600">
+              <div>• Планирование зонирования и посадок</div>
+              <div>• Вертикальная планировка</div>
+              <div>• Укладка газона и посадка растений</div>
+            </div>
+            <button type="button" data-open-modal="ozelenenie_audit_plan" class="mt-5 w-full rounded-2xl border border-black/10 bg-white px-6 py-3 text-sm font-semibold hover:bg-black/5 transition" data-modal-title="Получить план участка/аудит участка">
+              Получить план участка/аудит участка
+            </button>
+          </details>
+
+          <details class="group rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <summary class="cursor-pointer list-none">
+              <div class="flex items-center justify-between">
+                <div class="text-lg font-semibold">Делаете сами</div>
+                <i data-lucide="chevron-down" class="h-5 w-5 text-brand"></i>
+              </div>
+              <div class="mt-2 text-sm text-slate-600">Поставим материалы и дадим схему и контроль</div>
+            </summary>
+            <div class="mt-4 space-y-2 text-sm text-slate-600">
+              <div>• Подбор ассортимента</div>
+              <div>• Рекомендации по подготовке участка</div>
+              <div>• Поставка</div>
+              <div>• Консультации и при необходимости контрольный выезд</div>
+            </div>
+            <button type="button" data-open-modal="ozelenenie_materials_scheme" class="mt-5 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" data-modal-title="Подобрать материалы и схему">
+              Подобрать материалы и схему
+            </button>
+          </details>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Как мы работаем -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-white p-8 md:p-12" data-animate="fadeInUp">
+        <h2 class="text-3xl font-semibold leading-tight">Понятный процесс без хаоса и переделок</h2>
+        <div class="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div class="lg:col-span-5">
+            <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-black/90 via-black/30 to-brand2/20 h-72 flex items-center justify-center">
+              <div class="text-center text-white/90">
+                <div class="font-semibold">VIDEO PLACEHOLDER (60–90 сек)</div>
+                <div class="mt-2 text-xs text-white/70">Приёмка → разметка → подготовка → укладка → результат</div>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-7">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition">
+                <div class="text-sm font-semibold text-brand">1) Анализ</div>
+                <div class="mt-2 text-sm text-slate-600">Смотрим участок, стадию и ограничения.</div>
+              </div>
+              <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition">
+                <div class="text-sm font-semibold text-brand">2) План</div>
+                <div class="mt-2 text-sm text-slate-600">Определяем, что сейчас, а что — на следующий этап.</div>
+              </div>
+              <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition">
+                <div class="text-sm font-semibold text-brand">3) Реализация</div>
+                <div class="mt-2 text-sm text-slate-600">Поставляем материалы и выполняем работы по технологии.</div>
+              </div>
+              <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition">
+                <div class="text-sm font-semibold text-brand">4) Сопровождение</div>
+                <div class="mt-2 text-sm text-slate-600">Даём рекомендации и подключаем к системе ухода.</div>
+              </div>
+            </div>
+            <button type="button" data-open-modal="ozelenenie_assess_upload" data-modal-title="Отправить участок на оценку" class="mt-6 w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+              Отправить участок на оценку
+            </button>
+            <div class="mt-2 text-xs text-slate-500">UI-only: сохраняем заявку в браузере на этапе 1.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Газон как система -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
+        <h2 class="text-3xl font-semibold leading-tight">Газон как система</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">
+          Подбираем решение под бюджет, сроки и сценарий использования участка.
+        </p>
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="rounded-3xl border border-black/5 bg-white p-6">
+            <div class="font-semibold text-lg">Рулонный газон</div>
+            <div class="mt-3 h-44 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand2/20 flex items-center justify-center text-white/90 text-sm">
+              VIDEO PLACEHOLDER (укладка)
+            </div>
+            <div class="mt-3 text-sm text-slate-600">Результат сразу</div>
+          </div>
+          <div class="rounded-3xl border border-black/5 bg-white p-6">
+            <div class="font-semibold text-lg">Посевной газон</div>
+            <div class="mt-3 h-44 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20 flex items-center justify-center text-white/90 text-sm">
+              VIDEO PLACEHOLDER (таймлапс роста)
+            </div>
+            <div class="mt-3 text-sm text-slate-600">Экономичнее, но дольше</div>
+          </div>
+        </div>
+        <button type="button" data-open-modal="gazon_calc" data-modal-title="Получить расчёт в двух вариантах" class="mt-6 w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+          Получить расчёт в двух вариантах
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Собственное производство -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-white p-8 md:p-12" data-animate="fadeInUp">
+        <h2 class="text-3xl font-semibold leading-tight">Собственное производство</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">
+          Мы используем рулонный газон собственного выращивания, растения из питомника и проверенные поставки декоративных культур.
+        </p>
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition">
+            <div class="text-sm font-semibold text-brand">Точность</div>
+            <div class="mt-2 text-sm text-slate-600">Контролируем качество и адаптацию под климат.</div>
+          </div>
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition">
+            <div class="text-sm font-semibold text-brand">Приживаемость</div>
+            <div class="mt-2 text-sm text-slate-600">Снижаем риски и делаем результат предсказуемым.</div>
+          </div>
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition">
+            <div class="text-sm font-semibold text-brand">Масштаб</div>
+            <div class="mt-2 text-sm text-slate-600">Готовы работать с разными объёмами.</div>
+          </div>
+        </div>
+        <div class="mt-6 rounded-3xl border border-black/5 bg-gradient-to-br from-black/90 via-black/30 to-brand2/20 h-64 flex items-end p-6">
+          <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur text-white/90 p-5">
+            <div class="font-semibold">Визуал: техника / питомник / полив / теплицы</div>
+            <div class="mt-2 text-xs text-white/70">Заглушка медиа под ваши материалы</div>
+          </div>
+        </div>
+        <button type="button" data-open-modal="gazon_open_day" data-modal-title="Как выращиваются растения" class="mt-6 w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+          Посмотреть, как выращиваются растения
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Если у вас уже есть проект -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
+        <h2 class="text-3xl font-semibold leading-tight">Если у вас уже есть проект</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">
+          Реализуем существующий проект технологично и без переделок. Проверим совпадение условий участка, сроков и возможностей по материалу.
+        </p>
+        <button type="button" data-open-modal="ozelenenie_send_project" data-modal-title="Отправить проект на проверку" class="mt-6 w-full sm:w-auto inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-6 py-3 text-sm font-semibold hover:bg-black/5 transition">
+          Отправить проект на проверку
+        </button>
+        <div class="mt-3 text-xs text-slate-500">В форме: загрузка/ссылка, имя, телефон, комментарий.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Кейсы -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex items-end justify-between gap-4">
+        <div>
+          <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Кейсы</h2>
+          <p class="mt-2 text-slate-600" data-animate="fadeInUp">Примеры реализованных участков под разные сценарии.</p>
+        </div>
+        <a href="#" class="text-sm font-semibold text-brand hover:underline transition" data-animate="fadeInUp">Смотреть все проекты</a>
+      </div>
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        {# Hardcoded carousel placeholders for stage 1 #}
+        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="h-32 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand2/20"></div>
+          <div class="mt-4 font-semibold">ЖК (3 объекта)</div>
+          <div class="mt-2 text-sm text-slate-600">Фото + краткий результат</div>
+        </div>
+        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="h-32 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+          <div class="mt-4 font-semibold">Коттеджный участок</div>
+          <div class="mt-2 text-sm text-slate-600">Рулон + посадки</div>
+        </div>
+        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="h-32 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand2/20"></div>
+          <div class="mt-4 font-semibold">Коммерческий объект</div>
+          <div class="mt-2 text-sm text-slate-600">Поставка + реализация</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Служба заботы -->
+  {% include 'partials/service_zaboty_snippet.html' %}
+
+  <!-- Мини-проект -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div class="lg:col-span-5">
+            <h2 class="text-3xl font-semibold leading-tight">Мини-проект</h2>
+            <p class="mt-3 text-slate-600">
+              Создаем концепцию сада, 3D модель и план посадок без полного ландшафтного проекта.
+            </p>
+            <div class="mt-5 space-y-3">
+              <div class="flex items-start gap-3">
+                <i data-lucide="layers" class="h-5 w-5 text-brand mt-0.5"></i>
+                <div class="text-sm text-slate-600">Свяжем газон, растения и работы</div>
+              </div>
+              <div class="flex items-start gap-3">
+                <i data-lucide="map" class="h-5 w-5 text-brand mt-0.5"></i>
+                <div class="text-sm text-slate-600">Подберём решение под вашу стадию</div>
+              </div>
+            </div>
+          </div>
+          <div class="lg:col-span-7">
+            <form class="rounded-3xl border border-black/5 bg-white p-6 space-y-4" data-ui-form data-form-tag="B2C/mini-project">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="text-sm font-medium text-slate-700">
+                  Имя
+                  <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+                </label>
+                <label class="text-sm font-medium text-slate-700">
+                  Телефон
+                  <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+                </label>
+                <label class="text-sm font-medium text-slate-700">
+                  Площадь участка
+                  <input type="number" name="area" required min="1" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 420" />
+                </label>
+                <label class="text-sm font-medium text-slate-700">
+                  Город
+                  <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+                </label>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="text-sm font-medium text-slate-700">
+                  Стадия объекта
+                  <select name="stage" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+                    <option value="стройка-завершается">Стройка завершается</option>
+                    <option value="участок-готов">Участок уже готов</option>
+                  </select>
+                </label>
+                <label class="text-sm font-medium text-slate-700">
+                  Формат сотрудничества
+                  <select name="format" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+                    <option value="под-ключ">Под ключ</option>
+                    <option value="частично">Частично</option>
+                    <option value="делаем-сами">Делаем сами</option>
+                  </select>
+                </label>
+              </div>
+              <label class="text-sm font-medium text-slate-700">
+                Комментарий / пожелания
+                <textarea name="comment" required rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Коротко опишите ожидания, сроки, ограничения"></textarea>
+              </label>
+              <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+                Получить концепцию
+              </button>
+              <p class="text-xs text-slate-500">UI-only: данные сохраняются в браузере на этапе 1.</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Финальный блок -->
+  <section class="mt-14 pb-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-white p-8 md:p-12 hover:shadow-glow transition" data-animate="fadeInUp">
+        <div class="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+          <div>
+            <h2 class="text-3xl font-semibold leading-tight">Опишите ваш участок — мы предложим понятное решение</h2>
+            <p class="mt-3 text-slate-600 max-w-2xl">
+              Подберём формат работы, материалы и следующий шаг без лишней сложности.
+            </p>
+          </div>
+          <div class="flex flex-col sm:flex-row gap-3">
+            <button
+              type="button"
+              data-open-modal="ozelenenie_ready_project"
+              data-modal-title="Рассчитать озеленение"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition w-full sm:w-auto"
+            >
+              Рассчитать озеленение
+            </button>
+            <button
+              type="button"
+              data-open-modal="ozelenenie_audit_plan"
+              data-modal-title="Получить план участка"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl border border-black/10 px-6 py-3 font-semibold hover:bg-black/5 transition w-full sm:w-auto"
+            >
+              Получить план участка
+            </button>
+            <button
+              type="button"
+              data-open-modal="contact_zaboty"
+              data-modal-title="Подключиться к системе заботы"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl border border-black/10 px-6 py-3 font-semibold hover:bg-black/5 transition w-full sm:w-auto"
+            >
+              Подключиться к системе заботы
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
+

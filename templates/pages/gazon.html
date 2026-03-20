@@ -1,0 +1,431 @@
+{% extends 'base.html' %}
+{% block title %}{{ title }} — {{ brand }}{% endblock %}
+
+{% block content %}
+  <!-- HERO -->
+  <section class="relative isolate">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black via-brand/10 to-brand2/20"></div>
+    <div class="absolute inset-0 -z-10">
+      <div class="h-full w-full bg-[radial-gradient(circle_at_20%_30%,rgba(233,196,106,0.22),transparent_40%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.25),transparent_45%)]"></div>
+    </div>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-10 md:pt-20 md:pb-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div class="lg:col-span-7">
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90">
+            <i data-lucide="circle-dot" class="h-4 w-4 text-accent"></i>
+            Собственное производство и контролируемое качество
+          </div>
+          <h1 class="mt-5 text-white text-4xl md:text-5xl font-semibold leading-[1.05]">
+            Рулонный газон собственного производства.
+            Быстрый результат. Контролируемое качество.
+          </h1>
+          <p class="mt-5 text-white/75 text-base md:text-lg max-w-2xl">
+            Поставки по Сибири и в регионы. <span class="text-white font-semibold">От 500 ₽/м²*</span>
+            <span class="text-white/60 text-xs">(*стоимость зависит от объёма и региона поставки)</span>
+          </p>
+
+          <div class="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <button
+              type="button"
+              data-open-modal="gazon_price_list"
+              data-modal-title="Получить полный прайс-лист"
+              class="sm:col-span-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+            >
+              <i data-lucide="file-text" class="h-5 w-5"></i>
+              Получить полный прайс-лист
+            </button>
+            <button
+              type="button"
+              data-open-modal="gazon_calc"
+              data-modal-title="Рассчитать стоимость"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-white font-semibold hover:bg-white/10 transition"
+            >
+              <i data-lucide="calculator" class="h-5 w-5"></i>
+              Рассчитать стоимость
+            </button>
+            <button
+              type="button"
+              data-open-modal="gazon_checklist"
+              data-modal-title="Чек-лист подготовки участка"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-white font-semibold hover:bg-white/10 transition"
+            >
+              <i data-lucide="download" class="h-5 w-5"></i>
+              Чек-лист подготовки участка
+            </button>
+          </div>
+
+          <div class="mt-7 flex items-center gap-4">
+            <div class="h-2 w-2 rounded-full bg-accent"></div>
+            <div class="text-white/70 text-sm">200 гектаров выращивания · до 8 000 м² отгрузки в день · поставки по Сибири и в регионы</div>
+          </div>
+        </div>
+
+        <div class="lg:col-span-5">
+          <div class="rounded-3xl border border-white/15 bg-white/90 backdrop-blur p-6">
+            <div class="h-52 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20 flex items-center justify-center relative overflow-hidden">
+              <div class="text-center">
+                <div class="text-slate-50/90 font-semibold">VIDEO PLACEHOLDER</div>
+                <div class="mt-2 text-xs text-white/70">Рост → срезка → отгрузка → укладка → результат</div>
+              </div>
+            </div>
+            <div class="mt-5 grid grid-cols-3 gap-3">
+              <div class="rounded-2xl border border-black/5 p-4 bg-white hover:shadow-glow transition">
+                <div class="text-sm font-semibold"><span data-counter-target="200">200</span></div>
+                <div class="text-xs text-slate-600 mt-1">га выращивания</div>
+              </div>
+              <div class="rounded-2xl border border-black/5 p-4 bg-white hover:shadow-glow transition">
+                <div class="text-sm font-semibold"><span data-counter-target="8000">8000</span></div>
+                <div class="text-xs text-slate-600 mt-1">м²/день</div>
+              </div>
+              <div class="rounded-2xl border border-black/5 p-4 bg-white hover:shadow-glow transition">
+                <div class="text-sm font-semibold">Сиб.</div>
+                <div class="text-xs text-slate-600 mt-1">регионы</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- System -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Газон — это система</h2>
+      <p class="mt-3 text-slate-600 max-w-2xl" data-animate="fadeInUp">
+        Это технология выращивания и ухода, которая работает на участке годами.
+      </p>
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {# Hardcoded blocks #}
+        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="h-10 w-10 rounded-2xl bg-brand/10 flex items-center justify-center">
+            <i data-lucide="dna" class="h-5 w-5 text-brand"></i>
+          </div>
+          <div class="mt-4 font-semibold">Контроль состава травосмеси</div>
+          <div class="text-sm text-slate-600 mt-2">Подбираем под климат и задачу объекта.</div>
+        </div>
+        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="h-10 w-10 rounded-2xl bg-brand/10 flex items-center justify-center">
+            <i data-lucide="git-branch" class="h-5 w-5 text-brand"></i>
+          </div>
+          <div class="mt-4 font-semibold">Плотная корневая система</div>
+          <div class="text-sm text-slate-600 mt-2">Быстрое укоренение и предсказуемость результата.</div>
+        </div>
+        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="h-10 w-10 rounded-2xl bg-brand/10 flex items-center justify-center">
+            <i data-lucide="factory" class="h-5 w-5 text-brand"></i>
+          </div>
+          <div class="mt-4 font-semibold">Собственное производство</div>
+          <div class="text-sm text-slate-600 mt-2">Контроль цикла выращивания на всех этапах.</div>
+        </div>
+        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="h-10 w-10 rounded-2xl bg-brand/10 flex items-center justify-center">
+            <i data-lucide="shield-check" class="h-5 w-5 text-brand"></i>
+          </div>
+          <div class="mt-4 font-semibold">Предсказуемый результат</div>
+          <div class="text-sm text-slate-600 mt-2">Короткое видео внутри блока — заглушка.</div>
+        </div>
+
+        <div class="mt-8 flex flex-col sm:flex-row gap-3" data-animate="fadeInUp">
+          <button
+            type="button"
+            data-open-modal="gazon_presentation"
+            data-modal-title="Как работает технология"
+            class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+          >
+            Как работает технология
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
+        <h2 class="text-3xl font-semibold leading-tight">Рулонный или посевной?</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">Подбираем решение под задачу объекта.</p>
+        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition">
+            <div class="flex items-center justify-between">
+              <div class="text-xl font-semibold">Рулонный газон</div>
+              <i data-lucide="zap" class="h-5 w-5 text-brand"></i>
+            </div>
+            <ul class="mt-4 space-y-2 text-sm text-slate-600">
+              <li>Декоративность сразу</li>
+              <li>Сдача объекта в день укладки</li>
+              <li>Для видовых зон</li>
+            </ul>
+          </div>
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition">
+            <div class="flex items-center justify-between">
+              <div class="text-xl font-semibold">Посевной газон</div>
+              <i data-lucide="leaf" class="h-5 w-5 text-brand"></i>
+            </div>
+            <ul class="mt-4 space-y-2 text-sm text-slate-600">
+              <li>Экономичнее</li>
+              <li>Для больших территорий</li>
+              <li>Срок посева — август</li>
+            </ul>
+          </div>
+        </div>
+        <div class="mt-8 flex flex-col sm:flex-row gap-3">
+          <button
+            type="button"
+            data-open-modal="gazon_calc"
+            data-modal-title="Получить расчёт в двух вариантах"
+            class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+          >
+            Получить расчёт в двух вариантах
+          </button>
+          <a href="{% url 'katalog' %}" class="inline-flex items-center justify-center rounded-2xl border border-black/10 px-6 py-3 font-semibold hover:bg-black/5 transition">
+            Подобрать растения
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Production -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Производственные мощности</h2>
+      <p class="mt-3 text-slate-600 max-w-2xl" data-animate="fadeInUp">
+        Мы можем отгружать до 8 000 м² рулонного газона в день. Собственные поля выращивания и контроль качества на каждом этапе.
+      </p>
+      <div class="mt-8 grid grid-cols-1 lg:grid-cols-12 gap-4 items-stretch">
+        <div class="lg:col-span-7 rounded-3xl border border-black/5 bg-white overflow-hidden hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="h-72 bg-gradient-to-br from-black/90 via-black/30 to-brand/20 flex items-end p-6">
+            <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur px-5 py-4 text-white">
+              <div class="font-semibold">Визуал: дрон / техника / паллеты</div>
+              <div class="text-xs text-white/70 mt-1">Заглушка медиа</div>
+            </div>
+          </div>
+          <div class="p-6 grid grid-cols-3 gap-4">
+            <div class="rounded-2xl border border-black/5 p-4">
+              <div class="text-sm font-semibold">200 га</div>
+              <div class="text-xs text-slate-600 mt-1">поля</div>
+            </div>
+            <div class="rounded-2xl border border-black/5 p-4">
+              <div class="text-sm font-semibold">22 га</div>
+              <div class="text-xs text-slate-600 mt-1">питомник</div>
+            </div>
+            <div class="rounded-2xl border border-black/5 p-4">
+              <div class="text-sm font-semibold">до 8 000 м²</div>
+              <div class="text-xs text-slate-600 mt-1">в день</div>
+            </div>
+          </div>
+        </div>
+        <div class="lg:col-span-5 rounded-3xl border border-black/5 bg-white p-6" data-animate="fadeInUp">
+          <div class="font-semibold text-lg">Запись на посещение</div>
+          <div class="mt-2 text-sm text-slate-600">Оставьте заявку — покажем, как выращиваем и контролируем качество.</div>
+          <div class="mt-5 rounded-2xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-4">
+            <div class="flex items-center gap-2 text-sm font-semibold text-brand">
+              <i data-lucide="calendar-check" class="h-5 w-5"></i>
+              День открытых дверей
+            </div>
+            <div class="text-xs text-slate-600 mt-2">UI-only на этапе 1</div>
+          </div>
+          <button
+            type="button"
+            data-open-modal="gazon_open_day"
+            data-modal-title="Посмотреть производство"
+            class="mt-5 w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+          >
+            Посмотреть производство
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Supply formats -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Форматы поставки</h2>
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="font-semibold">Самовывоз</div>
+          <div class="text-sm text-slate-600 mt-2">Заберите газон и уложите по вашему графику.</div>
+        </div>
+        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="font-semibold">Поставка на объект</div>
+          <div class="text-sm text-slate-600 mt-2">Доставим в нужный день и поможем с планированием.</div>
+        </div>
+        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="font-semibold">Сборные поставки</div>
+          <div class="text-sm text-slate-600 mt-2">Фуры для нескольких клиентов — оптимизация логистики.</div>
+        </div>
+      </div>
+      <div class="mt-6 flex flex-col sm:flex-row gap-3" data-animate="fadeInUp">
+        <button
+          type="button"
+          data-open-modal="gazon_logistics"
+          data-modal-title="Уточнить логистику под мой объект"
+          class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+        >
+          Уточнить логистику под мой объект
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Order steps -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-white p-8 md:p-12" data-animate="fadeInUp">
+        <h2 class="text-3xl font-semibold leading-tight">Порядок работы</h2>
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
+          <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-6">
+            <div class="text-sm font-semibold">1.</div>
+            <div class="mt-2 font-semibold">Оставляете заявку</div>
+            <div class="text-sm text-slate-600 mt-2">Уточняем объём и формат.</div>
+          </div>
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition">
+            <div class="text-sm font-semibold">2.</div>
+            <div class="mt-2 font-semibold">Уточняем объём</div>
+            <div class="text-sm text-slate-600 mt-2">Согласуем параметры поставки.</div>
+          </div>
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition">
+            <div class="text-sm font-semibold">3.</div>
+            <div class="mt-2 font-semibold">Назначаем дату</div>
+            <div class="text-sm text-slate-600 mt-2">Индивидуальный временной слот.</div>
+          </div>
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition">
+            <div class="text-sm font-semibold">4.</div>
+            <div class="mt-2 font-semibold">Отгрузка</div>
+            <div class="text-sm text-slate-600 mt-2">Работаем по предварительной заявке и предоплате.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Self-checklist -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-6" data-animate="fadeInUp">
+          <h2 class="text-3xl font-semibold leading-tight">Для самостоятельных клиентов</h2>
+          <p class="mt-3 text-slate-600">
+            Чек-лист: подготовка основания, уклоны, качество грунта, дренаж, режим полива.
+          </p>
+          <ul class="mt-5 space-y-2 text-sm text-slate-600">
+            <li class="flex items-start gap-2"><i data-lucide="check" class="h-4 w-4 text-brand mt-0.5"></i> Подготовка основания</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="h-4 w-4 text-brand mt-0.5"></i> Уклоны и ровность</li>
+            <li class="flex items-start gap-2"><i data-lucide="check" class="h-4 w-4 text-brand mt-0.5"></i> Дренаж и полив</li>
+          </ul>
+          <button
+            type="button"
+            onclick="window.SGDownloadGazonChecklist && window.SGDownloadGazonChecklist()"
+            class="mt-6 inline-flex items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-6 py-3 font-semibold hover:bg-black/5 transition"
+          >
+            Скачать чек-лист подготовки участка
+          </button>
+        </div>
+        <div class="lg:col-span-6" data-animate="fadeInUp">
+          <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-black/90 via-black/30 to-brand2/20 h-full p-6">
+            <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur p-5">
+              <div class="text-white font-semibold">PDF PLACEHOLDER</div>
+              <div class="text-white/70 text-sm mt-2">JS-сгенерированная заглушка при скачивании.</div>
+              <div class="mt-4 flex gap-3 text-white/70 text-xs">
+                <div class="flex-1 rounded-2xl border border-white/15 bg-white/5 p-3">Основание</div>
+                <div class="flex-1 rounded-2xl border border-white/15 bg-white/5 p-3">Полив</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- B2B -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
+        <h2 class="text-3xl font-semibold leading-tight">Для B2B</h2>
+        <p class="mt-3 text-slate-600 max-w-2xl">
+          Для девелоперов, подрядчиков и управляющих компаний. Рулонный газон помогает быстро закрывать видовые зоны.
+        </p>
+        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+          <button
+            type="button"
+            data-open-modal="b2b_cpo"
+            data-modal-title="Запросить условия для проекта"
+            class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+          >
+            Запросить условия для проекта
+          </button>
+          <a href="{% url 'b2b' %}" class="inline-flex items-center justify-center rounded-2xl border border-black/10 px-6 py-3 font-semibold hover:bg-black/5 transition">
+            Детали B2B
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service -->
+  {% include 'partials/service_zaboty_snippet.html' %}
+
+  <!-- FAQ -->
+  <section id="faq" class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">FAQ</h2>
+      <div class="mt-8 rounded-3xl border border-black/5 bg-white p-6 md:p-8" data-animate="fadeInUp">
+        <div class="space-y-3" data-accordion>
+          {% for item in faq %}
+            <div class="rounded-2xl border border-black/5" data-accordion-item>
+              <button
+                type="button"
+                data-accordion-toggle
+                class="w-full text-left px-5 py-4 flex items-center justify-between gap-3 font-semibold"
+                aria-expanded="false"
+              >
+                <span>{{ item.q }}</span>
+                <i data-lucide="chevron-down" class="h-5 w-5 text-brand"></i>
+              </button>
+              <div data-accordion-panel class="hidden px-5 pb-4 text-sm text-slate-600">
+                {{ item.a }}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Final CTA -->
+  <section class="mt-14 pb-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-white p-8 md:p-12 hover:shadow-glow transition" data-animate="fadeInUp">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          <div class="md:col-span-7">
+            <h2 class="text-3xl font-semibold leading-tight">Подберём решение под ваш участок или объект</h2>
+            <p class="mt-3 text-slate-600">Согласуем формат, сроки и подготовку основания.</p>
+          </div>
+          <div class="md:col-span-5 flex flex-col sm:flex-row gap-3 md:justify-end">
+            <button
+              type="button"
+              data-open-modal="gazon_calc"
+              data-modal-title="Рассчитать стоимость"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+            >
+              Рассчитать стоимость
+            </button>
+            <button
+              type="button"
+              data-open-modal="contact_zaboty"
+              data-modal-title="Получить консультацию"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl border border-black/10 px-6 py-3 font-semibold hover:bg-black/5 transition"
+            >
+              Получить консультацию
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+{% endblock %}
+

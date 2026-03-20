@@ -1,0 +1,66 @@
+{% load static %}
+<footer class="mt-20 border-t border-black/5 bg-white">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-5">
+      <div class="md:col-span-2">
+        <div class="flex items-center gap-3">
+          <div class="h-11 w-11 rounded-2xl bg-gradient-to-br from-brand to-brand2 shadow-soft flex items-center justify-center">
+            <span class="text-white font-bold text-sm">SG</span>
+          </div>
+          <div>
+            <div class="font-semibold text-lg leading-tight">Сибирские газоны</div>
+            <div class="text-sm text-slate-600">Производство рулонного газона и питомник растений</div>
+          </div>
+        </div>
+        <div class="mt-4 text-sm text-slate-600 max-w-md">
+          Технологичное озеленение с гарантированным результатом: от производства до системы заботы.
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-8 md:col-span-3">
+        <div>
+          <div class="text-sm font-semibold mb-3">О компании</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="{% url 'pitomnik' %}">Питомник</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'gazon' %}">Рулонный газон</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'b2b' %}">B2B</a>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Каталог</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="{% url 'katalog' %}">Каталог растений</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'sadovye_centry' %}">Садовые центры</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'stati_list' %}">Статьи</a>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Покупателям</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="{% url 'ozelenenie_b2c' %}">Озеленение под ключ</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'sluzhba_zaboty' %}">Служба заботы</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'kontakty' %}">Контакты</a>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Контакты</div>
+          <div class="text-sm text-slate-700">Тел: +7 (000) 000-00-00</div>
+          <div class="text-sm text-slate-700 mt-2">Email: info@sib-gazony.example</div>
+          <div class="text-sm text-slate-700 mt-2">Адрес: г. Новосибирск</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center gap-3">
+        <a href="#" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 hover:bg-black/5 transition" aria-label="VK">
+          <i data-lucide="message-circle" class="h-5 w-5"></i>
+        </a>
+        <a href="#" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 hover:bg-black/5 transition" aria-label="Telegram">
+          <i data-lucide="send" class="h-5 w-5"></i>
+        </a>
+        <a href="#" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 hover:bg-black/5 transition" aria-label="YouTube">
+          <i data-lucide="play" class="h-5 w-5"></i>
+        </a>
+      </div>
+      <div class="text-sm text-slate-600">
+        © <span id="year"></span> «Сибирские газоны». Все права защищены.
+      </div>
+    </div>
+  </div>
+</footer>
+

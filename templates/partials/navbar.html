@@ -1,0 +1,105 @@
+{% load static %}
+<header class="sticky top-0 z-50 border-b border-black/5 bg-white/80 backdrop-blur">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+      <a href="{% url 'home' %}" class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-gradient-to-br from-brand to-brand2 shadow-soft flex items-center justify-center">
+          <span class="text-white font-bold text-sm">SG</span>
+        </div>
+        <div>
+          <div class="font-semibold leading-tight">Сибирские газоны</div>
+          <div class="text-xs text-slate-600">технологичное озеленение</div>
+        </div>
+      </a>
+
+      <nav class="hidden md:flex items-center gap-1">
+        <a href="{% url 'home' %}" class="px-3 py-2 text-sm rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Главная
+        </a>
+        <a href="{% url 'gazon' %}" class="px-3 py-2 text-sm rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Газон
+        </a>
+        <a href="{% url 'ozelenenie_b2c' %}" class="px-3 py-2 text-sm rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Озеленение
+        </a>
+        <a href="{% url 'b2b' %}" class="px-3 py-2 text-sm rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          B2B
+        </a>
+        <a href="{% url 'pitomnik' %}" class="px-3 py-2 text-sm rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Питомник
+        </a>
+        <a href="{% url 'sadovye_centry' %}" class="px-3 py-2 text-sm rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Садовые центры
+        </a>
+        <a href="{% url 'katalog' %}" class="px-3 py-2 text-sm rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Каталог
+        </a>
+        <a href="{% url 'stati_list' %}" class="px-3 py-2 text-sm rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Статьи
+        </a>
+        <a href="{% url 'kontakty' %}" class="px-3 py-2 text-sm rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Контакты
+        </a>
+        <a
+          href="{% url 'sluzhba_zaboty' %}"
+          class="ml-2 px-4 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-brand to-brand2 text-white shadow-glow hover:brightness-105 transition"
+        >
+          Служба заботы
+        </a>
+      </nav>
+
+      <!-- Mobile -->
+      <div class="md:hidden flex items-center gap-2">
+        <a
+          href="{% url 'sluzhba_zaboty' %}"
+          class="px-3 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-brand to-brand2 text-white shadow-glow"
+        >
+          Забота
+        </a>
+        <button
+          id="burgerBtn"
+          type="button"
+          class="inline-flex items-center justify-center rounded-xl border border-black/10 p-2 hover:bg-black/5 transition"
+          aria-label="Открыть меню"
+        >
+          <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mobileMenu" class="md:hidden hidden border-t border-black/5 bg-white">
+    <div class="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 gap-2">
+            <a href="{% url 'home' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Главная
+            </a>
+            <a href="{% url 'gazon' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Газон
+            </a>
+            <a href="{% url 'ozelenenie_b2c' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Озеленение
+            </a>
+            <a href="{% url 'b2b' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              B2B
+            </a>
+            <a href="{% url 'pitomnik' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Питомник
+            </a>
+            <a href="{% url 'sadovye_centry' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Садовые центры
+            </a>
+            <a href="{% url 'katalog' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Каталог
+            </a>
+            <a href="{% url 'stati_list' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Статьи
+            </a>
+            <a href="{% url 'kontakty' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Контакты
+            </a>
+      </div>
+    </div>
+  </div>
+</header>
+

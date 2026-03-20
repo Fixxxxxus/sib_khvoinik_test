@@ -1,0 +1,54 @@
+{% load static %}
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>{% block title %}Сибирские газоны{% endblock %}</title>
+    <meta name="description" content="Сибирские газоны — технологичное озеленение, питомник и рулонный газон" />
+
+    <!-- Tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: '#2D6A4F',
+              brand2: '#40916C',
+              accent: '#E9C46A',
+            },
+            boxShadow: {
+              soft: '0 10px 30px rgba(0,0,0,0.08)',
+              glow: '0 0 0 1px rgba(64,145,108,0.25), 0 20px 60px rgba(45,106,79,0.22)',
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Lucide icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}" />
+  </head>
+  <body class="bg-white text-slate-900 antialiased">
+    {% include 'partials/navbar.html' %}
+
+    <main>
+      {% block content %}{% endblock %}
+    </main>
+
+    {% include 'partials/footer.html' %}
+    {% include 'partials/modals.html' %}
+
+    <script src="{% static 'js/app.js' %}" defer></script>
+    <script>
+      // Initialize lucide icons after the DOM is ready.
+      document.addEventListener('DOMContentLoaded', () => {
+        if (window.lucide) window.lucide.createIcons();
+      });
+    </script>
+  </body>
+</html>
+

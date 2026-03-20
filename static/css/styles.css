@@ -1,0 +1,26 @@
+/* Small custom styling on top of Tailwind */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Modal open animation */
+.modal-enter {
+  animation: modalEnter 220ms ease-out both;
+}
+
+@keyframes modalEnter {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Footer year */
+#year {
+  font-variant-numeric: tabular-nums;
+}
+
