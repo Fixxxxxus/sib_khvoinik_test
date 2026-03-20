@@ -1,0 +1,1251 @@
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>B2B проекты — Сибирские газоны</title>
+    <meta name="description" content="Сибирские газоны — технологичное озеленение, питомник и рулонный газон" />
+
+    <!-- Tailwind via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: '#2D6A4F',
+              brand2: '#40916C',
+              accent: '#E9C46A',
+            },
+            boxShadow: {
+              soft: '0 10px 30px rgba(0,0,0,0.08)',
+              glow: '0 0 0 1px rgba(64,145,108,0.25), 0 20px 60px rgba(45,106,79,0.22)',
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Lucide icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="/static/css/styles.css" />
+  </head>
+  <body class="bg-white text-slate-900 antialiased">
+    
+<header class="sticky top-0 z-50 border-b border-black/5 bg-white/80 backdrop-blur">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="flex h-16 items-center justify-between">
+      <a href="/" class="flex items-center">
+        <img
+          src="/static/media/branding/logo-main.webp"
+          alt="Сибирские газоны"
+          class="h-10 w-auto sm:h-11"
+          loading="eager"
+          decoding="async"
+        />
+      </a>
+
+      <nav class="hidden md:flex md:ml-4 md:flex-1 items-center gap-1">
+        <div class="flex items-center gap-1">
+        <a href="/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Главная
+        </a>
+        <a href="/gazon/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Газон
+        </a>
+        <a href="/ozelenenie-b2c/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Озеленение
+        </a>
+        <a href="/b2b/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          B2B
+        </a>
+        <a href="/pitomnik/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Питомник
+        </a>
+        <a href="/sadovye-centry/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Садовые центры
+        </a>
+        <a href="/katalog/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Каталог
+        </a>
+        <a href="/stati/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Статьи
+        </a>
+        <a href="/kontakty/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+          Контакты
+        </a>
+        </div>
+        <a
+          href="/sluzhba-zaboty/"
+          class="ml-auto px-4 py-2 text-[15px] font-semibold rounded-xl bg-gradient-to-r from-brand to-brand2 text-white shadow-glow hover:brightness-105 transition"
+        >
+          Служба заботы
+        </a>
+      </nav>
+
+      <!-- Mobile -->
+      <div class="md:hidden flex items-center gap-2">
+        <a
+          href="/sluzhba-zaboty/"
+          class="px-3 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-brand to-brand2 text-white shadow-glow"
+        >
+          Забота
+        </a>
+        <button
+          id="burgerBtn"
+          type="button"
+          class="inline-flex items-center justify-center rounded-xl border border-black/10 p-2 hover:bg-black/5 transition"
+          aria-label="Открыть меню"
+        >
+          <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mobileMenu" class="md:hidden hidden border-t border-black/5 bg-white">
+    <div class="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 gap-2">
+            <a href="/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Главная
+            </a>
+            <a href="/gazon/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Газон
+            </a>
+            <a href="/ozelenenie-b2c/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Озеленение
+            </a>
+            <a href="/b2b/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              B2B
+            </a>
+            <a href="/pitomnik/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Питомник
+            </a>
+            <a href="/sadovye-centry/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Садовые центры
+            </a>
+            <a href="/katalog/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Каталог
+            </a>
+            <a href="/stati/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Статьи
+            </a>
+            <a href="/kontakty/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
+              Контакты
+            </a>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+
+    <main>
+      
+  <section class="relative isolate">
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black via-brand/10 to-brand2/20"></div>
+    <div class="absolute inset-0 -z-10">
+      <div class="h-full w-full bg-[radial-gradient(circle_at_20%_30%,rgba(233,196,106,0.22),transparent_42%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.25),transparent_45%)]"></div>
+    </div>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-12 md:pt-20 md:pb-16">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+        <div class="lg:col-span-7">
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90">
+            <i data-lucide="building-2" class="h-4 w-4 text-accent"></i>
+            Комплексное озеленение для объектов со сроками
+          </div>
+          <h1 class="mt-5 text-white text-4xl md:text-5xl font-semibold leading-[1.05]">
+            Комплексное озеленение для девелоперов, подрядчиков и управляющих компаний
+          </h1>
+          <p class="mt-5 text-white/75 text-base md:text-lg max-w-2xl">
+            Быстрое и технологичное решение для объектов, где важны сроки, управляемый результат и надёжная поставка.
+          </p>
+          <div class="mt-7 flex flex-col sm:flex-row gap-3">
+            <button
+              type="button"
+              data-open-modal="b2b_cpo"
+              data-modal-title="Запросить коммерческое предложение"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+            >
+              Запросить КП
+            </button>
+            <button
+              type="button"
+              data-open-modal="b2b_price_stock"
+              data-modal-title="Получить прайс и остатки"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-white font-semibold hover:bg-white/10 transition"
+            >
+              Получить прайс и остатки
+              <i data-lucide="chevron-right" class="h-5 w-5"></i>
+            </button>
+          </div>
+          <div class="mt-6 text-white/60 text-xs">
+            Заглушка: производственные мощности / посадка крупномеров / укладка газона.
+          </div>
+        </div>
+
+        <div class="lg:col-span-5">
+          <div class="rounded-3xl border border-white/15 bg-white/90 backdrop-blur p-6">
+            <div class="h-52 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20 flex items-center justify-center">
+              <div class="text-center">
+                <div class="text-white/90 font-semibold">VIDEO PLACEHOLDER</div>
+                <div class="mt-2 text-xs text-white/70">Вертикальная планировка + техника + готовый результат</div>
+              </div>
+            </div>
+            <div class="mt-5 grid grid-cols-3 gap-3">
+              <div class="rounded-2xl border border-black/5 bg-white p-4 hover:shadow-glow transition">
+                <div class="text-sm font-semibold"><span data-counter-target="200">200</span> га</div>
+                <div class="text-xs text-slate-600 mt-1">газон</div>
+              </div>
+              <div class="rounded-2xl border border-black/5 bg-white p-4 hover:shadow-glow transition">
+                <div class="text-sm font-semibold"><span data-counter-target="22">22</span> га</div>
+                <div class="text-xs text-slate-600 mt-1">питомник</div>
+              </div>
+              <div class="rounded-2xl border border-black/5 bg-white p-4 hover:shadow-glow transition">
+                <div class="text-sm font-semibold"><span data-counter-target="8000">8000</span></div>
+                <div class="text-xs text-slate-600 mt-1">м²/день</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Formats -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Форматы сотрудничества</h2>
+      <p class="mt-3 text-slate-600 max-w-2xl" data-animate="fadeInUp">
+        Под разные типы объектов: от поставки до реализации и сопровождения.
+      </p>
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="font-semibold">Поставка рулонного газона</div>
+            <div class="mt-2 text-sm text-slate-600">
+              Для объектов, где нужен быстрый визуальный результат и предсказуемая сдача.
+            </div>
+          </div>
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="font-semibold">Комбинированное решение</div>
+            <div class="mt-2 text-sm text-slate-600">
+              Посевной газон + рулон в видовых зонах. Баланс экономики и качества.
+            </div>
+          </div>
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="font-semibold">Контрактные поставки растений</div>
+            <div class="mt-2 text-sm text-slate-600">
+              Деревья, кустарники и тепличная цветочная продукция.
+            </div>
+          </div>
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="font-semibold">Реализация под ключ</div>
+            <div class="mt-2 text-sm text-slate-600">
+              Берём на себя часть работ или полный блок благоустройства.
+            </div>
+          </div>
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="font-semibold">Частичная реализация</div>
+            <div class="mt-2 text-sm text-slate-600">
+              Подбираем решение под бюджет и состав работ.
+            </div>
+          </div>
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="font-semibold">Партнёрство с ландшафтными компаниями</div>
+            <div class="mt-2 text-sm text-slate-600">
+              Спецусловия, агентские схемы, технологическое сопровождение.
+            </div>
+          </div>
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="font-semibold">Сопровождение для УК и подрядчиков</div>
+            <div class="mt-2 text-sm text-slate-600">
+              Регламент ухода, консультации, диагностика проблем, экспертные выезды.
+            </div>
+          </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- Production -->
+  <section class="mt-14" aria-label="Производственные мощности">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Производственные мощности</h2>
+      <p class="mt-3 text-slate-600 max-w-2xl" data-animate="fadeInUp">
+        Технологичный цикл выращивания и подготовка под объект.
+      </p>
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="text-2xl font-semibold text-slate-900"><span data-counter-target="200">200</span>+</div>
+          <div class="mt-2 text-sm text-slate-600">гектаров рулонного газона</div>
+        </div>
+        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="text-2xl font-semibold text-slate-900"><span data-counter-target="22">22</span> га</div>
+          <div class="mt-2 text-sm text-slate-600">питомник и декоративные культуры</div>
+        </div>
+        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="text-2xl font-semibold text-slate-900"><span data-counter-target="8000">8000</span></div>
+          <div class="mt-2 text-sm text-slate-600">м²/день в сезон</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Schedule -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Работа с графиком строительства</h2>
+      <p class="mt-3 text-slate-600 max-w-2xl" data-animate="fadeInUp">
+        Управляем поставками и последовательностью работ, чтобы вы держали сроки.
+      </p>
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="font-semibold">Перенос сроков сдачи</div>
+            <div class="mt-2 text-sm text-slate-600">Подстраиваем поставки и работы под реальный ритм проекта.</div>
+          </div>
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="font-semibold">Срочные работы перед комиссией</div>
+            <div class="mt-2 text-sm text-slate-600">Закрываем видовые зоны быстро и управляемо.</div>
+          </div>
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="font-semibold">Погодные ограничения</div>
+            <div class="mt-2 text-sm text-slate-600">Планируем сезонные окна и резервируем решения заранее.</div>
+          </div>
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="font-semibold">Ограниченные окна для техники</div>
+            <div class="mt-2 text-sm text-slate-600">Поэтапные поставки и организованная последовательность работ.</div>
+          </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- Cases -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Кейсы</h2>
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="h-32 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+            <div class="mt-4 font-semibold">Жилой комплекс</div>
+            <div class="mt-2 text-sm text-slate-600">
+              Формат: рулон + посев
+              <br />
+              Решение: комбинированное решение
+            </div>
+            <div class="mt-3 text-xs text-slate-500">
+              ___ м² • ___ дней
+            </div>
+          </div>
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="h-32 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+            <div class="mt-4 font-semibold">Коммерческий объект</div>
+            <div class="mt-2 text-sm text-slate-600">
+              Формат: поставка рулонного газона
+              <br />
+              Решение: быстрые видовые зоны
+            </div>
+            <div class="mt-3 text-xs text-slate-500">
+              ___ м² • ___ дней
+            </div>
+          </div>
+        
+          <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
+            <div class="h-32 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+            <div class="mt-4 font-semibold">Благоустройство территории</div>
+            <div class="mt-2 text-sm text-slate-600">
+              Формат: комбинированное решение
+              <br />
+              Решение: под контролем технологии
+            </div>
+            <div class="mt-3 text-xs text-slate-500">
+              ___ м² • ___ дней
+            </div>
+          </div>
+        
+      </div>
+    </div>
+  </section>
+
+  <!-- Commercial conditions -->
+  <section id="com-conditions" class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div class="lg:col-span-5">
+            <h2 class="text-3xl font-semibold leading-tight">Коммерческие условия</h2>
+            <p class="mt-3 text-slate-600">
+              Работаем по договору, безналичная форма оплаты, индивидуальные условия для постоянных партнёров.
+              Коммерческое предложение формируется после получения параметров объекта.
+            </p>
+            <div class="mt-5 space-y-3 text-sm text-slate-600">
+              <div class="flex items-start gap-3"><i data-lucide="file" class="h-5 w-5 text-brand mt-0.5"></i> КП после уточнения параметров</div>
+              <div class="flex items-start gap-3"><i data-lucide="badge-percent" class="h-5 w-5 text-brand mt-0.5"></i> Подбор формата под бюджет</div>
+              <div class="flex items-start gap-3"><i data-lucide="truck" class="h-5 w-5 text-brand mt-0.5"></i> Логистика по графику проекта</div>
+            </div>
+          </div>
+          <div class="lg:col-span-7">
+            <form class="rounded-3xl border border-black/5 bg-white p-6 space-y-4" data-ui-form data-form-tag="B2B/contract-request">
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <label class="text-sm font-medium text-slate-700">
+                  Компания
+                  <input name="company" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
+                </label>
+                <label class="text-sm font-medium text-slate-700">
+                  Регион
+                  <input name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Город/регион" />
+                </label>
+                <label class="text-sm font-medium text-slate-700">
+                  Тип объекта
+                  <input name="objectType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="ЖК / УК / подряд" />
+                </label>
+                <label class="text-sm font-medium text-slate-700">
+                  Площадь, м²
+                  <input type="number" min="1" name="area" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
+                </label>
+                <label class="text-sm font-medium text-slate-700">
+                  Формат сотрудничества
+                  <select name="collaborationFormat" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+                    <option value="" disabled selected>Выберите формат</option>
+                    <option value="roll">Поставка рулонного газона</option>
+                    <option value="combined">Комбинированное решение</option>
+                    <option value="plants">Контрактные поставки растений</option>
+                    <option value="turnkey">Реализация под ключ</option>
+                    <option value="partial">Частичная реализация</option>
+                    <option value="partner">Партнёрство с ландшафтными компаниями</option>
+                    <option value="uk">Сопровождение для УК</option>
+                  </select>
+                </label>
+                <label class="text-sm font-medium text-slate-700">
+                  Контактное лицо
+                  <input name="contactPerson" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Имя и должность" />
+                </label>
+                <label class="text-sm font-medium text-slate-700">
+                  Телефон / e-mail
+                  <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Телефон или email" />
+                </label>
+                <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+                  Пожелания
+                  <input name="notes" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="График, ограничения, комментарии" />
+                </label>
+              </div>
+              <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+                Выслать коммерческое предложение
+              </button>
+              <p class="text-xs text-slate-500">UI-only: данные сохраняются в браузере на этапе 1.</p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Service care (B2B) -->
+  <section class="mt-14" aria-label="Служба заботы для B2B">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-white p-8 md:p-12 hover:shadow-glow transition" data-animate="fadeInUp">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div class="lg:col-span-7">
+            <h2 class="text-3xl font-semibold leading-tight">Служба заботы для B2B</h2>
+            <p class="mt-3 text-slate-600">
+              Регламент ухода, консультации и экспертные выезды под ваш сезонный график.
+              Помогаем снижать риски потери декоративности на протяжении цикла проекта.
+            </p>
+            <div class="mt-5 space-y-3">
+              
+                <div class="flex items-start gap-3 text-sm text-slate-600">
+                  <i data-lucide="check-circle-2" class="h-5 w-5 text-brand mt-0.5"></i>
+                  Регламент ухода и сезонные напоминания после сдачи
+                </div>
+              
+                <div class="flex items-start gap-3 text-sm text-slate-600">
+                  <i data-lucide="check-circle-2" class="h-5 w-5 text-brand mt-0.5"></i>
+                  Консультации и диагностика проблем по типовым сценариям
+                </div>
+              
+                <div class="flex items-start gap-3 text-sm text-slate-600">
+                  <i data-lucide="check-circle-2" class="h-5 w-5 text-brand mt-0.5"></i>
+                  При необходимости: экспертные выезды и рекомендации по восстановлению
+                </div>
+              
+                <div class="flex items-start gap-3 text-sm text-slate-600">
+                  <i data-lucide="check-circle-2" class="h-5 w-5 text-brand mt-0.5"></i>
+                  Снижение рисков потери декоративности на протяжении сезона
+                </div>
+              
+            </div>
+          </div>
+          <div class="lg:col-span-5">
+            <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 to-brand2/10 p-6">
+              <div class="text-sm font-semibold text-slate-900">Что вы получаете</div>
+              <ul class="mt-3 space-y-2 text-sm text-slate-600 list-disc list-inside">
+                <li>Сезонный план работ</li>
+                <li>Точки контроля и диагностика</li>
+                <li>Рекомендации по восстановлению</li>
+              </ul>
+              <button
+                type="button"
+                class="mt-6 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+                data-open-modal="b2b_care_reglement"
+                data-modal-title="Запросить регламент ухода"
+              >
+                Запросить регламент ухода
+              </button>
+              <div class="mt-3 text-xs text-slate-500">UI-only: форма отправляется локально в браузер.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="mt-14 pb-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-white p-8 md:p-12 hover:shadow-glow transition" data-animate="fadeInUp">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
+          <div class="md:col-span-7">
+            <h2 class="text-3xl font-semibold leading-tight">Финальные шаги</h2>
+            <p class="mt-3 text-slate-600">Выберите удобный следующий шаг: КП, прайс/остатки или регламент ухода.</p>
+          </div>
+          <div class="md:col-span-5 flex flex-col sm:flex-row gap-3 md:justify-end">
+            <button type="button" data-open-modal="b2b_cpo" data-modal-title="Запросить КП" class="flex-1 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+              КП
+            </button>
+            <button type="button" data-open-modal="b2b_price_stock" data-modal-title="Получить прайс и остатки" class="flex-1 rounded-2xl border border-black/10 px-6 py-3 text-center font-semibold hover:bg-black/5 transition">
+              Прайс и остатки
+            </button>
+            <button type="button" data-open-modal="b2b_care_reglement" data-modal-title="Запросить регламент ухода" class="flex-1 rounded-2xl border border-black/10 px-6 py-3 text-center font-semibold hover:bg-black/5 transition">
+              Регламент ухода
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    </main>
+
+    
+<footer class="mt-20 border-t border-black/5 bg-white">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-5">
+      <div class="md:col-span-2">
+        <div class="flex items-center">
+          <img
+            src="/static/media/branding/logo-main.webp"
+            alt="Сибирские газоны"
+            class="h-12 w-auto sm:h-14"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div class="mt-4 text-sm text-slate-600 max-w-md space-y-2">
+          <p>Технологичное озеленение с гарантированным результатом: от производства до системы заботы.</p>
+          <p>Собственное выращивание рулонного газона, питомник растений и тепличный комплекс позволяют держать качество и сроки под контролем.</p>
+          <p>Работаем с частными участками, девелоперами и подрядчиками. Помогаем не только реализовать проект, но и сохранить декоративность результата на годы.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-8 md:col-span-3">
+        <div>
+          <div class="text-sm font-semibold mb-3">О компании</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="/pitomnik/">Питомник</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/gazon/">Рулонный газон</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/b2b/">B2B</a>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Каталог</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="/katalog/">Каталог растений</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sadovye-centry/">Садовые центры</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/stati/">Статьи</a>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Покупателям</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="/ozelenenie-b2c/">Озеленение под ключ</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sluzhba-zaboty/">Служба заботы</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/kontakty/">Контакты</a>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Контакты</div>
+          <div class="text-sm text-slate-700">Тел: +7 (383) 201-06-00</div>
+          <div class="text-sm text-slate-700 mt-2">Email: price@gazony.ru</div>
+          <div class="text-sm text-slate-700 mt-2">Адрес: г. Новосибирск, ул. Железнодорожная, 12/1, оф.501</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center gap-3">
+        <a href="#" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 hover:bg-black/5 transition" aria-label="VK">
+          <i data-lucide="message-circle" class="h-5 w-5"></i>
+        </a>
+        <a href="#" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 hover:bg-black/5 transition" aria-label="Telegram">
+          <i data-lucide="send" class="h-5 w-5"></i>
+        </a>
+        <a href="#" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 hover:bg-black/5 transition" aria-label="YouTube">
+          <i data-lucide="play" class="h-5 w-5"></i>
+        </a>
+      </div>
+      <div class="text-sm text-slate-600">
+        © <span id="year"></span> «Сибирские газоны». Все права защищены.
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <div id="modalOverlay" class="fixed inset-0 bg-black/40 z-[60] hidden"></div>
+
+<!-- Generic modal wrapper -->
+<div id="modalHost" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4">
+  <div class="w-full max-w-lg">
+    <div class="relative overflow-hidden rounded-3xl border border-black/10 bg-white shadow-soft">
+      <button
+        type="button"
+        id="modalCloseTop"
+        class="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-xl hover:bg-black/5 transition"
+        aria-label="Закрыть"
+      >
+        <i data-lucide="x" class="h-5 w-5"></i>
+      </button>
+      <div class="p-6">
+        <h3 id="modalTitle" class="text-xl font-semibold leading-tight"></h3>
+        <div id="modalBody" class="mt-4"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UI-only content templates -->
+<template id="modal-template-mini_brief">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/mini-brief" data-modal-success="true">
+    <input type="hidden" name="formTag" value="B2C/mini-brief" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Тип объекта
+        <input name="objectType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Частный дом / коттедж / ЖК" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input name="area" type="number" required min="1" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 350" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Регион
+        <input name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Отправить
+    </button>
+    <p class="text-xs text-slate-500">
+      Нажимая кнопку, вы соглашаетесь на обработку данных. CRM пока не подключена (этап 1).
+    </p>
+  </form>
+</template>
+
+<template id="modal-template-contact_zaboty">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/sluzhba-zaboty">
+    <input type="hidden" name="formTag" value="B2C/sluzhba-zaboty" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Вопрос
+        <textarea name="question" required rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Коротко опишите задачу"></textarea>
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Отправить
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-b2b_cpo">
+  <form class="space-y-4" data-ui-form data-form-tag="B2B/zapros-cp">
+    <input type="hidden" name="formTag" value="B2B/zapros-cp" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Компания
+        <input name="company" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Регион
+        <input name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Город/регион" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Тип объекта
+        <input name="objectType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="ЖК / УК / подряд" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input name="area" type="number" required min="1" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Контакт
+        <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Телефон или email" />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Запросить КП
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-b2b_price_stock">
+  <form class="space-y-4" data-ui-form data-form-tag="B2B/price-stock">
+    <input type="hidden" name="formTag" value="B2B/price-stock" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Компания
+        <input name="company" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Регион
+        <input name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Город/регион" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Тип объекта
+        <input name="objectType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="ЖК / УК / подряд" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input name="area" type="number" min="1" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Формат сотрудничества
+        <select name="collaborationFormat" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="" disabled selected>Выберите формат</option>
+          <option value="roll">Поставка рулонного газона</option>
+          <option value="combined">Комбинированное решение</option>
+          <option value="plants">Контрактные поставки растений</option>
+          <option value="turnkey">Реализация под ключ</option>
+          <option value="partial">Частичная реализация</option>
+          <option value="partner">Партнёрство с ландшафтными компаниями</option>
+          <option value="uk">Сопровождение для УК</option>
+        </select>
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Контактное лицо
+        <input name="contactPerson" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Имя и должность" />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Телефон / e-mail
+        <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ... или name@example.com" />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить прайс и остатки
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-b2b_care_reglement">
+  <form class="space-y-4" data-ui-form data-form-tag="B2B/reglement-uhoda">
+    <input type="hidden" name="formTag" value="B2B/reglement-uhoda" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Компания (необязательно)
+        <input name="company" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Контактное лицо
+        <input name="contactPerson" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Имя и должность" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон / e-mail
+        <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ... или name@example.com" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Описание объекта / сезон
+        <textarea name="notes" rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр.: объект введут в апреле, требуется регламент ухода на сезон"></textarea>
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Запросить регламент ухода
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_price_list">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-price-list">
+    <input type="hidden" name="formTag" value="Gas/gazon-price-list" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Email
+        <input name="email" type="email" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="name@example.com" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Тип клиента
+        <select name="clientType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="частный">Частный</option>
+          <option value="B2B">B2B</option>
+        </select>
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить прайс-лист
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_cpo">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-cpo" data-ui-action="none">
+    <input type="hidden" name="formTag" value="Gas/gazon-cpo" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Email
+        <input name="email" type="email" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="name@example.com" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Тип клиента
+        <select name="clientType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="частный">Частный</option>
+          <option value="B2B">B2B</option>
+        </select>
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить коммерческое предложение
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_checklist">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-checklist" data-ui-action="download_gazon_checklist">
+    <input type="hidden" name="formTag" value="Gas/gazon-checklist" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Скачать чек-лист (PDF)
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_open_day">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-open-day">
+    <input type="hidden" name="formTag" value="Gas/gazon-open-day" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Город
+        <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Удобная дата (опционально)
+        <input name="date" type="date" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Записаться на день открытых дверей
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_logistics">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-logistics">
+    <input type="hidden" name="formTag" value="Gas/gazon-logistics" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Город
+        <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Красноярск" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Кол-во, м²
+        <input name="area" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 600" />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Сроки поставки (опционально)
+        <input name="deliveryWhen" type="text" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. в августе / конкретная дата" />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Уточнить логистику
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_presentation">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-presentation">
+    <input type="hidden" name="formTag" value="Gas/gazon-presentation" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Выслать полную презентацию
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_calc">
+  <form id="gazonCalculatorModal" class="space-y-4" data-ui-form data-form-tag="Gas/gazon-calc" data-ui-action="none">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input id="modalCalcArea" name="area" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 350" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Регион / город
+        <select id="modalCalcRegion" name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option>Новосибирск</option>
+          <option>Красноярск</option>
+          <option>Томск</option>
+          <option>Иркутск</option>
+          <option>Кемерово</option>
+          <option>Норильск</option>
+          <option>Другое</option>
+        </select>
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Формат поставки
+      <select id="modalCalcFormat" name="format" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+        <option>Самовывоз</option>
+        <option>Доставка</option>
+        <option>Сборная поставка</option>
+      </select>
+    </label>
+
+    <div class="rounded-3xl border border-black/5 bg-white p-5">
+      <div class="flex items-center justify-between">
+        <div class="font-semibold">Результат</div>
+        <div class="text-xs text-slate-500">примерно</div>
+      </div>
+      <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="rounded-2xl border border-black/5 p-4">
+          <div class="text-xs text-slate-600">Цена за 1 м²</div>
+          <div class="text-2xl font-semibold mt-1" id="modalCalcPerM2">—</div>
+        </div>
+        <div class="rounded-2xl border border-black/5 p-4">
+          <div class="text-xs text-slate-600">Итого</div>
+          <div class="text-2xl font-semibold mt-1" id="modalCalcTotal">—</div>
+        </div>
+      </div>
+      <p class="mt-3 text-sm text-slate-600" id="modalCalcNote"></p>
+      <p class="mt-3 text-xs text-slate-500">
+        Точная стоимость рассчитывается индивидуально с учетом объёма, региона и условий поставки.
+      </p>
+    </div>
+
+    <button
+      type="button"
+      id="modalCalcBtn"
+      class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+    >
+      Рассчитать
+    </button>
+
+    <div id="modalCalcCpWrap" class="hidden">
+      <button
+        type="button"
+        data-open-modal="gazon_cpo"
+        data-modal-title="Получить коммерческое предложение"
+        class="w-full rounded-2xl bg-white border border-black/10 px-6 py-3 text-sm font-semibold hover:bg-black/5 transition"
+      >
+        Получить коммерческое предложение
+      </button>
+    </div>
+  </form>
+</template>
+
+<!-- ozelenenie-b2c templates -->
+<template id="modal-template-ozelenenie-ready_project">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-ready-project">
+    <input type="hidden" name="formTag" value="B2C/ozelenenie-ready-project" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input name="area" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 420" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Город
+        <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Стадия объекта
+        <select name="stage" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="стройка-завершается">Стройка завершается</option>
+          <option value="участок-готов">Участок уже готов</option>
+        </select>
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Рассчитать готовый проект
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-ozelenenie-mini_project">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-mini-project">
+    <input type="hidden" name="formTag" value="B2C/ozelenenie-mini-project" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input name="area" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 350" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Стадия объекта
+        <select name="stage" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="стройка-завершается">Стройка завершается</option>
+          <option value="участок-готов">Участок уже готов</option>
+        </select>
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Краткое описание
+      <textarea name="description" required rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Что хотите получить на участке?"></textarea>
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить концепцию участка
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-ozelenenie-audit_plan">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-audit-plan">
+    <input type="hidden" name="formTag" value="B2C/ozelenenie-audit-plan" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input name="area" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 420" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Город
+        <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Комментарий
+      <textarea name="comment" rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Коротко опишите участок и ожидания"></textarea>
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Заказать аудит участка
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-ozelenenie-assess_upload">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-assess-upload">
+    <input type="hidden" name="formTag" value="B2C/ozelenenie-assess-upload" />
+    <label class="text-sm font-medium text-slate-700">
+      Фото/файл участка
+      <input type="file" name="file" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" />
+    </label>
+    <label class="text-sm font-medium text-slate-700">
+      Ссылка (опционально)
+      <input name="link" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="https://..." />
+    </label>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Комментарий
+      <textarea name="comment" rows="4" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Какие работы/результат вам нужны?"></textarea>
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Отправить участок на оценку
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-ozelenenie-send_project">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-send-project">
+    <input type="hidden" name="formTag" value="B2C/ozelenenie-send-project" />
+    <label class="text-sm font-medium text-slate-700">
+      Файл/ссылка на проект
+      <input type="file" name="file" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" />
+    </label>
+    <label class="text-sm font-medium text-slate-700">
+      Ссылка (опционально)
+      <input name="link" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="https://..." />
+    </label>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Комментарий
+      <textarea name="comment" rows="4" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Коротко опишите задачу и сроки"></textarea>
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Отправить проект на проверку
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-ozelenenie-materials_scheme">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-materials-scheme">
+    <input type="hidden" name="formTag" value="B2C/ozelenenie-materials-scheme" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input name="area" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 420" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Город
+        <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Пожелания по участку / что нужно
+      <textarea name="comment" required rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Например: газон, посадки, дорожки, зоны отдыха"></textarea>
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Подобрать материалы и схему
+    </button>
+  </form>
+</template>
+
+<!-- Success state -->
+<template id="modal-template-success">
+  <div class="space-y-3">
+    <div class="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-brand/5 px-4 py-3 text-sm">
+      <i data-lucide="check-circle-2" class="h-5 w-5 text-brand"></i>
+      <span class="font-semibold">Заявка принята</span>
+    </div>
+    <p class="text-sm text-slate-600">
+      Мы свяжемся с вами. Сейчас это этап 1: данные сохраняются только в браузере.
+    </p>
+    <button type="button" data-close-modal class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Ок
+    </button>
+  </div>
+</template>
+
+
+
+    <script src="/static/js/app.js" defer></script>
+    <script>
+      // Initialize lucide icons after the DOM is ready.
+      document.addEventListener('DOMContentLoaded', () => {
+        if (window.lucide) window.lucide.createIcons();
+      });
+    </script>
+  </body>
+</html>
+
