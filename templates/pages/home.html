@@ -4,13 +4,13 @@
 {% block title %}Главная — {{ brand }}{% endblock %}
 
 {% block content %}
-  <!-- HERO -->
+  <!-- HERO: высота = остаток экрана под шапкой (вычитание не завышать — иначе снизу белая «щель» body) -->
   <section
-    class="relative isolate flex min-h-[calc(100dvh-10rem)] items-center overflow-hidden md:min-h-[calc(100dvh-11rem)]"
+    class="relative isolate flex min-h-[calc(100dvh-7.25rem)] items-center overflow-hidden md:min-h-[calc(100dvh-8.25rem)]"
   >
     <div class="absolute inset-0 -z-10 overflow-hidden bg-slate-900">
       <video
-        class="hero-bg-video absolute inset-0 z-0 block h-full w-full object-cover object-center"
+        class="hero-bg-video absolute inset-0 z-0 min-h-full min-w-full block h-full w-full object-cover object-center"
         autoplay
         muted
         loop
@@ -72,10 +72,10 @@
     </div>
   </section>
 
-  <!-- Scenario cards: без padding-top на секции (фон body = белая «щель»). Карточка чуть заходит на hero -->
-  <section class="relative z-10 -mt-6 md:-mt-8">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-8 md:pb-10">
-      <div class="rounded-3xl bg-white/95 border border-black/5 p-5 pt-6 shadow-sm md:p-6 md:pt-8">
+  <!-- Scenario cards: обычный отступ от hero, без налезания на видео -->
+  <section class="relative z-10 mt-8 md:mt-10">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl bg-white/95 border border-black/5 p-5 md:p-6">
         <div class="flex items-center justify-between">
           <h2 class="font-semibold text-xl">Выберите сценарий</h2>
           <div class="text-xs text-slate-600">1 минута до заявки</div>
