@@ -37,7 +37,8 @@ section[data-gazon-hero] .gazon-hero-media video.hero-bg-video {
   height: 100%;
   min-width: 100%;
   min-height: 100%;
-  transform: translate3d(-50%, -50%, 0) scale(1.09);
+  /* 1.09 сильно размывало 720p; 1.03 — запас от белой щели без «масла» */
+  transform: translate3d(-50%, -50%, 0) scale(1.03);
   object-fit: cover;
   object-position: 50% 50%;
   display: block;

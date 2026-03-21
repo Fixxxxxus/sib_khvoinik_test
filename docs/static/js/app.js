@@ -8,7 +8,7 @@ function initYear() {
 // UI-only placeholder PDF generators
 window.SGDownloadGazonChecklist = function () {
   const text =
-    'Чек-лист подготовки участка под газон\\n\\n1) Основание: ровность, плотность, дренаж\\n2) Уклоны: контроль водоотвода\\n3) Грунт: качество и структура\\n4) Полив: режим после укладки\\n\\nЭто заглушка для этапа 1.';
+    'Чек-лист подготовки участка под газон\\n\\n1) Подготовка основания\\n2) Планировка грунтов\\n3) Завоз грунтов\\n4) Вертикальная планировка\\n5) Готовый результат\\n\\nЭто заглушка для этапа 1.';
   const blob = new Blob([text], { type: 'application/pdf' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
