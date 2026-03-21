@@ -26,11 +26,17 @@ function initBurger() {
   if (!burgerBtn || !mobileMenu) return;
   burgerBtn.addEventListener('click', () => {
     mobileMenu.classList.toggle('hidden');
+    const open = !mobileMenu.classList.contains('hidden');
+    burgerBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (window.lucide) window.lucide.createIcons();
   });
 
   // Close menu when clicking a link
   mobileMenu.querySelectorAll('a').forEach((a) => {
-    a.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    a.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      burgerBtn.setAttribute('aria-expanded', 'false');
+    });
   });
 }
 

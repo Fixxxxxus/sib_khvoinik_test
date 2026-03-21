@@ -1,68 +1,146 @@
 {% load static %}
-<header class="sticky top-0 z-50 border-b border-black/5 bg-white/80 backdrop-blur">
+<header class="sticky top-0 z-50 bg-white shadow-[0_1px_0_0_rgba(226,232,240,1)]">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="flex h-16 items-center justify-between">
-      <a href="{% url 'home' %}" class="flex items-center">
+    <!-- Верхняя полоса (десктоп): лого + почта | соцсети + заказ звонка -->
+    <div class="hidden md:flex flex-row items-center justify-between gap-4 py-3 border-b border-slate-200">
+      <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-2">
+        <a href="{% url 'home' %}" class="flex shrink-0 items-center">
+          <img
+            src="{% static 'media/branding/logo-main.webp' %}"
+            alt="Сибирские газоны"
+            class="h-9 w-auto sm:h-10"
+            loading="eager"
+            decoding="async"
+          />
+        </a>
+        <a
+          href="mailto:price@gazony.ru"
+          class="inline-flex min-w-0 max-w-full items-center gap-2 text-sm font-medium text-slate-600 transition hover:text-brand"
+        >
+          <span class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-brand/10 to-brand2/5 text-brand ring-1 ring-brand/15">
+            <i data-lucide="mail" class="h-4 w-4" stroke-width="2"></i>
+          </span>
+          <span class="truncate sm:whitespace-normal">price@gazony.ru</span>
+        </a>
+      </div>
+
+      <div class="flex shrink-0 flex-wrap items-center justify-end gap-3">
+        <div class="flex items-center gap-2 sm:gap-2.5" aria-label="Соцсети">
+          <!-- ВКонтакте -->
+          <a
+            href="#"
+            class="group relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#0077FF] shadow-sm ring-1 ring-slate-200/90 transition hover:-translate-y-0.5 hover:text-white hover:shadow-md hover:ring-[#0077FF]/40"
+            aria-label="ВКонтакте"
+          >
+            <span
+              class="absolute inset-0 rounded-full bg-gradient-to-br from-[#0077FF] to-[#0047AB] opacity-0 transition group-hover:opacity-100"
+              aria-hidden="true"
+            ></span>
+            <svg class="relative z-10 h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C6.624 10.688 5.478 8.05 5.478 7.233c0-.254.102-.491.593-.491h1.744c.441 0 .61.203.78.678.863 2.05 2.303 3.845 2.896 3.845.22 0 .322-.102.322-.66V9.721c-.068-1.118-.695-1.287-1.118-1.287-.356 0-.458.203-.458.593v.254c0 .678-.254 1.016-.864 1.016-.628 0-1.355-.339-2.05-1.016-1.355-1.355-2.05-3.27-2.05-3.845 0-.118.102-.491.593-.491h1.744c.441 0 .593.169.593.593v3.27c0 .593.102.66.322.66.22 0 .458-.102 1.355-1.355 1.016-1.287 1.575-3.202 1.575-3.54 0-.169.102-.491.593-.491h1.744c.441 0 .593.203.508.593-.102.593-.508 1.575-1.118 2.57-.254.339-.186.508 0 .763l1.287 1.846c.254.356.356.593.254 1.016-.102.254-.254.356-.593.356z"
+              />
+            </svg>
+          </a>
+          <!-- Telegram -->
+          <a
+            href="#"
+            class="group relative flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#229ED9] shadow-sm ring-1 ring-slate-200/90 transition hover:-translate-y-0.5 hover:text-white hover:shadow-md hover:ring-[#229ED9]/40"
+            aria-label="Telegram"
+          >
+            <span
+              class="absolute inset-0 rounded-full bg-gradient-to-br from-[#229ED9] to-[#0088cc] opacity-0 transition group-hover:opacity-100"
+              aria-hidden="true"
+            ></span>
+            <svg class="relative z-10 h-[18px] w-[18px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
+              />
+            </svg>
+          </a>
+          <!-- MAX -->
+          <a
+            href="#"
+            class="group flex h-10 w-10 items-center justify-center rounded-full bg-white text-brand shadow-sm ring-1 ring-slate-200/90 transition hover:-translate-y-0.5 hover:bg-gradient-to-br hover:from-brand hover:to-brand2 hover:text-white hover:shadow-md hover:ring-brand/30"
+            aria-label="MAX"
+          >
+            <span class="text-[10px] font-bold leading-none tracking-tight">MAX</span>
+          </a>
+        </div>
+
+        <button
+          type="button"
+          data-open-modal="contact_zaboty"
+          data-modal-title="Заказать звонок"
+          class="inline-flex shrink-0 items-center justify-center rounded-full border-2 border-brand bg-white px-5 py-2 text-sm font-semibold text-brand shadow-sm transition hover:bg-brand/5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand"
+        >
+          Заказать звонок
+        </button>
+      </div>
+    </div>
+
+    <!-- Нижняя полоса: меню -->
+    <div class="hidden md:block border-b border-slate-200">
+      <nav class="flex flex-wrap items-center gap-x-0.5 gap-y-1 py-2.5 lg:gap-x-1" aria-label="Основное меню">
+        <a href="{% url 'home' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Главная
+        </a>
+        <a href="{% url 'gazon' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Газон
+        </a>
+        <a href="{% url 'ozelenenie_b2c' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Озеленение
+        </a>
+        <a href="{% url 'b2b' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          B2B
+        </a>
+        <a href="{% url 'pitomnik' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Питомник
+        </a>
+        <a href="{% url 'sadovye_centry' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Садовые центры
+        </a>
+        <a href="{% url 'katalog' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Каталог
+        </a>
+        <a href="{% url 'sluzhba_zaboty' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Служба заботы
+        </a>
+        <a href="{% url 'stati_list' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Статьи
+        </a>
+        <a href="{% url 'kontakty' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Контакты
+        </a>
+      </nav>
+    </div>
+
+    <!-- Мобильная верхняя строка: лого + действия -->
+    <div class="flex items-center justify-between gap-3 py-2.5 md:hidden border-b border-slate-200">
+      <a href="{% url 'home' %}" class="flex min-w-0 items-center">
         <img
           src="{% static 'media/branding/logo-main.webp' %}"
           alt="Сибирские газоны"
-          class="h-10 w-auto sm:h-11"
+          class="h-9 w-auto max-h-9"
           loading="eager"
           decoding="async"
         />
       </a>
-
-      <nav class="hidden md:flex md:ml-4 md:flex-1 items-center gap-1">
-        <div class="flex items-center gap-1">
-        <a href="{% url 'home' %}" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Главная
-        </a>
-        <a href="{% url 'gazon' %}" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Газон
-        </a>
-        <a href="{% url 'ozelenenie_b2c' %}" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Озеленение
-        </a>
-        <a href="{% url 'b2b' %}" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          B2B
-        </a>
-        <a href="{% url 'pitomnik' %}" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Питомник
-        </a>
-        <a href="{% url 'sadovye_centry' %}" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Садовые центры
-        </a>
-        <a href="{% url 'katalog' %}" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Каталог
-        </a>
-        <a href="{% url 'stati_list' %}" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Статьи
-        </a>
-        <a href="{% url 'kontakty' %}" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Контакты
-        </a>
-        </div>
-        <a
-          href="{% url 'sluzhba_zaboty' %}"
-          class="ml-auto px-4 py-2 text-[15px] font-semibold rounded-xl bg-gradient-to-r from-brand to-brand2 text-white shadow-glow hover:brightness-105 transition"
+      <div class="flex shrink-0 items-center gap-2">
+        <button
+          type="button"
+          data-open-modal="contact_zaboty"
+          data-modal-title="Заказать звонок"
+          class="inline-flex items-center justify-center rounded-full border-2 border-brand bg-white px-3 py-1.5 text-xs font-semibold text-brand"
         >
-          Служба заботы
-        </a>
-      </nav>
-
-      <!-- Mobile -->
-      <div class="md:hidden flex items-center gap-2">
-        <a
-          href="{% url 'sluzhba_zaboty' %}"
-          class="px-3 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-brand to-brand2 text-white shadow-glow"
-        >
-          Забота
-        </a>
+          Звонок
+        </button>
         <button
           id="burgerBtn"
           type="button"
-          class="inline-flex items-center justify-center rounded-xl border border-black/10 p-2 hover:bg-black/5 transition"
+          class="inline-flex items-center justify-center rounded-xl border border-slate-200 p-2 text-slate-700 hover:bg-slate-50 transition"
           aria-label="Открыть меню"
+          aria-expanded="false"
         >
           <i data-lucide="menu" class="h-5 w-5"></i>
         </button>
@@ -70,38 +148,77 @@
     </div>
   </div>
 
-  <div id="mobileMenu" class="md:hidden hidden border-t border-black/5 bg-white">
-    <div class="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 gap-2">
-            <a href="{% url 'home' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Главная
-            </a>
-            <a href="{% url 'gazon' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Газон
-            </a>
-            <a href="{% url 'ozelenenie_b2c' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Озеленение
-            </a>
-            <a href="{% url 'b2b' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              B2B
-            </a>
-            <a href="{% url 'pitomnik' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Питомник
-            </a>
-            <a href="{% url 'sadovye_centry' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Садовые центры
-            </a>
-            <a href="{% url 'katalog' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Каталог
-            </a>
-            <a href="{% url 'stati_list' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Статьи
-            </a>
-            <a href="{% url 'kontakty' %}" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Контакты
-            </a>
+  <div id="mobileMenu" class="md:hidden hidden border-b border-slate-200 bg-white">
+    <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+      <div class="mb-4 flex items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-slate-50/80 px-3 py-2">
+        <a href="mailto:price@gazony.ru" class="flex min-w-0 items-center gap-2 text-sm font-medium text-slate-700 hover:text-brand">
+          <i data-lucide="mail" class="h-4 w-4 shrink-0 text-brand"></i>
+          <span class="truncate">price@gazony.ru</span>
+        </a>
+        <div class="flex shrink-0 items-center gap-1.5">
+          <a
+            href="#"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#0077FF] shadow-sm ring-1 ring-slate-200"
+            aria-label="ВКонтакте"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M15.684 0H8.316C1.592 0 0 1.592 0 8.316v7.368C0 22.408 1.592 24 8.316 24h7.368C22.408 24 24 22.408 24 15.684V8.316C24 1.592 22.408 0 15.684 0zm3.692 17.123h-1.744c-.66 0-.864-.525-2.05-1.727-1.033-1-1.49-1.135-1.744-1.135-.356 0-.458.102-.458.593v1.575c0 .424-.135.678-1.253.678-1.846 0-3.896-1.118-5.335-3.202C6.624 10.688 5.478 8.05 5.478 7.233c0-.254.102-.491.593-.491h1.744c.441 0 .61.203.78.678.863 2.05 2.303 3.845 2.896 3.845.22 0 .322-.102.322-.66V9.721c-.068-1.118-.695-1.287-1.118-1.287-.356 0-.458.203-.458.593v.254c0 .678-.254 1.016-.864 1.016-.628 0-1.355-.339-2.05-1.016-1.355-1.355-2.05-3.27-2.05-3.845 0-.118.102-.491.593-.491h1.744c.441 0 .593.169.593.593v3.27c0 .593.102.66.322.66.22 0 .458-.102 1.355-1.355 1.016-1.287 1.575-3.202 1.575-3.54 0-.169.102-.491.593-.491h1.744c.441 0 .593.203.508.593-.102.593-.508 1.575-1.118 2.57-.254.339-.186.508 0 .763l1.287 1.846c.254.356.356.593.254 1.016-.102.254-.254.356-.593.356z"
+              />
+            </svg>
+          </a>
+          <a
+            href="#"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#229ED9] shadow-sm ring-1 ring-slate-200"
+            aria-label="Telegram"
+          >
+            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path
+                d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"
+              />
+            </svg>
+          </a>
+          <a
+            href="#"
+            class="flex h-9 w-9 items-center justify-center rounded-full bg-white text-brand shadow-sm ring-1 ring-slate-200"
+            aria-label="MAX"
+          >
+            <span class="text-[9px] font-bold">MAX</span>
+          </a>
+        </div>
+      </div>
+      <div class="grid grid-cols-1 gap-1">
+        <a href="{% url 'home' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Главная
+        </a>
+        <a href="{% url 'gazon' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Газон
+        </a>
+        <a href="{% url 'ozelenenie_b2c' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Озеленение
+        </a>
+        <a href="{% url 'b2b' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          B2B
+        </a>
+        <a href="{% url 'pitomnik' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Питомник
+        </a>
+        <a href="{% url 'sadovye_centry' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Садовые центры
+        </a>
+        <a href="{% url 'katalog' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Каталог
+        </a>
+        <a href="{% url 'sluzhba_zaboty' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Служба заботы
+        </a>
+        <a href="{% url 'stati_list' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Статьи
+        </a>
+        <a href="{% url 'kontakty' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Контакты
+        </a>
       </div>
     </div>
   </div>
 </header>
-
