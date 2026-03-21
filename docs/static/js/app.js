@@ -20,17 +20,50 @@ window.SGDownloadGazonChecklist = function () {
   URL.revokeObjectURL(url);
 };
 
+/** Герои на весь экран минус шапка (главная, газоны). Убирает щель снизу, если calc(100dvh − Xrem) не совпал с реальной высотой header. */
+function initViewportHeroHeights() {
+  const header = document.getElementById('site-header');
+  const heroes = document.querySelectorAll('[data-home-hero], [data-gazon-hero]');
+  if (!header || heroes.length === 0) return;
+
+  const apply = () => {
+    const h = window.innerHeight - header.offsetHeight;
+    const px = `${Math.max(280, h)}px`;
+    heroes.forEach((el) => {
+      el.style.minHeight = px;
+    });
+  };
+
+  apply();
+  let t = null;
+  window.addEventListener('resize', () => {
+    window.clearTimeout(t);
+    t = window.setTimeout(apply, 100);
+  });
+  window.addEventListener('orientationchange', apply);
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(() => apply());
+    ro.observe(header);
+  }
+}
+
 function initBurger() {
   const burgerBtn = document.getElementById('burgerBtn');
   const mobileMenu = document.getElementById('mobileMenu');
   if (!burgerBtn || !mobileMenu) return;
   burgerBtn.addEventListener('click', () => {
     mobileMenu.classList.toggle('hidden');
+    const open = !mobileMenu.classList.contains('hidden');
+    burgerBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (window.lucide) window.lucide.createIcons();
   });
 
   // Close menu when clicking a link
   mobileMenu.querySelectorAll('a').forEach((a) => {
-    a.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+    a.addEventListener('click', () => {
+      mobileMenu.classList.add('hidden');
+      burgerBtn.setAttribute('aria-expanded', 'false');
+    });
   });
 }
 
@@ -72,6 +105,7 @@ function initModal() {
     modalBody.innerHTML = '';
     modalBody.appendChild(tpl.content.cloneNode(true));
 
+    // Калькулятор: передать форму из modalBody — иначе getElementById может попасть в <template> и повесить input на скрытые поля.
     if (targetKey === 'gazon_calc') {
       const calcForm = modalBody.querySelector('#gazonCalculatorModal');
       initGazonCalculator(calcForm);
@@ -231,11 +265,13 @@ function initCounters() {
   counters.forEach((el) => obs.observe(el));
 }
 
+/** @param {HTMLFormElement | null | undefined} modalFormFromModal — форма из открытого окна (не из &lt;template&gt;) */
 function initGazonCalculator(modalFormFromModal) {
   const inlineForm = document.getElementById('gazonCalculator');
   let modalForm = modalFormFromModal || null;
   if (!modalForm) {
     const m = document.getElementById('gazonCalculatorModal');
+    // Не инициализировать копию внутри <template> (иначе слушатели input висят на скрытом DOM)
     if (m && !m.closest('template')) modalForm = m;
   }
   if (!inlineForm && !modalForm) return;
@@ -356,6 +392,7 @@ function initGazonCalculator(modalFormFromModal) {
 
 document.addEventListener('DOMContentLoaded', () => {
   initYear();
+  initViewportHeroHeights();
   initBurger();
   initModal();
   // Auto-open gazon calculator from URL: /gazon/?calc=1
