@@ -4,13 +4,15 @@
 {% block title %}Главная — {{ brand }}{% endblock %}
 
 {% block content %}
-  <!-- HERO: высота = остаток экрана под шапкой (вычитание не завышать — иначе снизу белая «щель» body) -->
+  <!-- HERO: min-height задаётся в app.js = window.innerHeight − реальная высота шапки (убирает белую полосу снизу) -->
   <section
-    class="relative isolate flex min-h-[calc(100dvh-7.25rem)] items-center overflow-hidden bg-slate-900 md:min-h-[calc(100dvh-8.25rem)]"
+    data-home-hero
+    class="relative isolate flex min-h-[22rem] items-center overflow-hidden bg-slate-900 md:min-h-[28rem]"
   >
     <div class="absolute inset-0 -z-10 overflow-hidden bg-slate-900">
       <video
-        class="hero-bg-video absolute left-1/2 top-1/2 z-0 object-cover object-center"
+        class="hero-bg-video absolute inset-0 z-0 h-full w-full object-cover object-center"
+        style="max-width: none; max-height: none; display: block"
         autoplay
         muted
         loop

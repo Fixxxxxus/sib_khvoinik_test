@@ -3,27 +3,10 @@ html {
   scroll-behavior: smooth;
 }
 
-/*
- * Hero background video:
- * Tailwind Preflight задаёт img,video { max-width:100%; height:auto } — из‑за этого
- * ломается полноэкранный object-cover и часто видна тонкая светлая полоска снизу.
- */
+/* Hero video: preflight max-width:100% ломает cover — дублируем в CSS (и inline на теге) */
 video.hero-bg-video {
-  display: block;
   max-width: none !important;
   max-height: none !important;
-  width: auto;
-  height: auto;
-  min-width: 100%;
-  min-height: 100%;
-  transform: translate3d(-50%, -50%, 0) scale(1.06);
-  transform-origin: center center;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  video.hero-bg-video {
-    transform: translate3d(-50%, -50%, 0) scale(1.03);
-  }
 }
 
 /* Кнопка «Служба заботы» в шапке — без глобального сдвига как у rounded-2xl ссылок */

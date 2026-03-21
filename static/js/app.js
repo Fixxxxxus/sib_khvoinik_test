@@ -20,6 +20,29 @@ window.SGDownloadGazonChecklist = function () {
   URL.revokeObjectURL(url);
 };
 
+function initHomeHeroHeight() {
+  const header = document.getElementById('site-header');
+  const hero = document.querySelector('[data-home-hero]');
+  if (!header || !hero) return;
+
+  const apply = () => {
+    const h = window.innerHeight - header.offsetHeight;
+    hero.style.minHeight = `${Math.max(280, h)}px`;
+  };
+
+  apply();
+  let t = null;
+  window.addEventListener('resize', () => {
+    window.clearTimeout(t);
+    t = window.setTimeout(apply, 100);
+  });
+  window.addEventListener('orientationchange', apply);
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(() => apply());
+    ro.observe(header);
+  }
+}
+
 function initBurger() {
   const burgerBtn = document.getElementById('burgerBtn');
   const mobileMenu = document.getElementById('mobileMenu');
@@ -345,6 +368,7 @@ function initGazonCalculator() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initYear();
+  initHomeHeroHeight();
   initBurger();
   initModal();
   // Auto-open gazon calculator from URL: /gazon/?calc=1
