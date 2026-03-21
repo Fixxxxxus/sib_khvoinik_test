@@ -5,3 +5,15 @@ __pycache__/
 db.sqlite3
 staticfiles/
 .DS_Store
+
+# Секреты и локальные настройки
+.env
+.env.*
+!.env.example
+
+# Логи
+*.log
+
+# Тяжёлые локальные бэкапы видео (дубликаты после перекодирования)
+static/media/videos/*.backup.mp4
+*.backup.mp4
