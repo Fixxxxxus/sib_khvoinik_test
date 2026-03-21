@@ -3,20 +3,26 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Hero video: центр + лёгкий оверскан — закрывает субпиксельную «белую щель» снизу */
-.hero-bg-video {
+/*
+ * Hero background video:
+ * Tailwind Preflight задаёт img,video { max-width:100%; height:auto } — из‑за этого
+ * ломается полноэкранный object-cover и часто видна тонкая светлая полоска снизу.
+ */
+video.hero-bg-video {
   display: block;
+  max-width: none !important;
+  max-height: none !important;
   width: auto;
   height: auto;
   min-width: 100%;
   min-height: 100%;
-  transform: translate3d(-50%, -50%, 0) scale(1.035);
+  transform: translate3d(-50%, -50%, 0) scale(1.06);
   transform-origin: center center;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .hero-bg-video {
-    transform: translate3d(-50%, -50%, 0) scale(1.025);
+  video.hero-bg-video {
+    transform: translate3d(-50%, -50%, 0) scale(1.03);
   }
 }
 

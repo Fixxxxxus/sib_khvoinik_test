@@ -10,7 +10,7 @@
   >
     <div class="absolute inset-0 -z-10 overflow-hidden bg-slate-900">
       <video
-        class="hero-bg-video absolute left-1/2 top-1/2 z-0 max-w-none object-cover object-center"
+        class="hero-bg-video absolute left-1/2 top-1/2 z-0 object-cover object-center"
         autoplay
         muted
         loop
@@ -21,9 +21,14 @@
       </video>
       <div class="absolute inset-0 bg-gradient-to-br from-black/55 via-black/35 to-brand2/25"></div>
       <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(233,196,106,0.20),transparent_40%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.20),transparent_45%)]"></div>
+      <!-- подстраховка субпикселя снизу (над видео, под контентом z-10) -->
+      <div
+        class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-2 bg-gradient-to-t from-slate-950/90 to-transparent"
+        aria-hidden="true"
+      ></div>
     </div>
 
-    <div class="mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-10 md:py-12">
+    <div class="relative z-10 mx-auto max-w-7xl w-full px-4 sm:px-6 lg:px-8 py-10 md:py-12">
       <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 items-center">
         <div class="lg:col-span-12">
           <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90">
