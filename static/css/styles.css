@@ -9,6 +9,23 @@ video.hero-bg-video {
   max-height: none !important;
 }
 
+/* Навигация второго ряда: линия только под пунктом, не на всю ширину панели */
+.nav-item-rule {
+  border-bottom: 1px solid rgb(226 232 240);
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+.nav-item-rule:hover {
+  border-bottom-color: rgb(45 106 79);
+}
+/* У pill оставляем скругление, линия — по ширине кнопки */
+.nav-item-rule--pill {
+  border-bottom-color: rgb(203 213 225);
+}
+.nav-item-rule--pill:hover {
+  border-bottom-color: rgb(45 106 79);
+}
+
 /* Кнопка «Служба заботы» в шапке — без глобального сдвига как у rounded-2xl ссылок */
 a.nav-zaboty-pill {
   transform: none;
