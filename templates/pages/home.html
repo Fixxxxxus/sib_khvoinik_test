@@ -6,11 +6,11 @@
 {% block content %}
   <!-- HERO: высота = остаток экрана под шапкой (вычитание не завышать — иначе снизу белая «щель» body) -->
   <section
-    class="relative isolate flex min-h-[calc(100dvh-7.25rem)] items-center overflow-hidden md:min-h-[calc(100dvh-8.25rem)]"
+    class="relative isolate flex min-h-[calc(100dvh-7.25rem)] items-center overflow-hidden bg-slate-900 md:min-h-[calc(100dvh-8.25rem)]"
   >
     <div class="absolute inset-0 -z-10 overflow-hidden bg-slate-900">
       <video
-        class="hero-bg-video absolute inset-0 z-0 min-h-full min-w-full block h-full w-full object-cover object-center"
+        class="hero-bg-video absolute left-1/2 top-1/2 z-0 max-w-none object-cover object-center"
         autoplay
         muted
         loop

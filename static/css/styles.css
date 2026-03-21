@@ -3,9 +3,21 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Hero video: убираем типичную щель у inline-video (baseline) */
+/* Hero video: центр + лёгкий оверскан — закрывает субпиксельную «белую щель» снизу */
 .hero-bg-video {
   display: block;
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  min-height: 100%;
+  transform: translate3d(-50%, -50%, 0) scale(1.035);
+  transform-origin: center center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-bg-video {
+    transform: translate3d(-50%, -50%, 0) scale(1.025);
+  }
 }
 
 /* Кнопка «Служба заботы» в шапке — без глобального сдвига как у rounded-2xl ссылок */
