@@ -30,11 +30,11 @@
     <!-- Lucide icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <link rel="stylesheet" href="/sib_khvoinik_test/static/css/styles.css" />
+    <link rel="stylesheet" href="/sib_khvoinik_test/static/css/styles.css?v=13" />
   </head>
   <body class="bg-white text-slate-900 antialiased">
     
-<header class="sticky top-0 z-50 border-b border-black/5 bg-white/80 backdrop-blur">
+<header id="site-header" class="sticky top-0 z-50 border-b border-black/5 bg-white/80 backdrop-blur">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <div class="flex h-16 items-center justify-between">
       <a href="/sib_khvoinik_test/" class="flex items-center">
@@ -146,11 +146,15 @@
       <!-- HERO: min-height задаётся в app.js = window.innerHeight − реальная высота шапки (убирает белую полосу снизу) -->
         <section
           data-home-hero
-          class="relative isolate flex min-h-[22rem] items-center overflow-hidden bg-slate-900 md:min-h-[28rem]"
+          class="relative isolate flex w-full min-w-0 min-h-[22rem] items-center overflow-hidden bg-slate-900 md:min-h-[28rem]"
         >
-          <div class="absolute inset-0 -z-10 overflow-hidden bg-slate-900">
+          <!-- full-bleed на всю ширину окна (иначе на части вьюпортов фон «съезжает» к центру) -->
+          <div
+            class="pointer-events-none absolute inset-y-0 left-1/2 top-0 -z-10 h-full w-screen max-w-[100vw] -translate-x-1/2 overflow-hidden bg-slate-900"
+            aria-hidden="true"
+          >
             <video
-              class="hero-bg-video absolute inset-0 z-0 h-full w-full object-cover object-center"
+              class="hero-bg-video absolute inset-0 z-0 h-full w-full min-h-full min-w-full object-cover object-center"
               style="max-width: none; max-height: none; display: block"
               autoplay
               muted
