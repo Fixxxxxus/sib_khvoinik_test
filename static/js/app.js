@@ -105,8 +105,11 @@ function initModal() {
     modalBody.innerHTML = '';
     modalBody.appendChild(tpl.content.cloneNode(true));
 
-    // If calculator UI was injected, bind its handlers.
-    if (targetKey === 'gazon_calc') initGazonCalculator();
+    // Калькулятор: передать форму из modalBody — иначе getElementById может попасть в <template> и повесить input на скрытые поля.
+    if (targetKey === 'gazon_calc') {
+      const calcForm = modalBody.querySelector('#gazonCalculatorModal');
+      initGazonCalculator(calcForm);
+    }
 
     overlay.classList.remove('hidden');
     host.classList.remove('hidden');
@@ -262,9 +265,15 @@ function initCounters() {
   counters.forEach((el) => obs.observe(el));
 }
 
-function initGazonCalculator() {
+/** @param {HTMLFormElement | null | undefined} modalFormFromModal — форма из открытого окна (не из &lt;template&gt;) */
+function initGazonCalculator(modalFormFromModal) {
   const inlineForm = document.getElementById('gazonCalculator');
-  const modalForm = document.getElementById('gazonCalculatorModal');
+  let modalForm = modalFormFromModal || null;
+  if (!modalForm) {
+    const m = document.getElementById('gazonCalculatorModal');
+    // Не инициализировать копию внутри <template> (иначе слушатели input висят на скрытом DOM)
+    if (m && !m.closest('template')) modalForm = m;
+  }
   if (!inlineForm && !modalForm) return;
 
   const base = 500; // placeholder, from ТЗ: "от 500 ₽/м²"
@@ -340,31 +349,42 @@ function initGazonCalculator() {
   }
 
   if (modalForm) {
-    const area = document.getElementById('modalCalcArea');
-    const region = document.getElementById('modalCalcRegion');
-    const format = document.getElementById('modalCalcFormat');
-    const outTotal = document.getElementById('modalCalcTotal');
-    const outPer = document.getElementById('modalCalcPerM2');
-    const outNote = document.getElementById('modalCalcNote');
-    const calcBtn = document.getElementById('modalCalcBtn');
-    const cpWrap = document.getElementById('modalCalcCpWrap');
+    const area = modalForm.querySelector('#modalCalcArea');
+    const region = modalForm.querySelector('#modalCalcRegion');
+    const format = modalForm.querySelector('#modalCalcFormat');
+    const outTotal = modalForm.querySelector('#modalCalcTotal');
+    const outPer = modalForm.querySelector('#modalCalcPerM2');
+    const outNote = modalForm.querySelector('#modalCalcNote');
+    const calcBtn = modalForm.querySelector('#modalCalcBtn');
+    const cpWrap = modalForm.querySelector('#modalCalcCpWrap');
+    const resultBlock = modalForm.querySelector('#modalCalcResultBlock');
     if (!area || !region || !format || !outTotal || !outPer || !outNote || !calcBtn || !cpWrap) return;
 
-    if (modalForm.dataset.boundModal === '1') return;
-    modalForm.dataset.boundModal = '1';
-
-    const onCalc = () => {
-      calculate(area, region, format, outTotal, outPer, outNote, () => cpWrap.classList.remove('hidden'));
+    const resetModalCalc = () => {
+      outPer.textContent = '—';
+      outTotal.textContent = '—';
+      outNote.textContent = '';
+      cpWrap.classList.add('hidden');
+      if (resultBlock) resultBlock.classList.add('hidden');
     };
 
-    ['input', 'change'].forEach((evt) => {
-      area.addEventListener(evt, onCalc);
-      region.addEventListener(evt, onCalc);
-      format.addEventListener(evt, onCalc);
-    });
+    resetModalCalc();
+
+    const onCalc = () => {
+      calculate(area, region, format, outTotal, outPer, outNote, () => {
+        if (resultBlock) resultBlock.classList.remove('hidden');
+        cpWrap.classList.remove('hidden');
+      });
+    };
 
     calcBtn.addEventListener('click', (e) => {
       e.preventDefault();
+      onCalc();
+    });
+
+    modalForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
       onCalc();
     });
   }
