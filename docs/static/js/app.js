@@ -28,7 +28,8 @@ function initViewportHeroHeights() {
 
   const apply = () => {
     const h = window.innerHeight - header.offsetHeight;
-    const px = `${Math.max(280, h)}px`;
+    // +1px: субпиксель / GitHub Pages / Safari — иначе снизу проступает белый body
+    const px = `${Math.max(280, Math.ceil(h) + 1)}px`;
     heroes.forEach((el) => {
       el.style.minHeight = px;
     });
