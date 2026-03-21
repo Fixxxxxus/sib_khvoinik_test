@@ -20,14 +20,18 @@ window.SGDownloadGazonChecklist = function () {
   URL.revokeObjectURL(url);
 };
 
-function initHomeHeroHeight() {
+/** Герои на весь экран минус шапка (главная, газоны). Убирает щель снизу, если calc(100dvh − Xrem) не совпал с реальной высотой header. */
+function initViewportHeroHeights() {
   const header = document.getElementById('site-header');
-  const hero = document.querySelector('[data-home-hero]');
-  if (!header || !hero) return;
+  const heroes = document.querySelectorAll('[data-home-hero], [data-gazon-hero]');
+  if (!header || heroes.length === 0) return;
 
   const apply = () => {
     const h = window.innerHeight - header.offsetHeight;
-    hero.style.minHeight = `${Math.max(280, h)}px`;
+    const px = `${Math.max(280, h)}px`;
+    heroes.forEach((el) => {
+      el.style.minHeight = px;
+    });
   };
 
   apply();
@@ -368,7 +372,7 @@ function initGazonCalculator() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initYear();
-  initHomeHeroHeight();
+  initViewportHeroHeights();
   initBurger();
   initModal();
   // Auto-open gazon calculator from URL: /gazon/?calc=1

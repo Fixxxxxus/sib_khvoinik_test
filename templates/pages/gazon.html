@@ -5,29 +5,22 @@
 {% block content %}
   <!-- HERO: на всю ширину окна, на высоту экрана (минус шапка), фон — оптимизированное видео -->
   <section
-    class="relative isolate flex min-h-[calc(100dvh-4.5rem)] w-full flex-col overflow-hidden md:min-h-[calc(100dvh-5rem)]"
+    data-gazon-hero
+    class="relative isolate flex min-h-[calc(100dvh-4.5rem)] w-full flex-col overflow-hidden bg-slate-900 md:min-h-[calc(100dvh-5rem)]"
   >
-    <div class="absolute inset-0 -z-10 overflow-hidden bg-slate-900">
+    <div class="gazon-hero-media">
       <video
-        class="hero-bg-video absolute inset-0 z-0 h-full w-full object-cover object-center"
-        style="max-width: none; max-height: none; display: block"
+        class="hero-bg-video z-0"
+        style="max-width: none; max-height: none"
         autoplay
         muted
         loop
         playsinline
         preload="metadata"
-        poster="{% static 'media/videos/gazon-hero-bg-poster.jpg' %}"
+        poster="{% static 'media/videos/gazon-hero-bg-poster.jpg' %}?v=3"
       >
-        <source src="{% static 'media/videos/gazon-hero-bg.mp4' %}" type="video/mp4" />
+        <source src="{% static 'media/videos/gazon-hero-bg.mp4' %}?v=3" type="video/mp4" />
       </video>
-      <div class="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-brand2/30"></div>
-      <div
-        class="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(233,196,106,0.22),transparent_40%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.25),transparent_45%)]"
-      ></div>
-      <div
-        class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-2 bg-gradient-to-t from-slate-950/90 to-transparent"
-        aria-hidden="true"
-      ></div>
     </div>
     <div class="relative z-10 flex w-full flex-1 items-center px-4 py-12 sm:px-8 sm:py-14 lg:px-14 lg:py-16 xl:px-20">
       <div class="w-full max-w-none">
@@ -86,101 +79,115 @@
     </div>
   </section>
 
-  <!-- System -->
+  <!-- Comparison: два отдельных блока, сверху — зона под фото -->
   <section class="mt-14">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Газон — это система</h2>
-      <p class="mt-3 text-slate-600 max-w-2xl" data-animate="fadeInUp">
-        Это технология выращивания и ухода, которая работает на участке годами.
-      </p>
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {# Hardcoded blocks #}
-        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="h-10 w-10 rounded-2xl bg-brand/10 flex items-center justify-center">
-            <i data-lucide="dna" class="h-5 w-5 text-brand"></i>
-          </div>
-          <div class="mt-4 font-semibold">Контроль состава травосмеси</div>
-          <div class="text-sm text-slate-600 mt-2">Подбираем под климат и задачу объекта.</div>
-        </div>
-        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="h-10 w-10 rounded-2xl bg-brand/10 flex items-center justify-center">
-            <i data-lucide="git-branch" class="h-5 w-5 text-brand"></i>
-          </div>
-          <div class="mt-4 font-semibold">Плотная корневая система</div>
-          <div class="text-sm text-slate-600 mt-2">Быстрое укоренение и предсказуемость результата.</div>
-        </div>
-        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="h-10 w-10 rounded-2xl bg-brand/10 flex items-center justify-center">
-            <i data-lucide="factory" class="h-5 w-5 text-brand"></i>
-          </div>
-          <div class="mt-4 font-semibold">Собственное производство</div>
-          <div class="text-sm text-slate-600 mt-2">Контроль цикла выращивания на всех этапах.</div>
-        </div>
-        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="h-10 w-10 rounded-2xl bg-brand/10 flex items-center justify-center">
-            <i data-lucide="shield-check" class="h-5 w-5 text-brand"></i>
-          </div>
-          <div class="mt-4 font-semibold">Предсказуемый результат</div>
-          <div class="text-sm text-slate-600 mt-2">Короткое видео внутри блока — заглушка.</div>
-        </div>
-
-        <div class="mt-8 flex flex-col sm:flex-row gap-3" data-animate="fadeInUp">
-          <button
-            type="button"
-            data-open-modal="gazon_presentation"
-            data-modal-title="Как работает технология"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
-          >
-            Как работает технология
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Comparison -->
-  <section class="mt-14">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
+      <div class="max-w-3xl" data-animate="fadeInUp">
         <h2 class="text-3xl font-semibold leading-tight">Рулонный или посевной?</h2>
-        <p class="mt-3 text-slate-600 max-w-2xl">Подбираем решение под задачу объекта.</p>
-        <div class="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition">
-            <div class="flex items-center justify-between">
-              <div class="text-xl font-semibold">Рулонный газон</div>
-              <i data-lucide="zap" class="h-5 w-5 text-brand"></i>
+        <p class="mt-3 text-slate-600 text-lg">Подбираем решение под задачу объекта.</p>
+      </div>
+
+      <div class="mt-10 grid grid-cols-1 gap-6 lg:grid-cols-2 lg:gap-8">
+        <!-- Рулонный -->
+        <article
+          class="group flex flex-col overflow-hidden rounded-3xl border border-black/5 bg-white shadow-soft transition hover:border-brand/20 hover:shadow-glow"
+          data-animate="fadeInUp"
+        >
+          <div class="relative aspect-[16/10] overflow-hidden bg-slate-200">
+            <img
+              src="{% static 'media/images/gazon-compare-rulonnyy.png' %}?v=2"
+              alt="Рулонный газон — рулоны на отгрузке"
+              class="gazon-compare-img h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.02]"
+              width="1024"
+              height="573"
+              sizes="(min-width: 1024px) min(50vw, 40rem), 100vw"
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+            />
+          </div>
+          <div class="flex flex-1 flex-col p-6 md:p-8">
+            <div class="flex items-start justify-between gap-4">
+              <h3 class="text-xl font-semibold leading-snug text-slate-900 md:text-2xl">Рулонный газон</h3>
+              <span
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand/10 text-brand"
+                aria-hidden="true"
+              >
+                <i data-lucide="zap" class="h-5 w-5"></i>
+              </span>
             </div>
-            <ul class="mt-4 space-y-2 text-sm text-slate-600">
-              <li>Декоративность сразу</li>
-              <li>Сдача объекта в день укладки</li>
-              <li>Для видовых зон</li>
+            <ul class="mt-6 space-y-3 text-sm text-slate-600 md:text-[15px]">
+              <li class="flex gap-3">
+                <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"></span>
+                <span>Декоративность сразу</span>
+              </li>
+              <li class="flex gap-3">
+                <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"></span>
+                <span>Сдача объекта в день укладки</span>
+              </li>
+              <li class="flex gap-3">
+                <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand"></span>
+                <span>Для видовых зон</span>
+              </li>
             </ul>
           </div>
-          <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition">
-            <div class="flex items-center justify-between">
-              <div class="text-xl font-semibold">Посевной газон</div>
-              <i data-lucide="leaf" class="h-5 w-5 text-brand"></i>
+        </article>
+
+        <!-- Посевной -->
+        <article
+          class="group flex flex-col overflow-hidden rounded-3xl border border-black/5 bg-white shadow-soft transition hover:border-brand2/25 hover:shadow-glow"
+          data-animate="fadeInUp"
+        >
+          <div class="relative aspect-[16/10] overflow-hidden bg-slate-200">
+            <img
+              src="{% static 'media/images/gazon-compare-posevnoy.png' %}?v=2"
+              alt="Посевной газон — поле выращивания"
+              class="gazon-compare-img h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.02]"
+              width="1024"
+              height="767"
+              sizes="(min-width: 1024px) min(50vw, 40rem), 100vw"
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+            />
+          </div>
+          <div class="flex flex-1 flex-col p-6 md:p-8">
+            <div class="flex items-start justify-between gap-4">
+              <h3 class="text-xl font-semibold leading-snug text-slate-900 md:text-2xl">Посевной газон</h3>
+              <span
+                class="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-brand2/10 text-brand2"
+                aria-hidden="true"
+              >
+                <i data-lucide="leaf" class="h-5 w-5"></i>
+              </span>
             </div>
-            <ul class="mt-4 space-y-2 text-sm text-slate-600">
-              <li>Экономичнее</li>
-              <li>Для больших территорий</li>
-              <li>Срок посева — август</li>
+            <ul class="mt-6 space-y-3 text-sm text-slate-600 md:text-[15px]">
+              <li class="flex gap-3">
+                <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand2"></span>
+                <span>Экономичнее</span>
+              </li>
+              <li class="flex gap-3">
+                <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand2"></span>
+                <span>Для больших территорий</span>
+              </li>
+              <li class="flex gap-3">
+                <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand2"></span>
+                <span>Срок посева — август</span>
+              </li>
             </ul>
           </div>
-        </div>
-        <div class="mt-8 flex flex-col sm:flex-row gap-3">
-          <button
-            type="button"
-            data-open-modal="gazon_calc"
-            data-modal-title="Получить расчёт в двух вариантах"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
-          >
-            Получить расчёт в двух вариантах
-          </button>
-          <a href="{% url 'katalog' %}" class="inline-flex items-center justify-center rounded-2xl border border-black/10 px-6 py-3 font-semibold hover:bg-black/5 transition">
-            Подобрать растения
-          </a>
-        </div>
+        </article>
+      </div>
+
+      <div class="mt-10 flex justify-center sm:justify-start" data-animate="fadeInUp">
+        <button
+          type="button"
+          data-open-modal="gazon_calc"
+          data-modal-title="Получить расчёт в двух вариантах"
+          class="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-8 py-3.5 text-white font-semibold shadow-glow hover:brightness-105 transition sm:w-auto"
+        >
+          Получить расчёт в двух вариантах
+        </button>
       </div>
     </div>
   </section>
