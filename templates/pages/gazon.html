@@ -1,35 +1,56 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}{{ title }} — {{ brand }}{% endblock %}
 
 {% block content %}
-  <!-- HERO -->
-  <section class="relative isolate">
-    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black via-brand/10 to-brand2/20"></div>
-    <div class="absolute inset-0 -z-10">
-      <div class="h-full w-full bg-[radial-gradient(circle_at_20%_30%,rgba(233,196,106,0.22),transparent_40%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.25),transparent_45%)]"></div>
+  <!-- HERO: на всю ширину окна, на высоту экрана (минус шапка), фон — оптимизированное видео -->
+  <section
+    class="relative isolate flex min-h-[calc(100dvh-4.5rem)] w-full flex-col overflow-hidden md:min-h-[calc(100dvh-5rem)]"
+  >
+    <div class="absolute inset-0 -z-10 overflow-hidden bg-slate-900">
+      <video
+        class="hero-bg-video absolute inset-0 z-0 h-full w-full object-cover object-center"
+        style="max-width: none; max-height: none; display: block"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster="{% static 'media/videos/gazon-hero-bg-poster.jpg' %}"
+      >
+        <source src="{% static 'media/videos/gazon-hero-bg.mp4' %}" type="video/mp4" />
+      </video>
+      <div class="absolute inset-0 bg-gradient-to-br from-black/60 via-black/40 to-brand2/30"></div>
+      <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(233,196,106,0.22),transparent_40%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.25),transparent_45%)]"
+      ></div>
+      <div
+        class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-2 bg-gradient-to-t from-slate-950/90 to-transparent"
+        aria-hidden="true"
+      ></div>
     </div>
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-10 md:pt-20 md:pb-12">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-        <div class="lg:col-span-7">
+    <div class="relative z-10 flex w-full flex-1 items-center px-4 py-12 sm:px-8 sm:py-14 lg:px-14 lg:py-16 xl:px-20">
+      <div class="w-full max-w-none">
+        <div class="max-w-4xl">
           <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90">
             <i data-lucide="circle-dot" class="h-4 w-4 text-accent"></i>
             Собственное производство и контролируемое качество
           </div>
-          <h1 class="mt-5 text-white text-4xl md:text-5xl font-semibold leading-[1.05]">
-            Рулонный газон собственного производства.
-            Быстрый результат. Контролируемое качество.
+          <h1 class="mt-5 text-white text-4xl font-semibold leading-[1.05] md:text-5xl lg:text-6xl">
+            Рулонный газон собственного производства
           </h1>
-          <p class="mt-5 text-white/75 text-base md:text-lg max-w-2xl">
+          <p class="mt-5 text-white/75 text-base md:text-lg lg:text-xl">
+            Быстрый результат. Контролируемое качество.
             Поставки по Сибири и в регионы. <span class="text-white font-semibold">От 500 ₽/м²*</span>
-            <span class="text-white/60 text-xs">(*стоимость зависит от объёма и региона поставки)</span>
+            <span class="text-white/60 text-xs md:text-sm">(*стоимость зависит от объёма и региона поставки)</span>
           </p>
 
-          <div class="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div class="mt-7 grid max-w-3xl grid-cols-1 gap-3 sm:grid-cols-2">
             <button
               type="button"
               data-open-modal="gazon_price_list"
               data-modal-title="Получить полный прайс-лист"
-              class="sm:col-span-1 inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
             >
               <i data-lucide="file-text" class="h-5 w-5"></i>
               Получить полный прайс-лист
@@ -47,40 +68,17 @@
               type="button"
               data-open-modal="gazon_checklist"
               data-modal-title="Чек-лист подготовки участка"
-              class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-white font-semibold hover:bg-white/10 transition"
+              class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-white font-semibold hover:bg-white/10 transition sm:col-span-2"
             >
               <i data-lucide="download" class="h-5 w-5"></i>
               Чек-лист подготовки участка
             </button>
           </div>
 
-          <div class="mt-7 flex items-center gap-4">
-            <div class="h-2 w-2 rounded-full bg-accent"></div>
-            <div class="text-white/70 text-sm">200 гектаров выращивания · до 8 000 м² отгрузки в день · поставки по Сибири и в регионы</div>
-          </div>
-        </div>
-
-        <div class="lg:col-span-5">
-          <div class="rounded-3xl border border-white/15 bg-white/90 backdrop-blur p-6">
-            <div class="h-52 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20 flex items-center justify-center relative overflow-hidden">
-              <div class="text-center">
-                <div class="text-slate-50/90 font-semibold">VIDEO PLACEHOLDER</div>
-                <div class="mt-2 text-xs text-white/70">Рост → срезка → отгрузка → укладка → результат</div>
-              </div>
-            </div>
-            <div class="mt-5 grid grid-cols-3 gap-3">
-              <div class="rounded-2xl border border-black/5 p-4 bg-white hover:shadow-glow transition">
-                <div class="text-sm font-semibold"><span data-counter-target="200">200</span></div>
-                <div class="text-xs text-slate-600 mt-1">га выращивания</div>
-              </div>
-              <div class="rounded-2xl border border-black/5 p-4 bg-white hover:shadow-glow transition">
-                <div class="text-sm font-semibold"><span data-counter-target="8000">8000</span></div>
-                <div class="text-xs text-slate-600 mt-1">м²/день</div>
-              </div>
-              <div class="rounded-2xl border border-black/5 p-4 bg-white hover:shadow-glow transition">
-                <div class="text-sm font-semibold">Сиб.</div>
-                <div class="text-xs text-slate-600 mt-1">регионы</div>
-              </div>
+          <div class="mt-7 flex max-w-3xl items-start gap-4">
+            <div class="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-accent"></div>
+            <div class="text-white/70 text-sm md:text-base">
+              200 гектаров выращивания · до 8 000 м² отгрузки в день · поставки по Сибири и в регионы
             </div>
           </div>
         </div>
