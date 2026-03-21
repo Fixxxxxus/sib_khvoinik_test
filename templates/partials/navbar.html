@@ -79,41 +79,39 @@
       </div>
     </div>
 
-    <!-- Нижняя полоса: меню + кнопка «Служба заботы» справа по краю контейнера -->
+    <!-- Нижняя полоса: ссылки и кнопка «Служба заботы» подряд, без растягивающейся «дыры» -->
     <div class="hidden md:block border-b border-slate-200">
-      <nav class="flex flex-row items-center gap-3 py-2.5" aria-label="Основное меню">
-        <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-0.5 gap-y-1 lg:gap-x-1">
-          <a href="{% url 'home' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
-            Главная
-          </a>
-          <a href="{% url 'gazon' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
-            Газон
-          </a>
-          <a href="{% url 'ozelenenie_b2c' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
-            Озеленение
-          </a>
-          <a href="{% url 'b2b' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
-            B2B
-          </a>
-          <a href="{% url 'pitomnik' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
-            Питомник
-          </a>
-          <a href="{% url 'sadovye_centry' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
-            Садовые центры
-          </a>
-          <a href="{% url 'katalog' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
-            Каталог
-          </a>
-          <a href="{% url 'stati_list' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
-            Статьи
-          </a>
-          <a href="{% url 'kontakty' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
-            Контакты
-          </a>
-        </div>
+      <nav class="flex flex-wrap items-center gap-x-0.5 gap-y-1 py-2.5 lg:gap-x-1" aria-label="Основное меню">
+        <a href="{% url 'home' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Главная
+        </a>
+        <a href="{% url 'gazon' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Газон
+        </a>
+        <a href="{% url 'ozelenenie_b2c' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Озеленение
+        </a>
+        <a href="{% url 'b2b' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          B2B
+        </a>
+        <a href="{% url 'pitomnik' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Питомник
+        </a>
+        <a href="{% url 'sadovye_centry' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Садовые центры
+        </a>
+        <a href="{% url 'katalog' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Каталог
+        </a>
+        <a href="{% url 'stati_list' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Статьи
+        </a>
+        <a href="{% url 'kontakty' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          Контакты
+        </a>
         <a
           href="{% url 'sluzhba_zaboty' %}"
-          class="inline-flex shrink-0 items-center justify-center rounded-full border border-white/50 bg-[#5B8A6B] px-5 py-2 text-[15px] font-semibold text-white shadow-sm transition hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5B8A6B] nav-zaboty-pill"
+          class="ml-1 inline-flex shrink-0 items-center justify-center rounded-full border border-white/50 bg-[#5B8A6B] px-4 py-1.5 text-[15px] font-semibold text-white shadow-sm transition hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5B8A6B] nav-zaboty-pill lg:ml-2 lg:px-5 lg:py-2"
         >
           Служба заботы
         </a>

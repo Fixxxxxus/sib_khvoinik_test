@@ -6,7 +6,7 @@
 {% block content %}
   <!-- HERO -->
   <section
-    class="relative isolate flex min-h-[calc(100svh-10.5rem)] items-center overflow-hidden md:min-h-[calc(100svh-11.75rem)]"
+    class="relative isolate flex min-h-[calc(100dvh-10rem)] items-center overflow-hidden md:min-h-[calc(100dvh-11rem)]"
   >
     <div class="absolute inset-0 -z-10 overflow-hidden bg-slate-900">
       <video
@@ -72,10 +72,10 @@
     </div>
   </section>
 
-  <!-- Scenario cards (без mt — иначе виден белый зазор body между hero и блоком) -->
-  <section class="relative z-10 pt-8 md:pt-10">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="rounded-3xl bg-white/95 border border-black/5 p-5 md:p-6">
+  <!-- Scenario cards: без padding-top на секции (фон body = белая «щель»). Карточка чуть заходит на hero -->
+  <section class="relative z-10 -mt-6 md:-mt-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pb-8 md:pb-10">
+      <div class="rounded-3xl bg-white/95 border border-black/5 p-5 pt-6 shadow-sm md:p-6 md:pt-8">
         <div class="flex items-center justify-between">
           <h2 class="font-semibold text-xl">Выберите сценарий</h2>
           <div class="text-xs text-slate-600">1 минута до заявки</div>
