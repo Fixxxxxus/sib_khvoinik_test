@@ -1,8 +1,8 @@
 {% load static %}
 <header id="site-header" class="sticky top-0 z-50 bg-white shadow-[0_1px_0_0_rgba(226,232,240,1)]">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <!-- Верхняя полоса (десктоп): лого + почта | соцсети + заказ звонка -->
-    <div class="hidden md:flex flex-row items-center justify-between gap-4 py-3 border-b border-slate-200">
+  <!-- Инфо-панель: разделитель на всю ширину окна -->
+  <div class="hidden md:block w-full border-b border-slate-200">
+    <div class="mx-auto flex max-w-7xl flex-row items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
       <div class="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-2">
         <a href="{% url 'home' %}" class="flex shrink-0 items-center">
           <img
@@ -78,53 +78,54 @@
         </button>
       </div>
     </div>
+  </div>
 
-    <!-- Нижняя полоса: без линии на всю ширину — разделитель только под каждым пунктом -->
-    <div class="hidden md:block">
-      <nav
-        class="grid w-full grid-cols-1 items-end gap-x-3 gap-y-2 py-2.5 min-[900px]:grid-cols-[minmax(0,1fr)_auto]"
-        aria-label="Основное меню"
-      >
-        <div class="flex min-w-0 flex-wrap items-end gap-x-1 gap-y-2 lg:gap-x-1.5">
-          <a href="{% url 'home' %}" class="nav-item-rule inline-flex items-center px-2.5 pb-1.5 pt-2 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+  <!-- Навигация: одна линия только под группой пунктов (не на всю ширину экрана) -->
+  <div class="hidden md:block w-full">
+    <div class="mx-auto max-w-7xl px-4 py-2.5 sm:px-6 lg:px-8">
+      <nav aria-label="Основное меню">
+        <div
+          class="inline-flex max-w-full flex-wrap items-center gap-x-0.5 gap-y-2 border-b border-slate-200 pb-2 lg:gap-x-1"
+        >
+          <a href="{% url 'home' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
             Главная
           </a>
-          <a href="{% url 'gazon' %}" class="nav-item-rule inline-flex items-center px-2.5 pb-1.5 pt-2 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          <a href="{% url 'gazon' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
             Газон
           </a>
-          <a href="{% url 'ozelenenie_b2c' %}" class="nav-item-rule inline-flex items-center px-2.5 pb-1.5 pt-2 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          <a href="{% url 'ozelenenie_b2c' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
             Озеленение
           </a>
-          <a href="{% url 'b2b' %}" class="nav-item-rule inline-flex items-center px-2.5 pb-1.5 pt-2 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          <a href="{% url 'b2b' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
             B2B
           </a>
-          <a href="{% url 'pitomnik' %}" class="nav-item-rule inline-flex items-center px-2.5 pb-1.5 pt-2 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          <a href="{% url 'pitomnik' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
             Питомник
           </a>
-          <a href="{% url 'sadovye_centry' %}" class="nav-item-rule inline-flex items-center px-2.5 pb-1.5 pt-2 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          <a href="{% url 'sadovye_centry' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
             Садовые центры
           </a>
-          <a href="{% url 'katalog' %}" class="nav-item-rule inline-flex items-center px-2.5 pb-1.5 pt-2 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          <a href="{% url 'katalog' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
             Каталог
           </a>
-          <a href="{% url 'stati_list' %}" class="nav-item-rule inline-flex items-center px-2.5 pb-1.5 pt-2 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          <a href="{% url 'stati_list' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
             Статьи
           </a>
-        </div>
-        <div class="flex flex-wrap items-end gap-2 justify-self-start min-[900px]:justify-self-end">
-          <a href="{% url 'kontakty' %}" class="nav-item-rule inline-flex items-center px-2.5 pb-1.5 pt-2 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
+          <a href="{% url 'kontakty' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
             Контакты
           </a>
           <a
             href="{% url 'sluzhba_zaboty' %}"
-            class="nav-item-rule nav-item-rule--pill inline-flex shrink-0 items-center justify-center rounded-full border border-white/50 bg-[#5B8A6B] px-4 py-1.5 text-[15px] font-semibold text-white shadow-sm transition hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5B8A6B] nav-zaboty-pill lg:px-5 lg:py-2"
+            class="inline-flex shrink-0 items-center justify-center rounded-full border border-white/50 bg-[#5B8A6B] px-4 py-1.5 text-[15px] font-semibold text-white shadow-sm transition hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#5B8A6B] nav-zaboty-pill lg:px-5 lg:py-2"
           >
             Служба заботы
           </a>
         </div>
       </nav>
     </div>
+  </div>
 
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
     <!-- Мобильная верхняя строка: лого + действия -->
     <div class="flex items-center justify-between gap-3 py-2.5 md:hidden border-b border-slate-200">
       <a href="{% url 'home' %}" class="flex min-w-0 items-center">
