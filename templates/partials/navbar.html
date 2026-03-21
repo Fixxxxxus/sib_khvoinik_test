@@ -1,5 +1,5 @@
 {% load static %}
-<header id="site-header" class="sticky top-0 z-50 bg-white shadow-[0_1px_0_0_rgba(226,232,240,1)]">
+<header id="site-header" class="sticky top-0 z-50 bg-white">
   <!-- Инфо-панель: разделитель на всю ширину окна -->
   <div class="hidden md:block w-full border-b border-slate-200">
     <div class="mx-auto flex max-w-7xl flex-row items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -80,12 +80,12 @@
     </div>
   </div>
 
-  <!-- Навигация: одна линия только под группой пунктов (не на всю ширину экрана) -->
+  <!-- Навигация: линия на всю ширину контентной колонки (как карточки ниже), без второй полоски от shadow header -->
   <div class="hidden md:block w-full">
-    <div class="mx-auto max-w-7xl px-4 py-2.5 sm:px-6 lg:px-8">
-      <nav aria-label="Основное меню">
+    <div class="mx-auto w-full max-w-7xl px-4 py-2.5 sm:px-6 lg:px-8">
+      <nav class="w-full" aria-label="Основное меню">
         <div
-          class="inline-flex max-w-full flex-wrap items-center gap-x-0.5 gap-y-2 border-b border-slate-200 pb-2 lg:gap-x-1"
+          class="flex w-full flex-wrap items-center gap-x-0.5 gap-y-2 border-b border-slate-200 pb-2 lg:gap-x-1"
         >
           <a href="{% url 'home' %}" class="px-2.5 py-1.5 text-[15px] text-slate-700 transition hover:text-brand lg:px-3">
             Главная
