@@ -5,10 +5,12 @@
 
 {% block content %}
   <!-- HERO -->
-  <section class="relative isolate min-h-[calc(100vh-8rem)] md:min-h-[calc(100vh-9rem)] flex items-center">
-    <div class="absolute inset-0 -z-10">
+  <section
+    class="relative isolate flex min-h-[calc(100svh-10.5rem)] items-center overflow-hidden md:min-h-[calc(100svh-11.75rem)]"
+  >
+    <div class="absolute inset-0 -z-10 overflow-hidden bg-slate-900">
       <video
-        class="h-full w-full object-cover"
+        class="hero-bg-video absolute inset-0 z-0 block h-full w-full object-cover object-center"
         autoplay
         muted
         loop
@@ -70,8 +72,8 @@
     </div>
   </section>
 
-  <!-- Scenario cards -->
-  <section class="mt-8">
+  <!-- Scenario cards (без mt — иначе виден белый зазор body между hero и блоком) -->
+  <section class="relative z-10 pt-8 md:pt-10">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="rounded-3xl bg-white/95 border border-black/5 p-5 md:p-6">
         <div class="flex items-center justify-between">

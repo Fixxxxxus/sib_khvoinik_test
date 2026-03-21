@@ -3,6 +3,22 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Hero video: убираем типичную щель у inline-video (baseline) */
+.hero-bg-video {
+  display: block;
+}
+
+/* Кнопка «Служба заботы» в шапке — без глобального сдвига как у rounded-2xl ссылок */
+a.nav-zaboty-pill {
+  transform: none;
+}
+a.nav-zaboty-pill:hover {
+  transform: none;
+}
+a.nav-zaboty-pill:active {
+  transform: none;
+}
+
 /* Modal open animation */
 .modal-enter {
   animation: modalEnter 220ms ease-out both;
