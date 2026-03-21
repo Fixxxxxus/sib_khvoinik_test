@@ -534,16 +534,18 @@
 
                 <div class="lg:col-span-6" data-animate="fadeInUp">
                   <div class="rounded-3xl border border-black/5 bg-white overflow-hidden relative">
-                    <div class="h-64 bg-gradient-to-br from-black/90 via-black/40 to-brand/20 flex items-center justify-center">
+                    <!-- absolute + object-cover: иначе Tailwind preflight (video { max-width:100% }) ломает заполнение на GitHub Pages -->
+                    <div class="relative aspect-video min-h-[16rem] w-full overflow-hidden bg-slate-900">
                       <video
-                        class="h-full w-full object-cover"
+                        class="sg-home-inline-video absolute inset-0 z-0 h-full w-full object-cover"
+                        style="max-width: none; max-height: none"
                         autoplay
                         muted
                         loop
                         playsinline
-                        preload="metadata"
+                        preload="auto"
                       >
-                        <source src="/sib_khvoinik_test/static/media/videos/home-gazon-system.mp4" type="video/mp4" />
+                        <source src="/sib_khvoinik_test/static/media/videos/home-gazon-system.mp4?v=2" type="video/mp4" />
                       </video>
                     </div>
                     <div class="p-5">
