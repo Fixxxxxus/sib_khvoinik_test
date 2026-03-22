@@ -396,44 +396,6 @@
     </div>
   </section>
 
-  <!-- Service -->
-  {% include 'partials/service_zaboty_snippet.html' %}
-
-  <!-- Cases -->
-  <section class="mt-16">
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="flex items-end justify-between gap-4">
-        <div data-animate="fadeInUp">
-          <h2 class="text-3xl font-semibold leading-tight">Кейсы</h2>
-          <p class="mt-2 text-slate-600">Примеры решений для разных типов объектов.</p>
-        </div>
-        <a href="#" class="text-sm font-semibold text-brand hover:underline transition" data-animate="fadeInUp">
-          Смотреть все проекты
-        </a>
-      </div>
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        {% for c in cases %}
-          <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-            {% if c.image %}
-              <img
-                src="{% static c.image %}"
-                alt="{{ c.title }}"
-                class="h-32 w-full rounded-2xl object-cover"
-                loading="lazy"
-                decoding="async"
-              />
-            {% else %}
-              <div class="h-32 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
-            {% endif %}
-            <div class="mt-4 font-semibold">{{ c.title }}</div>
-            <div class="mt-2 text-sm text-slate-600">{{ c.desc }}</div>
-            <div class="mt-3 text-xs text-slate-500">{{ c.meta }}</div>
-          </div>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-
   <!-- Садовые центры (формат как «Газон как система»; видео: static/media/videos/home-sadovye-centry.mp4) -->
   <section class="mt-16">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -521,6 +483,44 @@
       </div>
     </div>
   </section>
+  <!-- Service -->
+  {% include 'partials/service_zaboty_snippet.html' %}
+
+  <!-- Cases -->
+  <section class="mt-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex items-end justify-between gap-4">
+        <div data-animate="fadeInUp">
+          <h2 class="text-3xl font-semibold leading-tight">Кейсы</h2>
+          <p class="mt-2 text-slate-600">Примеры решений для разных типов объектов.</p>
+        </div>
+        <a href="#" class="text-sm font-semibold text-brand hover:underline transition" data-animate="fadeInUp">
+          Смотреть все проекты
+        </a>
+      </div>
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+        {% for c in cases %}
+          <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
+            {% if c.image %}
+              <img
+                src="{% static c.image %}"
+                alt="{{ c.title }}"
+                class="h-32 w-full rounded-2xl object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            {% else %}
+              <div class="h-32 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+            {% endif %}
+            <div class="mt-4 font-semibold">{{ c.title }}</div>
+            <div class="mt-2 text-sm text-slate-600">{{ c.desc }}</div>
+            <div class="mt-3 text-xs text-slate-500">{{ c.meta }}</div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
 
 {% endblock %}
 

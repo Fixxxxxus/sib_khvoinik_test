@@ -1,9 +1,4 @@
-{% extends 'base.html' %}
-{% load static %}
-{% block title %}{{ title }} — {{ brand }}{% endblock %}
-
-{% block content %}
-  <!-- HERO: на всю ширину окна, на высоту экрана (минус шапка), фон — оптимизированное видео -->
+<!-- HERO: на всю ширину окна, на высоту экрана (минус шапка), фон — оптимизированное видео -->
   <section
     data-gazon-hero
     class="relative isolate flex min-h-[calc(100dvh-4.5rem)] w-full flex-col overflow-hidden bg-slate-900 md:min-h-[calc(100dvh-5rem)]"
@@ -18,9 +13,9 @@
         loop
         playsinline
         preload="metadata"
-        poster="{% static 'media/videos/gazon-hero-block-poster.jpg' %}?v=10"
+        poster="/sib_khvoinik_test/static/media/videos/gazon-hero-block-poster.jpg?v=10"
       >
-        <source src="{% static 'media/videos/gazon-hero-block.mp4' %}?v=10" type="video/mp4" />
+        <source src="/sib_khvoinik_test/static/media/videos/gazon-hero-block.mp4?v=10" type="video/mp4" />
       </video>
     </div>
     <div class="relative z-10 flex w-full flex-1 items-center px-4 py-12 sm:px-8 sm:py-14 lg:px-14 lg:py-16 xl:px-20">
@@ -89,7 +84,7 @@
         >
           <div class="relative aspect-[16/10] overflow-hidden bg-slate-200">
             <img
-              src="{% static 'media/images/gazon-compare-posevnoy.png' %}?v=3"
+              src="/sib_khvoinik_test/static/media/images/gazon-compare-posevnoy.png?v=3"
               alt="Рулонный газон — зелёное поле"
               class="gazon-compare-img h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.02]"
               width="1024"
@@ -134,7 +129,7 @@
         >
           <div class="relative aspect-[16/10] overflow-hidden bg-slate-200">
             <img
-              src="{% static 'media/images/gazon-compare-posevnoy-placeholder.svg' %}?v=1"
+              src="/sib_khvoinik_test/static/media/images/gazon-compare-posevnoy-placeholder.svg?v=1"
               alt="Посевной газон — фото появится позже"
               class="gazon-compare-img h-full w-full object-cover object-center transition duration-500 group-hover:scale-[1.02]"
               width="1024"
@@ -209,9 +204,9 @@
               loop
               playsinline
               preload="metadata"
-              poster="{% static 'media/videos/gazon-proizvodstvo-poster.jpg' %}?v=1"
+              poster="/sib_khvoinik_test/static/media/videos/gazon-proizvodstvo-poster.jpg?v=1"
             >
-              <source src="{% static 'media/videos/gazon-proizvodstvo.mp4' %}?v=1" type="video/mp4" />
+              <source src="/sib_khvoinik_test/static/media/videos/gazon-proizvodstvo.mp4?v=1" type="video/mp4" />
             </video>
           </div>
           <div class="shrink-0 p-6 grid grid-cols-3 gap-4">
@@ -597,9 +592,9 @@
               loop
               playsinline
               preload="metadata"
-              poster="{% static 'media/videos/gazon-samostoyatelnye-klienty-poster.jpg' %}?v=1"
+              poster="/sib_khvoinik_test/static/media/videos/gazon-samostoyatelnye-klienty-poster.jpg?v=1"
             >
-              <source src="{% static 'media/videos/gazon-samostoyatelnye-klienty.mp4' %}?v=1" type="video/mp4" />
+              <source src="/sib_khvoinik_test/static/media/videos/gazon-samostoyatelnye-klienty.mp4?v=1" type="video/mp4" />
             </video>
           </div>
         </div>
@@ -635,7 +630,7 @@
             class="relative h-full min-h-[16rem] w-full overflow-hidden rounded-3xl border border-black/5 bg-slate-200/80 lg:col-span-6 lg:min-h-0 lg:h-full"
           >
             <img
-              src="{% static 'media/images/gazon-b2b-courtyard.jpg' %}?v=1"
+              src="/sib_khvoinik_test/static/media/images/gazon-b2b-courtyard.jpg?v=1"
               alt="Благоустройство двора и рулонный газон у жилого комплекса"
               class="absolute inset-0 h-full w-full object-cover"
               width="1200"
@@ -665,9 +660,9 @@
           loop
           playsinline
           preload="metadata"
-          poster="{% static 'media/videos/gazon-final-cta-bg-poster.jpg' %}?v=1"
+          poster="/sib_khvoinik_test/static/media/videos/gazon-final-cta-bg-poster.jpg?v=1"
         >
-          <source src="{% static 'media/videos/gazon-final-cta-bg.mp4' %}?v=1" type="video/mp4" />
+          <source src="/sib_khvoinik_test/static/media/videos/gazon-final-cta-bg.mp4?v=1" type="video/mp4" />
         </video>
         <div
           class="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-black/88 via-black/65 to-black/40"
@@ -734,6 +729,3 @@
       </div>
     </div>
   </section>
-
-{% endblock %}
-
