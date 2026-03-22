@@ -614,11 +614,52 @@
         class="overflow-hidden rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 shadow-soft"
         data-animate="fadeInUp"
       >
-        <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-stretch">
-          <div class="flex flex-col justify-center p-8 md:p-10 lg:col-span-6 lg:p-12 lg:pr-8">
-            <h2 class="text-3xl font-semibold leading-tight">Для B2B</h2>
-            <p class="mt-3 text-slate-600">
-              Для девелоперов, подрядчиков и управляющих компаний. Рулонный газон помогает быстро закрывать видовые зоны.
+        <div class="grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-stretch lg:gap-0">
+          <div
+            class="relative order-2 h-full min-h-[16rem] w-full overflow-hidden rounded-2xl border border-black/5 bg-slate-900 lg:order-1 lg:col-span-6 lg:min-h-0 lg:h-full lg:rounded-none lg:border-0 lg:border-r lg:border-black/5"
+          >
+            <video
+              class="absolute inset-0 h-full w-full object-cover"
+              style="max-width: none; max-height: none"
+              autoplay
+              muted
+              loop
+              playsinline
+              preload="metadata"
+              poster="/sib_khvoinik_test/static/media/videos/gazon-b2b-developers-poster.jpg?v=1"
+              aria-label="Видео: благоустройство и рулонный газон у жилого комплекса"
+            >
+              <source src="/sib_khvoinik_test/static/media/videos/gazon-b2b-developers.mp4?v=1" type="video/mp4" />
+            </video>
+          </div>
+          <div class="order-1 flex flex-col justify-center p-8 md:p-10 lg:order-2 lg:col-span-6 lg:p-12 lg:pl-10 lg:pr-12">
+            <h2 class="text-2xl font-semibold leading-tight text-balance sm:text-3xl">
+              Для девелоперов, подрядчиков и управляющих компаний
+            </h2>
+            <p class="mt-3 text-slate-600 leading-relaxed">
+              Рулонный газон позволяет быстро закрывать видовые зоны, ускорять сдачу объекта и получать законченный визуальный результат без ожидания нескольких сезонов.
+            </p>
+            <p class="mt-5 text-sm font-semibold text-slate-800">Мы работаем с:</p>
+            <ul class="mt-2 space-y-2 text-sm text-slate-600">
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="mt-0.5 h-4 w-4 shrink-0 text-brand" aria-hidden="true"></i>
+                <span>жилыми комплексами</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="mt-0.5 h-4 w-4 shrink-0 text-brand" aria-hidden="true"></i>
+                <span>коммерческими территориями</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="mt-0.5 h-4 w-4 shrink-0 text-brand" aria-hidden="true"></i>
+                <span>общественными пространствами</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <i data-lucide="check" class="mt-0.5 h-4 w-4 shrink-0 text-brand" aria-hidden="true"></i>
+                <span>управляющими компаниями</span>
+              </li>
+            </ul>
+            <p class="mt-4 text-sm leading-relaxed text-slate-600">
+              Возможна комбинация рулонного и посевного газона в рамках одного проекта.
             </p>
             <div class="mt-6">
               <button
@@ -630,20 +671,6 @@
                 Запросить условия для проекта
               </button>
             </div>
-          </div>
-          <div
-            class="relative h-full min-h-[16rem] w-full overflow-hidden rounded-3xl border border-black/5 bg-slate-200/80 lg:col-span-6 lg:min-h-0 lg:h-full"
-          >
-            <img
-              src="/sib_khvoinik_test/static/media/images/gazon-b2b-courtyard.jpg?v=1"
-              alt="Благоустройство двора и рулонный газон у жилого комплекса"
-              class="absolute inset-0 h-full w-full object-cover"
-              width="1200"
-              height="900"
-              loading="lazy"
-              decoding="async"
-              fetchpriority="low"
-            />
           </div>
         </div>
       </div>
