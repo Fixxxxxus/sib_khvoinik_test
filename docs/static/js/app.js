@@ -23,7 +23,7 @@ window.SGDownloadGazonChecklist = function () {
 /** Герои на весь экран минус шапка (главная, газоны). Убирает щель снизу, если calc(100dvh − Xrem) не совпал с реальной высотой header. */
 function initViewportHeroHeights() {
   const header = document.getElementById('site-header');
-  const heroes = document.querySelectorAll('[data-home-hero], [data-gazon-hero]');
+  const heroes = document.querySelectorAll('[data-home-hero], [data-gazon-hero], [data-ozelenenie-hero]');
   if (!header || heroes.length === 0) return;
 
   const apply = () => {

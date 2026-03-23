@@ -1,67 +1,64 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ title }} — {{ brand }}{% endblock %}
 
 {% block content %}
   <!-- HERO -->
-  <section class="relative isolate">
-    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black via-brand/10 to-brand2/20"></div>
-    <div class="absolute inset-0 -z-10">
-      <div class="h-full w-full bg-[radial-gradient(circle_at_20%_30%,rgba(233,196,106,0.22),transparent_42%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.25),transparent_45%)]"></div>
-    </div>
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-12 md:pt-20 md:pb-16">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-        <div class="lg:col-span-7">
-          <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90" data-animate="fadeInUp">
-            <i data-lucide="sparkles" class="h-4 w-4 text-accent"></i>
-            Озеленение частных участков под ключ
-          </div>
-          <h1 class="mt-5 text-white text-4xl md:text-5xl font-semibold leading-[1.05]" data-animate="fadeInUp">
-            Создаём готовое озеленение за 7-10 дней
-          </h1>
-          <p class="mt-5 text-white/75 text-base md:text-lg max-w-2xl" data-animate="fadeInUp">
-            Работаем на стадии завершения строительства или берём в работу уже готовый участок. Растения адаптированы к сибирскому климату.
-          </p>
-
-          <div class="mt-7 flex flex-col sm:flex-row gap-3" data-animate="fadeInUp">
-            <button
-              type="button"
-              data-open-modal="ozelenenie_ready_project"
-              data-modal-title="Рассчитать готовый проект"
-              class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
-            >
-              Рассчитать готовый проект
-            </button>
-            <button
-              type="button"
-              data-open-modal="ozelenenie_mini_project"
-              data-modal-title="Получить концепцию участка"
-              class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-white font-semibold hover:bg-white/10 transition"
-            >
-              Получить концепцию участка
-            </button>
-          </div>
+  <section
+    data-ozelenenie-hero
+    class="relative isolate flex min-h-[calc(100dvh-4.5rem)] w-full flex-col items-center overflow-hidden bg-slate-900 md:min-h-[calc(100dvh-5rem)]"
+  >
+    <video
+      class="absolute inset-0 -z-20 h-full w-full object-cover"
+      style="max-width: none; max-height: none"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      poster="{% static 'media/videos/ozelenenie-hero-bg-poster.jpg' %}?v=1"
+    >
+      <source src="{% static 'media/videos/ozelenenie-hero-bg.mp4' %}?v=1" type="video/mp4" />
+    </video>
+    <div
+      class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-2 bg-gradient-to-t from-slate-950/90 to-transparent"
+      aria-hidden="true"
+    ></div>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black/65 via-black/35 to-brand2/25"></div>
+    <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_30%,rgba(233,196,106,0.22),transparent_42%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.25),transparent_45%)]"></div>
+    <div class="relative z-10 flex w-full flex-1 items-center px-4 py-12 sm:px-8 sm:py-14 lg:px-14 lg:py-16 xl:px-20">
+      <div class="w-full max-w-none">
+        <div class="max-w-4xl">
+        <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90" data-animate="fadeInUp">
+          <i data-lucide="sparkles" class="h-4 w-4 text-accent"></i>
+          Озеленение частных участков под ключ
         </div>
+        <h1 class="mt-5 text-white text-4xl font-semibold leading-[1.05] md:text-5xl lg:text-6xl" data-animate="fadeInUp">
+          Создаём готовое озеленение за 7-10 дней
+        </h1>
+        <p class="mt-5 max-w-2xl text-white/75 text-base md:text-lg lg:text-xl" data-animate="fadeInUp">
+          Работаем на стадии завершения строительства или берём в работу уже готовый участок. Растения адаптированы к сибирскому климату.
+        </p>
 
-        <div class="lg:col-span-5" data-animate="fadeInUp">
-          <div class="rounded-3xl border border-white/15 bg-white/90 backdrop-blur p-6">
-            <div class="h-52 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20 flex items-center justify-center">
-              <div class="text-center">
-                <div class="text-white/90 font-semibold">FULL-SCREEN VIDEO PLACEHOLDER</div>
-                <div class="mt-2 text-xs text-white/70">Участок после стройки → готовый сад (до/после)</div>
-              </div>
-            </div>
-            <div class="mt-5 grid grid-cols-2 gap-3">
-              <div class="rounded-2xl border border-black/5 bg-white p-4 hover:shadow-glow transition">
-                <div class="text-sm font-semibold">7-10 дней</div>
-                <div class="text-xs text-slate-600 mt-1">реализация</div>
-              </div>
-              <div class="rounded-2xl border border-black/5 bg-white p-4 hover:shadow-glow transition">
-                <div class="text-sm font-semibold">Адаптация</div>
-                <div class="text-xs text-slate-600 mt-1">к Сибири</div>
-              </div>
-            </div>
-          </div>
+        <div class="mt-7 flex max-w-3xl flex-col gap-3 sm:flex-row" data-animate="fadeInUp">
+          <button
+            type="button"
+            data-open-modal="ozelenenie_ready_project"
+            data-modal-title="Рассчитать готовый проект"
+            class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+          >
+            Рассчитать готовый проект
+          </button>
+          <button
+            type="button"
+            data-open-modal="ozelenenie_mini_project"
+            data-modal-title="Получить концепцию участка"
+            class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-white font-semibold hover:bg-white/10 transition"
+          >
+            Получить концепцию участка
+          </button>
+        </div>
         </div>
       </div>
     </div>
@@ -72,8 +69,8 @@
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="rounded-3xl border border-black/5 bg-white p-8 md:p-12" data-animate="fadeInUp">
         <h2 class="text-3xl font-semibold leading-tight">Когда к нам обращаться</h2>
-        <div class="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-          <div class="lg:col-span-7">
+        <div class="mt-3 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <div class="lg:col-span-6">
             <p class="text-slate-600 text-base">
               Идеальный момент — когда стройка подходит к завершению. На этом этапе можно избежать переделок: правильно спланировать уровни, подготовить основание и сразу заложить удобный в уходе сад.
             </p>
@@ -94,16 +91,19 @@
             </button>
           </div>
 
-          <div class="lg:col-span-5">
-            <div class="rounded-3xl border border-black/5 overflow-hidden">
-              <div class="h-56 bg-gradient-to-br from-black/90 via-black/30 to-brand2/20 flex items-end p-5">
-                <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur px-4 py-3 text-white">
-                  Визуальная схема: дом построен → коммуникации → дорожки → начинается озеленение
-                </div>
-              </div>
-            </div>
-            <div class="mt-3 text-sm text-slate-600">
-              Заглушка: план-график перехода от стройки к озеленению.
+          <div class="lg:col-span-6">
+            <div class="rounded-3xl border border-black/5 overflow-hidden bg-slate-900">
+              <video
+                class="h-72 w-full object-cover md:h-80 lg:h-[22rem]"
+                autoplay
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                poster="{% static 'media/videos/ozelenenie-kogda-obrashchatsya-poster.jpg' %}?v=1"
+              >
+                <source src="{% static 'media/videos/ozelenenie-kogda-obrashchatsya.mp4' %}?v=1" type="video/mp4" />
+              </video>
             </div>
           </div>
         </div>
@@ -120,8 +120,8 @@
           Поймаем нужный момент, подберём сценарий работ и доведём до результата без хаоса и переделок.
         </p>
 
-        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-          <details class="group rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+        <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4 items-start">
+          <details class="group flex flex-col rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
             <summary class="cursor-pointer list-none">
               <div class="flex items-center justify-between">
                 <div class="text-lg font-semibold">Под ключ</div>
@@ -129,52 +129,62 @@
               </div>
               <div class="mt-2 text-sm text-slate-600">Берём всё на себя — от схемы до готового участка</div>
             </summary>
-            <div class="mt-4 space-y-2 text-sm text-slate-600">
-              <div>• Выезд и оценка объекта</div>
-              <div>• Подбор газона и растений</div>
-              <div>• Реализация</div>
-              <div>• Запуск и рекомендации по уходу</div>
+            <div class="mt-4 flex-1 space-y-2 text-sm text-slate-600">
+              <div>• Выезд и аудит участка</div>
+              <div>• Приемка участка у строителей</div>
+              <div>• Разработка концепции озеленения</div>
+              <div>• Завоз и планировка качественных грунтов</div>
+              <div>• Подбор и посадка крупномеров и кустарников, укладка газона или посев</div>
+              <div>• Подключение к службе заботы</div>
             </div>
-            <button type="button" data-open-modal="ozelenenie_ready_project" class="mt-5 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-              Рассчитать проект под ключ
-            </button>
+            <div class="mt-5 md:mt-9">
+              <button type="button" data-open-modal="ozelenenie_ready_project" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+                Рассчитать проект под ключ
+              </button>
+            </div>
           </details>
 
-          <details class="group rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+          <details class="group flex flex-col rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
             <summary class="cursor-pointer list-none">
               <div class="flex items-center justify-between">
-                <div class="text-lg font-semibold">Комбинированная реализация</div>
+                <div class="text-lg font-semibold">Комбинированный вариант</div>
                 <i data-lucide="chevron-down" class="h-5 w-5 text-brand"></i>
               </div>
-              <div class="mt-2 text-sm text-slate-600">Аудит участка, зонирование и профессиональная часть работ</div>
+              <div class="mt-2 text-sm text-slate-600">Комбинируем ваши работы и работу наших бригад</div>
             </summary>
-            <div class="mt-4 space-y-2 text-sm text-slate-600">
-              <div>• Планирование зонирования и посадок</div>
-              <div>• Вертикальная планировка</div>
-              <div>• Укладка газона и посадка растений</div>
+            <div class="mt-4 flex-1 space-y-2 text-sm text-slate-600">
+              <div>• Аудит участка и рекомендации по подготовке</div>
+              <div>• Подбор поставщиков качественного грунта</div>
+              <div>• Вы делаете завоз грунта и грубую планировку</div>
+              <div>• Мы выполняем финишную планировку, уплотнение и укладку/посев</div>
+              <div>• Подключаем к службе заботы</div>
             </div>
-            <button type="button" data-open-modal="ozelenenie_audit_plan" class="mt-5 w-full rounded-2xl border border-black/10 bg-white px-6 py-3 text-sm font-semibold hover:bg-black/5 transition" data-modal-title="Получить план участка/аудит участка">
-              Получить план участка/аудит участка
-            </button>
+            <div class="mt-5">
+              <button type="button" data-open-modal="ozelenenie_audit_plan" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" data-modal-title="Получить план/аудит участка">
+                Получить план/аудит участка
+              </button>
+            </div>
           </details>
 
-          <details class="group rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+          <details class="group flex flex-col rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
             <summary class="cursor-pointer list-none">
               <div class="flex items-center justify-between">
                 <div class="text-lg font-semibold">Делаете сами</div>
                 <i data-lucide="chevron-down" class="h-5 w-5 text-brand"></i>
               </div>
-              <div class="mt-2 text-sm text-slate-600">Поставим материалы и дадим схему и контроль</div>
+              <div class="mt-2 text-sm text-slate-600">Даем план и сопровождение для самостоятельной реализации</div>
             </summary>
-            <div class="mt-4 space-y-2 text-sm text-slate-600">
-              <div>• Подбор ассортимента</div>
-              <div>• Рекомендации по подготовке участка</div>
-              <div>• Поставка</div>
-              <div>• Консультации и при необходимости контрольный выезд</div>
+            <div class="mt-4 flex-1 space-y-2 text-sm text-slate-600">
+              <div>• Проводим аудит участка, по желанию концепцию сада</div>
+              <div>• Даем рекомендации по проведению работ</div>
+              <div>• Подбираем качественный посадочный материал</div>
+              <div>• Подключаем к службе заботы</div>
             </div>
-            <button type="button" data-open-modal="ozelenenie_materials_scheme" class="mt-5 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" data-modal-title="Подобрать материалы и схему">
-              Подобрать материалы и схему
-            </button>
+            <div class="mt-5 md:mt-16">
+              <button type="button" data-open-modal="ozelenenie_materials_scheme" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" data-modal-title="Подобрать материалы и схему">
+                Подобрать материалы и схему
+              </button>
+            </div>
           </details>
         </div>
       </div>
