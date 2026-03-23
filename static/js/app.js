@@ -266,6 +266,34 @@ function initCounters() {
   counters.forEach((el) => obs.observe(el));
 }
 
+function initBeforeAfterSliders() {
+  const sliders = Array.from(document.querySelectorAll('[data-before-after]'));
+  if (!sliders.length) return;
+
+  const clamp = (n) => Math.min(100, Math.max(0, n));
+
+  sliders.forEach((root) => {
+    const range = root.querySelector('[data-before-after-range]');
+    const overlay = root.querySelector('[data-before-after-overlay]');
+    const divider = root.querySelector('[data-before-after-divider]');
+    const handle = root.querySelector('[data-before-after-handle]');
+    if (!range || !overlay || !divider || !handle) return;
+
+    const update = (value) => {
+      const pct = clamp(Number(value));
+      overlay.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+      divider.style.left = `${pct}%`;
+      handle.style.left = `${pct}%`;
+      range.value = String(pct);
+    };
+
+    const start = Number(root.getAttribute('data-before-after-start') || range.value || 50);
+    update(start);
+    range.addEventListener('input', () => update(range.value));
+    range.addEventListener('change', () => update(range.value));
+  });
+}
+
 /** @param {HTMLFormElement | null | undefined} modalFormFromModal — форма из открытого окна (не из &lt;template&gt;) */
 function initGazonCalculator(modalFormFromModal) {
   const inlineForm = document.getElementById('gazonCalculator');
@@ -408,6 +436,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAccordion();
   initAnimations();
   initCounters();
+  initBeforeAfterSliders();
   initGazonCalculator();
 });
 
