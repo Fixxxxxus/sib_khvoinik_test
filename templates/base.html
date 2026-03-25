@@ -7,8 +7,8 @@
     <title>{% block title %}Сибирские газоны{% endblock %}</title>
     <meta name="description" content="Сибирские газоны — технологичное озеленение, питомник и рулонный газон" />
 
-    <!-- Tailwind via CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Tailwind: локальный скрипт (CDN без сети ломает всю вёрстку — классы hidden/md:* не работают) -->
+    <script src="{% static 'js/tailwind.browser.js' %}?v=1"></script>
     <script>
       tailwind.config = {
         theme: {
@@ -30,7 +30,7 @@
     <!-- Lucide icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=13" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=14" />
   </head>
   <body class="bg-white text-slate-900 antialiased">
     {% include 'partials/navbar.html' %}

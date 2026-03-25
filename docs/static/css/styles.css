@@ -1,4 +1,30 @@
 /* Small custom styling on top of Tailwind */
+
+/* Шапка без Tailwind (CDN недоступен): не показывать десктоп+мобильный ряд одновременно */
+header#site-header .sg-nav-fallback-desktop {
+  display: none;
+}
+header#site-header .sg-nav-fallback-mobile-bar {
+  display: flex;
+}
+@media (min-width: 768px) {
+  header#site-header .sg-nav-fallback-desktop {
+    display: flex;
+  }
+  header#site-header .sg-nav-fallback-mobile-bar {
+    display: none;
+  }
+  header#site-header #mobileMenu.sg-mobile-menu-panel {
+    display: none !important;
+  }
+}
+header#site-header #mobileMenu.sg-mobile-menu-panel.hidden {
+  display: none;
+}
+header#site-header #mobileMenu.sg-mobile-menu-panel:not(.hidden) {
+  display: block;
+}
+
 html {
   scroll-behavior: smooth;
   overflow-x: clip;
