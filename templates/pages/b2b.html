@@ -125,7 +125,7 @@
         </article>
 
         <article class="flex h-full flex-col rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
-          <h3 class="text-lg font-semibold text-slate-900">Современный тепличный комбинат 5000м<sup>2</sup></h3>
+          <h3 class="text-lg font-semibold text-slate-900">Тепличный комбинат 5000 м<sup>2</sup></h3>
           <p class="mt-3 text-sm text-slate-600">
             Объем производства позволяет выполнить любую задачу. Широкий ассортимент многолетних и однолетних цветов.
           </p>
@@ -157,22 +157,34 @@
   </section>
 
   <!-- Cases -->
-  <section class="mt-14">
+  <section class="mt-16">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Кейсы</h2>
+      <div class="flex items-end justify-between gap-4">
+        <div data-animate="fadeInUp">
+          <h2 class="text-3xl font-semibold leading-tight">Кейсы</h2>
+          <p class="mt-2 text-slate-600">Примеры решений для разных типов объектов.</p>
+        </div>
+        <a href="#" class="text-sm font-semibold text-brand hover:underline transition" data-animate="fadeInUp">
+          Смотреть все проекты
+        </a>
+      </div>
       <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
         {% for c in cases %}
           <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-            <div class="h-32 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+            {% if c.image %}
+              <img
+                src="{% static c.image %}"
+                alt="{{ c.title }}"
+                class="h-32 w-full rounded-2xl object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            {% else %}
+              <div class="h-32 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+            {% endif %}
             <div class="mt-4 font-semibold">{{ c.title }}</div>
-            <div class="mt-2 text-sm text-slate-600">
-              Формат: {{ c.format }}
-              <br />
-              Решение: {{ c.solution }}
-            </div>
-            <div class="mt-3 text-xs text-slate-500">
-              {{ c.area }} • {{ c.term }}
-            </div>
+            <div class="mt-2 text-sm text-slate-600">{{ c.desc }}</div>
+            <div class="mt-3 text-xs text-slate-500">{{ c.meta }}</div>
           </div>
         {% endfor %}
       </div>
@@ -298,26 +310,30 @@
 
   <section class="mt-14 pb-16">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <div class="rounded-3xl border border-black/5 bg-white p-8 md:p-12 hover:shadow-glow transition" data-animate="fadeInUp">
-        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
-          <div class="md:col-span-7">
-            <h2 class="text-3xl font-semibold leading-tight">Финальные шаги</h2>
-            <p class="mt-3 text-slate-600">Выберите удобный следующий шаг: КП, прайс/остатки или регламент ухода.</p>
+      <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-6 md:p-8 hover:shadow-glow transition" data-animate="fadeInUp">
+        <div class="grid grid-cols-1 gap-6 lg:grid-cols-12 lg:items-center">
+          <div class="lg:col-span-7">
+            <h2 class="text-3xl font-semibold leading-tight text-slate-900 md:text-4xl">Стабильное производство. Прозрачные условия. Технологический подход</h2>
+            <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+            <button type="button" data-open-modal="b2b_cpo" data-modal-title="Запросить коммерческое предложение" class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+                Запросить коммерческое предложение
+            </button>
+            <button type="button" data-open-modal="b2b_price_stock" data-modal-title="Получить прайс и остатки" class="inline-flex items-center justify-center rounded-2xl border border-black/10 px-6 py-3 font-semibold text-slate-900 hover:bg-black/5 transition">
+                Получить прайс и остатки
+            </button>
+            </div>
           </div>
-          <div class="md:col-span-5 flex flex-col sm:flex-row gap-3 md:justify-end">
-            <button type="button" data-open-modal="b2b_cpo" data-modal-title="Запросить КП" class="flex-1 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-              КП
-            </button>
-            <button type="button" data-open-modal="b2b_price_stock" data-modal-title="Получить полную презентацию" class="flex-1 rounded-2xl border border-black/10 px-6 py-3 text-center font-semibold hover:bg-black/5 transition">
-              Полная презентация
-            </button>
-            <button type="button" data-open-modal="b2b_care_reglement" data-modal-title="Запросить регламент ухода" class="flex-1 rounded-2xl border border-black/10 px-6 py-3 text-center font-semibold hover:bg-black/5 transition">
-              Регламент ухода
-            </button>
+          <div class="lg:col-span-5">
+            <img
+              src="{% static 'media/images/b2b-final-cta.jpg' %}"
+              alt="Проект жилого комплекса"
+              class="h-56 w-full rounded-2xl object-cover md:h-64 lg:h-72"
+              loading="lazy"
+              decoding="async"
+            />
           </div>
         </div>
       </div>
-    </div>
   </section>
 {% endblock %}
 
