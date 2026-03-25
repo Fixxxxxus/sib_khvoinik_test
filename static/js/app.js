@@ -20,10 +20,10 @@ window.SGDownloadGazonChecklist = function () {
   URL.revokeObjectURL(url);
 };
 
-/** Герои на весь экран минус шапка (главная, газоны). Убирает щель снизу, если calc(100dvh − Xrem) не совпал с реальной высотой header. */
+/** Герои на весь экран минус шапка. Убирает щель снизу на мобильных браузерах. */
 function initViewportHeroHeights() {
   const header = document.getElementById('site-header');
-  const heroes = document.querySelectorAll('[data-home-hero], [data-gazon-hero], [data-ozelenenie-hero]');
+  const heroes = document.querySelectorAll('[data-home-hero], [data-gazon-hero], [data-ozelenenie-hero], [data-b2b-hero]');
   if (!header || heroes.length === 0) return;
 
   const apply = () => {
