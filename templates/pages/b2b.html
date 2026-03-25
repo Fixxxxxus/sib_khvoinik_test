@@ -4,12 +4,27 @@
 {% block title %}{{ title }} — {{ brand }}{% endblock %}
 
 {% block content %}
-  <section data-b2b-hero class="relative isolate flex min-h-[100dvh] items-center">
-    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black via-brand/10 to-brand2/20"></div>
-    <div class="absolute inset-0 -z-10">
-      <div class="h-full w-full bg-[radial-gradient(circle_at_20%_30%,rgba(233,196,106,0.22),transparent_42%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.25),transparent_45%)]"></div>
+  <section
+    data-b2b-hero
+    class="relative isolate flex min-h-[calc(100dvh-4.5rem)] w-full flex-col overflow-hidden bg-slate-900 md:min-h-[calc(100dvh-5rem)]"
+  >
+    <div class="b2b-hero-media">
+      <video
+        class="hero-bg-video z-0"
+        style="max-width: none; max-height: none"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster="{% static 'media/videos/b2b-hero-bg-poster.jpg' %}?v=2"
+        aria-hidden="true"
+      >
+        <source src="{% static 'media/videos/b2b-hero-bg.mp4' %}?v=2" type="video/mp4" />
+      </video>
     </div>
-    <div class="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-20">
+    <div class="relative z-10 flex w-full flex-1 items-center">
+      <div class="mx-auto w-full max-w-7xl px-4 py-16 sm:px-6 md:py-20 lg:px-8">
       <div class="grid grid-cols-1 gap-10 items-center">
         <div class="max-w-4xl">
           <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90">
@@ -45,6 +60,7 @@
           </div>
         </div>
 
+      </div>
       </div>
     </div>
   </section>
