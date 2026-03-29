@@ -1,27 +1,46 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}{{ title }} — {{ brand }}{% endblock %}
 
 {% block content %}
-  <section class="relative isolate">
-    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black via-brand/10 to-brand2/20"></div>
-    <div class="absolute inset-0 -z-10">
-      <div class="h-full w-full bg-[radial-gradient(circle_at_20%_30%,rgba(233,196,106,0.22),transparent_42%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.25),transparent_45%)]"></div>
-    </div>
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-12 md:pt-20 md:pb-16">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-        <div class="lg:col-span-7">
-          <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90">
+  <section
+    data-pitomnik-hero
+    class="relative isolate flex min-h-[calc(100dvh-4.5rem)] w-full flex-col items-center overflow-hidden bg-slate-900 md:min-h-[calc(100dvh-5rem)]"
+  >
+    <video
+      class="absolute inset-0 -z-20 h-full w-full object-cover"
+      style="max-width: none; max-height: none"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="metadata"
+      poster="{% static 'media/videos/pitomnik-hero-bg-poster.jpg' %}?v=1"
+    >
+      <source src="{% static 'media/videos/pitomnik-hero-bg.mp4' %}?v=1" type="video/mp4" />
+    </video>
+    <div
+      class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-2 bg-gradient-to-t from-slate-950/90 to-transparent"
+      aria-hidden="true"
+    ></div>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black/70 via-black/45 to-black/20"></div>
+    <div class="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_30%,rgba(233,196,106,0.22),transparent_42%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.25),transparent_45%)]"></div>
+    <div class="relative z-10 flex w-full flex-1 items-center px-4 py-12 sm:px-8 sm:py-14 lg:px-14 lg:py-16 xl:px-20">
+      <div class="w-full max-w-none">
+        <div class="max-w-4xl">
+          <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90" data-animate="fadeInUp">
             <i data-lucide="sprout" class="h-4 w-4 text-accent"></i>
             Питомник декоративных растений и тепличный комбинат
           </div>
-          <h1 class="mt-5 text-white text-4xl md:text-5xl font-semibold leading-[1.05]">
-            22 гектара выращивания · 5 000 м² теплиц
+          <h1 class="mt-5 text-white text-4xl font-semibold leading-[1.05] md:text-5xl lg:text-6xl" data-animate="fadeInUp">
+            22 гектара выращивания<br />
+            5 000 м² теплиц
           </h1>
-          <p class="mt-5 text-white/75 text-base md:text-lg max-w-2xl">
+          <p class="mt-5 max-w-2xl text-white/75 text-base md:text-lg lg:text-xl" data-animate="fadeInUp">
             Мы выращиваем хвойные и лиственные деревья, кустарники и цветочную продукцию, адаптированную к условиям Сибири.
           </p>
-          <div class="mt-7 flex flex-col sm:flex-row gap-3">
+          <div class="mt-7 flex max-w-3xl flex-col gap-3 sm:flex-row" data-animate="fadeInUp">
             <a href="{% url 'katalog' %}" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
               Перейти в каталог
               <i data-lucide="arrow-right" class="h-5 w-5"></i>
@@ -29,27 +48,6 @@
             <button type="button" data-open-modal="b2b_price_stock" data-modal-title="Запросить прайс и остатки" class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-6 py-3 text-white font-semibold hover:bg-white/10 transition">
               Запросить прайс
             </button>
-          </div>
-          <div class="mt-6 text-white/60 text-xs">Видео/фотолента заглушка: питомник, крупномеры, инженерия, теплицы.</div>
-        </div>
-        <div class="lg:col-span-5">
-          <div class="rounded-3xl border border-white/15 bg-white/90 backdrop-blur p-6">
-            <div class="h-52 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20 flex items-center justify-center">
-              <div class="text-center">
-                <div class="text-white/90 font-semibold">GALLERY PLACEHOLDER</div>
-                <div class="mt-2 text-xs text-white/70">Технологии питомника и контроль качества</div>
-              </div>
-            </div>
-            <div class="mt-5 flex gap-3">
-              <div class="flex-1 rounded-2xl border border-black/5 bg-white p-4 hover:shadow-glow transition">
-                <div class="text-sm font-semibold"><span data-counter-target="22">22</span> га</div>
-                <div class="text-xs text-slate-600 mt-1">питомник</div>
-              </div>
-              <div class="flex-1 rounded-2xl border border-black/5 bg-white p-4 hover:shadow-glow transition">
-                <div class="text-sm font-semibold"><span data-counter-target="5000">5000</span></div>
-                <div class="text-xs text-slate-600 mt-1">теплицы</div>
-              </div>
-            </div>
           </div>
         </div>
       </div>

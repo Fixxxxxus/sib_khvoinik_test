@@ -23,7 +23,7 @@ window.SGDownloadGazonChecklist = function () {
 /** Герои на весь экран минус шапка. Убирает щель снизу на мобильных браузерах. */
 function initViewportHeroHeights() {
   const header = document.getElementById('site-header');
-  const heroes = document.querySelectorAll('[data-home-hero], [data-gazon-hero], [data-ozelenenie-hero], [data-b2b-hero]');
+  const heroes = document.querySelectorAll('[data-home-hero], [data-gazon-hero], [data-ozelenenie-hero], [data-b2b-hero], [data-pitomnik-hero]');
   if (!header || heroes.length === 0) return;
 
   const apply = () => {
