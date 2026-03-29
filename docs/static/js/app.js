@@ -120,6 +120,7 @@ function initModal() {
     'ozelenenie_assess_upload': 'modal-template-ozelenenie-assess_upload',
     'ozelenenie_send_project': 'modal-template-ozelenenie-send_project',
     'ozelenenie_materials_scheme': 'modal-template-ozelenenie-materials_scheme',
+    'pitomnik_presentation': 'modal-template-pitomnik_presentation',
   };
 
   const openModal = (targetKey, title) => {

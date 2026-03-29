@@ -921,6 +921,36 @@
   </form>
 </template>
 
+<template id="modal-template-pitomnik_presentation">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/pitomnik-presentation">
+    <input type="hidden" name="formTag" value="B2C/pitomnik-presentation" />
+    <p class="text-sm text-slate-600">
+      Оставьте контактные данные — расскажем, как выращиваются растения в питомнике, и вышлем полную презентацию.
+    </p>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        E-mail
+        <input name="email" type="email" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="name@example.com" />
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Комментарий (необязательно)
+      <textarea name="comment" rows="3" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Интересующая категория или вопрос"></textarea>
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Выслать полную презентацию питомника
+    </button>
+    <p class="text-xs text-slate-500">UI-only: данные сохраняются в браузере на этапе 1.</p>
+  </form>
+</template>
 <!-- Success state -->
 <template id="modal-template-success">
   <div class="space-y-3">
