@@ -984,8 +984,8 @@
 </template>
 
 <template id="modal-template-ozelenenie-mini_project">
-  <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-mini-project">
-    <input type="hidden" name="formTag" value="B2C/ozelenenie-mini-project" />
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/mini-project">
+    <input type="hidden" name="formTag" value="B2C/mini-project" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label class="text-sm font-medium text-slate-700">
         Имя
@@ -996,9 +996,15 @@
         <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
       </label>
       <label class="text-sm font-medium text-slate-700">
-        Площадь, м²
-        <input name="area" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 350" />
+        Площадь участка
+        <input type="number" name="area" required min="1" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 420" />
       </label>
+      <label class="text-sm font-medium text-slate-700">
+        Город
+        <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+      </label>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label class="text-sm font-medium text-slate-700">
         Стадия объекта
         <select name="stage" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
@@ -1006,14 +1012,23 @@
           <option value="участок-готов">Участок уже готов</option>
         </select>
       </label>
+      <label class="text-sm font-medium text-slate-700">
+        Формат сотрудничества
+        <select name="format" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="под-ключ">Под ключ</option>
+          <option value="частично">Частично</option>
+          <option value="делаем-сами">Делаем сами</option>
+        </select>
+      </label>
     </div>
     <label class="text-sm font-medium text-slate-700">
-      Краткое описание
-      <textarea name="description" required rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Что хотите получить на участке?"></textarea>
+      Комментарий / пожелания
+      <textarea name="comment" required rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Коротко опишите ожидания, сроки, ограничения"></textarea>
     </label>
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
-      Получить концепцию участка
+      Получить концепцию
     </button>
+    <p class="text-xs text-slate-500">UI-only: данные сохраняются в браузере на этапе 1.</p>
   </form>
 </template>
 

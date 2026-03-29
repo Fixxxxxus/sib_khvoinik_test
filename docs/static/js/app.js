@@ -127,6 +127,16 @@ function initModal() {
     const tpl = document.getElementById(tplId);
     if (!tpl) return;
 
+    const sizeWrap = host.firstElementChild;
+    if (sizeWrap) {
+      sizeWrap.classList.remove('max-w-lg', 'max-w-2xl');
+      if (targetKey === 'ozelenenie_mini_project' || targetKey === 'gazon_calc') {
+        sizeWrap.classList.add('max-w-2xl');
+      } else {
+        sizeWrap.classList.add('max-w-lg');
+      }
+    }
+
     modalTitle.textContent = title || '';
     modalBody.innerHTML = '';
     modalBody.appendChild(tpl.content.cloneNode(true));
