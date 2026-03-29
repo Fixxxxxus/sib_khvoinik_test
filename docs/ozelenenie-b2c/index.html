@@ -429,11 +429,20 @@
             <div class="mt-2 text-sm text-slate-600">Готовы работать с разными объёмами.</div>
           </div>
         </div>
-        <div class="mt-6 rounded-3xl border border-black/5 bg-gradient-to-br from-black/90 via-black/30 to-brand2/20 h-64 flex items-end p-6">
-          <div class="rounded-2xl border border-white/15 bg-white/10 backdrop-blur text-white/90 p-5">
-            <div class="font-semibold">Визуал: техника / питомник / полив / теплицы</div>
-            <div class="mt-2 text-xs text-white/70">Заглушка медиа под ваши материалы</div>
-          </div>
+        <div class="relative mt-6 h-64 overflow-hidden rounded-3xl border border-black/5 bg-slate-900">
+          <video
+            class="absolute inset-0 h-full w-full object-cover"
+            style="max-width: none; max-height: none"
+            autoplay
+            muted
+            loop
+            playsinline
+            preload="metadata"
+            poster="/sib_khvoinik_test/static/media/videos/ozelenenie-sobstvennoe-proizvodstvo-poster.jpg?v=1"
+            aria-label="Производство: поля и техника"
+          >
+            <source src="/sib_khvoinik_test/static/media/videos/ozelenenie-sobstvennoe-proizvodstvo.mp4?v=1" type="video/mp4" />
+          </video>
         </div>
         <button type="button" data-open-modal="gazon_open_day" data-modal-title="Как выращиваются растения" class="mt-6 w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
           Посмотреть, как выращиваются растения
