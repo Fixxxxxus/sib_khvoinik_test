@@ -82,6 +82,13 @@ section[data-gazon-hero] .gazon-hero-media video.hero-bg-video {
   object-fit: cover;
   object-position: 50% 52%;
   display: block;
+  /* Пока видео не играет — виден тот же кадр, что и poster (фон на .gazon-hero-media), без вспышки старого кадра из кэша */
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+section[data-gazon-hero] .gazon-hero-media video.hero-bg-video.is-gazon-hero-ready {
+  opacity: 1;
 }
 
 /* На случай 1px щели между hero и следующей секцией (белый body) */

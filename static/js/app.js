@@ -48,6 +48,19 @@ function initViewportHeroHeights() {
   }
 }
 
+/** Hero «Газон»: плавное появление видео после start воспроизведения — убирает кадр из кэша/рассинхрон с poster */
+function initGazonHeroVideo() {
+  const v = document.getElementById('gazon-hero-video');
+  if (!v) return;
+  const reveal = () => v.classList.add('is-gazon-hero-ready');
+  v.addEventListener('playing', reveal, { once: true });
+  try {
+    if (!v.paused && v.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) reveal();
+  } catch (e) {
+    /* ignore */
+  }
+}
+
 function initBurger() {
   const burgerBtn = document.getElementById('burgerBtn');
   const mobileMenu = document.getElementById('mobileMenu');
@@ -422,6 +435,7 @@ function initGazonCalculator(modalFormFromModal) {
 document.addEventListener('DOMContentLoaded', () => {
   initYear();
   initViewportHeroHeights();
+  initGazonHeroVideo();
   initBurger();
   initModal();
   // Auto-open gazon calculator from URL: /gazon/?calc=1
