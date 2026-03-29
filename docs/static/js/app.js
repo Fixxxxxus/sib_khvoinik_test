@@ -302,6 +302,47 @@ function initCounters() {
   counters.forEach((el) => obs.observe(el));
 }
 
+/** Слайдер фото тепличного комбината на странице «Питомник». */
+function initPitomnikGreenhouseSlider() {
+  const root = document.querySelector('[data-pitomnik-greenhouse-slider]');
+  if (!root) return;
+  const track = root.querySelector('[data-pitomnik-greenhouse-track]');
+  if (!track) return;
+  const n = track.children.length;
+  if (n === 0) return;
+
+  let i = 0;
+  const dots = Array.from(root.querySelectorAll('[data-pitomnik-greenhouse-dot]'));
+  const prev = root.querySelector('[data-pitomnik-greenhouse-prev]');
+  const next = root.querySelector('[data-pitomnik-greenhouse-next]');
+
+  const apply = () => {
+    track.style.transform = `translateX(-${i * 100}%)`;
+    dots.forEach((btn, j) => {
+      const on = j === i;
+      btn.setAttribute('data-active', on ? 'true' : 'false');
+      btn.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+  };
+
+  prev?.addEventListener('click', () => {
+    i = (i - 1 + n) % n;
+    apply();
+  });
+  next?.addEventListener('click', () => {
+    i = (i + 1) % n;
+    apply();
+  });
+  dots.forEach((btn, j) => {
+    btn.addEventListener('click', () => {
+      i = j;
+      apply();
+    });
+  });
+
+  apply();
+}
+
 function initBeforeAfterSliders() {
   const sliders = Array.from(document.querySelectorAll('[data-before-after]'));
   if (!sliders.length) return;
@@ -475,6 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initAnimations();
   initCounters();
   initBeforeAfterSliders();
+  initPitomnikGreenhouseSlider();
   initGazonCalculator();
 });
 
