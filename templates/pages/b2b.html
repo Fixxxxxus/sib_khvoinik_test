@@ -8,8 +8,12 @@
     data-b2b-hero
     class="relative isolate flex min-h-[calc(100dvh-4.5rem)] w-full flex-col overflow-hidden bg-slate-900 md:min-h-[calc(100dvh-5rem)]"
   >
-    <div class="b2b-hero-media">
+    <div
+      class="b2b-hero-media"
+      style="background: #0f172a url('{% static "media/videos/b2b-hero-bg-poster.jpg" %}?v=3') center / cover no-repeat"
+    >
       <video
+        id="b2b-hero-video"
         class="hero-bg-video z-0"
         style="max-width: none; max-height: none"
         autoplay
@@ -17,10 +21,10 @@
         loop
         playsinline
         preload="metadata"
-        poster="{% static 'media/videos/b2b-hero-bg-poster.jpg' %}?v=2"
+        poster="{% static 'media/videos/b2b-hero-bg-poster.jpg' %}?v=3"
         aria-hidden="true"
       >
-        <source src="{% static 'media/videos/b2b-hero-bg.mp4' %}?v=2" type="video/mp4" />
+        <source src="{% static 'media/videos/b2b-hero-bg.mp4' %}?v=3" type="video/mp4" />
       </video>
     </div>
     <div class="relative z-10 flex w-full flex-1 items-center">

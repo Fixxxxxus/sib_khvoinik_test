@@ -30,7 +30,7 @@
     <!-- Lucide icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <link rel="stylesheet" href="/sib_khvoinik_test/static/css/styles.css?v=15" />
+    <link rel="stylesheet" href="/sib_khvoinik_test/static/css/styles.css?v=16" />
   </head>
   <body class="bg-white text-slate-900 antialiased">
     
@@ -148,8 +148,12 @@
     data-b2b-hero
     class="relative isolate flex min-h-[calc(100dvh-4.5rem)] w-full flex-col overflow-hidden bg-slate-900 md:min-h-[calc(100dvh-5rem)]"
   >
-    <div class="b2b-hero-media">
+    <div
+      class="b2b-hero-media"
+      style="background: #0f172a url('/sib_khvoinik_test/static/media/videos/b2b-hero-bg-poster.jpg?v=3') center / cover no-repeat"
+    >
       <video
+        id="b2b-hero-video"
         class="hero-bg-video z-0"
         style="max-width: none; max-height: none"
         autoplay
@@ -157,10 +161,10 @@
         loop
         playsinline
         preload="metadata"
-        poster="/sib_khvoinik_test/static/media/videos/b2b-hero-bg-poster.jpg?v=2"
+        poster="/sib_khvoinik_test/static/media/videos/b2b-hero-bg-poster.jpg?v=3"
         aria-hidden="true"
       >
-        <source src="/sib_khvoinik_test/static/media/videos/b2b-hero-bg.mp4?v=2" type="video/mp4" />
+        <source src="/sib_khvoinik_test/static/media/videos/b2b-hero-bg.mp4?v=3" type="video/mp4" />
       </video>
     </div>
     <div class="relative z-10 flex w-full flex-1 items-center">
@@ -1310,7 +1314,7 @@
 
 
 
-    <script src="/sib_khvoinik_test/static/js/app.js?v=16" defer></script>
+    <script src="/sib_khvoinik_test/static/js/app.js?v=17" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {

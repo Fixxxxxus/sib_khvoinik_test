@@ -61,6 +61,18 @@ function initGazonHeroVideo() {
   }
 }
 
+function initB2bHeroVideo() {
+  const v = document.getElementById('b2b-hero-video');
+  if (!v) return;
+  const reveal = () => v.classList.add('is-b2b-hero-ready');
+  v.addEventListener('playing', reveal, { once: true });
+  try {
+    if (!v.paused && v.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) reveal();
+  } catch (e) {
+    /* ignore */
+  }
+}
+
 function initBurger() {
   const burgerBtn = document.getElementById('burgerBtn');
   const mobileMenu = document.getElementById('mobileMenu');
@@ -436,6 +448,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initYear();
   initViewportHeroHeights();
   initGazonHeroVideo();
+  initB2bHeroVideo();
   initBurger();
   initModal();
   // Auto-open gazon calculator from URL: /gazon/?calc=1

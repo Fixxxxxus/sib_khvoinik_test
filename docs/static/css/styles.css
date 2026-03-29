@@ -120,6 +120,12 @@ section[data-b2b-hero] .b2b-hero-media video.hero-bg-video {
   object-fit: cover;
   object-position: 50% 50%;
   display: block;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+section[data-b2b-hero] .b2b-hero-media video.hero-bg-video.is-b2b-hero-ready {
+  opacity: 1;
 }
 
 section[data-b2b-hero] {
