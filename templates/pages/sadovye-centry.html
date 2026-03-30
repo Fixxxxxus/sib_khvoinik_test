@@ -263,23 +263,151 @@
     </div>
   </section>
 
-  <!-- News -->
-  <section class="mt-14">
+  <!-- Новинки и сезонные поступления -->
+  <section id="novinki" class="mt-14 scroll-mt-24" aria-labelledby="sadovye-novinki-heading">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Новинки</h2>
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="font-semibold">Поступления сезона</div>
-          <div class="text-sm text-slate-600 mt-2">Свежие позиции под текущие задачи.</div>
-        </div>
-        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="font-semibold">Пик продаж</div>
-          <div class="text-sm text-slate-600 mt-2">Растения, которые раскупают первыми.</div>
-        </div>
-        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="font-semibold">Сопутствующие товары</div>
-          <div class="text-sm text-slate-600 mt-2">Удобрения, грунты, уход по регламенту.</div>
-        </div>
+      <h2 id="sadovye-novinki-heading" class="text-2xl font-semibold leading-tight tracking-tight text-slate-900 sm:text-3xl" data-animate="fadeInUp">
+        Новинки и сезонные поступления
+      </h2>
+      <div class="mt-4 max-w-3xl space-y-3 text-sm leading-relaxed text-slate-600 md:text-base" data-animate="fadeInUp">
+        <p>Ассортимент садовых центров обновляется в течение сезона.</p>
+        <p>
+          Здесь появляются новые сорта, коллекционные позиции, декоративные формы и сезонные партии, которые лучше
+          смотреть лично.
+        </p>
+      </div>
+      <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-6">
+        <article
+          class="flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.18)]"
+          data-animate="fadeInUp"
+        >
+          <div class="relative aspect-[5/4] w-full overflow-hidden bg-gradient-to-br from-slate-200/80 via-slate-50 to-brand/12">
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.35)_0_8px,transparent_8px_16px)] px-3 text-center"
+              aria-hidden="true"
+            >
+              <i data-lucide="sparkles" class="h-7 w-7 text-slate-400/90"></i>
+              <span class="text-[11px] font-medium uppercase tracking-wide text-slate-500/90">Фото новинки</span>
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h3 class="text-base font-semibold leading-snug text-slate-900">Сезонные поступления</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
+              Свежие партии по мере прибытия в центр. Уточняйте наличие понравившихся позиций — часть приезжает
+              небольшими партиями.
+            </p>
+            <button
+              type="button"
+              data-open-modal="sadovye_novinka_1"
+              data-modal-title="Сезонные поступления"
+              class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-black/[0.03]"
+            >
+              Подробнее
+              <i data-lucide="chevron-right" class="h-4 w-4" aria-hidden="true"></i>
+            </button>
+          </div>
+        </article>
+        <article
+          class="flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.18)]"
+          data-animate="fadeInUp"
+        >
+          <div class="relative aspect-[5/4] w-full overflow-hidden bg-gradient-to-br from-slate-200/80 via-white to-brand2/12">
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.35)_0_8px,transparent_8px_16px)] px-3 text-center"
+              aria-hidden="true"
+            >
+              <i data-lucide="sparkles" class="h-7 w-7 text-slate-400/90"></i>
+              <span class="text-[11px] font-medium uppercase tracking-wide text-slate-500/90">Фото новинки</span>
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h3 class="text-base font-semibold leading-snug text-slate-900">Новые сорта и коллекции</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
+              Расширяем линейку: интересные находки сезона и рекомендации специалистов. Отдельные позиции —
+              ограниченными партиями.
+            </p>
+            <button
+              type="button"
+              data-open-modal="sadovye_novinka_2"
+              data-modal-title="Новые сорта и коллекции"
+              class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-black/[0.03]"
+            >
+              Подробнее
+              <i data-lucide="chevron-right" class="h-4 w-4" aria-hidden="true"></i>
+            </button>
+          </div>
+        </article>
+        <article
+          class="flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.18)]"
+          data-animate="fadeInUp"
+        >
+          <div class="relative aspect-[5/4] w-full overflow-hidden bg-gradient-to-br from-slate-200/80 via-slate-50 to-accent/18">
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.35)_0_8px,transparent_8px_16px)] px-3 text-center"
+              aria-hidden="true"
+            >
+              <i data-lucide="sparkles" class="h-7 w-7 text-slate-400/90"></i>
+              <span class="text-[11px] font-medium uppercase tracking-wide text-slate-500/90">Фото новинки</span>
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h3 class="text-base font-semibold leading-snug text-slate-900">Декоративные формы</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
+              Формованные кроны и важные нюансы качества лучше оценивать на месте: масштаб и посадочная высота на фото
+              часто «ведут себя» иначе.
+            </p>
+            <button
+              type="button"
+              data-open-modal="sadovye_novinka_3"
+              data-modal-title="Декоративные формы"
+              class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-black/[0.03]"
+            >
+              Подробнее
+              <i data-lucide="chevron-right" class="h-4 w-4" aria-hidden="true"></i>
+            </button>
+          </div>
+        </article>
+        <article
+          class="flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.18)]"
+          data-animate="fadeInUp"
+        >
+          <div class="relative aspect-[5/4] w-full overflow-hidden bg-gradient-to-br from-slate-300/40 via-slate-50 to-brand/10">
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.35)_0_8px,transparent_8px_16px)] px-3 text-center"
+              aria-hidden="true"
+            >
+              <i data-lucide="sparkles" class="h-7 w-7 text-slate-400/90"></i>
+              <span class="text-[11px] font-medium uppercase tracking-wide text-slate-500/90">Фото новинки</span>
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col p-5">
+            <h3 class="text-base font-semibold leading-snug text-slate-900">Лимитированные партии</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
+              Сезонные и редкие позиции, небольшие объёмы и «окна» отгрузки — удобно планировать визит заранее и
+              уточнять сроки.
+            </p>
+            <button
+              type="button"
+              data-open-modal="sadovye_novinka_4"
+              data-modal-title="Лимитированные партии"
+              class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-black/[0.03]"
+            >
+              Подробнее
+              <i data-lucide="chevron-right" class="h-4 w-4" aria-hidden="true"></i>
+            </button>
+          </div>
+        </article>
+      </div>
+      <div class="mt-10 flex justify-center sm:justify-start" data-animate="fadeInUp">
+        <button
+          type="button"
+          data-open-modal="contact_zaboty"
+          data-modal-title="Получать уведомления о новинках"
+          class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-8 py-3.5 text-base font-semibold text-white shadow-glow transition hover:brightness-105"
+        >
+          <i data-lucide="bell" class="h-5 w-5" aria-hidden="true"></i>
+          Получать уведомления о новинках
+        </button>
       </div>
     </div>
   </section>

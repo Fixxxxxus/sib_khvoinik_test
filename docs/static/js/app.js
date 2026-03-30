@@ -123,6 +123,10 @@ function initModal() {
     'ozelenenie_send_project': 'modal-template-ozelenenie-send_project',
     'ozelenenie_materials_scheme': 'modal-template-ozelenenie-materials_scheme',
     'pitomnik_presentation': 'modal-template-pitomnik_presentation',
+    'sadovye_novinka_1': 'modal-template-sadovye_novinka_1',
+    'sadovye_novinka_2': 'modal-template-sadovye_novinka_2',
+    'sadovye_novinka_3': 'modal-template-sadovye_novinka_3',
+    'sadovye_novinka_4': 'modal-template-sadovye_novinka_4',
   };
 
   const openModal = (targetKey, title) => {
@@ -133,11 +137,14 @@ function initModal() {
     const sizeWrap = host.firstElementChild;
     if (sizeWrap) {
       sizeWrap.classList.remove('max-w-lg', 'max-w-2xl');
-      if (targetKey === 'ozelenenie_mini_project' || targetKey === 'gazon_calc') {
-        sizeWrap.classList.add('max-w-2xl');
-      } else {
-        sizeWrap.classList.add('max-w-lg');
-      }
+      const wide =
+        targetKey === 'ozelenenie_mini_project' ||
+        targetKey === 'gazon_calc' ||
+        targetKey === 'sadovye_novinka_1' ||
+        targetKey === 'sadovye_novinka_2' ||
+        targetKey === 'sadovye_novinka_3' ||
+        targetKey === 'sadovye_novinka_4';
+      sizeWrap.classList.add(wide ? 'max-w-2xl' : 'max-w-lg');
     }
 
     modalTitle.textContent = title || '';
