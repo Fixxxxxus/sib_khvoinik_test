@@ -50,15 +50,118 @@
             <a href="#digital-card" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 font-semibold text-white shadow-glow transition hover:brightness-105">
               Получить цифровую карту
             </a>
-            <button
-              type="button"
-              data-open-modal="contact_zaboty"
-              data-modal-title="Построить маршрут"
+            <a
+              href="{% url 'kontakty' %}"
               class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
             >
               Построить маршрут
-              <i data-lucide="route" class="h-5 w-5"></i>
-            </button>
+              <i data-lucide="route" class="h-5 w-5" aria-hidden="true"></i>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Почему стоит приехать лично -->
+  <section id="why-in-person" class="relative mt-14 scroll-mt-24" aria-labelledby="why-in-person-heading">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div
+        class="relative overflow-hidden rounded-[2rem] border border-black/[0.06] bg-gradient-to-br from-white via-slate-50/90 to-brand/[0.04] p-8 shadow-[0_24px_80px_-24px_rgba(15,23,42,0.14)] md:p-12 lg:p-14"
+      >
+        <div
+          class="pointer-events-none absolute -right-20 -top-16 h-72 w-72 rounded-full bg-gradient-to-br from-brand/20 to-transparent blur-3xl"
+          aria-hidden="true"
+        ></div>
+        <div
+          class="pointer-events-none absolute -bottom-24 -left-16 h-80 w-80 rounded-full bg-gradient-to-tr from-brand2/15 via-accent/10 to-transparent blur-3xl"
+          aria-hidden="true"
+        ></div>
+        <div
+          class="pointer-events-none absolute inset-0 opacity-[0.45] bg-[radial-gradient(circle_at_1px_1px,rgba(15,23,42,0.05)_1px,transparent_0)] bg-[length:22px_22px]"
+          aria-hidden="true"
+        ></div>
+
+        <div class="relative">
+          <div class="inline-flex items-center gap-2 rounded-full border border-brand/15 bg-white/90 px-4 py-2 text-sm font-medium text-brand shadow-sm backdrop-blur-sm" data-animate="fadeInUp">
+            <i data-lucide="map-pin" class="h-4 w-4 shrink-0 text-brand" aria-hidden="true"></i>
+            Почему стоит приехать лично
+          </div>
+          <h2
+            id="why-in-person-heading"
+            class="mt-5 max-w-3xl text-3xl font-semibold leading-[1.12] tracking-tight text-slate-900 md:text-4xl lg:text-[2.35rem] lg:leading-[1.1]"
+            data-animate="fadeInUp"
+          >
+            Растения лучше выбирать
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand2">вживую</span>
+          </h2>
+          <div class="mt-6 max-w-3xl space-y-4 text-base leading-relaxed text-slate-600 md:text-lg" data-animate="fadeInUp">
+            <p>Живой посадочный материал сложно оценить только по фотографии.</p>
+            <p>
+              Высота, плотность кроны, форма, состояние листа, сила растения — всё это важно видеть лично.
+            </p>
+          </div>
+
+          <p class="mt-10 text-sm font-semibold uppercase tracking-[0.12em] text-slate-500" data-animate="fadeInUp">
+            В садовом центре вы можете
+          </p>
+          <div class="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4 lg:gap-4">
+            <div
+              class="group flex flex-col rounded-2xl border border-black/[0.06] bg-white/95 p-5 shadow-sm backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/20 hover:shadow-[0_16px_40px_-12px_rgba(64,145,108,0.22)]"
+              data-animate="fadeInUp"
+            >
+              <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                <i data-lucide="arrow-left-right" class="h-5 w-5" aria-hidden="true"></i>
+              </div>
+              <div class="mt-3 font-semibold leading-snug text-slate-900">Сравнить растения</div>
+              <div class="mt-1.5 text-sm leading-relaxed text-slate-600">Посмотреть несколько вариантов рядом и выбрать лучший.</div>
+            </div>
+            <div
+              class="group flex flex-col rounded-2xl border border-black/[0.06] bg-white/95 p-5 shadow-sm backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/20 hover:shadow-[0_16px_40px_-12px_rgba(64,145,108,0.22)]"
+              data-animate="fadeInUp"
+            >
+              <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                <i data-lucide="message-circle" class="h-5 w-5" aria-hidden="true"></i>
+              </div>
+              <div class="mt-3 font-semibold leading-snug text-slate-900">Получить консультацию</div>
+              <div class="mt-1.5 text-sm leading-relaxed text-slate-600">Задать вопросы специалисту на месте.</div>
+            </div>
+            <div
+              class="group flex flex-col rounded-2xl border border-black/[0.06] bg-white/95 p-5 shadow-sm backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/20 hover:shadow-[0_16px_40px_-12px_rgba(64,145,108,0.22)]"
+              data-animate="fadeInUp"
+            >
+              <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                <i data-lucide="layout-grid" class="h-5 w-5" aria-hidden="true"></i>
+              </div>
+              <div class="mt-3 font-semibold leading-snug text-slate-900">Подобрать под участок и бюджет</div>
+              <div class="mt-1.5 text-sm leading-relaxed text-slate-600">Совместить пожелания с реальными условиями.</div>
+            </div>
+            <div
+              class="group flex flex-col rounded-2xl border border-black/[0.06] bg-white/95 p-5 shadow-sm backdrop-blur-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/20 hover:shadow-[0_16px_40px_-12px_rgba(64,145,108,0.22)]"
+              data-animate="fadeInUp"
+            >
+              <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                <i data-lucide="shopping-bag" class="h-5 w-5" aria-hidden="true"></i>
+              </div>
+              <div class="mt-3 font-semibold leading-snug text-slate-900">Сразу купить сопутствующие товары</div>
+              <div class="mt-1.5 text-sm leading-relaxed text-slate-600">Грунты, удобрения и всё для посадки в одном визите.</div>
+            </div>
+          </div>
+
+          <div
+            class="mt-10 flex flex-col items-stretch gap-4 rounded-2xl border border-brand/10 bg-gradient-to-r from-brand/[0.07] via-white/80 to-brand2/[0.08] p-6 sm:flex-row sm:items-center sm:justify-between sm:px-8"
+            data-animate="fadeInUp"
+          >
+            <p class="text-center text-sm leading-relaxed text-slate-600 sm:text-left md:text-base">
+              Спланируйте поездку в удобное время — подскажем, как добраться до садового центра.
+            </p>
+            <a
+              href="{% url 'kontakty' %}"
+              class="inline-flex shrink-0 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-7 py-3.5 text-base font-semibold text-white shadow-glow transition hover:brightness-105"
+            >
+              Построить маршрут
+              <i data-lucide="route" class="h-5 w-5" aria-hidden="true"></i>
+            </a>
           </div>
         </div>
       </div>
@@ -167,27 +270,27 @@
           <div class="mt-4 font-semibold">Центр №1</div>
           <div class="mt-2 text-sm text-slate-600">г. Новосибирск, ул. Примерная, 1</div>
           <div class="mt-3 text-xs text-slate-500">10:00–19:00 (пример)</div>
-          <button type="button" data-open-modal="contact_zaboty" data-modal-title="Построить маршрут до Центра №1" class="mt-4 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+          <a href="{% url 'kontakty' %}" class="mt-4 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
             Маршрут
-          </button>
+          </a>
         </div>
         <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
           <div class="h-28 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand2/20"></div>
           <div class="mt-4 font-semibold">Центр №2</div>
           <div class="mt-2 text-sm text-slate-600">г. Новосибирск, ул. Примерная, 2</div>
           <div class="mt-3 text-xs text-slate-500">10:00–19:00 (пример)</div>
-          <button type="button" data-open-modal="contact_zaboty" data-modal-title="Построить маршрут до Центра №2" class="mt-4 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+          <a href="{% url 'kontakty' %}" class="mt-4 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
             Маршрут
-          </button>
+          </a>
         </div>
         <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
           <div class="h-28 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
           <div class="mt-4 font-semibold">Центр №3</div>
           <div class="mt-2 text-sm text-slate-600">г. Новосибирск, ул. Примерная, 3</div>
           <div class="mt-3 text-xs text-slate-500">10:00–19:00 (пример)</div>
-          <button type="button" data-open-modal="contact_zaboty" data-modal-title="Построить маршрут до Центра №3" class="mt-4 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+          <a href="{% url 'kontakty' %}" class="mt-4 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
             Маршрут
-          </button>
+          </a>
         </div>
       </div>
     </div>
