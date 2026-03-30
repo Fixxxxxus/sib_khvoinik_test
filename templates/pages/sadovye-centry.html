@@ -168,23 +168,97 @@
     </div>
   </section>
 
-  <!-- Assortment -->
-  <section class="mt-14">
+  <!-- Ассортимент (карточки с фото — пока плейсхолдеры под будущие изображения) -->
+  <section id="assortment" class="mt-14 scroll-mt-24" aria-labelledby="sadovye-assortment-heading">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-      <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Ассортимент</h2>
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="font-semibold">Растения из питомника</div>
-          <div class="text-sm text-slate-600 mt-2">Хвойные, лиственные, кустарники.</div>
-        </div>
-        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="font-semibold">Цветочная продукция</div>
-          <div class="text-sm text-slate-600 mt-2">Сезонные коллекции и новинки.</div>
-        </div>
-        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="font-semibold">Сопутствующие товары</div>
-          <div class="text-sm text-slate-600 mt-2">Удобрения, грунты, инвентарь.</div>
-        </div>
+      <h2
+        id="sadovye-assortment-heading"
+        class="max-w-4xl text-2xl font-semibold leading-[1.15] tracking-tight text-slate-900 sm:text-3xl md:text-[1.75rem]"
+        data-animate="fadeInUp"
+      >
+        Растения собственного производства и из лучших питомников Европы
+      </h2>
+      <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-6">
+        <article
+          class="group flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.22)]"
+          data-animate="fadeInUp"
+        >
+          <div class="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-slate-200/90 via-slate-100 to-brand/15">
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center gap-1 border-b border-black/[0.04] bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.35)_0_8px,transparent_8px_16px)] px-4 text-center"
+              aria-hidden="true"
+            >
+              <i data-lucide="image" class="h-8 w-8 text-slate-400/90"></i>
+              <span class="text-xs font-medium uppercase tracking-wide text-slate-500/90">Фото — позже</span>
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col p-5 md:p-6">
+            <h3 class="text-base font-semibold leading-snug text-slate-900 md:text-lg">Растения из собственного питомника</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600 md:text-[0.9375rem]">
+              Хвойные и лиственные деревья, кустарники, декоративные формы.
+            </p>
+          </div>
+        </article>
+        <article
+          class="group flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.22)]"
+          data-animate="fadeInUp"
+        >
+          <div class="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-slate-200/90 via-white to-brand2/12">
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center gap-1 border-b border-black/[0.04] bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.35)_0_8px,transparent_8px_16px)] px-4 text-center"
+              aria-hidden="true"
+            >
+              <i data-lucide="image" class="h-8 w-8 text-slate-400/90"></i>
+              <span class="text-xs font-medium uppercase tracking-wide text-slate-500/90">Фото — позже</span>
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col p-5 md:p-6">
+            <h3 class="text-base font-semibold leading-snug text-slate-900 md:text-lg">Цветочная продукция</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600 md:text-[0.9375rem]">
+              Однолетние и многолетние цветы, сезонные коллекции, новинки.
+            </p>
+          </div>
+        </article>
+        <article
+          class="group flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.22)]"
+          data-animate="fadeInUp"
+        >
+          <div class="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-slate-200/90 via-slate-50 to-accent/20">
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center gap-1 border-b border-black/[0.04] bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.35)_0_8px,transparent_8px_16px)] px-4 text-center"
+              aria-hidden="true"
+            >
+              <i data-lucide="image" class="h-8 w-8 text-slate-400/90"></i>
+              <span class="text-xs font-medium uppercase tracking-wide text-slate-500/90">Фото — позже</span>
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col p-5 md:p-6">
+            <h3 class="text-base font-semibold leading-snug text-slate-900 md:text-lg">Хвойные растения из Польши</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600 md:text-[0.9375rem]">
+              Мы уже 12 лет завозим растения от проверенных производителей. Польский материал хорошо зарекомендовал себя в нашем климате.
+            </p>
+          </div>
+        </article>
+        <article
+          class="group flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.22)]"
+          data-animate="fadeInUp"
+        >
+          <div class="relative aspect-[4/3] w-full overflow-hidden bg-gradient-to-br from-slate-300/50 via-slate-100 to-brand/10">
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center gap-1 border-b border-black/[0.04] bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.35)_0_8px,transparent_8px_16px)] px-4 text-center"
+              aria-hidden="true"
+            >
+              <i data-lucide="image" class="h-8 w-8 text-slate-400/90"></i>
+              <span class="text-xs font-medium uppercase tracking-wide text-slate-500/90">Фото — позже</span>
+            </div>
+          </div>
+          <div class="flex flex-1 flex-col p-5 md:p-6">
+            <h3 class="text-base font-semibold leading-snug text-slate-900 md:text-lg">Сопутствующие товары</h3>
+            <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600 md:text-[0.9375rem]">
+              Для вашего удобства мы собрали ассортимент товаров для ухода за садом и его декоративного оформления. Семена газонов, всё для полива, всё для водоёмов, удобрения, грунты, укрывной материал, средства защиты, садовый инвентарь.
+            </p>
+          </div>
+        </article>
       </div>
     </div>
   </section>
