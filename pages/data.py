@@ -192,15 +192,23 @@ PITOMNIK_PAGE = {
         "slides": [
             {
                 "placeholder": "Многолетние цветы в теплице — полка, ряды (фото, вставка позже)",
+                "image": "media/images/pitomnik-greenhouse-slide-1.jpg",
+                "image_alt": "Ряды бархатцев и рассады в большой теплице: перспектива гряд и освещение",
             },
             {
                 "placeholder": "Однолетняя рассада, поддоны или столы (фото, вставка позже)",
+                "image": "media/images/pitomnik-greenhouse-slide-2.jpg",
+                "image_alt": "Поддон с цветущими бархатцами жёлто-оранжевых оттенков в рассадном формате",
             },
             {
                 "placeholder": "Цветочная продукция с закрытой корневой системой (фото, вставка позже)",
+                "image": "media/images/pitomnik-greenhouse-slide-3.jpg",
+                "image_alt": "Ряды красных петуний в чёрных горшках на столе в теплице",
             },
             {
                 "placeholder": "Современные сорта, обновление ассортимента (фото, вставка позже)",
+                "image": "media/images/pitomnik-greenhouse-slide-4.jpg",
+                "image_alt": "Плотные ряды ярко-розовых петуний в рассадных контейнерах",
             },
         ],
     },

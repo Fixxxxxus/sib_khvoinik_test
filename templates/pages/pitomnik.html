@@ -231,11 +231,25 @@
                     >
                       {% for s in greenhouse.slides %}
                         <div
-                          class="relative flex aspect-[16/10] min-h-[12rem] w-full shrink-0 items-center justify-center bg-gradient-to-br from-slate-200/90 via-slate-100 to-slate-200/80 text-center"
+                          class="relative aspect-[16/10] min-h-[12rem] w-full shrink-0 overflow-hidden bg-slate-100"
                           role="img"
-                          aria-label="{{ s.placeholder }}"
+                          aria-label="{{ s.image_alt|default:s.placeholder }}"
                         >
-                          <span class="max-w-[16rem] px-4 text-xs font-medium leading-snug text-slate-500">{{ s.placeholder }}</span>
+                          {% if s.image %}
+                            <img
+                              src="{% static s.image %}"
+                              alt="{{ s.image_alt }}"
+                              class="h-full w-full object-cover object-center"
+                              width="1080"
+                              height="675"
+                              loading="lazy"
+                              decoding="async"
+                            />
+                          {% else %}
+                            <div class="flex h-full min-h-[12rem] w-full items-center justify-center bg-gradient-to-br from-slate-200/90 via-slate-100 to-slate-200/80 px-4 text-center">
+                              <span class="max-w-[16rem] text-xs font-medium leading-snug text-slate-500">{{ s.placeholder }}</span>
+                            </div>
+                          {% endif %}
                         </div>
                       {% endfor %}
                     </div>
