@@ -123,6 +123,7 @@ function initModal() {
     'ozelenenie_send_project': 'modal-template-ozelenenie-send_project',
     'ozelenenie_materials_scheme': 'modal-template-ozelenenie-materials_scheme',
     'pitomnik_presentation': 'modal-template-pitomnik_presentation',
+    'sadovye_digital_card': 'modal-template-sadovye_digital_card',
     'sadovye_novinka_1': 'modal-template-sadovye_novinka_1',
     'sadovye_novinka_2': 'modal-template-sadovye_novinka_2',
     'sadovye_novinka_3': 'modal-template-sadovye_novinka_3',

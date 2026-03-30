@@ -656,6 +656,26 @@
   </form>
 </template>
 
+<!-- Садовые центры: заявка на цифровую карту -->
+<template id="modal-template-sadovye_digital_card">
+  <form class="space-y-4" data-ui-form data-form-tag="SadovyeCentr/digital-card">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить цифровую карту
+    </button>
+    <p class="text-xs text-slate-500">UI-only: данные сохраняются в браузере на этапе 1.</p>
+  </form>
+</template>
+
 <!-- Садовые центры: новинки (тексты можно править под сезон) -->
 <template id="modal-template-sadovye_novinka_1">
   <div class="space-y-3 text-sm leading-relaxed text-slate-600">

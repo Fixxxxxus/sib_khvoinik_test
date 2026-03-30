@@ -553,46 +553,44 @@
   </section>
 
   <!-- Digital card -->
-  <section id="digital-card" class="mt-14">
+  <section id="digital-card" class="mt-14 scroll-mt-24">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+        <div class="grid grid-cols-1 items-center gap-8 lg:grid-cols-12 lg:gap-10">
           <div class="lg:col-span-5">
             <h2 class="text-3xl font-semibold leading-tight">Цифровая карта клиента</h2>
-            <p class="mt-3 text-slate-600">
-              Бонусы, накопления и персональные предложения. Ведём к службе заботы и будущим покупки.
-            </p>
-            <div class="mt-5 rounded-2xl border border-black/5 bg-white p-4">
-              <div class="text-sm font-semibold">Любимая категория</div>
-              <div class="text-xs text-slate-600 mt-2">чтобы персонализировать подбор</div>
+            <div class="mt-3 space-y-3 text-slate-600 leading-relaxed">
+              <p>Каждый покупатель может получить цифровую карту и стать постоянным клиентом сети.</p>
+              <p>
+                Карта даёт: начальный бонус; накопительную систему; закрытые предложения; персональные скидки; участие
+                в сезонных акциях.
+              </p>
             </div>
+            <button
+              type="button"
+              data-open-modal="sadovye_digital_card"
+              data-modal-title="Получить цифровую карту"
+              class="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3.5 text-base font-semibold text-white shadow-glow transition hover:brightness-105 sm:w-auto"
+            >
+              <i data-lucide="credit-card" class="h-5 w-5 shrink-0" aria-hidden="true"></i>
+              Получить цифровую карту
+            </button>
           </div>
           <div class="lg:col-span-7">
-            <form class="rounded-3xl border border-black/5 bg-white p-6 space-y-4" data-ui-form data-form-tag="SadovyeCentr/digital-card">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label class="text-sm font-medium text-slate-700">
-                  Имя
-                  <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Телефон
-                  <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
-                </label>
+            <div
+              class="relative mx-auto w-full max-w-xl overflow-hidden rounded-3xl border border-dashed border-black/15 bg-gradient-to-br from-slate-200/80 via-white to-brand/12 lg:max-w-none lg:mx-0"
+              aria-hidden="true"
+            >
+              <div class="aspect-[4/3] w-full lg:aspect-[16/10] lg:min-h-[17rem]">
+                <div
+                  class="flex h-full w-full flex-col items-center justify-center gap-2 bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.4)_0_10px,transparent_10px_20px)] px-6 py-10 text-center"
+                >
+                  <i data-lucide="credit-card" class="h-10 w-10 text-slate-400/90"></i>
+                  <span class="text-sm font-medium text-slate-500">Изображение цифровой карты</span>
+                  <span class="text-xs text-slate-400">Файл добавим позже</span>
+                </div>
               </div>
-              <label class="text-sm font-medium text-slate-700">
-                Любимая категория
-                <select name="favoriteCategory" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
-                  <option value="хвойные">Хвойные</option>
-                  <option value="цветы">Цветы</option>
-                  <option value="кустарники">Кустарники</option>
-                  <option value="газон">Газон и уход</option>
-                </select>
-              </label>
-              <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
-                Получить цифровую карту
-              </button>
-              <p class="text-xs text-slate-500">UI-only: данные сохраняются в браузере на этапе 1.</p>
-            </form>
+            </div>
           </div>
         </div>
       </div>
@@ -643,34 +641,122 @@
   <section class="mt-14">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Адреса и режим работы</h2>
-      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="h-28 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
-          <div class="mt-4 font-semibold">Центр №1</div>
-          <div class="mt-2 text-sm text-slate-600">г. Новосибирск, ул. Примерная, 1</div>
-          <div class="mt-3 text-xs text-slate-500">10:00–19:00 (пример)</div>
-          <a href="/sib_khvoinik_test/kontakty/" class="mt-4 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-            Маршрут
-          </a>
-        </div>
-        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="h-28 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand2/20"></div>
-          <div class="mt-4 font-semibold">Центр №2</div>
-          <div class="mt-2 text-sm text-slate-600">г. Новосибирск, ул. Примерная, 2</div>
-          <div class="mt-3 text-xs text-slate-500">10:00–19:00 (пример)</div>
-          <a href="/sib_khvoinik_test/kontakty/" class="mt-4 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-            Маршрут
-          </a>
-        </div>
-        <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
-          <div class="h-28 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
-          <div class="mt-4 font-semibold">Центр №3</div>
-          <div class="mt-2 text-sm text-slate-600">г. Новосибирск, ул. Примерная, 3</div>
-          <div class="mt-3 text-xs text-slate-500">10:00–19:00 (пример)</div>
-          <a href="/sib_khvoinik_test/kontakty/" class="mt-4 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-            Маршрут
-          </a>
-        </div>
+      <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3 md:items-stretch">
+        <article
+          class="flex h-full flex-col rounded-3xl border border-black/5 bg-white p-6 shadow-sm transition hover:shadow-glow"
+          data-animate="fadeInUp"
+        >
+          <div class="h-28 shrink-0 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+          <div class="mt-4 flex min-h-0 flex-1 flex-col gap-3">
+            <div class="space-y-1.5">
+              <h3 class="text-base font-semibold leading-snug text-slate-900">Садовый центр Новопичугово</h3>
+              <a
+                href="tel:+79137569061"
+                class="inline-block text-sm font-semibold text-slate-900 tabular-nums hover:text-brand sm:text-[15px]"
+              >+7 (913) 756-90-61</a>
+            </div>
+            <p class="text-sm italic leading-relaxed text-slate-600">Село Новопичугово, ориентир ул. Сосновая</p>
+            <div
+              class="flex min-h-[4.25rem] items-start gap-2 text-xs leading-relaxed text-slate-600 sm:text-sm"
+            >
+              <i data-lucide="clock" class="mt-0.5 h-4 w-4 shrink-0 text-slate-400" aria-hidden="true"></i>
+              <div class="min-w-0 flex-1 space-y-0.5">
+                <p>Вт–Сб с 9:00 до 19:00</p>
+                <p>Вс с 9:00 до 17:00</p>
+              </div>
+            </div>
+            <div class="mt-auto flex flex-col gap-2.5 border-t border-black/5 pt-4">
+              <a
+                href="/sib_khvoinik_test/kontakty/"
+                class="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-3 text-sm font-semibold text-white shadow-glow transition hover:brightness-105"
+              >Маршрут</a>
+              <a
+                href="https://yandex.ru/maps/?text=%D0%A1%D0%B5%D0%BB%D0%BE%20%D0%9D%D0%BE%D0%B2%D0%BE%D0%BF%D0%B8%D1%87%D1%83%D0%B3%D0%BE%D0%B2%D0%BE%20%D1%83%D0%BB%D0%B8%D1%86%D0%B0%20%D0%A1%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%B0%D1%8F"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-center text-sm font-medium text-brand underline decoration-solid underline-offset-4 hover:text-brand2"
+              >Посмотреть на карте</a>
+            </div>
+          </div>
+        </article>
+        <article
+          class="flex h-full flex-col rounded-3xl border border-black/5 bg-white p-6 shadow-sm transition hover:shadow-glow"
+          data-animate="fadeInUp"
+        >
+          <div class="h-28 shrink-0 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+          <div class="mt-4 flex min-h-0 flex-1 flex-col gap-3">
+            <div class="space-y-1.5">
+              <h3 class="text-base font-semibold leading-snug text-slate-900">Садовый центр МЕГА</h3>
+              <a
+                href="tel:+79137569016"
+                class="inline-block text-sm font-semibold text-slate-900 tabular-nums hover:text-brand sm:text-[15px]"
+              >+7 (913) 756-90-16</a>
+            </div>
+            <p class="text-sm italic leading-relaxed text-slate-600">Ватутина 107</p>
+            <div
+              class="flex min-h-[4.25rem] items-start gap-2 text-xs leading-relaxed text-slate-600 sm:text-sm"
+            >
+              <i data-lucide="clock" class="mt-0.5 h-4 w-4 shrink-0 text-slate-400" aria-hidden="true"></i>
+              <div class="min-w-0 flex-1 space-y-0.5">
+                <p>Пн–Чт с 9:00 до 19:00</p>
+                <p>Пт–Вс с 9:00 до 20:00</p>
+              </div>
+            </div>
+            <div class="mt-auto flex flex-col gap-2.5 border-t border-black/5 pt-4">
+              <a
+                href="/sib_khvoinik_test/kontakty/"
+                class="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-3 text-sm font-semibold text-white shadow-glow transition hover:brightness-105"
+              >Маршрут</a>
+              <a
+                href="https://yandex.ru/maps/?text=%D0%9D%D0%BE%D0%B2%D0%BE%D1%81%D0%B8%D0%B1%D0%B8%D1%80%D1%81%D0%BA%2C%20%D0%92%D0%B0%D1%82%D1%83%D1%82%D0%B8%D0%BD%D0%B0%2C%20107"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-center text-sm font-medium text-brand underline decoration-solid underline-offset-4 hover:text-brand2"
+              >Посмотреть на карте</a>
+            </div>
+          </div>
+        </article>
+        <article
+          class="flex h-full flex-col rounded-3xl border border-black/5 bg-white p-6 shadow-sm transition hover:shadow-glow"
+          data-animate="fadeInUp"
+        >
+          <div class="h-28 shrink-0 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+          <div class="mt-4 flex min-h-0 flex-1 flex-col gap-3">
+            <div class="space-y-1.5">
+              <h3 class="text-base font-semibold leading-snug text-slate-900">Рулонный газон</h3>
+              <a
+                href="tel:+79232446202"
+                class="inline-block text-sm font-semibold text-slate-900 tabular-nums hover:text-brand sm:text-[15px]"
+              >+7 (923) 244-62-02</a>
+              <a
+                href="mailto:rulony@gazony.ru"
+                class="inline-block break-all text-sm font-medium text-slate-900 hover:text-brand"
+              >rulony@gazony.ru</a>
+            </div>
+            <p class="text-sm italic leading-relaxed text-slate-600">Железнодорожная 12/1, оф 501</p>
+            <div
+              class="flex min-h-[4.25rem] items-start gap-2 text-xs leading-relaxed text-slate-600 sm:text-sm"
+            >
+              <i data-lucide="clock" class="mt-0.5 h-4 w-4 shrink-0 text-slate-400" aria-hidden="true"></i>
+              <div class="min-w-0 flex-1 space-y-0.5">
+                <p>Пн–Пт с 9:00 до 18:00</p>
+                <p>Сб–Вс — выходные</p>
+              </div>
+            </div>
+            <div class="mt-auto flex flex-col gap-2.5 border-t border-black/5 pt-4">
+              <a
+                href="/sib_khvoinik_test/kontakty/"
+                class="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-3 text-sm font-semibold text-white shadow-glow transition hover:brightness-105"
+              >Маршрут</a>
+              <a
+                href="https://yandex.ru/maps/?text=%D0%9D%D0%BE%D0%B2%D0%BE%D1%81%D0%B8%D0%B1%D0%B8%D1%80%D1%81%D0%BA%2C%20%D0%96%D0%B5%D0%BB%D0%B5%D0%B7%D0%BD%D0%BE%D0%B4%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D0%B0%D1%8F%2C%2012%2F1"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-center text-sm font-medium text-brand underline decoration-solid underline-offset-4 hover:text-brand2"
+              >Посмотреть на карте</a>
+            </div>
+          </div>
+        </article>
       </div>
     </div>
   </section>
@@ -1403,6 +1489,25 @@
     <p class="text-xs text-slate-500">UI-only: данные сохраняются в браузере на этапе 1.</p>
   </form>
 </template>
+<!-- Садовые центры: заявка на цифровую карту -->
+<template id="modal-template-sadovye_digital_card">
+  <form class="space-y-4" data-ui-form data-form-tag="SadovyeCentr/digital-card">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить цифровую карту
+    </button>
+    <p class="text-xs text-slate-500">UI-only: данные сохраняются в браузере на этапе 1.</p>
+  </form>
+</template>
 <!-- Садовые центры: новинки (тексты можно править под сезон) -->
 <template id="modal-template-sadovye_novinka_1">
   <div class="space-y-3 text-sm leading-relaxed text-slate-600">
@@ -1488,7 +1593,7 @@
 
 
 
-    <script src="/sib_khvoinik_test/static/js/app.js?v=19" defer></script>
+    <script src="/sib_khvoinik_test/static/js/app.js?v=20" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {
