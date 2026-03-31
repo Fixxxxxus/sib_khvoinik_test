@@ -75,9 +75,9 @@
 </template>
 
 <template id="modal-template-b2b_cpo">
-  <form class="space-y-4" data-ui-form data-form-tag="B2B/zapros-cp">
-    <input type="hidden" name="formTag" value="B2B/zapros-cp" />
-    <div class="grid grid-cols-1 gap-3">
+  <form class="space-y-4" data-ui-form data-form-tag="B2B/contract-request">
+    <input type="hidden" name="formTag" value="B2B/contract-request" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label class="text-sm font-medium text-slate-700">
         Компания
         <input name="company" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
@@ -92,16 +92,38 @@
       </label>
       <label class="text-sm font-medium text-slate-700">
         Площадь, м²
-        <input name="area" type="number" required min="1" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
+        <input type="number" min="1" name="area" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
       </label>
       <label class="text-sm font-medium text-slate-700">
-        Контакт
+        Формат сотрудничества
+        <select name="collaborationFormat" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="" disabled selected>Выберите формат</option>
+          <option value="roll">Поставка рулонного газона</option>
+          <option value="combined">Комбинированное решение</option>
+          <option value="plants">Контрактные поставки растений</option>
+          <option value="turnkey">Реализация под ключ</option>
+          <option value="partial">Частичная реализация</option>
+          <option value="partner">Партнёрство с ландшафтными компаниями</option>
+          <option value="uk">Сопровождение для УК</option>
+        </select>
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Контактное лицо
+        <input name="contactPerson" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Имя и должность" />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Телефон / e-mail
         <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Телефон или email" />
       </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Пожелания
+        <input name="notes" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="График, ограничения, комментарии" />
+      </label>
     </div>
-    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-      Запросить КП
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Выслать коммерческое предложение
     </button>
+    <p class="text-xs text-slate-500">UI-only: данные сохраняются в браузере на этапе 1.</p>
   </form>
 </template>
 

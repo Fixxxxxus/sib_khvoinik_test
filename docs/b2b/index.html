@@ -396,37 +396,16 @@
           <img src="/sib_khvoinik_test/static/media/images/cases/inskie-holmy.webp" alt="ЖК &quot;Инские холмы&quot;" class="h-32 w-full rounded-2xl object-cover" loading="lazy" decoding="async" />
           <div class="mt-4 font-semibold">ЖК &quot;Инские холмы&quot;</div>
           <div class="mt-2 text-sm text-slate-600">деревья и кустарники</div>
-          <div class="mt-3 text-xs text-slate-500">срок 10 дней</div>
         </div>
         <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
           <img src="/sib_khvoinik_test/static/media/images/cases/chicago.webp" alt="ЖК &quot;Чикаго&quot;" class="h-32 w-full rounded-2xl object-cover" loading="lazy" decoding="async" />
           <div class="mt-4 font-semibold">ЖК &quot;Чикаго&quot;</div>
           <div class="mt-2 text-sm text-slate-600">посадки и газон</div>
-          <div class="mt-3 text-xs text-slate-500">срок 7 дней</div>
         </div>
         <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
           <img src="/sib_khvoinik_test/static/media/images/cases/flora-fauna.webp" alt="ЖК &quot;Флора и Фауна&quot;" class="h-32 w-full rounded-2xl object-cover" loading="lazy" decoding="async" />
           <div class="mt-4 font-semibold">ЖК &quot;Флора и Фауна&quot;</div>
           <div class="mt-2 text-sm text-slate-600">комплексное озеленение</div>
-          <div class="mt-3 text-xs text-slate-500">срок 9 дней</div>
-        </div>
-        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-          <img src="/sib_khvoinik_test/static/media/images/cases/cottage-yard.webp" alt="Коттеджный участок" class="h-32 w-full rounded-2xl object-cover" loading="lazy" decoding="async" />
-          <div class="mt-4 font-semibold">Коттеджный участок</div>
-          <div class="mt-2 text-sm text-slate-600">Озеленили задний двор участка</div>
-          <div class="mt-3 text-xs text-slate-500">срок 7-10 дней</div>
-        </div>
-        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-          <img src="/sib_khvoinik_test/static/media/images/cases/pine-courtyard.webp" alt="Сосновый двор" class="h-32 w-full rounded-2xl object-cover" loading="lazy" decoding="async" />
-          <div class="mt-4 font-semibold">Сосновый двор</div>
-          <div class="mt-2 text-sm text-slate-600">видовые зоны и уход</div>
-          <div class="mt-3 text-xs text-slate-500">срок 12 дней</div>
-        </div>
-        <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-          <img src="/sib_khvoinik_test/static/media/images/cases/garden-line.webp" alt="Участок &quot;Солнечная линия&quot;" class="h-32 w-full rounded-2xl object-cover" loading="lazy" decoding="async" />
-          <div class="mt-4 font-semibold">Участок &quot;Солнечная линия&quot;</div>
-          <div class="mt-2 text-sm text-slate-600">газон и аккуратная геометрия двора</div>
-          <div class="mt-3 text-xs text-slate-500">срок 8 дней</div>
         </div>
       </div>
     </div>
@@ -450,55 +429,39 @@
             </div>
           </div>
           <div class="lg:col-span-7">
-            <form class="rounded-3xl border border-black/5 bg-white p-6 space-y-4" data-ui-form data-form-tag="B2B/contract-request">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label class="text-sm font-medium text-slate-700">
-                  Компания
-                  <input name="company" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Регион
-                  <input name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Город/регион" />
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Тип объекта
-                  <input name="objectType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="ЖК / УК / подряд" />
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Площадь, м²
-                  <input type="number" min="1" name="area" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Формат сотрудничества
-                  <select name="collaborationFormat" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
-                    <option value="" disabled selected>Выберите формат</option>
-                    <option value="roll">Поставка рулонного газона</option>
-                    <option value="combined">Комбинированное решение</option>
-                    <option value="plants">Контрактные поставки растений</option>
-                    <option value="turnkey">Реализация под ключ</option>
-                    <option value="partial">Частичная реализация</option>
-                    <option value="partner">Партнёрство с ландшафтными компаниями</option>
-                    <option value="uk">Сопровождение для УК</option>
-                  </select>
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Контактное лицо
-                  <input name="contactPerson" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Имя и должность" />
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Телефон / e-mail
-                  <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Телефон или email" />
-                </label>
-                <label class="text-sm font-medium text-slate-700 sm:col-span-2">
-                  Пожелания
-                  <input name="notes" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="График, ограничения, комментарии" />
-                </label>
+            <div class="rounded-3xl border border-black/5 bg-white p-6 md:p-8">
+              <div class="mx-auto max-w-2xl">
+                <div class="text-center">
+                  <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+                    <i data-lucide="file-text" class="h-6 w-6"></i>
+                  </div>
+                  <h3 class="mt-4 text-xl font-semibold text-slate-900">Запрос коммерческого предложения</h3>
+                </div>
+                <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <div class="rounded-2xl border border-black/10 bg-slate-50 px-4 py-3 text-center">
+                    <div class="text-xs uppercase tracking-wide text-slate-500">Шаг 1</div>
+                    <div class="mt-1 text-sm font-medium text-slate-800">Заполнение формы</div>
+                  </div>
+                  <div class="rounded-2xl border border-black/10 bg-slate-50 px-4 py-3 text-center">
+                    <div class="text-xs uppercase tracking-wide text-slate-500">Шаг 2</div>
+                    <div class="mt-1 text-sm font-medium text-slate-800">Уточнение деталей</div>
+                  </div>
+                  <div class="rounded-2xl border border-black/10 bg-slate-50 px-4 py-3 text-center">
+                    <div class="text-xs uppercase tracking-wide text-slate-500">Шаг 3</div>
+                    <div class="mt-1 text-sm font-medium text-slate-800">Готовое КП</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  data-open-modal="b2b_cpo"
+                  data-modal-title="Запросить коммерческое предложение"
+                  class="mt-6 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+                >
+                  Выслать коммерческое предложение
+                </button>
+                <p class="mt-3 text-center text-xs text-slate-500">Форма откроется в модальном окне.</p>
               </div>
-              <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
-                Выслать коммерческое предложение
-              </button>
-              <p class="text-xs text-slate-500">UI-only: данные сохраняются в браузере на этапе 1.</p>
-            </form>
+            </div>
           </div>
         </div>
       </div>
@@ -740,9 +703,9 @@
 </template>
 
 <template id="modal-template-b2b_cpo">
-  <form class="space-y-4" data-ui-form data-form-tag="B2B/zapros-cp">
-    <input type="hidden" name="formTag" value="B2B/zapros-cp" />
-    <div class="grid grid-cols-1 gap-3">
+  <form class="space-y-4" data-ui-form data-form-tag="B2B/contract-request">
+    <input type="hidden" name="formTag" value="B2B/contract-request" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label class="text-sm font-medium text-slate-700">
         Компания
         <input name="company" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
@@ -757,16 +720,38 @@
       </label>
       <label class="text-sm font-medium text-slate-700">
         Площадь, м²
-        <input name="area" type="number" required min="1" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
+        <input type="number" min="1" name="area" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
       </label>
       <label class="text-sm font-medium text-slate-700">
-        Контакт
+        Формат сотрудничества
+        <select name="collaborationFormat" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="" disabled selected>Выберите формат</option>
+          <option value="roll">Поставка рулонного газона</option>
+          <option value="combined">Комбинированное решение</option>
+          <option value="plants">Контрактные поставки растений</option>
+          <option value="turnkey">Реализация под ключ</option>
+          <option value="partial">Частичная реализация</option>
+          <option value="partner">Партнёрство с ландшафтными компаниями</option>
+          <option value="uk">Сопровождение для УК</option>
+        </select>
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Контактное лицо
+        <input name="contactPerson" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Имя и должность" />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Телефон / e-mail
         <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Телефон или email" />
       </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Пожелания
+        <input name="notes" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="График, ограничения, комментарии" />
+      </label>
     </div>
-    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-      Запросить КП
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Выслать коммерческое предложение
     </button>
+    <p class="text-xs text-slate-500">UI-only: данные сохраняются в браузере на этапе 1.</p>
   </form>
 </template>
 

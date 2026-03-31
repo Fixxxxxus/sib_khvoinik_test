@@ -211,7 +211,6 @@
             {% endif %}
             <div class="mt-4 font-semibold">{{ c.title }}</div>
             <div class="mt-2 text-sm text-slate-600">{{ c.desc }}</div>
-            <div class="mt-3 text-xs text-slate-500">{{ c.meta }}</div>
           </div>
         {% endfor %}
       </div>
@@ -236,55 +235,39 @@
             </div>
           </div>
           <div class="lg:col-span-7">
-            <form class="rounded-3xl border border-black/5 bg-white p-6 space-y-4" data-ui-form data-form-tag="B2B/contract-request">
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <label class="text-sm font-medium text-slate-700">
-                  Компания
-                  <input name="company" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Регион
-                  <input name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Город/регион" />
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Тип объекта
-                  <input name="objectType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="ЖК / УК / подряд" />
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Площадь, м²
-                  <input type="number" min="1" name="area" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Формат сотрудничества
-                  <select name="collaborationFormat" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
-                    <option value="" disabled selected>Выберите формат</option>
-                    <option value="roll">Поставка рулонного газона</option>
-                    <option value="combined">Комбинированное решение</option>
-                    <option value="plants">Контрактные поставки растений</option>
-                    <option value="turnkey">Реализация под ключ</option>
-                    <option value="partial">Частичная реализация</option>
-                    <option value="partner">Партнёрство с ландшафтными компаниями</option>
-                    <option value="uk">Сопровождение для УК</option>
-                  </select>
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Контактное лицо
-                  <input name="contactPerson" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Имя и должность" />
-                </label>
-                <label class="text-sm font-medium text-slate-700">
-                  Телефон / e-mail
-                  <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Телефон или email" />
-                </label>
-                <label class="text-sm font-medium text-slate-700 sm:col-span-2">
-                  Пожелания
-                  <input name="notes" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="График, ограничения, комментарии" />
-                </label>
+            <div class="rounded-3xl border border-black/5 bg-white p-6 md:p-8">
+              <div class="mx-auto max-w-2xl">
+                <div class="text-center">
+                  <div class="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+                    <i data-lucide="file-text" class="h-6 w-6"></i>
+                  </div>
+                  <h3 class="mt-4 text-xl font-semibold text-slate-900">Запрос коммерческого предложения</h3>
+                </div>
+                <div class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-3">
+                  <div class="rounded-2xl border border-black/10 bg-slate-50 px-4 py-3 text-center">
+                    <div class="text-xs uppercase tracking-wide text-slate-500">Шаг 1</div>
+                    <div class="mt-1 text-sm font-medium text-slate-800">Заполнение формы</div>
+                  </div>
+                  <div class="rounded-2xl border border-black/10 bg-slate-50 px-4 py-3 text-center">
+                    <div class="text-xs uppercase tracking-wide text-slate-500">Шаг 2</div>
+                    <div class="mt-1 text-sm font-medium text-slate-800">Уточнение деталей</div>
+                  </div>
+                  <div class="rounded-2xl border border-black/10 bg-slate-50 px-4 py-3 text-center">
+                    <div class="text-xs uppercase tracking-wide text-slate-500">Шаг 3</div>
+                    <div class="mt-1 text-sm font-medium text-slate-800">Готовое КП</div>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  data-open-modal="b2b_cpo"
+                  data-modal-title="Запросить коммерческое предложение"
+                  class="mt-6 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+                >
+                  Выслать коммерческое предложение
+                </button>
+                <p class="mt-3 text-center text-xs text-slate-500">Форма откроется в модальном окне.</p>
               </div>
-              <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
-                Выслать коммерческое предложение
-              </button>
-              <p class="text-xs text-slate-500">UI-only: данные сохраняются в браузере на этапе 1.</p>
-            </form>
+            </div>
           </div>
         </div>
       </div>
