@@ -180,75 +180,87 @@
 
           <div class="mt-10 grid grid-cols-1 items-start gap-10 lg:grid-cols-12 lg:gap-12">
             <div class="lg:col-span-5">
-              <div class="relative" data-pitomnik-greenhouse-slider>
-                <div class="relative">
-                  <div class="overflow-hidden rounded-2xl border border-black/5 shadow-inner">
-                    <div
-                      class="flex transition-transform duration-500 ease-out will-change-transform"
-                      data-pitomnik-greenhouse-track
-                      style="transform: translateX(0%)"
-                    >
-                      {% for s in greenhouse.slides %}
-                        <div
-                          class="relative aspect-[16/10] min-h-[12rem] w-full shrink-0 overflow-hidden bg-slate-100"
-                          role="img"
-                          aria-label="{{ s.image_alt|default:s.placeholder }}"
-                        >
-                          {% if s.image %}
-                            <img
-                              src="{% static s.image %}"
-                              alt="{{ s.image_alt }}"
-                              class="h-full w-full object-cover object-center"
-                              width="1080"
-                              height="675"
-                              loading="lazy"
-                              decoding="async"
-                            />
-                          {% else %}
-                            <div class="flex h-full min-h-[12rem] w-full items-center justify-center bg-gradient-to-br from-slate-200/90 via-slate-100 to-slate-200/80 px-4 text-center">
-                              <span class="max-w-[16rem] text-xs font-medium leading-snug text-slate-500">{{ s.placeholder }}</span>
-                            </div>
-                          {% endif %}
-                        </div>
-                      {% endfor %}
+              {% if greenhouse.slides %}
+                <div class="relative" data-pitomnik-greenhouse-slider>
+                  <div class="relative">
+                    <div class="overflow-hidden rounded-2xl border border-black/5 shadow-inner">
+                      <div
+                        class="flex transition-transform duration-500 ease-out will-change-transform"
+                        data-pitomnik-greenhouse-track
+                        style="transform: translateX(0%)"
+                      >
+                        {% for s in greenhouse.slides %}
+                          <div
+                            class="relative aspect-[16/10] min-h-[12rem] w-full shrink-0 overflow-hidden bg-slate-100"
+                            role="img"
+                            aria-label="{{ s.image_alt|default:s.placeholder }}"
+                          >
+                            {% if s.image %}
+                              <img
+                                src="{% static s.image %}"
+                                alt="{{ s.image_alt }}"
+                                class="h-full w-full object-cover object-center"
+                                width="1080"
+                                height="675"
+                                loading="lazy"
+                                decoding="async"
+                              />
+                            {% else %}
+                              <div class="flex h-full min-h-[12rem] w-full items-center justify-center bg-gradient-to-br from-slate-200/90 via-slate-100 to-slate-200/80 px-4 text-center">
+                                <span class="max-w-[16rem] text-xs font-medium leading-snug text-slate-500">{{ s.placeholder }}</span>
+                              </div>
+                            {% endif %}
+                          </div>
+                        {% endfor %}
+                      </div>
+                    </div>
+                    <div class="pointer-events-none absolute inset-0 flex items-center justify-between px-2">
+                      <button
+                        type="button"
+                        class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white"
+                        data-pitomnik-greenhouse-prev
+                        aria-label="Предыдущий слайд"
+                      >
+                        <i data-lucide="chevron-left" class="h-5 w-5 shrink-0" aria-hidden="true"></i>
+                      </button>
+                      <button
+                        type="button"
+                        class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white"
+                        data-pitomnik-greenhouse-next
+                        aria-label="Следующий слайд"
+                      >
+                        <i data-lucide="chevron-right" class="h-5 w-5 shrink-0" aria-hidden="true"></i>
+                      </button>
                     </div>
                   </div>
-                  <div class="pointer-events-none absolute inset-0 flex items-center justify-between px-2">
-                    <button
-                      type="button"
-                      class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white"
-                      data-pitomnik-greenhouse-prev
-                      aria-label="Предыдущий слайд"
-                    >
-                      <i data-lucide="chevron-left" class="h-5 w-5 shrink-0" aria-hidden="true"></i>
-                    </button>
-                    <button
-                      type="button"
-                      class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white"
-                      data-pitomnik-greenhouse-next
-                      aria-label="Следующий слайд"
-                    >
-                      <i data-lucide="chevron-right" class="h-5 w-5 shrink-0" aria-hidden="true"></i>
-                    </button>
+                  <div
+                    class="mt-4 flex flex-wrap items-center justify-center gap-2"
+                    role="tablist"
+                    aria-label="Слайды тепличного комбината"
+                  >
+                    {% for s in greenhouse.slides %}
+                      <button
+                        type="button"
+                        class="h-2 w-2 min-w-2 rounded-full bg-slate-300 transition-all duration-300 hover:bg-slate-400 data-[active=true]:w-8 data-[active=true]:min-w-8 data-[active=true]:bg-brand"
+                        data-pitomnik-greenhouse-dot="{{ forloop.counter0 }}"
+                        aria-label="Слайд {{ forloop.counter }}"
+                        role="tab"
+                        {% if forloop.first %}data-active="true"{% endif %}
+                      ></button>
+                    {% endfor %}
                   </div>
                 </div>
-                <div
-                  class="mt-4 flex flex-wrap items-center justify-center gap-2"
-                  role="tablist"
-                  aria-label="Слайды тепличного комбината"
-                >
-                  {% for s in greenhouse.slides %}
-                    <button
-                      type="button"
-                      class="h-2 w-2 min-w-2 rounded-full bg-slate-300 transition-all duration-300 hover:bg-slate-400 data-[active=true]:w-8 data-[active=true]:min-w-8 data-[active=true]:bg-brand"
-                      data-pitomnik-greenhouse-dot="{{ forloop.counter0 }}"
-                      aria-label="Слайд {{ forloop.counter }}"
-                      role="tab"
-                      {% if forloop.first %}data-active="true"{% endif %}
-                    ></button>
-                  {% endfor %}
+              {% else %}
+                <div class="flex aspect-[16/10] min-h-[12rem] items-center justify-center rounded-2xl border border-dashed border-black/10 bg-gradient-to-br from-slate-100 via-white to-slate-100 p-6 text-center">
+                  <div class="space-y-2">
+                    <div class="mx-auto inline-flex h-10 w-10 items-center justify-center rounded-xl bg-brand/10 text-brand">
+                      <i data-lucide="image-plus" class="h-5 w-5" aria-hidden="true"></i>
+                    </div>
+                    <p class="text-sm font-medium text-slate-700">Слайдер обновляется</p>
+                    <p class="text-xs text-slate-500">Скоро добавим новую серию фотографий.</p>
+                  </div>
                 </div>
-              </div>
+              {% endif %}
             </div>
 
             <div class="lg:col-span-7">
