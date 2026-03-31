@@ -34,70 +34,61 @@
   </head>
   <body class="bg-white text-slate-900 antialiased">
     
-<header id="site-header" class="sticky top-0 z-50 border-b border-black/5 bg-white/80 backdrop-blur">
+<header id="site-header" class="sticky top-0 z-50 border-b border-slate-200 bg-white">
+  <div class="sg-nav-fallback-desktop mx-auto hidden w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 md:flex lg:gap-6 lg:px-8">
+    <a href="/sib_khvoinik_test/" class="flex shrink-0 items-center">
+      <img
+        src="/sib_khvoinik_test/static/media/branding/logo-main.webp"
+        alt="Сибирские газоны"
+        class="h-9 w-auto sm:h-10"
+        loading="eager"
+        decoding="async"
+      />
+    </a>
+    <nav
+      class="flex min-w-0 flex-1 flex-nowrap items-center justify-center gap-x-2 gap-y-1 overflow-x-auto px-1.5 py-0.5 sm:gap-x-2.5 sm:px-2 lg:gap-x-3 lg:px-2.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      aria-label="Основное меню"
+    >
+      <a href="/sib_khvoinik_test/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Главная</a>
+      <a href="/sib_khvoinik_test/gazon/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Газон</a>
+      <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Озеленение</a>
+      <a href="/sib_khvoinik_test/b2b/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">B2B</a>
+      <a href="/sib_khvoinik_test/pitomnik/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Питомник</a>
+      <a href="/sib_khvoinik_test/sadovye-centry/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Садовые центры</a>
+      <a href="/sib_khvoinik_test/katalog/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Каталог</a>
+      <a href="/sib_khvoinik_test/stati/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Статьи</a>
+      <a href="/sib_khvoinik_test/kontakty/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Контакты</a>
+    </nav>
+    <div class="flex shrink-0 items-center gap-2">
+      <a href="#" aria-label="MAX" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[11px] font-semibold text-indigo-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow">MAX</a>
+      <a href="#" aria-label="Telegram" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow"><i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i></a>
+      <a href="#" aria-label="VK" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow">VK</a>
+      <a href="tel:+73832010600" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-2 text-sm font-semibold text-white shadow-glow transition hover:brightness-105 sm:px-5 sm:py-2.5 sm:text-[15px]"><i data-lucide="phone-call" class="h-4 w-4 shrink-0" aria-hidden="true"></i>Позвонить</a>
+    </div>
+  </div>
+
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="flex h-16 items-center justify-between">
-      <a href="/sib_khvoinik_test/" class="flex items-center">
+    <div class="sg-nav-fallback-mobile-bar flex items-center justify-between gap-3 py-2.5 md:hidden">
+      <a href="/sib_khvoinik_test/" class="flex min-w-0 items-center">
         <img
           src="/sib_khvoinik_test/static/media/branding/logo-main.webp"
           alt="Сибирские газоны"
-          class="h-10 w-auto sm:h-11"
+          class="h-9 w-auto max-h-9"
           loading="eager"
           decoding="async"
         />
       </a>
-
-      <nav class="hidden md:flex md:ml-4 md:flex-1 items-center gap-1">
-        <div class="flex items-center gap-1">
-        <a href="/sib_khvoinik_test/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Главная
-        </a>
-        <a href="/sib_khvoinik_test/gazon/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Газон
-        </a>
-        <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Озеленение
-        </a>
-        <a href="/sib_khvoinik_test/b2b/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          B2B
-        </a>
-        <a href="/sib_khvoinik_test/pitomnik/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Питомник
-        </a>
-        <a href="/sib_khvoinik_test/sadovye-centry/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Садовые центры
-        </a>
-        <a href="/sib_khvoinik_test/katalog/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Каталог
-        </a>
-        <a href="/sib_khvoinik_test/stati/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Статьи
-        </a>
-        <a href="/sib_khvoinik_test/kontakty/" class="px-3 py-2 text-[15px] rounded-lg text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-          Контакты
-        </a>
-        </div>
-        <a
-          href="/sib_khvoinik_test/sluzhba-zaboty/"
-          class="ml-auto px-4 py-2 text-[15px] font-semibold rounded-xl bg-gradient-to-r from-brand to-brand2 text-white shadow-glow hover:brightness-105 transition"
-        >
-          Служба заботы
-        </a>
-      </nav>
-
-      <!-- Mobile -->
-      <div class="md:hidden flex items-center gap-2">
-        <a
-          href="/sib_khvoinik_test/sluzhba-zaboty/"
-          class="px-3 py-2 text-sm font-semibold rounded-xl bg-gradient-to-r from-brand to-brand2 text-white shadow-glow"
-        >
-          Забота
-        </a>
+      <div class="flex shrink-0 items-center gap-1.5">
+        <a href="#" aria-label="MAX" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[9px] font-semibold text-indigo-700 shadow-sm">MAX</a>
+        <a href="#" aria-label="Telegram" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm"><i data-lucide="send" class="h-3.5 w-3.5" aria-hidden="true"></i></a>
+        <a href="#" aria-label="VK" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[10px] font-semibold tracking-wide text-blue-700 shadow-sm">VK</a>
+        <a href="tel:+73832010600" class="inline-flex items-center justify-center rounded-full border-2 border-brand bg-white px-2.5 py-1.5 text-[11px] font-semibold text-brand">Звонок</a>
         <button
           id="burgerBtn"
           type="button"
-          class="inline-flex items-center justify-center rounded-xl border border-black/10 p-2 hover:bg-black/5 transition"
+          class="inline-flex items-center justify-center rounded-xl border border-slate-200 p-2 text-slate-700 hover:bg-slate-50 transition"
           aria-label="Открыть меню"
+          aria-expanded="false"
         >
           <i data-lucide="menu" class="h-5 w-5"></i>
         </button>
@@ -105,36 +96,24 @@
     </div>
   </div>
 
-  <div id="mobileMenu" class="md:hidden hidden border-t border-black/5 bg-white">
-    <div class="mx-auto max-w-7xl px-4 py-3 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-1 gap-2">
-            <a href="/sib_khvoinik_test/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Главная
-            </a>
-            <a href="/sib_khvoinik_test/gazon/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Газон
-            </a>
-            <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Озеленение
-            </a>
-            <a href="/sib_khvoinik_test/b2b/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              B2B
-            </a>
-            <a href="/sib_khvoinik_test/pitomnik/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Питомник
-            </a>
-            <a href="/sib_khvoinik_test/sadovye-centry/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Садовые центры
-            </a>
-            <a href="/sib_khvoinik_test/katalog/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Каталог
-            </a>
-            <a href="/sib_khvoinik_test/stati/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Статьи
-            </a>
-            <a href="/sib_khvoinik_test/kontakty/" class="px-3 py-2 text-sm rounded-xl text-slate-700 hover:text-brand hover:bg-brand/5 transition">
-              Контакты
-            </a>
+  <div id="mobileMenu" class="sg-mobile-menu-panel hidden border-b border-slate-200 bg-white md:hidden">
+    <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 gap-1">
+        <a href="/sib_khvoinik_test/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Главная</a>
+        <a href="/sib_khvoinik_test/gazon/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Газон</a>
+        <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Озеленение</a>
+        <a href="/sib_khvoinik_test/b2b/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">B2B</a>
+        <a href="/sib_khvoinik_test/pitomnik/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Питомник</a>
+        <a href="/sib_khvoinik_test/sadovye-centry/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Садовые центры</a>
+        <a href="/sib_khvoinik_test/katalog/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Каталог</a>
+        <div class="mt-2 grid grid-cols-4 gap-2">
+          <a href="#" aria-label="MAX" class="inline-flex items-center justify-center rounded-xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 px-2 py-2.5 text-[11px] font-semibold text-indigo-700 shadow-sm">MAX</a>
+          <a href="#" aria-label="Telegram" class="inline-flex items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 px-2 py-2.5 text-sky-700 shadow-sm"><i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i></a>
+          <a href="#" aria-label="VK" class="inline-flex items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 px-2 py-2.5 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm">VK</a>
+          <a href="tel:+73832010600" class="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand to-brand2 px-2 py-2.5 text-xs font-semibold text-white shadow-glow">Звонок</a>
+        </div>
+        <a href="/sib_khvoinik_test/stati/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Статьи</a>
+        <a href="/sib_khvoinik_test/kontakty/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Контакты</a>
       </div>
     </div>
   </div>
