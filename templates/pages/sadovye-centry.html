@@ -356,28 +356,47 @@
       </div>
       <div class="mt-8 grid grid-cols-1 gap-5 sm:grid-cols-2 xl:grid-cols-4 xl:gap-6">
         <article
-          class="flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.18)]"
+          class="flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.18)]"
           data-animate="fadeInUp"
         >
-          <div class="relative aspect-[5/4] w-full overflow-hidden bg-gradient-to-br from-slate-200/80 via-slate-50 to-brand/12">
-            <div
-              class="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.35)_0_8px,transparent_8px_16px)] px-3 text-center"
-              aria-hidden="true"
-            >
-              <i data-lucide="sparkles" class="h-7 w-7 text-slate-400/90"></i>
-              <span class="text-[11px] font-medium uppercase tracking-wide text-slate-500/90">Фото новинки</span>
+          <div class="relative aspect-[5/4] w-full overflow-hidden bg-slate-100" data-sadovye-assortment-slider>
+            <div class="h-full overflow-hidden">
+              <div class="flex h-full transition-transform duration-500 ease-out" data-sadovye-assortment-track style="transform: translateX(0%)">
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-lantana-01.jpg' %}" alt="Лантана Gem Compact Rose Quartz розовое соцветие крупным планом" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-lantana-02.jpg' %}" alt="Лантана Gem Compact Rose Quartz в открытом грунте" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-lantana-03.jpg' %}" alt="Лантана Gem Compact Rose Quartz в кашпо" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-lantana-04.jpg' %}" alt="Лантана Gem Compact Rose Quartz в солнечном цветнике" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+              </div>
+            </div>
+            <div class="pointer-events-none absolute inset-0 flex items-center justify-between px-2">
+              <button type="button" class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white" data-sadovye-assortment-prev aria-label="Предыдущий слайд"><i data-lucide="chevron-left" class="h-5 w-5 shrink-0"></i></button>
+              <button type="button" class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white" data-sadovye-assortment-next aria-label="Следующий слайд"><i data-lucide="chevron-right" class="h-5 w-5 shrink-0"></i></button>
+            </div>
+            <div class="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-1.5">
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="0" data-active="true" aria-label="Слайд 1"></button>
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="1" aria-label="Слайд 2"></button>
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="2" aria-label="Слайд 3"></button>
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="3" aria-label="Слайд 4"></button>
             </div>
           </div>
           <div class="flex flex-1 flex-col p-5">
-            <h3 class="text-base font-semibold leading-snug text-slate-900">Сезонные поступления</h3>
+            <h3 class="text-base font-semibold leading-snug text-slate-900">Лантана Gem Compact Rose Quartz</h3>
             <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
-              Свежие партии по мере прибытия в центр. Уточняйте наличие понравившихся позиций — часть приезжает
-              небольшими партиями.
+              Компактный сорт лантаны для кашпо, балконов и террас: нежные розово-кварцевые соцветия, непрерывное
+              цветение и аккуратная форма без сложной формировки.
             </p>
             <button
               type="button"
               data-open-modal="sadovye_novinka_1"
-              data-modal-title="Сезонные поступления"
+              data-modal-title="Лантана Gem Compact Rose Quartz"
               class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-black/[0.03]"
             >
               Подробнее
@@ -386,28 +405,47 @@
           </div>
         </article>
         <article
-          class="flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.18)]"
+          class="flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.18)]"
           data-animate="fadeInUp"
         >
-          <div class="relative aspect-[5/4] w-full overflow-hidden bg-gradient-to-br from-slate-200/80 via-white to-brand2/12">
-            <div
-              class="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.35)_0_8px,transparent_8px_16px)] px-3 text-center"
-              aria-hidden="true"
-            >
-              <i data-lucide="sparkles" class="h-7 w-7 text-slate-400/90"></i>
-              <span class="text-[11px] font-medium uppercase tracking-wide text-slate-500/90">Фото новинки</span>
+          <div class="relative aspect-[5/4] w-full overflow-hidden bg-slate-100" data-sadovye-assortment-slider>
+            <div class="h-full overflow-hidden">
+              <div class="flex h-full transition-transform duration-500 ease-out" data-sadovye-assortment-track style="transform: translateX(0%)">
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-stockrose-01.jpg' %}" alt="Штокроза Spring Celebrities Crimson в кашпо в садовой композиции" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-stockrose-02.jpg' %}" alt="Штокроза Spring Celebrities Crimson на фоне неба" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-stockrose-03.jpg' %}" alt="Плотное цветение штокрозы Spring Celebrities Crimson" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-stockrose-04.jpg' %}" alt="Крупный махровый цветок штокрозы crimson" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+              </div>
+            </div>
+            <div class="pointer-events-none absolute inset-0 flex items-center justify-between px-2">
+              <button type="button" class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white" data-sadovye-assortment-prev aria-label="Предыдущий слайд"><i data-lucide="chevron-left" class="h-5 w-5 shrink-0"></i></button>
+              <button type="button" class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white" data-sadovye-assortment-next aria-label="Следующий слайд"><i data-lucide="chevron-right" class="h-5 w-5 shrink-0"></i></button>
+            </div>
+            <div class="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-1.5">
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="0" data-active="true" aria-label="Слайд 1"></button>
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="1" aria-label="Слайд 2"></button>
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="2" aria-label="Слайд 3"></button>
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="3" aria-label="Слайд 4"></button>
             </div>
           </div>
           <div class="flex flex-1 flex-col p-5">
-            <h3 class="text-base font-semibold leading-snug text-slate-900">Новые сорта и коллекции</h3>
+            <h3 class="text-base font-semibold leading-snug text-slate-900">Штокроза Spring Celebrities Crimson</h3>
             <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
-              Расширяем линейку: интересные находки сезона и рекомендации специалистов. Отдельные позиции —
-              ограниченными партиями.
+              Компактная штокроза нового поколения: насыщенный crimson-оттенок, крупные махровые цветы и эффектное
+              цветение уже в первый сезон.
             </p>
             <button
               type="button"
               data-open-modal="sadovye_novinka_2"
-              data-modal-title="Новые сорта и коллекции"
+              data-modal-title="Штокроза Spring Celebrities Crimson"
               class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-black/[0.03]"
             >
               Подробнее
@@ -416,28 +454,47 @@
           </div>
         </article>
         <article
-          class="flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.18)]"
+          class="flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.18)]"
           data-animate="fadeInUp"
         >
-          <div class="relative aspect-[5/4] w-full overflow-hidden bg-gradient-to-br from-slate-200/80 via-slate-50 to-accent/18">
-            <div
-              class="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.35)_0_8px,transparent_8px_16px)] px-3 text-center"
-              aria-hidden="true"
-            >
-              <i data-lucide="sparkles" class="h-7 w-7 text-slate-400/90"></i>
-              <span class="text-[11px] font-medium uppercase tracking-wide text-slate-500/90">Фото новинки</span>
+          <div class="relative aspect-[5/4] w-full overflow-hidden bg-slate-100" data-sadovye-assortment-slider>
+            <div class="h-full overflow-hidden">
+              <div class="flex h-full transition-transform duration-500 ease-out" data-sadovye-assortment-track style="transform: translateX(0%)">
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-platycodon-01.jpg' %}" alt="Платикодон Mariesii в миксбордере" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-platycodon-02.jpg' %}" alt="Крупный цветок платикодона Mariesii крупным планом" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-platycodon-03.jpg' %}" alt="Платикодон Mariesii в декоративном кашпо" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-platycodon-04.jpg' %}" alt="Платикодон с бутонами-шариками и раскрытыми цветами" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+              </div>
+            </div>
+            <div class="pointer-events-none absolute inset-0 flex items-center justify-between px-2">
+              <button type="button" class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white" data-sadovye-assortment-prev aria-label="Предыдущий слайд"><i data-lucide="chevron-left" class="h-5 w-5 shrink-0"></i></button>
+              <button type="button" class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white" data-sadovye-assortment-next aria-label="Следующий слайд"><i data-lucide="chevron-right" class="h-5 w-5 shrink-0"></i></button>
+            </div>
+            <div class="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-1.5">
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="0" data-active="true" aria-label="Слайд 1"></button>
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="1" aria-label="Слайд 2"></button>
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="2" aria-label="Слайд 3"></button>
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="3" aria-label="Слайд 4"></button>
             </div>
           </div>
           <div class="flex flex-1 flex-col p-5">
-            <h3 class="text-base font-semibold leading-snug text-slate-900">Декоративные формы</h3>
+            <h3 class="text-base font-semibold leading-snug text-slate-900">Платикодон Mariesii</h3>
             <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
-              Формованные кроны и важные нюансы качества лучше оценивать на месте: масштаб и посадочная высота на фото
-              часто «ведут себя» иначе.
+              Трендовый многолетник с бутонами-шариками и крупными звёздчатыми цветами: декоративный, зимостойкий и
+              неприхотливый вариант для современных цветников.
             </p>
             <button
               type="button"
               data-open-modal="sadovye_novinka_3"
-              data-modal-title="Декоративные формы"
+              data-modal-title="Платикодон Mariesii"
               class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-black/[0.03]"
             >
               Подробнее
@@ -446,28 +503,47 @@
           </div>
         </article>
         <article
-          class="flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.18)]"
+          class="flex h-full flex-col overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-sm transition duration-300 hover:border-brand/15 hover:shadow-[0_20px_50px_-18px_rgba(64,145,108,0.18)]"
           data-animate="fadeInUp"
         >
-          <div class="relative aspect-[5/4] w-full overflow-hidden bg-gradient-to-br from-slate-300/40 via-slate-50 to-brand/10">
-            <div
-              class="absolute inset-0 flex flex-col items-center justify-center gap-1 bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.35)_0_8px,transparent_8px_16px)] px-3 text-center"
-              aria-hidden="true"
-            >
-              <i data-lucide="sparkles" class="h-7 w-7 text-slate-400/90"></i>
-              <span class="text-[11px] font-medium uppercase tracking-wide text-slate-500/90">Фото новинки</span>
+          <div class="relative aspect-[5/4] w-full overflow-hidden bg-slate-100" data-sadovye-assortment-slider>
+            <div class="h-full overflow-hidden">
+              <div class="flex h-full transition-transform duration-500 ease-out" data-sadovye-assortment-track style="transform: translateX(0%)">
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-scaevola-01.jpg' %}" alt="Сцевола Indigo Touch с обильным фиолетовым цветением" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-scaevola-02.jpg' %}" alt="Крупный план цветения сцеволы Indigo Touch" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-scaevola-03.jpg' %}" alt="Сцевола Indigo Touch в подвесном кашпо" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+                <div class="relative h-full w-full shrink-0 bg-slate-100">
+                  <img src="{% static 'media/images/sadovye-novinka-scaevola-04.jpg' %}" alt="Плотный куст сцеволы Indigo Touch" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
+                </div>
+              </div>
+            </div>
+            <div class="pointer-events-none absolute inset-0 flex items-center justify-between px-2">
+              <button type="button" class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white" data-sadovye-assortment-prev aria-label="Предыдущий слайд"><i data-lucide="chevron-left" class="h-5 w-5 shrink-0"></i></button>
+              <button type="button" class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white" data-sadovye-assortment-next aria-label="Следующий слайд"><i data-lucide="chevron-right" class="h-5 w-5 shrink-0"></i></button>
+            </div>
+            <div class="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-1.5">
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="0" data-active="true" aria-label="Слайд 1"></button>
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="1" aria-label="Слайд 2"></button>
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="2" aria-label="Слайд 3"></button>
+              <button type="button" class="h-1.5 w-1.5 rounded-full bg-white/70 data-[active=true]:w-5 data-[active=true]:bg-white transition-all" data-sadovye-assortment-dot="3" aria-label="Слайд 4"></button>
             </div>
           </div>
           <div class="flex flex-1 flex-col p-5">
-            <h3 class="text-base font-semibold leading-snug text-slate-900">Лимитированные партии</h3>
+            <h3 class="text-base font-semibold leading-snug text-slate-900">Сцевола Indigo Touch</h3>
             <p class="mt-2 flex-1 text-sm leading-relaxed text-slate-600">
-              Сезонные и редкие позиции, небольшие объёмы и «окна» отгрузки — удобно планировать визит заранее и
-              уточнять сроки.
+              Ампельный тренд 2026: каскадная форма, непрерывное цветение и устойчивость к жаре, ветру и засухе
+              при минимальном уходе.
             </p>
             <button
               type="button"
               data-open-modal="sadovye_novinka_4"
-              data-modal-title="Лимитированные партии"
+              data-modal-title="Сцевола Indigo Touch"
               class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 py-2.5 text-sm font-semibold text-slate-900 transition hover:bg-black/[0.03]"
             >
               Подробнее
