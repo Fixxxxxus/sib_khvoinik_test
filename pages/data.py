@@ -124,9 +124,6 @@ B2B_PAGE = {
         {"title": "ЖК \"Инские холмы\"", "desc": "деревья и кустарники", "meta": "срок 10 дней", "image": "media/images/cases/inskie-holmy.webp"},
         {"title": "ЖК \"Чикаго\"", "desc": "посадки и газон", "meta": "срок 7 дней", "image": "media/images/cases/chicago.webp"},
         {"title": "ЖК \"Флора и Фауна\"", "desc": "комплексное озеленение", "meta": "срок 9 дней", "image": "media/images/cases/flora-fauna.webp"},
-        {"title": "Коттеджный участок", "desc": "Озеленили задний двор участка", "meta": "срок 7-10 дней", "image": "media/images/cases/cottage-yard.webp"},
-        {"title": "Сосновый двор", "desc": "видовые зоны и уход", "meta": "срок 12 дней", "image": "media/images/cases/pine-courtyard.webp"},
-        {"title": "Участок \"Солнечная линия\"", "desc": "газон и аккуратная геометрия двора", "meta": "срок 8 дней", "image": "media/images/cases/garden-line.webp"},
     ],
     "care_b2b_points": [
         "Регламент ухода и сезонные напоминания после сдачи",
