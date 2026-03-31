@@ -165,15 +165,17 @@
                 >
                   {{ forloop.counter|stringformat:"02d" }}
                 </div>
-                <div
-                  class="relative mb-4 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand2 text-white shadow-md ring-4 ring-white/80 transition group-hover:scale-105 group-hover:shadow-lg"
-                >
-                  <i data-lucide="{{ item.icon }}" class="h-6 w-6"></i>
+                <div class="relative mb-3 flex items-center gap-3">
+                  <div
+                    class="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand2 text-white shadow-md ring-4 ring-white/80 transition group-hover:scale-105 group-hover:shadow-lg"
+                  >
+                    <i data-lucide="{{ item.icon }}" class="h-5 w-5"></i>
+                  </div>
+                  <div class="font-semibold text-lg text-slate-900 group-hover:text-brand transition-colors">
+                    {{ item.title }}
+                  </div>
                 </div>
-                <div class="relative font-semibold text-lg text-slate-900 group-hover:text-brand transition-colors">
-                  {{ item.title }}
-                </div>
-                <div class="relative mt-2 text-sm text-slate-600 leading-relaxed">
+                <div class="relative text-sm text-slate-600 leading-relaxed">
                   {{ item.desc }}
                 </div>
                 <div
@@ -284,7 +286,7 @@
               class="pointer-events-none absolute -right-16 -top-16 z-10 h-48 w-48 rounded-full bg-brand/15 blur-3xl"
             ></div>
             <div
-              class="relative min-h-[14rem] flex-1 overflow-hidden bg-slate-900 lg:min-h-0"
+              class="relative hidden min-h-[14rem] flex-1 overflow-hidden bg-slate-900 lg:block lg:min-h-0"
             >
               <video
                 class="absolute inset-0 h-full w-full object-cover"
@@ -378,6 +380,29 @@
                 </div>
                 <div class="mt-2 text-sm leading-relaxed text-slate-600">
                   Маркировка, инспекция, подготовка к отгрузке.
+                </div>
+              </div>
+            </div>
+            <div class="mt-6 overflow-hidden rounded-3xl border border-black/5 bg-slate-900 lg:hidden">
+              <div class="relative aspect-video w-full">
+                <video
+                  class="absolute inset-0 h-full w-full object-cover"
+                  style="max-width: none; max-height: none"
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  preload="metadata"
+                  poster="{% static 'media/images/home-production-greenhouse.webp' %}"
+                >
+                  <source src="{% static 'media/videos/home-production-pitomnik.mp4' %}?v=2" type="video/mp4" />
+                </video>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/40 via-black/5 to-transparent pointer-events-none"></div>
+                <div
+                  class="absolute bottom-3 left-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/35 px-3 py-1.5 text-xs font-medium text-white backdrop-blur-sm"
+                >
+                  <i data-lucide="video" class="h-3.5 w-3.5 text-white/90" aria-hidden="true"></i>
+                  Питомник и теплицы
                 </div>
               </div>
             </div>
