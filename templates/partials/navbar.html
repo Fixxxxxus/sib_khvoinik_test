@@ -111,8 +111,9 @@
         </a>
         <a
           href="tel:+73832010600"
-          class="inline-flex items-center justify-center rounded-full border-2 border-brand bg-white px-2.5 py-1.5 text-[11px] font-semibold text-brand"
+          class="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-brand to-brand2 px-3 py-1.5 text-[11px] font-semibold text-white shadow-sm transition hover:brightness-105"
         >
+          <i data-lucide="phone-call" class="h-3.5 w-3.5" aria-hidden="true"></i>
           Звонок
         </a>
         <button
@@ -152,6 +153,12 @@
         <a href="{% url 'katalog' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
           Каталог
         </a>
+        <a href="{% url 'stati_list' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Статьи
+        </a>
+        <a href="{% url 'kontakty' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Контакты
+        </a>
         <div class="mt-2 grid grid-cols-4 gap-2">
           <a
             href="#"
@@ -181,12 +188,6 @@
             Звонок
           </a>
         </div>
-        <a href="{% url 'stati_list' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
-          Статьи
-        </a>
-        <a href="{% url 'kontakty' %}" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
-          Контакты
-        </a>
       </div>
     </div>
   </div>
