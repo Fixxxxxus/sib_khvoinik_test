@@ -618,12 +618,12 @@
   <section class="mt-14">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Адреса и режим работы</h2>
-      <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-3 md:items-stretch">
+      <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 md:items-stretch">
         <article
           class="flex h-full flex-col rounded-3xl border border-black/5 bg-white p-6 shadow-sm transition hover:shadow-glow"
           data-animate="fadeInUp"
         >
-          <div class="h-28 shrink-0 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+          <div class="h-60 shrink-0 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
           <div class="mt-4 flex min-h-0 flex-1 flex-col gap-3">
             <div class="space-y-1.5">
               <h3 class="text-base font-semibold leading-snug text-slate-900">Садовый центр Новопичугово</h3>
@@ -660,7 +660,15 @@
           class="flex h-full flex-col rounded-3xl border border-black/5 bg-white p-6 shadow-sm transition hover:shadow-glow"
           data-animate="fadeInUp"
         >
-          <div class="h-28 shrink-0 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+          <div class="h-60 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
+            <img
+              src="{% static 'media/images/sadovye-center-mega.jpg' %}"
+              alt="Садовый центр МЕГА"
+              class="h-full w-full object-cover object-center"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
           <div class="mt-4 flex min-h-0 flex-1 flex-col gap-3">
             <div class="space-y-1.5">
               <h3 class="text-base font-semibold leading-snug text-slate-900">Садовый центр МЕГА</h3>
@@ -686,47 +694,6 @@
               >Маршрут</a>
               <a
                 href="https://yandex.ru/maps/?text=%D0%9D%D0%BE%D0%B2%D0%BE%D1%81%D0%B8%D0%B1%D0%B8%D1%80%D1%81%D0%BA%2C%20%D0%92%D0%B0%D1%82%D1%83%D1%82%D0%B8%D0%BD%D0%B0%2C%20107"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="text-center text-sm font-medium text-brand underline decoration-solid underline-offset-4 hover:text-brand2"
-              >Посмотреть на карте</a>
-            </div>
-          </div>
-        </article>
-        <article
-          class="flex h-full flex-col rounded-3xl border border-black/5 bg-white p-6 shadow-sm transition hover:shadow-glow"
-          data-animate="fadeInUp"
-        >
-          <div class="h-28 shrink-0 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
-          <div class="mt-4 flex min-h-0 flex-1 flex-col gap-3">
-            <div class="space-y-1.5">
-              <h3 class="text-base font-semibold leading-snug text-slate-900">Рулонный газон</h3>
-              <a
-                href="tel:+79232446202"
-                class="inline-block text-sm font-semibold text-slate-900 tabular-nums hover:text-brand sm:text-[15px]"
-              >+7 (923) 244-62-02</a>
-              <a
-                href="mailto:rulony@gazony.ru"
-                class="inline-block break-all text-sm font-medium text-slate-900 hover:text-brand"
-              >rulony@gazony.ru</a>
-            </div>
-            <p class="text-sm italic leading-relaxed text-slate-600">Железнодорожная 12/1, оф 501</p>
-            <div
-              class="flex min-h-[4.25rem] items-start gap-2 text-xs leading-relaxed text-slate-600 sm:text-sm"
-            >
-              <i data-lucide="clock" class="mt-0.5 h-4 w-4 shrink-0 text-slate-400" aria-hidden="true"></i>
-              <div class="min-w-0 flex-1 space-y-0.5">
-                <p>Пн–Пт с 9:00 до 18:00</p>
-                <p>Сб–Вс — выходные</p>
-              </div>
-            </div>
-            <div class="mt-auto flex flex-col gap-2.5 border-t border-black/5 pt-4">
-              <a
-                href="{% url 'kontakty' %}"
-                class="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-3 text-sm font-semibold text-white shadow-glow transition hover:brightness-105"
-              >Маршрут</a>
-              <a
-                href="https://yandex.ru/maps/?text=%D0%9D%D0%BE%D0%B2%D0%BE%D1%81%D0%B8%D0%B1%D0%B8%D1%80%D1%81%D0%BA%2C%20%D0%96%D0%B5%D0%BB%D0%B5%D0%B7%D0%BD%D0%BE%D0%B4%D0%BE%D1%80%D0%BE%D0%B6%D0%BD%D0%B0%D1%8F%2C%2012%2F1"
                 target="_blank"
                 rel="noopener noreferrer"
                 class="text-center text-sm font-medium text-brand underline decoration-solid underline-offset-4 hover:text-brand2"
