@@ -353,6 +353,52 @@ function initPitomnikGreenhouseSlider() {
   apply();
 }
 
+/** Мини-слайдеры в карточках ассортимента на странице «Садовые центры». */
+function initSadovyeAssortmentSliders() {
+  const roots = Array.from(document.querySelectorAll('[data-sadovye-assortment-slider]'));
+  if (!roots.length) return;
+
+  roots.forEach((root) => {
+    const track = root.querySelector('[data-sadovye-assortment-track]');
+    if (!track) return;
+    const n = track.children.length;
+    if (n === 0) return;
+
+    let i = 0;
+    const dots = Array.from(root.querySelectorAll('[data-sadovye-assortment-dot]'));
+    const prev = root.querySelector('[data-sadovye-assortment-prev]');
+    const next = root.querySelector('[data-sadovye-assortment-next]');
+
+    const apply = () => {
+      const slideWidth = root.clientWidth || 0;
+      track.style.transform = `translateX(-${i * slideWidth}px)`;
+      dots.forEach((btn, j) => {
+        const on = j === i;
+        btn.setAttribute('data-active', on ? 'true' : 'false');
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+    };
+
+    prev?.addEventListener('click', () => {
+      i = (i - 1 + n) % n;
+      apply();
+    });
+    next?.addEventListener('click', () => {
+      i = (i + 1) % n;
+      apply();
+    });
+    dots.forEach((btn, j) => {
+      btn.addEventListener('click', () => {
+        i = j;
+        apply();
+      });
+    });
+
+    window.addEventListener('resize', apply);
+    apply();
+  });
+}
+
 function initBeforeAfterSliders() {
   const sliders = Array.from(document.querySelectorAll('[data-before-after]'));
   if (!sliders.length) return;
@@ -527,6 +573,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initCounters();
   initBeforeAfterSliders();
   initPitomnikGreenhouseSlider();
+  initSadovyeAssortmentSliders();
   initGazonCalculator();
 });
 
