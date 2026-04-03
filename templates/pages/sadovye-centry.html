@@ -671,20 +671,21 @@
             </button>
           </div>
           <div class="lg:col-span-7">
-            <div
-              class="relative mx-auto w-full max-w-xl overflow-hidden rounded-3xl border border-dashed border-black/15 bg-gradient-to-br from-slate-200/80 via-white to-brand/12 lg:max-w-none lg:mx-0"
-              aria-hidden="true"
-            >
-              <div class="aspect-[4/3] w-full lg:aspect-[16/10] lg:min-h-[17rem]">
-                <div
-                  class="flex h-full w-full flex-col items-center justify-center gap-2 bg-[repeating-linear-gradient(-45deg,rgba(255,255,255,0.4)_0_10px,transparent_10px_20px)] px-6 py-10 text-center"
-                >
-                  <i data-lucide="credit-card" class="h-10 w-10 text-slate-400/90"></i>
-                  <span class="text-sm font-medium text-slate-500">Изображение цифровой карты</span>
-                  <span class="text-xs text-slate-400">Файл добавим позже</span>
-                </div>
+            <figure class="relative mx-auto w-full max-w-xl lg:mx-0 lg:max-w-none">
+              <div
+                class="overflow-hidden rounded-3xl border border-black/10 bg-white p-3 shadow-[0_20px_50px_-24px_rgba(15,80,50,0.25)] sm:p-4"
+              >
+                <img
+                  src="{% static 'media/images/sadovye-digital-card.jpg' %}"
+                  alt="Цифровая карта клиента сети садовых центров с QR-кодом"
+                  class="h-auto w-full rounded-2xl"
+                  width="1024"
+                  height="571"
+                  loading="lazy"
+                  decoding="async"
+                />
               </div>
-            </div>
+            </figure>
           </div>
         </div>
       </div>
