@@ -24,7 +24,7 @@ window.SGDownloadGazonChecklist = function () {
 function initViewportHeroHeights() {
   const header = document.getElementById('site-header');
   const heroes = document.querySelectorAll(
-    '[data-home-hero], [data-gazon-hero], [data-ozelenenie-hero], [data-b2b-hero], [data-pitomnik-hero], [data-sadovye-centry-hero]'
+    '[data-home-hero], [data-gazon-hero], [data-ozelenenie-hero], [data-b2b-hero], [data-pitomnik-hero], [data-sadovye-centry-hero], [data-zaboty-hero]'
   );
   if (!header || heroes.length === 0) return;
 
