@@ -190,6 +190,44 @@ function initModal() {
     });
   });
 
+  // ── Bitrix24 lead capture ──
+  const B24_WEBHOOK = 'https://sgpichugi.bitrix24.ru/rest/1/6phslfom1dj09wh3';
+
+  const sendLeadToB24 = (tag, payload) => {
+    const [section, formName] = tag.includes('/') ? tag.split('/', 2) : ['other', tag];
+
+    const fields = {
+      TITLE: `Сайт: ${formName}`,
+      UTM_SOURCE: 'website',
+      UTM_MEDIUM: section,
+      UTM_CONTENT: formName,
+      UTM_TERM: window.location.pathname,
+    };
+
+    if (payload.name) fields.NAME = payload.name;
+    if (payload.phone) {
+      fields.PHONE = [{ VALUE: payload.phone, VALUE_TYPE: 'WORK' }];
+    }
+    if (payload.email) {
+      fields.EMAIL = [{ VALUE: payload.email, VALUE_TYPE: 'WORK' }];
+    }
+    if (payload.company) fields.COMPANY_TITLE = payload.company;
+
+    // Все остальные поля формы → COMMENTS
+    const skipKeys = ['name', 'phone', 'email', 'company', 'formTag'];
+    const extra = Object.entries(payload)
+      .filter(([k]) => !skipKeys.includes(k))
+      .map(([k, v]) => `${k}: ${v}`)
+      .join('\n');
+    if (extra) fields.COMMENTS = extra;
+
+    fetch(`${B24_WEBHOOK}/crm.lead.add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields }),
+    }).catch((err) => console.warn('[B24] lead send failed:', err));
+  };
+
   // Submit UI-only forms (save to localStorage)
   const handleUiSubmit = async (form) => {
     const tag = form.getAttribute('data-form-tag') || 'unknown';
@@ -203,6 +241,8 @@ function initModal() {
     const existing = JSON.parse(localStorage.getItem(key) || '[]');
     existing.push(entry);
     localStorage.setItem(key, JSON.stringify(existing));
+
+    sendLeadToB24(tag, payload);
 
     // Swap to success template
     const successTpl = document.getElementById('modal-template-success');
