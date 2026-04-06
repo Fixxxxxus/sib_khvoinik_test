@@ -207,5 +207,163 @@ async def b24_company_update(id: int, fields: dict[str, Any]) -> Any:
     return await _call_b24("crm.company.update", {"ID": id, "fields": fields})
 
 
+# ── Tasks ────────────────────────────────────────────────────
+
+
+@mcp.tool
+async def b24_task_list(
+    filter: dict[str, Any] | None = None,
+    select: list[str] | None = None,
+    order: dict[str, str] | None = None,
+) -> Any:
+    """List tasks with optional filter, select, and order."""
+    params: dict[str, Any] = {}
+    if filter:
+        params["filter"] = filter
+    if select:
+        params["select"] = select
+    if order:
+        params["order"] = order
+    return await _call_b24("tasks.task.list", params)
+
+
+@mcp.tool
+async def b24_task_get(task_id: int) -> Any:
+    """Get a task by ID."""
+    return await _call_b24("tasks.task.get", {"taskId": task_id})
+
+
+@mcp.tool
+async def b24_task_add(fields: dict[str, Any]) -> Any:
+    """Create a new task. Required fields: TITLE, RESPONSIBLE_ID. Optional: DESCRIPTION, DEADLINE, PRIORITY, etc."""
+    return await _call_b24("tasks.task.add", {"fields": fields})
+
+
+@mcp.tool
+async def b24_task_update(task_id: int, fields: dict[str, Any]) -> Any:
+    """Update a task by ID."""
+    return await _call_b24("tasks.task.update", {"taskId": task_id, "fields": fields})
+
+
+@mcp.tool
+async def b24_task_comment_list(task_id: int) -> Any:
+    """List comments on a task."""
+    return await _call_b24("task.commentitem.getlist", {"TASKID": task_id})
+
+
+@mcp.tool
+async def b24_task_comment_add(task_id: int, text: str) -> Any:
+    """Add a comment to a task."""
+    return await _call_b24("task.commentitem.add", {"TASKID": task_id, "FIELDS": {"POST_MESSAGE": text}})
+
+
+# ── CRM Forms ────────────────────────────────────────────────
+
+
+@mcp.tool
+async def b24_form_list() -> Any:
+    """List all CRM web forms."""
+    return await _call_b24("crm.webform.list")
+
+
+@mcp.tool
+async def b24_form_get(id: int) -> Any:
+    """Get a CRM web form by ID."""
+    return await _call_b24("crm.webform.get", {"ID": id})
+
+
+@mcp.tool
+async def b24_form_add(fields: dict[str, Any]) -> Any:
+    """Create a new CRM web form."""
+    return await _call_b24("crm.webform.add", {"fields": fields})
+
+
+@mcp.tool
+async def b24_form_update(id: int, fields: dict[str, Any]) -> Any:
+    """Update a CRM web form by ID."""
+    return await _call_b24("crm.webform.update", {"ID": id, "fields": fields})
+
+
+# ── Events / Webhooks ────────────────────────────────────────
+
+
+@mcp.tool
+async def b24_event_list() -> Any:
+    """List all available Bitrix24 events and active subscriptions."""
+    return await _call_b24("event.get")
+
+
+@mcp.tool
+async def b24_event_bind(event: str, handler: str) -> Any:
+    """Subscribe to a Bitrix24 event. Provide event name (e.g. 'ONCRMLEADADD') and handler URL."""
+    return await _call_b24("event.bind", {"event": event, "handler": handler})
+
+
+@mcp.tool
+async def b24_event_unbind(event: str, handler: str) -> Any:
+    """Unsubscribe from a Bitrix24 event."""
+    return await _call_b24("event.unbind", {"event": event, "handler": handler})
+
+
+# ── Mailings (sender module) ────────────────────────────────
+
+
+@mcp.tool
+async def b24_mailing_list(filter: dict[str, Any] | None = None) -> Any:
+    """List email campaigns/mailings."""
+    params: dict[str, Any] = {}
+    if filter:
+        params["filter"] = filter
+    return await _call_b24("sender.letter.list", params)
+
+
+@mcp.tool
+async def b24_mailing_get(id: int) -> Any:
+    """Get mailing campaign details by ID."""
+    return await _call_b24("sender.letter.get", {"ID": id})
+
+
+@mcp.tool
+async def b24_mailing_add(fields: dict[str, Any]) -> Any:
+    """Create a new mailing campaign."""
+    return await _call_b24("sender.letter.add", {"fields": fields})
+
+
+@mcp.tool
+async def b24_mailing_update(id: int, fields: dict[str, Any]) -> Any:
+    """Update a mailing campaign."""
+    return await _call_b24("sender.letter.update", {"ID": id, "fields": fields})
+
+
+@mcp.tool
+async def b24_mailing_start(id: int) -> Any:
+    """Start sending a mailing campaign."""
+    return await _call_b24("sender.letter.send", {"ID": id})
+
+
+@mcp.tool
+async def b24_mailing_pause(id: int) -> Any:
+    """Pause a mailing campaign."""
+    return await _call_b24("sender.letter.pause", {"ID": id})
+
+
+@mcp.tool
+async def b24_mailing_stop(id: int) -> Any:
+    """Stop a mailing campaign."""
+    return await _call_b24("sender.letter.stop", {"ID": id})
+
+
+@mcp.tool
+async def b24_mailing_message_add(letter_id: int, fields: dict[str, Any]) -> Any:
+    """Add content/message to a mailing campaign."""
+    return await _call_b24("sender.message.add", {"LETTER_ID": letter_id, "fields": fields})
+
+
+@mcp.tool
+async def b24_mailing_message_update(id: int, fields: dict[str, Any]) -> Any:
+    """Update content/message in a mailing campaign."""
+    return await _call_b24("sender.message.update", {"ID": id, "fields": fields})
+
+
 if __name__ == "__main__":
     mcp.run()
