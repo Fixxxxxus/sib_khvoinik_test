@@ -124,15 +124,14 @@
     <main>
       
   <section
-    class="relative isolate flex min-h-[calc(100dvh-4.5rem)] w-full flex-col overflow-hidden md:min-h-[calc(100dvh-5rem)]"
+    class="relative isolate flex h-[calc(100svh-4.5rem)] w-full flex-col overflow-hidden md:h-[calc(100svh-5rem)]"
     aria-label="Служба заботы"
   >
     <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black via-brand/10 to-brand2/20"></div>
     <div class="absolute inset-0 -z-10">
       <div class="h-full w-full bg-[radial-gradient(circle_at_20%_30%,rgba(233,196,106,0.22),transparent_42%),radial-gradient(circle_at_70%_60%,rgba(64,145,108,0.25),transparent_45%)]"></div>
     </div>
-    <div class="pointer-events-none absolute inset-x-0 bottom-0 z-[1] h-16 bg-gradient-to-t from-slate-950/40 to-transparent" aria-hidden="true"></div>
-    <div class="relative z-10 flex w-full flex-1 items-center px-4 py-12 sm:px-8 sm:py-14 lg:px-14 lg:py-16 xl:px-20">
+    <div class="relative z-10 flex min-h-0 w-full flex-1 items-center px-4 py-12 sm:px-8 sm:py-14 lg:px-14 lg:py-16 xl:px-20">
       <div class="mx-auto w-full max-w-7xl">
         <div class="max-w-4xl">
           <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90">
@@ -140,36 +139,27 @@
             Система напоминаний и экспертная поддержка
           </div>
           <h1 class="mt-5 text-4xl font-semibold leading-[1.05] text-white md:text-5xl lg:text-6xl">
-            Мы не просто продаём растения — мы сопровождаем их.
+            Служба заботы
           </h1>
           <p class="mt-5 max-w-2xl text-base text-white/75 md:text-lg lg:text-xl">
-            Клуб «Сибирские газоны» — система напоминаний, инструкций и экспертной поддержки для наших клиентов.
+            Система напоминаний, инструкций и экспертной поддержки наших клиентов.
           </p>
-          <div class="mt-7 flex max-w-3xl flex-col gap-3 sm:flex-row">
-            <button
-              type="button"
-              data-open-modal="contact_zaboty"
-              data-modal-title="Подключиться"
-              class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 font-semibold text-white shadow-glow transition hover:brightness-105"
-            >
-              <i data-lucide="sparkles" class="h-5 w-5"></i>
-              Подключиться
-            </button>
-            <a
-              href="#conditions"
-              class="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/5 px-6 py-3 font-semibold text-white transition hover:bg-white/10"
-            >
-              Узнать условия
-              <i data-lucide="chevron-right" class="h-5 w-5"></i>
-            </a>
-          </div>
+          <button
+            type="button"
+            data-open-modal="contact_zaboty"
+            data-modal-title="Подключиться"
+            class="mt-7 inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 font-semibold text-white shadow-glow transition hover:brightness-105 sm:w-auto"
+          >
+            <i data-lucide="sparkles" class="h-5 w-5"></i>
+            Подключиться
+          </button>
         </div>
       </div>
     </div>
   </section>
 
   <!-- Why -->
-  <section id="conditions" class="mt-14">
+  <section id="conditions" class="scroll-mt-24 bg-white pt-14">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
         <div class="lg:col-span-6" data-animate="fadeInUp">
