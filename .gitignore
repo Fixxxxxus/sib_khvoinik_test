@@ -11,6 +11,10 @@ staticfiles/
 .env.*
 !.env.example
 
+# Claude Code
+.claude/
+docs/superpowers/
+
 # Логи
 *.log
 
