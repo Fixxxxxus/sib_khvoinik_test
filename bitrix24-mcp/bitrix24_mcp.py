@@ -9,7 +9,9 @@ from fastmcp import FastMCP
 
 load_dotenv()
 
-WEBHOOK_URL = os.environ["BITRIX24_WEBHOOK_URL"].rstrip("/")
+WEBHOOK_URL = os.environ.get("BITRIX24_WEBHOOK_URL", "").rstrip("/")
+if not WEBHOOK_URL:
+    raise RuntimeError("BITRIX24_WEBHOOK_URL is not set. Create a .env file from .env.example.")
 
 mcp = FastMCP(
     "Bitrix24",
@@ -18,11 +20,13 @@ mcp = FastMCP(
 
 _client = httpx.AsyncClient(timeout=30.0)
 
+MAX_PAGES = 200  # 200 pages × 50 items = 10,000 max
+
 
 async def _call_b24(method: str, params: dict[str, Any] | None = None) -> Any:
     """Call Bitrix24 REST API method. Auto-paginates list responses."""
     url = f"{WEBHOOK_URL}/{method}.json"
-    body = params or {}
+    body = dict(params) if params else {}
 
     resp = await _client.post(url, json=body)
     resp.raise_for_status()
@@ -35,13 +39,15 @@ async def _call_b24(method: str, params: dict[str, Any] | None = None) -> Any:
     result = data.get("result", data)
     if isinstance(result, list) and "next" in data:
         all_items = list(result)
-        while "next" in data:
+        page_count = 0
+        while "next" in data and page_count < MAX_PAGES:
+            page_count += 1
             body["start"] = data["next"]
             resp = await _client.post(url, json=body)
             resp.raise_for_status()
             data = resp.json()
             if "error" in data:
-                break
+                return {"partial_results": all_items, "error": data["error"], "error_description": data.get("error_description", "")}
             page = data.get("result", [])
             if isinstance(page, list):
                 all_items.extend(page)
@@ -224,13 +230,19 @@ async def b24_task_list(
         params["select"] = select
     if order:
         params["order"] = order
-    return await _call_b24("tasks.task.list", params)
+    result = await _call_b24("tasks.task.list", params)
+    if isinstance(result, dict) and "tasks" in result:
+        return result["tasks"]
+    return result
 
 
 @mcp.tool
 async def b24_task_get(task_id: int) -> Any:
     """Get a task by ID."""
-    return await _call_b24("tasks.task.get", {"taskId": task_id})
+    result = await _call_b24("tasks.task.get", {"taskId": task_id})
+    if isinstance(result, dict) and "task" in result:
+        return result["task"]
+    return result
 
 
 @mcp.tool
@@ -248,13 +260,13 @@ async def b24_task_update(task_id: int, fields: dict[str, Any]) -> Any:
 @mcp.tool
 async def b24_task_comment_list(task_id: int) -> Any:
     """List comments on a task."""
-    return await _call_b24("task.commentitem.getlist", {"TASKID": task_id})
+    return await _call_b24("tasks.task.comment.getList", {"taskId": task_id})
 
 
 @mcp.tool
 async def b24_task_comment_add(task_id: int, text: str) -> Any:
     """Add a comment to a task."""
-    return await _call_b24("task.commentitem.add", {"TASKID": task_id, "FIELDS": {"POST_MESSAGE": text}})
+    return await _call_b24("tasks.task.comment.add", {"taskId": task_id, "fields": {"POST_MESSAGE": text}})
 
 
 # ── CRM Forms ────────────────────────────────────────────────
@@ -289,7 +301,7 @@ async def b24_form_update(id: int, fields: dict[str, Any]) -> Any:
 
 @mcp.tool
 async def b24_event_list() -> Any:
-    """List all available Bitrix24 events and active subscriptions."""
+    """List events this webhook is currently subscribed to."""
     return await _call_b24("event.get")
 
 
@@ -366,4 +378,4 @@ async def b24_mailing_message_update(id: int, fields: dict[str, Any]) -> Any:
 
 
 if __name__ == "__main__":
-    mcp.run()
+    mcp.run(transport="stdio")
