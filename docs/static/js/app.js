@@ -502,48 +502,30 @@ function initGazonCalculator(modalFormFromModal) {
   }
   if (!inlineForm && !modalForm) return;
 
-  const base = 500; // placeholder, from ТЗ: "от 500 ₽/м²"
-  const regionMult = {
-    'Новосибирск': 1,
-    'Красноярск': 1.05,
-    'Томск': 1.02,
-    'Иркутск': 1.1,
-    'Кемерово': 1.03,
-    'Норильск': 1.2,
-    'Другое': 1.15,
-  };
-  const formatMult = {
-    'Самовывоз': 1.0,
-    'Доставка': 1.12,
-    'Сборная поставка': 1.08,
+  /** Прайс-лист 2026 (с НДС 5%): только объём м²; регион и формат поставки на цену не влияют */
+  const gazonPricePerM2 = (a) => {
+    if (!a || Number.isNaN(a) || a <= 0) return null;
+    if (a >= 2500) return 540;
+    if (a > 1000) return 575;
+    if (a > 500) return 585;
+    return 590;
   };
 
-  const volumeMult = (a) => {
-    // placeholder: larger volume -> slight discount
-    if (a <= 50) return 1.0;
-    const v = 1 - (a - 50) / 950 * 0.25; // ~down to 0.75 by 1000
-    return Math.max(0.75, v);
-  };
+  const CALC_DISCLAIMER =
+    'Это ориентировочный расчет. Точная стоимость зависит от объема, региона и условий поставки.';
 
   const formatRu = (n) => new Intl.NumberFormat('ru-RU').format(Math.round(n));
 
-  const calculate = (area, region, format, outTotal, outPer, outNote, onCalculated) => {
+  const calculate = (area, outTotal, outPer, outNote, onCalculated) => {
     const a = Number(area.value);
-    if (!a || Number.isNaN(a) || a <= 0) return;
-    const r = region.value;
-    const f = format.value;
+    const per = gazonPricePerM2(a);
+    if (per == null) return;
 
-    const rm = regionMult[r] ?? regionMult['Другое'];
-    const fm = formatMult[f] ?? formatMult['Доставка'];
-    const vm = volumeMult(a);
-
-    const per = base * rm * fm * vm;
     const total = per * a;
 
     outPer.textContent = `${formatRu(per)} ₽`;
     outTotal.textContent = `${formatRu(total)} ₽`;
-    outNote.textContent =
-      'Это расчет-заглушка для дизайна. Точная стоимость зависит от объема, региона и условий поставки.';
+    if (outNote) outNote.textContent = CALC_DISCLAIMER;
 
     if (onCalculated) onCalculated();
   };
@@ -560,7 +542,7 @@ function initGazonCalculator(modalFormFromModal) {
     if (inlineForm.dataset.boundInline === '1') return;
     inlineForm.dataset.boundInline = '1';
 
-    const onCalc = () => calculate(area, region, format, outTotal, outPer, outNote);
+    const onCalc = () => calculate(area, outTotal, outPer, outNote);
 
     ['input', 'change'].forEach((evt) => {
       area.addEventListener(evt, onCalc);
@@ -582,24 +564,21 @@ function initGazonCalculator(modalFormFromModal) {
     const outPer = modalForm.querySelector('#modalCalcPerM2');
     const outNote = modalForm.querySelector('#modalCalcNote');
     const calcBtn = modalForm.querySelector('#modalCalcBtn');
-    const cpWrap = modalForm.querySelector('#modalCalcCpWrap');
     const resultBlock = modalForm.querySelector('#modalCalcResultBlock');
-    if (!area || !region || !format || !outTotal || !outPer || !outNote || !calcBtn || !cpWrap) return;
+    if (!area || !region || !format || !outTotal || !outPer || !calcBtn) return;
 
     const resetModalCalc = () => {
       outPer.textContent = '—';
       outTotal.textContent = '—';
-      outNote.textContent = '';
-      cpWrap.classList.add('hidden');
+      if (outNote) outNote.textContent = '';
       if (resultBlock) resultBlock.classList.add('hidden');
     };
 
     resetModalCalc();
 
     const onCalc = () => {
-      calculate(area, region, format, outTotal, outPer, outNote, () => {
+      calculate(area, outTotal, outPer, outNote, () => {
         if (resultBlock) resultBlock.classList.remove('hidden');
-        cpWrap.classList.remove('hidden');
       });
     };
 
