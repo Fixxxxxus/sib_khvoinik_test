@@ -399,6 +399,62 @@ function initSadovyeAssortmentSliders() {
   });
 }
 
+/** Слайдер «Расширенная экспертная помощь» на странице «Служба заботы»: картинка + подпись слева синхронно. */
+function initZabotyExpertSlider() {
+  const roots = Array.from(document.querySelectorAll('[data-zaboty-expert-slider]'));
+  if (!roots.length) return;
+
+  roots.forEach((root) => {
+    const viewport = root.querySelector('[data-zaboty-expert-slider-viewport]');
+    const track = root.querySelector('[data-zaboty-expert-track]');
+    const caption = root.querySelector('[data-zaboty-expert-caption]');
+    if (!viewport || !track || !caption) return;
+
+    const slides = Array.from(track.querySelectorAll('[data-zaboty-expert-slide]'));
+    const n = slides.length;
+    if (n === 0) return;
+
+    let i = 0;
+    const dots = Array.from(root.querySelectorAll('[data-zaboty-expert-dot]'));
+    const prev = root.querySelector('[data-zaboty-expert-prev]');
+    const next = root.querySelector('[data-zaboty-expert-next]');
+
+    const setCaption = () => {
+      const text = slides[i]?.getAttribute('data-caption') || '';
+      caption.textContent = text;
+    };
+
+    const apply = () => {
+      const slideWidth = viewport.clientWidth || 0;
+      track.style.transform = `translateX(-${i * slideWidth}px)`;
+      dots.forEach((btn, j) => {
+        const on = j === i;
+        btn.setAttribute('data-active', on ? 'true' : 'false');
+        btn.setAttribute('aria-selected', on ? 'true' : 'false');
+      });
+      setCaption();
+    };
+
+    prev?.addEventListener('click', () => {
+      i = (i - 1 + n) % n;
+      apply();
+    });
+    next?.addEventListener('click', () => {
+      i = (i + 1) % n;
+      apply();
+    });
+    dots.forEach((btn, j) => {
+      btn.addEventListener('click', () => {
+        i = j;
+        apply();
+      });
+    });
+
+    window.addEventListener('resize', apply);
+    apply();
+  });
+}
+
 function initBeforeAfterSliders() {
   const sliders = Array.from(document.querySelectorAll('[data-before-after]'));
   if (!sliders.length) return;
@@ -574,6 +630,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initBeforeAfterSliders();
   initPitomnikGreenhouseSlider();
   initSadovyeAssortmentSliders();
+  initZabotyExpertSlider();
   initGazonCalculator();
 });
 
