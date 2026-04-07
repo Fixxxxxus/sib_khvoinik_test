@@ -17,7 +17,9 @@
               <div class="mt-4 space-y-3 text-sm text-slate-700">
                 <div class="flex items-start gap-3"><i data-lucide="phone" class="h-5 w-5 text-brand mt-0.5"></i> <div>+7 (383) 201-06-00</div></div>
                 <div class="flex items-start gap-3"><i data-lucide="mail" class="h-5 w-5 text-brand mt-0.5"></i> <div>price@gazony.ru</div></div>
-                <div class="flex items-start gap-3"><i data-lucide="map-pin" class="h-5 w-5 text-brand mt-0.5"></i> <div>г. Новосибирск, ул. Железнодорожная, 12/1, оф.501</div></div>
+                <div class="flex items-start gap-3"><i data-lucide="map-pin" class="h-6 w-6 shrink-0 text-brand mt-0.5"></i> <div>Главный офис - г. Новосибирск, ул. Железнодорожная, 12/1, оф.501</div></div>
+                <div class="flex items-start gap-3"><i data-lucide="map-pin" class="h-6 w-6 shrink-0 text-brand mt-0.5"></i> <div>Садовый центр №1 - г. Новосибирск, ул. Ватутина, 107, СЦ Мега</div></div>
+                <div class="flex items-start gap-3"><i data-lucide="map-pin" class="h-6 w-6 shrink-0 text-brand mt-0.5"></i> <div>Садовый центр №2 - с. Новопичугово, ориентир ул. Сосновая, СЦ Новопичугово</div></div>
               </div>
               <div class="mt-6 rounded-2xl border border-black/5 bg-white p-4">
                 <div class="font-semibold text-sm">Реквизиты для B2B</div>
@@ -34,12 +36,13 @@
 
           <div class="lg:col-span-7">
             <div class="rounded-3xl border border-black/5 bg-white overflow-hidden">
-              <div class="h-56 bg-gradient-to-br from-black/90 via-black/30 to-brand2/20 flex items-center justify-center">
-                <div class="text-white/90 text-center">
-                  <div class="font-semibold">MAP PLACEHOLDER</div>
-                  <div class="text-xs text-white/70 mt-2">Интерактивная карта будет добавлена позже</div>
-                </div>
-              </div>
+              <div
+                id="contactsYandexMap"
+                class="h-56 md:h-80 min-h-[14rem] w-full bg-slate-100"
+                role="region"
+                aria-label="Карта с адресами компании"
+                data-yandex-maps-key="{{ yandex_maps_api_key|default:'' }}"
+              ></div>
               <div class="p-6">
                 <form class="space-y-4" data-ui-form data-form-tag="Contacts/request">
                   <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">

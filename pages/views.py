@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.shortcuts import render
 
 from .data import (
@@ -77,5 +78,9 @@ def stati_detail(request, article_slug):
 
 
 def kontakty(request):
-    return render(request, "pages/kontakty.html", KONTAKTY_PAGE)
+    ctx = {
+        **KONTAKTY_PAGE,
+        "yandex_maps_api_key": getattr(settings, "YANDEX_MAPS_API_KEY", ""),
+    }
+    return render(request, "pages/kontakty.html", ctx)
 

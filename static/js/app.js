@@ -595,6 +595,120 @@ function initGazonCalculator(modalFormFromModal) {
   }
 }
 
+/** Карта на странице «Контакты»: три метки, границы по всем точкам (API 2.1 + геокодер). */
+function initContactsYandexMap() {
+  const el = document.getElementById('contactsYandexMap');
+  if (!el) return;
+  if (el.dataset.sgContactsMap === '1') return;
+  el.dataset.sgContactsMap = '1';
+
+  const apiKey = (
+    (typeof window.SG_YANDEX_MAPS_API_KEY === 'string' && window.SG_YANDEX_MAPS_API_KEY) ||
+    el.getAttribute('data-yandex-maps-key') ||
+    ''
+  ).trim();
+
+  const places = [
+    {
+      title: 'Главный офис',
+      address: 'г. Новосибирск, ул. Железнодорожная, 12/1, оф.501',
+      query: 'Новосибирск, улица Железнодорожная, 12/1',
+    },
+    {
+      title: 'Садовый центр №1',
+      address: 'г. Новосибирск, ул. Ватутина, 107, СЦ Мега',
+      query: 'Новосибирск, улица Ватутина, 107',
+    },
+    {
+      title: 'Садовый центр №2',
+      address: 'с. Новопичугово, ориентир ул. Сосновая, СЦ Новопичугово',
+      query: 'село Новопичугово, Новосибирская область',
+    },
+  ];
+
+  const showFallback = () => {
+    el.className =
+      'flex h-56 min-h-[14rem] w-full items-center justify-center bg-slate-100 px-6 text-center text-sm text-slate-600 md:h-80';
+    el.textContent = 'Карту не удалось загрузить. Адреса указаны в блоке слева.';
+  };
+
+  const loadYandexScript = () =>
+    new Promise((resolve, reject) => {
+      if (window.ymaps) {
+        window.ymaps.ready(() => resolve());
+        return;
+      }
+      const s = document.createElement('script');
+      const keyPart = apiKey ? `&apikey=${encodeURIComponent(apiKey)}` : '';
+      s.src = `https://api-maps.yandex.ru/2.1/?lang=ru_RU${keyPart}`;
+      s.async = true;
+      s.onload = () => {
+        if (!window.ymaps) {
+          reject(new Error('ymaps'));
+          return;
+        }
+        window.ymaps.ready(() => resolve());
+      };
+      s.onerror = () => reject(new Error('load'));
+      document.head.appendChild(s);
+    });
+
+  loadYandexScript()
+    .then(() => {
+      const { ymaps } = window;
+      const map = new ymaps.Map(
+        el,
+        {
+          center: [55.03, 82.95],
+          zoom: 9,
+          controls: ['zoomControl', 'typeSelector'],
+        },
+        { suppressMapOpenBlock: true }
+      );
+
+      const geocodeOne = (p) =>
+        ymaps
+          .geocode(p.query, { results: 1 })
+          .then((res) => {
+            const first = res.geoObjects.get(0);
+            if (!first) return null;
+            const coords = first.geometry.getCoordinates();
+            return { coords, p };
+          })
+          .catch(() => null);
+
+      return Promise.all(places.map(geocodeOne)).then((items) => {
+        const good = items.filter(Boolean);
+        if (!good.length) {
+          showFallback();
+          return;
+        }
+
+        const collection = new ymaps.GeoObjectCollection();
+        good.forEach(({ coords, p }) => {
+          collection.add(
+            new ymaps.Placemark(
+              coords,
+              {
+                balloonContentHeader: p.title,
+                balloonContentBody: p.address,
+              },
+              { preset: 'islands#greenIcon' }
+            )
+          );
+        });
+        map.geoObjects.add(collection);
+        const bounds = collection.getBounds();
+        if (bounds) {
+          map.setBounds(bounds, { checkZoomRange: true, zoomMargin: 48 });
+        } else if (good.length === 1) {
+          map.setCenter(good[0].coords, 14);
+        }
+      });
+    })
+    .catch(() => showFallback());
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initYear();
   initViewportHeroHeights();
@@ -619,5 +733,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initSadovyeAssortmentSliders();
   initZabotyExpertSlider();
   initGazonCalculator();
+  initContactsYandexMap();
 });
 
