@@ -139,6 +139,7 @@ function initModal() {
     if (sizeWrap) {
       sizeWrap.classList.remove('max-w-lg', 'max-w-2xl');
       const wide =
+        targetKey === 'contact_zaboty' ||
         targetKey === 'ozelenenie_mini_project' ||
         targetKey === 'gazon_calc' ||
         targetKey === 'sadovye_novinka_1' ||
@@ -196,7 +197,14 @@ function initModal() {
     const uiAction = form.getAttribute('data-ui-action') || '';
     const formData = new FormData(form);
     const payload = {};
-    for (const [k, v] of formData.entries()) payload[k] = v;
+    for (const [k, v] of formData.entries()) {
+      if (Object.prototype.hasOwnProperty.call(payload, k)) {
+        const cur = payload[k];
+        payload[k] = Array.isArray(cur) ? [...cur, v] : [cur, v];
+      } else {
+        payload[k] = v;
+      }
+    }
 
     const entry = { tag, payload, ts: new Date().toISOString() };
     const key = 'sg_leads';

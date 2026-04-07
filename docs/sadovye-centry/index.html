@@ -940,16 +940,40 @@
       </label>
       <label class="text-sm font-medium text-slate-700">
         Телефон
-        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
-      </label>
-      <label class="text-sm font-medium text-slate-700">
-        Вопрос
-        <textarea name="question" required rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Коротко опишите задачу"></textarea>
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
       </label>
     </div>
-    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+    <div class="space-y-2 border-t border-black/5 pt-4">
+      <p class="text-sm font-medium text-slate-800 leading-snug">
+        Даю согласие на получение напоминаний по уходу:
+      </p>
+      <!-- Новые календари: скопируйте label с чекбоксом, задайте уникальный name="care_*" и подпись -->
+      <fieldset class="space-y-2" data-zaboty-care-calendars>
+        <legend class="sr-only">Календари ухода по группам растений</legend>
+        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
+          <input type="checkbox" name="care_gazon" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Газон</span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
+          <input type="checkbox" name="care_conifer" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Хвойные</span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
+          <input type="checkbox" name="care_deciduous_trees" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Лиственные деревья</span>
+        </label>
+      </fieldset>
+    </div>
+    <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
+      <input type="checkbox" name="promo_news" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+      <span>Хочу получать Информацию о Новинках и акциях</span>
+    </label>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
       Отправить
     </button>
+    <p class="text-xs text-slate-500">
+      Нажимая кнопку, вы соглашаетесь на обработку данных. CRM пока не подключена (этап 1).
+    </p>
   </form>
 </template>
 
@@ -1661,7 +1685,7 @@
 
 
 
-    <script src="/sib_khvoinik_test/static/js/app.js?v=22" defer></script>
+    <script src="/sib_khvoinik_test/static/js/app.js?v=23" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {
