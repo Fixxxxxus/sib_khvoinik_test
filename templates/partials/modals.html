@@ -45,9 +45,6 @@
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
       Отправить
     </button>
-    <p class="text-xs text-slate-500">
-      Нажимая кнопку, вы соглашаетесь на обработку данных. CRM пока не подключена (этап 1).
-    </p>
   </form>
 </template>
 
@@ -66,35 +63,59 @@
     </div>
     <div class="space-y-2 border-t border-black/5 pt-4">
       <p class="text-sm font-medium text-slate-800 leading-snug">
-        Даю согласие на получение напоминаний по уходу:
+        По каким группам растений вы хотите получать напоминания и рекомендации по уходу:
       </p>
-      <!-- Новые календари: скопируйте label с чекбоксом, задайте уникальный name="care_*" и подпись -->
-      <fieldset class="space-y-2" data-zaboty-care-calendars>
-        <legend class="sr-only">Календари ухода по группам растений</legend>
+      <fieldset class="max-h-64 space-y-2 overflow-y-auto pr-1" data-zaboty-care-calendars>
+        <legend class="sr-only">Календари ухода и уведомления</legend>
         <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
           <input type="checkbox" name="care_gazon" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Газон</span>
+          <span>Календарь ухода за газоном</span>
         </label>
         <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
           <input type="checkbox" name="care_conifer" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Хвойные</span>
+          <span>Календарь ухода за хвойными растениями</span>
         </label>
         <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
           <input type="checkbox" name="care_deciduous_trees" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Лиственные деревья</span>
+          <span>Календарь ухода за лиственными деревьями</span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
+          <input type="checkbox" name="care_deciduous_shrubs" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за лиственными кустарниками</span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
+          <input type="checkbox" name="promo_news" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Хочу получать информацию о новинках</span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
+          <input type="checkbox" name="care_hydrangea" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за гортензией</span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
+          <input type="checkbox" name="care_peony" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за пионами</span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
+          <input type="checkbox" name="care_ornamental_apple" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за яблонями декоративными</span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
+          <input type="checkbox" name="care_perennials" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за многолетними цветами</span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
+          <input type="checkbox" name="care_roses" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за розами</span>
+        </label>
+        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
+          <input type="checkbox" name="promo_sales" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Хочу получать сообщения об акциях</span>
         </label>
       </fieldset>
     </div>
-    <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
-      <input type="checkbox" name="promo_news" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-      <span>Хочу получать Информацию о Новинках и акциях</span>
-    </label>
     <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
       Отправить
     </button>
-    <p class="text-xs text-slate-500">
-      Нажимая кнопку, вы соглашаетесь на обработку данных. CRM пока не подключена (этап 1).
-    </p>
   </form>
 </template>
 
