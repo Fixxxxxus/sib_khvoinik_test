@@ -29,6 +29,23 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
+      # Ключ не хранится в git: задаётся в Settings → Secrets → Actions → YANDEX_MAPS_API_KEY
+      - name: Inject Yandex Maps API key (static kontakty)
+        env:
+          YANDEX_MAPS_API_KEY: ${{ secrets.YANDEX_MAPS_API_KEY }}
+        run: |
+          python3 <<'PY'
+          import os
+          from pathlib import Path
+          key = os.environ.get("YANDEX_MAPS_API_KEY", "")
+          path = Path("docs/kontakty/index.html")
+          text = path.read_text(encoding="utf-8")
+          path.write_text(
+              text.replace("__YANDEX_MAPS_API_KEY__", key),
+              encoding="utf-8",
+          )
+          PY
+
       - name: Upload docs
         uses: actions/upload-pages-artifact@v3
         with:
