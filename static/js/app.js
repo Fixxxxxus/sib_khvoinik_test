@@ -130,6 +130,22 @@ function initModal() {
     'sadovye_novinka_4': 'modal-template-sadovye_novinka_4',
   };
 
+  const initConsentGate = (root) => {
+    const form = root.querySelector('form[data-consent-gated="1"]');
+    if (!form) return;
+
+    const checkbox = form.querySelector('[data-consent-checkbox]');
+    const submitBtn = form.querySelector('[data-consent-submit]');
+    if (!checkbox || !submitBtn) return;
+
+    const syncState = () => {
+      submitBtn.disabled = !checkbox.checked;
+    };
+
+    checkbox.addEventListener('change', syncState);
+    syncState();
+  };
+
   const openModal = (targetKey, title) => {
     const tplId = templateMap[targetKey] || 'modal-template-success';
     const tpl = document.getElementById(tplId);
@@ -152,6 +168,7 @@ function initModal() {
     modalTitle.textContent = title || '';
     modalBody.innerHTML = '';
     modalBody.appendChild(tpl.content.cloneNode(true));
+    initConsentGate(modalBody);
 
     // Калькулятор: передать форму из modalBody — иначе getElementById может попасть в <template> и повесить input на скрытые поля.
     if (targetKey === 'gazon_calc') {

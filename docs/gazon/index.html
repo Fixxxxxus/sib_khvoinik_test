@@ -1001,7 +1001,7 @@
 </template>
 
 <template id="modal-template-contact_zaboty">
-  <form class="space-y-4" data-ui-form data-form-tag="B2C/sluzhba-zaboty">
+  <form class="space-y-5" data-ui-form data-form-tag="B2C/sluzhba-zaboty" data-consent-gated="1">
     <input type="hidden" name="formTag" value="B2C/sluzhba-zaboty" />
     <div class="grid grid-cols-1 gap-3">
       <label class="text-sm font-medium text-slate-700">
@@ -1013,11 +1013,11 @@
         <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
       </label>
     </div>
-    <div class="space-y-2 border-t border-black/5 pt-4">
+    <div class="space-y-3 border-t border-black/5 pt-5">
       <p class="text-sm font-medium text-slate-800 leading-snug">
         По каким группам растений вы хотите получать напоминания и рекомендации по уходу:
       </p>
-      <fieldset class="max-h-64 space-y-2 overflow-y-auto pr-1" data-zaboty-care-calendars>
+      <fieldset class="max-h-64 space-y-2 overflow-y-auto pr-1 overscroll-contain" data-zaboty-care-calendars>
         <legend class="sr-only">Календари ухода и уведомления</legend>
         <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
           <input type="checkbox" name="care_gazon" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
@@ -1065,7 +1065,22 @@
         </label>
       </fieldset>
     </div>
-    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+    <div class="mt-1 space-y-3 rounded-2xl border border-brand/20 bg-gradient-to-r from-brand/10 via-brand2/5 to-transparent p-4">
+      <label class="block text-sm font-medium text-slate-700">
+        Удобный мессенджер
+        <select name="preferred_messenger" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="" disabled selected>Выберите мессенджер</option>
+          <option value="max">MAX</option>
+          <option value="telegram">Telegram</option>
+          <option value="email">Эл. Почта</option>
+        </select>
+      </label>
+      <label class="flex cursor-pointer items-start gap-3 text-sm text-slate-700">
+        <input type="checkbox" name="consent_messages" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+        <span>Даю согласие на получение сообщений</span>
+      </label>
+    </div>
+    <button type="submit" data-consent-submit disabled class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60">
       Отправить
     </button>
   </form>
@@ -1658,7 +1673,7 @@
 
 
 
-    <script src="/sib_khvoinik_test/static/js/app.js?v=25" defer></script>
+    <script src="/sib_khvoinik_test/static/js/app.js?v=26" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {
