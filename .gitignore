@@ -14,6 +14,7 @@ staticfiles/
 # Claude Code
 .claude/
 docs/superpowers/
+bitrix24-mcp/
 
 # Логи
 *.log

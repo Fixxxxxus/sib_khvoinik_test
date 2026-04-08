@@ -8,13 +8,15 @@
 """
 from __future__ import annotations
 
+import os
 import re
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TMPL = ROOT / "templates/pages/gazon.html"
 OUT_FRAG = ROOT / "docs/_gazon_main_fragment.html"
-BASE_PREFIX = "/sib_khvoinik_test/static/"
+SITE_PREFIX = os.environ.get("SITE_PREFIX", "/sib_khvoinik_test")
+BASE_PREFIX = f"{SITE_PREFIX}/static/"
 
 
 def main() -> None:

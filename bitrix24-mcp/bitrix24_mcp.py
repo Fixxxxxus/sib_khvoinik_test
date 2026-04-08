@@ -7,7 +7,8 @@ import httpx
 from dotenv import load_dotenv
 from fastmcp import FastMCP
 
-load_dotenv()
+_HERE = os.path.dirname(os.path.abspath(__file__))
+load_dotenv(os.path.join(_HERE, ".env"))
 
 WEBHOOK_URL = os.environ.get("BITRIX24_WEBHOOK_URL", "").rstrip("/")
 if not WEBHOOK_URL:
@@ -15,7 +16,7 @@ if not WEBHOOK_URL:
 
 mcp = FastMCP(
     "Bitrix24",
-    description="CRM, tasks, forms, events, and mailings via Bitrix24 REST API",
+    instructions="CRM, tasks, forms, events, and mailings via Bitrix24 REST API",
 )
 
 _client = httpx.AsyncClient(timeout=30.0)
