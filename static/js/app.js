@@ -625,21 +625,25 @@ function initContactsYandexMap() {
     ''
   ).trim();
 
+  // fallback: [широта, долгота] — если геокодер по ключу недоступен с github.io, метки всё равно появятся
   const places = [
     {
       title: 'Главный офис',
       address: 'г. Новосибирск, ул. Железнодорожная, 12/1, оф.501',
       query: 'Новосибирск, улица Железнодорожная, 12/1',
+      fallback: [54.9895, 82.9285],
     },
     {
       title: 'Садовый центр №1',
       address: 'г. Новосибирск, ул. Ватутина, 107, СЦ Мега',
       query: 'Новосибирск, улица Ватутина, 107',
+      fallback: [55.0482, 82.9775],
     },
     {
       title: 'Садовый центр №2',
       address: 'с. Новопичугово, ориентир ул. Сосновая, СЦ Новопичугово',
       query: 'Новосибирская область, село Новопичугово, Садовый центр Новопичугово',
+      fallback: [54.941, 82.458],
     },
   ];
 
@@ -688,11 +692,14 @@ function initContactsYandexMap() {
           .geocode(p.query, { results: 1 })
           .then((res) => {
             const first = res.geoObjects.get(0);
-            if (!first) return null;
-            const coords = first.geometry.getCoordinates();
-            return { coords, p };
+            if (first) {
+              const coords = first.geometry.getCoordinates();
+              return { coords, p };
+            }
+            if (p.fallback) return { coords: p.fallback, p };
+            return null;
           })
-          .catch(() => null);
+          .catch(() => (p.fallback ? { coords: p.fallback, p } : null));
 
       return Promise.all(places.map(geocodeOne)).then((items) => {
         const good = items.filter(Boolean);

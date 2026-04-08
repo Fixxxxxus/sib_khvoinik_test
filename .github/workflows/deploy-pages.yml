@@ -1,11 +1,13 @@
 # Публикует содержимое папки docs/ на GitHub Pages.
-# В репозитории: Settings → Pages → Build and deployment → Source: GitHub Actions.
+# Обязательно: Settings → Pages → Build and deployment → Source: GitHub Actions.
+# Если выбрана публикация с ветки — этот workflow не выполняется, плейсхолдер ключа не подставится.
 name: Deploy GitHub Pages
 
 on:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -29,7 +31,10 @@ jobs:
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
-      # Ключ не хранится в git: задаётся в Settings → Secrets → Actions → YANDEX_MAPS_API_KEY
+      # Ключ в git не хранится. Имя секрета должно совпадать: YANDEX_MAPS_API_KEY
+      # Репозиторий: Settings → Secrets and variables → Actions.
+      # Если секрет не подхватывается, добавьте его ещё в Environment «github-pages»:
+      # Settings → Environments → github-pages → Environment secrets.
       - name: Inject Yandex Maps API key (static kontakty)
         env:
           YANDEX_MAPS_API_KEY: ${{ secrets.YANDEX_MAPS_API_KEY }}
@@ -37,14 +42,22 @@ jobs:
           python3 <<'PY'
           import os
           from pathlib import Path
-          key = os.environ.get("YANDEX_MAPS_API_KEY", "")
+          key = os.environ.get("YANDEX_MAPS_API_KEY", "").strip()
           path = Path("docs/kontakty/index.html")
           text = path.read_text(encoding="utf-8")
-          path.write_text(
-              text.replace("__YANDEX_MAPS_API_KEY__", key),
-              encoding="utf-8",
-          )
+          if "__YANDEX_MAPS_API_KEY__" not in text:
+              raise SystemExit("docs/kontakty/index.html: плейсхолдер __YANDEX_MAPS_API_KEY__ не найден")
+          path.write_text(text.replace("__YANDEX_MAPS_API_KEY__", key), encoding="utf-8")
           PY
+          if grep -q '__YANDEX_MAPS_API_KEY__' docs/kontakty/index.html; then
+            echo "::error::Плейсхолдер ключа не заменён — проверьте шаг выше."
+            exit 1
+          fi
+          if [ -z "$YANDEX_MAPS_API_KEY" ]; then
+            echo "::warning::Секрет YANDEX_MAPS_API_KEY пустой — на Pages карта не загрузится (пустой apikey)."
+          else
+            echo "::notice::Ключ Яндекс.Карт подставлен в docs/kontakty/index.html для деплоя."
+          fi
 
       - name: Upload docs
         uses: actions/upload-pages-artifact@v3
