@@ -15,6 +15,7 @@ staticfiles/
 .claude/
 docs/superpowers/
 docs/research/
+docs/sib_khvoinik_test
 bitrix24-mcp/
 
 # Логи
