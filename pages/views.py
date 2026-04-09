@@ -11,6 +11,7 @@ from .data import (
     KATALOG_PAGE,
     STATI_PAGE,
     KONTAKTY_PAGE,
+    PRIVACY_PAGE,
 )
 
 
@@ -78,4 +79,8 @@ def stati_detail(request, article_slug):
 
 def kontakty(request):
     return render(request, "pages/kontakty.html", KONTAKTY_PAGE)
+
+
+def privacy(request):
+    return render(request, "pages/privacy.html", PRIVACY_PAGE)
 
