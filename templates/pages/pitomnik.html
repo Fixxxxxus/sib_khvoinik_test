@@ -6,7 +6,7 @@
 {% block content %}
   <section
     data-pitomnik-hero
-    class="relative isolate flex min-h-[calc(100dvh-4.5rem)] w-full flex-col items-center overflow-hidden bg-slate-900 md:min-h-[calc(100dvh-5rem)]"
+    class="relative isolate flex min-h-[calc(100dvh-4.5rem)] w-full flex-col overflow-hidden bg-slate-900 md:min-h-[calc(100dvh-5rem)]"
   >
     <video
       class="absolute inset-0 -z-20 h-full w-full object-cover"
@@ -25,8 +25,8 @@
       aria-hidden="true"
     ></div>
     <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black/70 via-black/45 to-black/20"></div>
-    <div class="relative z-10 flex w-full flex-1 items-center px-4 py-12 sm:px-8 sm:py-14 lg:px-14 lg:py-16 xl:px-20">
-      <div class="w-full max-w-none">
+    <div class="relative z-10 flex w-full flex-1 items-center">
+      <div class="mx-auto w-full max-w-7xl px-4 py-12 sm:px-6 sm:py-14 lg:px-8 lg:py-16">
         <div class="max-w-4xl">
           <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90" data-animate="fadeInUp">
             <i data-lucide="sprout" class="h-4 w-4 text-accent"></i>
@@ -39,7 +39,7 @@
           <p class="mt-5 max-w-2xl text-white/75 text-base md:text-lg lg:text-xl" data-animate="fadeInUp">
             Мы выращиваем хвойные и лиственные деревья, кустарники и цветочную продукцию, адаптированную к условиям Сибири.
           </p>
-          <div class="mt-7 flex max-w-3xl flex-col gap-3 sm:flex-row" data-animate="fadeInUp">
+          <div class="mt-7 flex max-w-3xl flex-col gap-3 sm:flex-row sm:flex-wrap" data-animate="fadeInUp">
             <a href="{% url 'katalog' %}" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
               Перейти в каталог
               <i data-lucide="arrow-right" class="h-5 w-5"></i>
