@@ -134,6 +134,55 @@
   </form>
 </template>
 
+<template id="modal-template-contact_consult">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/consultation">
+    <input type="hidden" name="formTag" value="B2C/consultation" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Отправить
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-sadovye_novinki_notify">
+  <form class="space-y-5" data-ui-form data-form-tag="B2C/sadovye-novinki-notify">
+    <input type="hidden" name="formTag" value="B2C/sadovye-novinki-notify" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <div class="space-y-3 rounded-2xl border border-brand/20 bg-gradient-to-r from-brand/10 via-brand2/5 to-transparent p-4">
+      <label class="block text-sm font-medium text-slate-700">
+        Удобный мессенджер
+        <select name="preferred_messenger" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="" disabled selected>Выберите мессенджер</option>
+          <option value="max">MAX</option>
+          <option value="telegram">Telegram</option>
+          <option value="email">Эл. Почта</option>
+        </select>
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Отправить
+    </button>
+  </form>
+</template>
+
 <template id="modal-template-b2b_cpo">
   <form class="space-y-4" data-ui-form data-form-tag="B2B/contract-request">
     <input type="hidden" name="formTag" value="B2B/contract-request" />

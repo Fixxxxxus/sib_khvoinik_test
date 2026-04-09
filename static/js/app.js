@@ -193,6 +193,7 @@ function initModal() {
   const templateMap = {
     'mini_brief': 'modal-template-mini_brief',
     'contact_zaboty': 'modal-template-contact_zaboty',
+    'contact_consult': 'modal-template-contact_consult',
     'b2b_cpo': 'modal-template-b2b_cpo',
     'b2b_price_stock': 'modal-template-b2b_price_stock',
     'b2b_care_reglement': 'modal-template-b2b_care_reglement',
@@ -211,6 +212,7 @@ function initModal() {
     'ozelenenie_materials_scheme': 'modal-template-ozelenenie-materials_scheme',
     'pitomnik_presentation': 'modal-template-pitomnik_presentation',
     'sadovye_digital_card': 'modal-template-sadovye_digital_card',
+    'sadovye_novinki_notify': 'modal-template-sadovye_novinki_notify',
     'sadovye_novinka_1': 'modal-template-sadovye_novinka_1',
     'sadovye_novinka_2': 'modal-template-sadovye_novinka_2',
     'sadovye_novinka_3': 'modal-template-sadovye_novinka_3',
