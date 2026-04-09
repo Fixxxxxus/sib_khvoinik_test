@@ -1,3 +1,9 @@
+// Base path: auto-detect /sib_khvoinik_test prefix on GitHub Pages, empty on localhost
+var BASE_PATH = (function () {
+  var m = location.pathname.match(/^(\/sib_khvoinik_test)/);
+  return m ? m[1] : '';
+})();
+
 function initYear() {
   const el = document.getElementById('year');
   if (!el) return;
@@ -16,8 +22,8 @@ function initConsentCheckboxes() {
     wrapper.className = 'flex items-start gap-2 text-xs text-slate-500 cursor-pointer';
     wrapper.innerHTML =
       '<input type="checkbox" name="consent" required class="mt-0.5 accent-brand shrink-0" />' +
-      '<span>Я даю согласие на обработку моих персональных данных в соответствии с ' +
-      '<a href="/privacy/" class="text-brand underline hover:text-brand2" target="_blank">Политикой конфиденциальности</a></span>';
+      '<span>Даю <a href="' + BASE_PATH + '/consent/" class="text-brand underline hover:text-brand2" target="_blank">согласие на обработку персональных данных</a>' +
+      ' в соответствии с <a href="' + BASE_PATH + '/privacy/" class="text-brand underline hover:text-brand2" target="_blank">Политикой конфиденциальности</a></span>';
 
     const checkbox = wrapper.querySelector('input');
     submitBtn.disabled = true;

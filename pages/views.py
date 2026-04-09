@@ -13,6 +13,7 @@ from .data import (
     STATI_PAGE,
     KONTAKTY_PAGE,
     PRIVACY_PAGE,
+    CONSENT_PAGE,
 )
 
 
@@ -88,4 +89,8 @@ def kontakty(request):
 
 def privacy(request):
     return render(request, "pages/privacy.html", PRIVACY_PAGE)
+
+
+def consent(request):
+    return render(request, "pages/consent.html", CONSENT_PAGE)
 

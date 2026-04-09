@@ -17,5 +17,6 @@ urlpatterns = [
     path("stati/<slug:article_slug>/", views.stati_detail, name="stati_detail"),
     path("kontakty/", views.kontakty, name="kontakty"),
     path("privacy/", views.privacy, name="privacy"),
+    path("consent/", views.consent, name="consent"),
 ]
 
