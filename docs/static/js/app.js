@@ -257,6 +257,7 @@ function initModal() {
     modalTitle.textContent = title || '';
     modalBody.innerHTML = '';
     modalBody.appendChild(tpl.content.cloneNode(true));
+    if (window.lucide) window.lucide.createIcons();
     initConsentGate(modalBody);
 
     // Inject consent checkbox into freshly cloned modal form
@@ -370,6 +371,7 @@ function initModal() {
       modalTitle.textContent = '';
       modalBody.innerHTML = '';
       modalBody.appendChild(successTpl.content.cloneNode(true));
+      if (window.lucide) window.lucide.createIcons();
     }
 
     // Optional UI-only side effects

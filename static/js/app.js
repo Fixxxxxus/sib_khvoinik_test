@@ -137,6 +137,19 @@ function initViewportHeroHeights() {
   }
 }
 
+/** Hero главной: как у «Газон» — без вспышки первого кадра MP4 до фактического playing */
+function initHomeHeroVideo() {
+  const v = document.querySelector('section[data-home-hero] video.hero-bg-video');
+  if (!v) return;
+  const reveal = () => v.classList.add('is-home-hero-ready');
+  v.addEventListener('playing', reveal, { once: true });
+  try {
+    if (!v.paused && v.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) reveal();
+  } catch (e) {
+    /* ignore */
+  }
+}
+
 /** Hero «Газон»: плавное появление видео после start воспроизведения — убирает кадр из кэша/рассинхрон с poster */
 function initGazonHeroVideo() {
   const v = document.getElementById('gazon-hero-video');
@@ -257,6 +270,7 @@ function initModal() {
     modalTitle.textContent = title || '';
     modalBody.innerHTML = '';
     modalBody.appendChild(tpl.content.cloneNode(true));
+    if (window.lucide) window.lucide.createIcons();
     initConsentGate(modalBody);
 
     // Inject consent checkbox into freshly cloned modal form
@@ -370,6 +384,7 @@ function initModal() {
       modalTitle.textContent = '';
       modalBody.innerHTML = '';
       modalBody.appendChild(successTpl.content.cloneNode(true));
+      if (window.lucide) window.lucide.createIcons();
     }
 
     // Optional UI-only side effects
@@ -845,6 +860,7 @@ function initContactsYandexMap() {
 document.addEventListener('DOMContentLoaded', () => {
   initYear();
   initViewportHeroHeights();
+  initHomeHeroVideo();
   initGazonHeroVideo();
   initB2bHeroVideo();
   initBurger();
