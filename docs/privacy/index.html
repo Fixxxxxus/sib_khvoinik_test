@@ -1,4 +1,509 @@
-<div id="modalOverlay" class="fixed inset-0 bg-black/40 z-[60] hidden"></div>
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Политика конфиденциальности — Сибирские газоны</title>
+    <meta name="description" content="Сибирские газоны — технологичное озеленение, питомник и рулонный газон" />
+
+    <!-- Tailwind: локальный скрипт (CDN без сети ломает всю вёрстку — классы hidden/md:* не работают) -->
+    <script src="/sib_khvoinik_test/static/js/tailwind.browser.js?v=1"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: '#2D6A4F',
+              brand2: '#40916C',
+              accent: '#E9C46A',
+            },
+            boxShadow: {
+              soft: '0 10px 30px rgba(0,0,0,0.08)',
+              glow: '0 0 0 1px rgba(64,145,108,0.25), 0 20px 60px rgba(45,106,79,0.22)',
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Lucide icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <link rel="stylesheet" href="/sib_khvoinik_test/static/css/styles.css?v=17" />
+  </head>
+  <body class="bg-white text-slate-900 antialiased">
+    
+<header id="site-header" class="sticky top-0 z-50 border-b border-slate-200 bg-white">
+  <!-- Десктоп: логотип слева, ссылки по центру, справа мессенджеры и звонок -->
+  <div class="sg-nav-fallback-desktop mx-auto hidden w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 md:flex lg:gap-6 lg:px-8">
+    <a href="/sib_khvoinik_test/" class="flex shrink-0 items-center">
+      <img
+        src="/sib_khvoinik_test/static/media/branding/logo-main.webp"
+        alt="Сибирские газоны"
+        class="h-9 w-auto sm:h-10"
+        loading="eager"
+        decoding="async"
+      />
+    </a>
+    <nav
+      class="flex min-w-0 flex-1 flex-nowrap items-center justify-center gap-x-2 gap-y-1 overflow-x-auto px-1.5 py-0.5 sm:gap-x-2.5 sm:px-2 lg:gap-x-3 lg:px-2.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      aria-label="Основное меню"
+    >
+      <a href="/sib_khvoinik_test/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Главная
+      </a>
+      <a href="/sib_khvoinik_test/gazon/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Газон
+      </a>
+      <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Озеленение
+      </a>
+      <a href="/sib_khvoinik_test/b2b/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        B2B
+      </a>
+      <a href="/sib_khvoinik_test/pitomnik/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Питомник
+      </a>
+      <a href="/sib_khvoinik_test/sadovye-centry/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Садовые центры
+      </a>
+      <a href="/sib_khvoinik_test/katalog/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Каталог
+      </a>
+      <a href="/sib_khvoinik_test/stati/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Статьи
+      </a>
+      <a href="/sib_khvoinik_test/kontakty/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Контакты
+      </a>
+    </nav>
+    <div class="flex shrink-0 items-center gap-2">
+      <a
+        href="#"
+        aria-label="MAX"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[11px] font-semibold text-indigo-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow"
+      >
+        MAX
+      </a>
+      <a
+        href="#"
+        aria-label="Telegram"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow"
+      >
+        <i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i>
+      </a>
+      <a
+        href="#"
+        aria-label="VK"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow"
+      >
+        VK
+      </a>
+      <a
+        href="tel:+73832010600"
+        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-2 text-sm font-semibold text-white shadow-glow transition hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand sm:px-5 sm:py-2.5 sm:text-[15px]"
+      >
+        <i data-lucide="phone-call" class="h-4 w-4 shrink-0" aria-hidden="true"></i>
+        Позвонить
+      </a>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <!-- Мобильная верхняя строка: лого + действия -->
+    <div class="sg-nav-fallback-mobile-bar flex items-center justify-between gap-3 py-2.5 md:hidden">
+      <a href="/sib_khvoinik_test/" class="flex min-w-0 items-center">
+        <img
+          src="/sib_khvoinik_test/static/media/branding/logo-main.webp"
+          alt="Сибирские газоны"
+          class="h-9 w-auto max-h-9"
+          loading="eager"
+          decoding="async"
+        />
+      </a>
+      <div class="flex shrink-0 items-center gap-1.5">
+        <a
+          href="#"
+          aria-label="MAX"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[9px] font-semibold text-indigo-700 shadow-sm"
+        >
+          MAX
+        </a>
+        <a
+          href="#"
+          aria-label="Telegram"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm"
+        >
+          <i data-lucide="send" class="h-3.5 w-3.5" aria-hidden="true"></i>
+        </a>
+        <a
+          href="#"
+          aria-label="VK"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[10px] font-semibold tracking-wide text-blue-700 shadow-sm"
+        >
+          VK
+        </a>
+        <a
+          href="tel:+73832010600"
+          aria-label="Позвонить"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-200/80 bg-gradient-to-br from-emerald-50 to-green-50 text-emerald-700 shadow-sm"
+        >
+          <i data-lucide="phone-call" class="h-3.5 w-3.5" aria-hidden="true"></i>
+        </a>
+        <button
+          id="burgerBtn"
+          type="button"
+          class="inline-flex items-center justify-center rounded-xl border border-slate-200 p-2 text-slate-700 hover:bg-slate-50 transition"
+          aria-label="Открыть меню"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mobileMenu" class="sg-mobile-menu-panel hidden border-b border-slate-200 bg-white md:hidden">
+    <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 gap-1">
+        <a href="/sib_khvoinik_test/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Главная
+        </a>
+        <a href="/sib_khvoinik_test/gazon/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Газон
+        </a>
+        <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Озеленение
+        </a>
+        <a href="/sib_khvoinik_test/b2b/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          B2B
+        </a>
+        <a href="/sib_khvoinik_test/pitomnik/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Питомник
+        </a>
+        <a href="/sib_khvoinik_test/sadovye-centry/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Садовые центры
+        </a>
+        <a href="/sib_khvoinik_test/katalog/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Каталог
+        </a>
+        <a href="/sib_khvoinik_test/stati/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Статьи
+        </a>
+        <a href="/sib_khvoinik_test/kontakty/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Контакты
+        </a>
+        <div class="mt-2 grid grid-cols-4 gap-2">
+          <a
+            href="#"
+            aria-label="MAX"
+            class="inline-flex items-center justify-center rounded-xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 px-2 py-2.5 text-[11px] font-semibold text-indigo-700 shadow-sm"
+          >
+            MAX
+          </a>
+          <a
+            href="#"
+            aria-label="Telegram"
+            class="inline-flex items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 px-2 py-2.5 text-sky-700 shadow-sm"
+          >
+            <i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i>
+          </a>
+          <a
+            href="#"
+            aria-label="VK"
+            class="inline-flex items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 px-2 py-2.5 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm"
+          >
+            VK
+          </a>
+          <a
+            href="tel:+73832010600"
+            class="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand to-brand2 px-2 py-2.5 text-xs font-semibold text-white shadow-glow"
+          >
+            Звонок
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+    <main>
+      
+  <section class="mt-10 mb-16">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
+        <h1 class="text-3xl font-semibold leading-tight">Политика конфиденциальности</h1>
+        <p class="mt-3 text-sm text-slate-500">
+          ООО «Сибирский хвойник» (ИНН 5406843096)<br>
+          Адрес: 630132, Новосибирская область, г. Новосибирск, ул. Железнодорожная, д. 12/1, оф. 501
+        </p>
+      </div>
+
+      <div class="mt-8 space-y-10">
+        
+          <div data-animate="fadeInUp">
+            <h2 class="text-xl font-semibold leading-tight">1. Общие положения</h2>
+            <div class="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+              
+                <p>Настоящая политика обработки персональных данных составлена в соответствии с требованиями Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных» (далее — Закон о персональных данных) и определяет порядок обработки персональных данных и меры по обеспечению безопасности персональных данных, предпринимаемые Обществом с ограниченной ответственностью «Сибирский хвойник» (далее — Оператор).</p>
+              
+                <p>Оператор ставит своей важнейшей целью и условием осуществления своей деятельности соблюдение прав и свобод человека и гражданина при обработке его персональных данных, в том числе защиты прав на неприкосновенность частной жизни, личную и семейную тайну.</p>
+              
+                <p>Настоящая политика Оператора в отношении обработки персональных данных (далее — Политика) применяется ко всей информации, которую Оператор может получить о посетителях веб-сайта https://gazony.ru/.</p>
+              
+            </div>
+          </div>
+        
+          <div data-animate="fadeInUp">
+            <h2 class="text-xl font-semibold leading-tight">2. Основные понятия</h2>
+            <div class="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+              
+                <p>Автоматизированная обработка персональных данных — обработка персональных данных с помощью средств вычислительной техники.</p>
+              
+                <p>Блокирование персональных данных — временное прекращение обработки персональных данных (за исключением случаев, если обработка необходима для уточнения персональных данных).</p>
+              
+                <p>Веб-сайт — совокупность графических и информационных материалов, а также программ для ЭВМ и баз данных, обеспечивающих их доступность в сети интернет по сетевому адресу https://gazony.ru/.</p>
+              
+                <p>Информационная система персональных данных — совокупность содержащихся в базах данных персональных данных и обеспечивающих их обработку информационных технологий и технических средств.</p>
+              
+                <p>Обезличивание персональных данных — действия, в результате которых невозможно определить без использования дополнительной информации принадлежность персональных данных конкретному Пользователю или иному субъекту персональных данных.</p>
+              
+                <p>Обработка персональных данных — любое действие (операция) или совокупность действий (операций), совершаемых с использованием средств автоматизации или без использования таких средств с персональными данными, включая сбор, запись, систематизацию, накопление, хранение, уточнение (обновление, изменение), извлечение, использование, передачу (распространение, предоставление, доступ), обезличивание, блокирование, удаление, уничтожение персональных данных.</p>
+              
+                <p>Оператор — ООО «Сибирский хвойник» (ИНН 5406843096), которое самостоятельно или совместно с другими лицами организует и/или осуществляет обработку персональных данных, а также определяет цели обработки персональных данных, состав персональных данных, подлежащих обработке, действия (операции), совершаемые с персональными данными.</p>
+              
+                <p>Персональные данные — любая информация, относящаяся прямо или косвенно к определённому или определяемому Пользователю веб-сайта https://gazony.ru/.</p>
+              
+                <p>Пользователь — любой посетитель веб-сайта https://gazony.ru/.</p>
+              
+                <p>Предоставление персональных данных — действия, направленные на раскрытие персональных данных определённому лицу или определённому кругу лиц.</p>
+              
+                <p>Распространение персональных данных — любые действия, направленные на раскрытие персональных данных неопределённому кругу лиц.</p>
+              
+                <p>Трансграничная передача персональных данных — передача персональных данных на территорию иностранного государства органу власти иностранного государства, иностранному физическому или иностранному юридическому лицу.</p>
+              
+                <p>Уничтожение персональных данных — любые действия, в результате которых персональные данные уничтожаются безвозвратно с невозможностью дальнейшего восстановления содержания персональных данных в информационной системе персональных данных и/или уничтожаются материальные носители персональных данных.</p>
+              
+            </div>
+          </div>
+        
+          <div data-animate="fadeInUp">
+            <h2 class="text-xl font-semibold leading-tight">3. Права и обязанности Оператора</h2>
+            <div class="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+              
+                <p>Оператор имеет право: получать от субъекта персональных данных достоверные информацию и/или документы, содержащие персональные данные; в случае отзыва субъектом персональных данных согласия на обработку персональных данных Оператор вправе продолжить обработку персональных данных без согласия субъекта персональных данных при наличии оснований, указанных в Законе о персональных данных; самостоятельно определять состав и перечень мер, необходимых и достаточных для обеспечения выполнения обязанностей, предусмотренных Законом о персональных данных.</p>
+              
+                <p>Оператор обязан: предоставлять субъекту персональных данных по его просьбе информацию, касающуюся обработки его персональных данных; организовывать обработку персональных данных в порядке, установленном действующим законодательством РФ; отвечать на обращения и запросы субъектов персональных данных и их законных представителей; сообщать в уполномоченный орган по защите прав субъектов персональных данных по запросу этого органа необходимую информацию в течение 10 дней с даты получения такого запроса; публиковать или иным образом обеспечивать неограниченный доступ к настоящей Политике; принимать правовые, организационные и технические меры для защиты персональных данных; прекратить передачу, обработку и уничтожить персональные данные в порядке и случаях, предусмотренных Законом о персональных данных.</p>
+              
+            </div>
+          </div>
+        
+          <div data-animate="fadeInUp">
+            <h2 class="text-xl font-semibold leading-tight">4. Права субъектов персональных данных</h2>
+            <div class="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+              
+                <p>Субъекты персональных данных имеют право: получать информацию, касающуюся обработки его персональных данных; требовать от оператора уточнения его персональных данных, их блокирования или уничтожения в случае, если персональные данные являются неполными, устаревшими, неточными, незаконно полученными или не являются необходимыми для заявленной цели обработки; на отзыв согласия на обработку персональных данных; обжаловать в уполномоченный орган по защите прав субъектов персональных данных или в судебном порядке неправомерные действия или бездействие Оператора при обработке его персональных данных.</p>
+              
+                <p>Субъекты персональных данных обязаны: предоставлять Оператору достоверные данные о себе; сообщать Оператору об уточнении (обновлении, изменении) своих персональных данных.</p>
+              
+            </div>
+          </div>
+        
+          <div data-animate="fadeInUp">
+            <h2 class="text-xl font-semibold leading-tight">5. Принципы обработки персональных данных</h2>
+            <div class="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+              
+                <p>Обработка персональных данных осуществляется на законной и справедливой основе.</p>
+              
+                <p>Обработка персональных данных ограничивается достижением конкретных, заранее определённых и законных целей.</p>
+              
+                <p>Не допускается объединение баз данных, содержащих персональные данные, обработка которых осуществляется в целях, несовместимых между собой.</p>
+              
+                <p>Обработке подлежат только персональные данные, которые отвечают целям их обработки.</p>
+              
+                <p>Содержание и объём обрабатываемых персональных данных соответствуют заявленным целям обработки.</p>
+              
+                <p>При обработке персональных данных обеспечивается точность персональных данных, их достаточность, а в необходимых случаях и актуальность по отношению к целям обработки персональных данных.</p>
+              
+                <p>Хранение персональных данных осуществляется в форме, позволяющей определить субъекта персональных данных, не дольше, чем этого требуют цели обработки персональных данных.</p>
+              
+            </div>
+          </div>
+        
+          <div data-animate="fadeInUp">
+            <h2 class="text-xl font-semibold leading-tight">6. Цели обработки персональных данных</h2>
+            <div class="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+              
+                <p>Цели обработки: взаимодействие Пользователя и Оператора посредством сайта; обработка заявок и обратная связь; информирование Пользователя о продуктах и услугах Оператора; улучшение качества работы сайта и анализ пользовательского поведения.</p>
+              
+                <p>Категории персональных данных: фамилия, имя; номера телефонов; адрес электронной почты; название компании; данные об интересующих товарах/услугах; данные о пользовательском устройстве, параметрах сессии и времени посещения; идентификатор пользователя, хранимый в cookie.</p>
+              
+                <p>Правовые основания обработки: ст. 6 Закона о персональных данных; согласие субъекта персональных данных; уставные документы Оператора.</p>
+              
+                <p>Виды обработки: сбор, запись, систематизация, накопление, хранение, уточнение, извлечение, использование, передача, уничтожение и обезличивание персональных данных.</p>
+              
+            </div>
+          </div>
+        
+          <div data-animate="fadeInUp">
+            <h2 class="text-xl font-semibold leading-tight">7. Условия обработки персональных данных</h2>
+            <div class="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+              
+                <p>Обработка персональных данных осуществляется с согласия субъекта персональных данных на обработку его персональных данных.</p>
+              
+                <p>Обработка персональных данных необходима для исполнения договора, стороной которого либо выгодоприобретателем или поручителем по которому является субъект персональных данных, а также для заключения договора по инициативе субъекта персональных данных.</p>
+              
+                <p>Обработка персональных данных необходима для осуществления прав и законных интересов оператора или третьих лиц при условии, что при этом не нарушаются права и свободы субъекта персональных данных.</p>
+              
+            </div>
+          </div>
+        
+          <div data-animate="fadeInUp">
+            <h2 class="text-xl font-semibold leading-tight">8. Передача данных третьим лицам</h2>
+            <div class="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+              
+                <p>Персональные данные Пользователя не передаются третьим лицам, за исключением случаев, связанных с исполнением действующего законодательства, либо в случае, если субъектом персональных данных дано согласие Оператору на передачу данных третьему лицу для исполнения обязательств.</p>
+              
+                <p>Оператор может осуществлять обработку персональных данных посредством программы для ЭВМ «1С-Битрикс24» (ООО «1С-Битрикс», ОГРН 5077746476209, адрес: 109544, г. Москва, б-р Энтузиастов, д. 2, эт. 13, пом. 8-19). Данные хранятся на серверах, расположенных на территории Российской Федерации.</p>
+              
+                <p>Для целей веб-аналитики Оператор использует сервис «Яндекс.Метрика» (ООО «Яндекс», ОГРН 1027700229193). Яндекс.Метрика собирает данные о посещении сайта, включая просмотры страниц, действия пользователей (с помощью технологии «Вебвизор»), параметры устройства, источники переходов. Данные обрабатываются и хранятся на серверах ООО «Яндекс» на территории Российской Федерации.</p>
+              
+                <p>Оператор не осуществляет трансграничную передачу персональных данных.</p>
+              
+            </div>
+          </div>
+        
+          <div data-animate="fadeInUp">
+            <h2 class="text-xl font-semibold leading-tight">9. Порядок сбора, хранения и защиты персональных данных</h2>
+            <div class="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+              
+                <p>Безопасность персональных данных обеспечивается путём реализации правовых, организационных и технических мер, необходимых для выполнения в полном объёме требований действующего законодательства в области защиты персональных данных.</p>
+              
+                <p>Оператор обеспечивает сохранность персональных данных и принимает все возможные меры, исключающие доступ к персональным данным неуполномоченных лиц.</p>
+              
+                <p>Срок обработки персональных данных определяется достижением целей, для которых были собраны персональные данные, если иной срок не предусмотрен договором или действующим законодательством.</p>
+              
+                <p>Пользователь может в любой момент отозвать своё согласие на обработку персональных данных, направив Оператору уведомление посредством электронной почты на электронный адрес buh-zd2@gazony.ru с пометкой «Отзыв согласия на обработку персональных данных».</p>
+              
+            </div>
+          </div>
+        
+          <div data-animate="fadeInUp">
+            <h2 class="text-xl font-semibold leading-tight">10. Использование файлов cookie</h2>
+            <div class="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+              
+                <p>Файлы cookie — небольшие текстовые файлы, которые сохраняются в браузере устройства при посещении Сайта и позволяют обеспечивать его корректную работу, запоминать пользовательские настройки и собирать статистику.</p>
+              
+                <p>Сайт использует следующие типы cookie:</p>
+              
+                <p>Необходимые cookie — обеспечивают базовую функциональность сайта (хранение настроек согласия, данных форм в браузере). Эти cookie не могут быть отключены, так как без них сайт не сможет работать корректно.</p>
+              
+                <p>Аналитические cookie — используются сервисом «Яндекс.Метрика» для сбора статистики посещений, анализа поведения пользователей и работы технологии «Вебвизор» (запись действий пользователей на страницах сайта). Аналитические cookie устанавливаются только с согласия Пользователя.</p>
+              
+                <p>Управление и отзыв согласия: Пользователь может управлять cookie через баннер на сайте (кнопка «Настройки cookie» в подвале сайта) или через настройки браузера. Отключение аналитических cookie не влияет на базовую функциональность сайта.</p>
+              
+                <p>Сайт осуществляет сбор статистики об IP-адресах своих посетителей. Данная информация используется с целью выявления и решения технических проблем.</p>
+              
+            </div>
+          </div>
+        
+          <div data-animate="fadeInUp">
+            <h2 class="text-xl font-semibold leading-tight">11. Заключительные положения</h2>
+            <div class="mt-4 space-y-3 text-sm leading-relaxed text-slate-700">
+              
+                <p>Пользователь может получить любые разъяснения по интересующим вопросам, касающимся обработки его персональных данных, обратившись к Оператору с помощью электронной почты buh-zd2@gazony.ru.</p>
+              
+                <p>В данном документе будут отражены любые изменения политики обработки персональных данных Оператором. Политика действует бессрочно до замены её новой версией.</p>
+              
+                <p>Актуальная версия Политики в свободном доступе расположена в сети Интернет по адресу https://gazony.ru/privacy/.</p>
+              
+            </div>
+          </div>
+        
+      </div>
+
+      <div class="mt-12 rounded-3xl border border-black/5 bg-white p-6 text-sm text-slate-600" data-animate="fadeInUp">
+        <p>По вопросам обработки персональных данных обращайтесь: <a href="mailto:buh-zd2@gazony.ru" class="text-brand hover:underline">buh-zd2@gazony.ru</a></p>
+      </div>
+    </div>
+  </section>
+
+    </main>
+
+    
+<footer class="mt-20 border-t border-black/5 bg-white">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-5">
+      <div class="md:col-span-2">
+        <div class="flex items-center">
+          <img
+            src="/sib_khvoinik_test/static/media/branding/logo-main.webp"
+            alt="Сибирские газоны"
+            class="h-12 w-auto sm:h-14"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div class="mt-4 text-sm text-slate-600 max-w-md space-y-2">
+          <p>Технологичное озеленение с гарантированным результатом: от производства до системы заботы.</p>
+          <p>Собственное выращивание рулонного газона, питомник растений и тепличный комплекс позволяют держать качество и сроки под контролем.</p>
+          <p>Работаем с частными участками, девелоперами и подрядчиками. Помогаем не только реализовать проект, но и сохранить декоративность результата на годы.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-8 md:col-span-3">
+        <div>
+          <div class="text-sm font-semibold mb-3">О компании</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="/sib_khvoinik_test/pitomnik/">Питомник</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/gazon/">Рулонный газон</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/b2b/">B2B</a>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Каталог</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="/sib_khvoinik_test/katalog/">Каталог растений</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/sadovye-centry/">Садовые центры</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/stati/">Статьи</a>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Покупателям</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="/sib_khvoinik_test/ozelenenie-b2c/">Озеленение под ключ</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/sluzhba-zaboty/">Служба заботы</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/kontakty/">Контакты</a>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Контакты</div>
+          <div class="text-sm text-slate-700">Тел: +7 (383) 201-06-00</div>
+          <div class="text-sm text-slate-700 mt-2">Email: price@gazony.ru</div>
+          <div class="text-sm text-slate-700 mt-2">Адрес: г. Новосибирск, ул. Железнодорожная, 12/1, оф.501</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center gap-3">
+        <a href="#" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 hover:bg-black/5 transition" aria-label="VK">
+          <i data-lucide="message-circle" class="h-5 w-5"></i>
+        </a>
+        <a href="#" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 hover:bg-black/5 transition" aria-label="Telegram">
+          <i data-lucide="send" class="h-5 w-5"></i>
+        </a>
+        <a href="#" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-black/10 hover:bg-black/5 transition" aria-label="YouTube">
+          <i data-lucide="play" class="h-5 w-5"></i>
+        </a>
+      </div>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
+        <span>© <span id="year"></span> «Сибирские газоны». Все права защищены.</span>
+        <a href="/sib_khvoinik_test/privacy/" class="hover:text-brand transition">Политика конфиденциальности</a>
+        <button type="button" id="cookieSettingsBtn" class="hover:text-brand transition">Настройки cookie</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <div id="modalOverlay" class="fixed inset-0 bg-black/40 z-[60] hidden"></div>
 
 <!-- Generic modal wrapper -->
 <div id="modalHost" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4">
@@ -49,7 +554,7 @@
 </template>
 
 <template id="modal-template-contact_zaboty">
-  <form class="space-y-5" data-ui-form data-form-tag="B2C/sluzhba-zaboty" data-consent-gated="1">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/sluzhba-zaboty">
     <input type="hidden" name="formTag" value="B2C/sluzhba-zaboty" />
     <div class="grid grid-cols-1 gap-3">
       <label class="text-sm font-medium text-slate-700">
@@ -58,77 +563,14 @@
       </label>
       <label class="text-sm font-medium text-slate-700">
         Телефон
-        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Вопрос
+        <textarea name="question" required rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Коротко опишите задачу"></textarea>
       </label>
     </div>
-    <div class="space-y-3 border-t border-black/5 pt-5">
-      <p class="text-sm font-medium text-slate-800 leading-snug">
-        По каким группам растений вы хотите получать напоминания и рекомендации по уходу:
-      </p>
-      <fieldset class="max-h-64 space-y-2 overflow-y-auto pr-1 overscroll-contain" data-zaboty-care-calendars>
-        <legend class="sr-only">Календари ухода и уведомления</legend>
-        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
-          <input type="checkbox" name="care_gazon" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Календарь ухода за газоном</span>
-        </label>
-        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
-          <input type="checkbox" name="care_conifer" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Календарь ухода за хвойными растениями</span>
-        </label>
-        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
-          <input type="checkbox" name="care_deciduous_trees" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Календарь ухода за лиственными деревьями</span>
-        </label>
-        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
-          <input type="checkbox" name="care_deciduous_shrubs" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Календарь ухода за лиственными кустарниками</span>
-        </label>
-        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
-          <input type="checkbox" name="promo_news" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Хочу получать информацию о новинках</span>
-        </label>
-        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
-          <input type="checkbox" name="care_hydrangea" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Календарь ухода за гортензией</span>
-        </label>
-        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
-          <input type="checkbox" name="care_peony" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Календарь ухода за пионами</span>
-        </label>
-        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
-          <input type="checkbox" name="care_ornamental_apple" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Календарь ухода за яблонями декоративными</span>
-        </label>
-        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
-          <input type="checkbox" name="care_perennials" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Календарь ухода за многолетними цветами</span>
-        </label>
-        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
-          <input type="checkbox" name="care_roses" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Календарь ухода за розами</span>
-        </label>
-        <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700 transition hover:border-black/15">
-          <input type="checkbox" name="promo_sales" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Хочу получать сообщения об акциях</span>
-        </label>
-      </fieldset>
-    </div>
-    <div class="mt-1 space-y-3 rounded-2xl border border-brand/20 bg-gradient-to-r from-brand/10 via-brand2/5 to-transparent p-4">
-      <label class="block text-sm font-medium text-slate-700">
-        Удобный мессенджер
-        <select name="preferred_messenger" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
-          <option value="" disabled selected>Выберите мессенджер</option>
-          <option value="max">MAX</option>
-          <option value="telegram">Telegram</option>
-          <option value="email">Эл. Почта</option>
-        </select>
-      </label>
-      <label class="flex cursor-pointer items-start gap-3 text-sm text-slate-700">
-        <input type="checkbox" name="consent_messages" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-        <span>Даю согласие на получение сообщений</span>
-      </label>
-    </div>
-    <button type="submit" data-consent-submit disabled class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60">
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
       Отправить
     </button>
   </form>
@@ -471,8 +913,9 @@
           <div class="text-2xl font-semibold mt-1" id="modalCalcTotal">—</div>
         </div>
       </div>
-      <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-        Это ориентировочный расчет. Точная стоимость зависит от объема, региона и условий поставки.
+      <p class="mt-3 text-sm text-slate-600" id="modalCalcNote"></p>
+      <p class="mt-3 text-xs text-slate-500">
+        Точная стоимость рассчитывается индивидуально с учетом объёма, региона и условий поставки.
       </p>
     </div>
 
@@ -483,6 +926,17 @@
     >
       Рассчитать
     </button>
+
+    <div id="modalCalcCpWrap" class="hidden">
+      <button
+        type="button"
+        data-open-modal="gazon_cpo"
+        data-modal-title="Получить коммерческое предложение"
+        class="w-full rounded-2xl bg-white border border-black/10 px-6 py-3 text-sm font-semibold hover:bg-black/5 transition"
+      >
+        Получить коммерческое предложение
+      </button>
+    </div>
   </form>
 </template>
 
@@ -848,4 +1302,35 @@
     </button>
   </div>
 </template>
+
+
+    <div id="cookieBanner" class="fixed bottom-0 inset-x-0 z-50 hidden">
+  <div class="mx-auto max-w-5xl px-4 pb-4">
+    <div class="rounded-2xl border border-white/15 bg-[#2D6A4F] p-4 shadow-lg sm:flex sm:items-center sm:gap-4">
+      <p class="flex-1 text-sm text-white/90">
+        Мы используем файлы cookie для работы сайта и аналитики.
+        <a href="/sib_khvoinik_test/privacy/" class="underline hover:text-white">Подробнее</a>
+      </p>
+      <div class="mt-3 flex gap-2 sm:mt-0 sm:shrink-0">
+        <button type="button" id="cookieAcceptAll" class="rounded-xl bg-[#E9C46A] px-4 py-2 text-sm font-semibold text-slate-900 hover:brightness-105 transition">
+          Принять все
+        </button>
+        <button type="button" id="cookieNecessaryOnly" class="rounded-xl border border-white/30 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 transition">
+          Только необходимые
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <script src="/sib_khvoinik_test/static/js/app.js?v=12" defer></script>
+    <script>
+      // Initialize lucide icons after the DOM is ready.
+      document.addEventListener('DOMContentLoaded', () => {
+        if (window.lucide) window.lucide.createIcons();
+      });
+    </script>
+  </body>
+</html>
 

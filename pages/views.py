@@ -12,6 +12,7 @@ from .data import (
     KATALOG_PAGE,
     STATI_PAGE,
     KONTAKTY_PAGE,
+    PRIVACY_PAGE,
 )
 
 
@@ -83,4 +84,8 @@ def kontakty(request):
         "yandex_maps_api_key": getattr(settings, "YANDEX_MAPS_API_KEY", ""),
     }
     return render(request, "pages/kontakty.html", ctx)
+
+
+def privacy(request):
+    return render(request, "pages/privacy.html", PRIVACY_PAGE)
 

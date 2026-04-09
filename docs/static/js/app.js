@@ -5,6 +5,87 @@ function initYear() {
   el.textContent = String(d.getFullYear());
 }
 
+// ── 152-ФЗ: Consent checkbox injection ──
+function initConsentCheckboxes() {
+  document.querySelectorAll('form[data-ui-form]').forEach((form) => {
+    if (form.querySelector('[name="consent"]')) return;
+    const submitBtn = form.querySelector('button[type="submit"], button:not([type])');
+    if (!submitBtn) return;
+
+    const wrapper = document.createElement('label');
+    wrapper.className = 'flex items-start gap-2 text-xs text-slate-500 cursor-pointer';
+    wrapper.innerHTML =
+      '<input type="checkbox" name="consent" required class="mt-0.5 accent-brand shrink-0" />' +
+      '<span>Я даю согласие на обработку моих персональных данных в соответствии с ' +
+      '<a href="/privacy/" class="text-brand underline hover:text-brand2" target="_blank">Политикой конфиденциальности</a></span>';
+
+    const checkbox = wrapper.querySelector('input');
+    submitBtn.disabled = true;
+    submitBtn.classList.add('opacity-50');
+    checkbox.addEventListener('change', () => {
+      submitBtn.disabled = !checkbox.checked;
+      submitBtn.classList.toggle('opacity-50', !checkbox.checked);
+    });
+
+    submitBtn.parentNode.insertBefore(wrapper, submitBtn);
+  });
+}
+
+// ── 152-ФЗ: Cookie banner ──
+function initCookieBanner() {
+  const banner = document.getElementById('cookieBanner');
+  const acceptAll = document.getElementById('cookieAcceptAll');
+  const necessaryOnly = document.getElementById('cookieNecessaryOnly');
+  const settingsBtn = document.getElementById('cookieSettingsBtn');
+  if (!banner || !acceptAll || !necessaryOnly) return;
+
+  const consent = localStorage.getItem('cookie_consent');
+  if (!consent) {
+    banner.classList.remove('hidden');
+  } else if (consent === 'all') {
+    initYandexMetrika();
+  }
+
+  const setConsent = (value) => {
+    localStorage.setItem('cookie_consent', value);
+    banner.classList.add('hidden');
+    if (value === 'all') initYandexMetrika();
+  };
+
+  acceptAll.addEventListener('click', () => setConsent('all'));
+  necessaryOnly.addEventListener('click', () => setConsent('necessary'));
+
+  if (settingsBtn) {
+    settingsBtn.addEventListener('click', () => {
+      localStorage.removeItem('cookie_consent');
+      banner.classList.remove('hidden');
+    });
+  }
+}
+
+// ── Яндекс.Метрика (условная загрузка) ──
+let metrikaLoaded = false;
+function initYandexMetrika() {
+  if (metrikaLoaded) return;
+  metrikaLoaded = true;
+
+  // Replace XXXXXXXX with actual counter ID
+  const COUNTER_ID = 'XXXXXXXX';
+
+  (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+  m[i].l=1*new Date();
+  for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+  k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+
+  ym(COUNTER_ID, "init", {
+    clickmap: true,
+    trackLinks: true,
+    accurateTrackBounce: true,
+    webvisor: true,
+  });
+}
+
 // UI-only placeholder PDF generators
 window.SGDownloadGazonChecklist = function () {
   const text =
@@ -170,6 +251,12 @@ function initModal() {
     modalBody.appendChild(tpl.content.cloneNode(true));
     initConsentGate(modalBody);
 
+    // Inject consent checkbox into freshly cloned modal form
+    const modalForm = modalBody.querySelector('form[data-ui-form]');
+    if (modalForm && !modalForm.querySelector('[name="consent"]')) {
+      initConsentCheckboxes();
+    }
+
     // Калькулятор: передать форму из modalBody — иначе getElementById может попасть в <template> и повесить input на скрытые поля.
     if (targetKey === 'gazon_calc') {
       const calcForm = modalBody.querySelector('#gazonCalculatorModal');
@@ -208,6 +295,44 @@ function initModal() {
     });
   });
 
+  // ── Bitrix24 lead capture ──
+  const B24_WEBHOOK = 'https://sgpichugi.bitrix24.ru/rest/1/6phslfom1dj09wh3';
+
+  const sendLeadToB24 = (tag, payload) => {
+    const [section, formName] = tag.includes('/') ? tag.split('/', 2) : ['other', tag];
+
+    const fields = {
+      TITLE: `Сайт: ${formName}`,
+      UTM_SOURCE: 'website',
+      UTM_MEDIUM: section,
+      UTM_CONTENT: formName,
+      UTM_TERM: window.location.pathname,
+    };
+
+    if (payload.name) fields.NAME = payload.name;
+    if (payload.phone) {
+      fields.PHONE = [{ VALUE: payload.phone, VALUE_TYPE: 'WORK' }];
+    }
+    if (payload.email) {
+      fields.EMAIL = [{ VALUE: payload.email, VALUE_TYPE: 'WORK' }];
+    }
+    if (payload.company) fields.COMPANY_TITLE = payload.company;
+
+    // Все остальные поля формы → COMMENTS
+    const skipKeys = ['name', 'phone', 'email', 'company', 'formTag', 'consent'];
+    const extra = Object.entries(payload)
+      .filter(([k]) => !skipKeys.includes(k))
+      .map(([k, v]) => `${k}: ${v}`)
+      .join('\n');
+    if (extra) fields.COMMENTS = extra;
+
+    fetch(`${B24_WEBHOOK}/crm.lead.add`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ fields }),
+    }).catch((err) => console.warn('[B24] lead send failed:', err));
+  };
+
   // Submit UI-only forms (save to localStorage)
   const handleUiSubmit = async (form) => {
     const tag = form.getAttribute('data-form-tag') || 'unknown';
@@ -228,6 +353,8 @@ function initModal() {
     const existing = JSON.parse(localStorage.getItem(key) || '[]');
     existing.push(entry);
     localStorage.setItem(key, JSON.stringify(existing));
+
+    sendLeadToB24(tag, payload);
 
     // Swap to success template
     const successTpl = document.getElementById('modal-template-success');
@@ -732,5 +859,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initZabotyExpertSlider();
   initGazonCalculator();
   initContactsYandexMap();
+  initConsentCheckboxes();
+  initCookieBanner();
 });
 

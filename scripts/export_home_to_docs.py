@@ -15,7 +15,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 DOCS_INDEX = ROOT / "docs/index.html"
-PREFIX = "/sib_khvoinik_test"
+PREFIX = os.environ.get("SITE_PREFIX", "/sib_khvoinik_test")
 
 
 def main() -> None:

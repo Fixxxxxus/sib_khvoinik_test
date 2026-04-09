@@ -11,6 +11,12 @@ staticfiles/
 .env.*
 !.env.example
 
+# Claude Code
+.claude/
+docs/superpowers/
+docs/research/
+bitrix24-mcp/
+
 # Логи
 *.log
 
