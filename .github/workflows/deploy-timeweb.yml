@@ -13,11 +13,18 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Prepare build for gazony.ru
+        env:
+          YANDEX_MAPS_API_KEY: ${{ secrets.YANDEX_MAPS_API_KEY }}
         run: |
           cp -r docs deploy
-          # Убираем GitHub Pages префикс из всех HTML-файлов
+          # Убираем GitHub Pages префикс из HTML и JS
           find deploy -name '*.html' -exec sed -i 's|/sib_khvoinik_test/|/|g' {} +
           find deploy -name '*.html' -exec sed -i 's|/sib_khvoinik_test"|/"|g' {} +
+          find deploy -name '*.js' -exec sed -i 's|/sib_khvoinik_test|/|g' {} +
+          # Подставляем Yandex Maps API key
+          if [ -n "$YANDEX_MAPS_API_KEY" ]; then
+            find deploy -name '*.html' -exec sed -i "s|__YANDEX_MAPS_API_KEY__|${YANDEX_MAPS_API_KEY}|g" {} +
+          fi
 
       - name: Deploy via rsync
         uses: burnett01/rsync-deployments@7.0.1
