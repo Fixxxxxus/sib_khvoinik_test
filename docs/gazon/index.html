@@ -7,6 +7,9 @@
     <title>Рулонный газон — Сибирские газоны</title>
     <meta name="description" content="Сибирские газоны — технологичное озеленение, питомник и рулонный газон" />
 
+    <link rel="icon" href="/sib_khvoinik_test/static/media/branding/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/sib_khvoinik_test/static/media/branding/favicon-32.png" sizes="32x32" type="image/png" />
+
     <!-- Tailwind: локальный бандл (GitHub Pages без внешнего CDN) -->
     <script src="/sib_khvoinik_test/static/js/tailwind.browser.js?v=1"></script>
     <script>
@@ -28,7 +31,7 @@
     </script>
 
     <!-- Lucide icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.460.0"></script>
 
     <link rel="stylesheet" href="/sib_khvoinik_test/static/css/styles.css?v=18" />
   </head>
@@ -1674,6 +1677,25 @@
 </template>
 
 
+
+    <div id="cookieBanner" class="fixed bottom-0 inset-x-0 z-50 hidden">
+  <div class="mx-auto max-w-5xl px-4 pb-4">
+    <div class="rounded-2xl border border-white/15 bg-[#2D6A4F] p-4 shadow-lg sm:flex sm:items-center sm:gap-4">
+      <p class="flex-1 text-sm text-white/90">
+        Мы используем файлы cookie для работы сайта и аналитики.
+        <a href="/sib_khvoinik_test/privacy/" class="underline hover:text-white">Подробнее</a>
+      </p>
+      <div class="mt-3 flex gap-2 sm:mt-0 sm:shrink-0">
+        <button type="button" id="cookieAcceptAll" class="rounded-xl bg-[#E9C46A] px-4 py-2 text-sm font-semibold text-slate-900 hover:brightness-105 transition">
+          Принять все
+        </button>
+        <button type="button" id="cookieNecessaryOnly" class="rounded-xl border border-white/30 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 transition">
+          Только необходимые
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
 
     <script src="/sib_khvoinik_test/static/js/app.js?v=26" defer></script>
     <script>

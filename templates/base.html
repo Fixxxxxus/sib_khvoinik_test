@@ -7,6 +7,9 @@
     <title>{% block title %}Сибирские газоны{% endblock %}</title>
     <meta name="description" content="Сибирские газоны — технологичное озеленение, питомник и рулонный газон" />
 
+    <link rel="icon" href="{% static 'media/branding/favicon.svg' %}" type="image/svg+xml" />
+    <link rel="icon" href="{% static 'media/branding/favicon-32.png' %}" sizes="32x32" type="image/png" />
+
     <!-- Tailwind: локальный скрипт (CDN без сети ломает всю вёрстку — классы hidden/md:* не работают) -->
     <script src="{% static 'js/tailwind.browser.js' %}?v=1"></script>
     <script>
@@ -28,7 +31,7 @@
     </script>
 
     <!-- Lucide icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://unpkg.com/lucide@0.460.0"></script>
 
     <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=18" />
   </head>

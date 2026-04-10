@@ -340,12 +340,28 @@ function initModal() {
     }
     if (payload.company) fields.COMPANY_TITLE = payload.company;
 
-    // Все остальные поля формы → COMMENTS
+    fields.SOURCE_ID = 'WEB';
+
+    // Все остальные поля формы → COMMENTS (HTML для Bitrix24)
     const skipKeys = ['name', 'phone', 'email', 'company', 'formTag', 'consent'];
+    const fieldLabels = {
+      area: 'Площадь',
+      service: 'Услуга',
+      message: 'Сообщение',
+      address: 'Адрес',
+      city: 'Город',
+      budget: 'Бюджет',
+      deadline: 'Сроки',
+      quantity: 'Количество',
+      comment: 'Комментарий',
+    };
     const extra = Object.entries(payload)
       .filter(([k]) => !skipKeys.includes(k))
-      .map(([k, v]) => `${k}: ${v}`)
-      .join('\n');
+      .map(([k, v]) => {
+        const label = fieldLabels[k] || k;
+        return `<b>${label}:</b> ${v}`;
+      })
+      .join('<br>');
     if (extra) fields.COMMENTS = extra;
 
     fetch(`${B24_WEBHOOK}/crm.lead.add`, {

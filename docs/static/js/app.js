@@ -137,6 +137,19 @@ function initViewportHeroHeights() {
   }
 }
 
+/** Hero главной: как у «Газон» — без вспышки первого кадра MP4 до фактического playing */
+function initHomeHeroVideo() {
+  const v = document.querySelector('section[data-home-hero] video.hero-bg-video');
+  if (!v) return;
+  const reveal = () => v.classList.add('is-home-hero-ready');
+  v.addEventListener('playing', reveal, { once: true });
+  try {
+    if (!v.paused && v.readyState >= HTMLMediaElement.HAVE_CURRENT_DATA) reveal();
+  } catch (e) {
+    /* ignore */
+  }
+}
+
 /** Hero «Газон»: плавное появление видео после start воспроизведения — убирает кадр из кэша/рассинхрон с poster */
 function initGazonHeroVideo() {
   const v = document.getElementById('gazon-hero-video');
@@ -327,12 +340,28 @@ function initModal() {
     }
     if (payload.company) fields.COMPANY_TITLE = payload.company;
 
-    // Все остальные поля формы → COMMENTS
+    fields.SOURCE_ID = 'WEB';
+
+    // Все остальные поля формы → COMMENTS (HTML для Bitrix24)
     const skipKeys = ['name', 'phone', 'email', 'company', 'formTag', 'consent'];
+    const fieldLabels = {
+      area: 'Площадь',
+      service: 'Услуга',
+      message: 'Сообщение',
+      address: 'Адрес',
+      city: 'Город',
+      budget: 'Бюджет',
+      deadline: 'Сроки',
+      quantity: 'Количество',
+      comment: 'Комментарий',
+    };
     const extra = Object.entries(payload)
       .filter(([k]) => !skipKeys.includes(k))
-      .map(([k, v]) => `${k}: ${v}`)
-      .join('\n');
+      .map(([k, v]) => {
+        const label = fieldLabels[k] || k;
+        return `<b>${label}:</b> ${v}`;
+      })
+      .join('<br>');
     if (extra) fields.COMMENTS = extra;
 
     fetch(`${B24_WEBHOOK}/crm.lead.add`, {
@@ -847,6 +876,7 @@ function initContactsYandexMap() {
 document.addEventListener('DOMContentLoaded', () => {
   initYear();
   initViewportHeroHeights();
+  initHomeHeroVideo();
   initGazonHeroVideo();
   initB2bHeroVideo();
   initBurger();
