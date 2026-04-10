@@ -1,7 +1,13 @@
-// Base path: auto-detect /sib_khvoinik_test prefix on GitHub Pages, empty on localhost
+// Base path: read from <meta name="base-path"> set in HTML.
+// On GitHub Pages the meta has "/sib_khvoinik_test"; Timeweb deploy
+// sed-replaces it to "/"; localhost template leaves it empty.
 var BASE_PATH = (function () {
-  var m = location.pathname.match(/^(\/sib_khvoinik_test)/);
-  return m ? m[1] : '';
+  var el = document.querySelector('meta[name="base-path"]');
+  if (el) {
+    var p = el.getAttribute('content');
+    return (!p || p === '/') ? '' : p.replace(/\/+$/, '');
+  }
+  return '';
 })();
 
 function initYear() {
@@ -320,49 +326,143 @@ function initModal() {
   // ── Bitrix24 lead capture ──
   const B24_WEBHOOK = 'https://sgpichugi.bitrix24.ru/rest/1/6phslfom1dj09wh3';
 
+  // Human-readable form titles for Bitrix24 TITLE field
+  const FORM_TITLES = {
+    'request': 'Обращение с сайта',
+    'mini-brief': 'Мини-бриф',
+    'sluzhba-zaboty': 'Служба заботы',
+    'consultation': 'Консультация',
+    'sadovye-novinki-notify': 'Уведомление о новинках',
+    'contract-request': 'Запрос КП (B2B)',
+    'price-stock': 'Прайс и наличие (B2B)',
+    'reglement-uhoda': 'Регламент ухода (B2B)',
+    'gazon-price-list': 'Прайс-лист газон',
+    'gazon-cpo': 'КП на газон',
+    'gazon-checklist': 'Чек-лист газон',
+    'gazon-open-day': 'День открытых дверей',
+    'gazon-logistics': 'Логистика газон',
+    'gazon-presentation': 'Презентация газон',
+    'gazon-calc': 'Калькулятор газона',
+    'ozelenenie-ready-project': 'Готовый проект озеленения',
+    'mini-project': 'Мини-проект озеленения',
+    'ozelenenie-audit-plan': 'Аудит участка',
+    'ozelenenie-assess-upload': 'Оценка участка (фото)',
+    'ozelenenie-send-project': 'Проверка проекта',
+    'ozelenenie-materials-scheme': 'Подбор материалов и схема',
+    'pitomnik-presentation': 'Презентация питомника',
+    'digital-card': 'Цифровая карта',
+  };
+
+  // Labels for COMMENTS fields
+  const FIELD_LABELS = {
+    objectType: 'Тип объекта',
+    area: 'Площадь, м²',
+    region: 'Регион',
+    topic: 'Тема',
+    message: 'Сообщение',
+    city: 'Город',
+    budget: 'Бюджет',
+    deadline: 'Сроки',
+    quantity: 'Количество',
+    comment: 'Комментарий',
+    notes: 'Пожелания',
+    collaborationFormat: 'Формат сотрудничества',
+    clientType: 'Тип клиента',
+    deliveryWhen: 'Сроки поставки',
+    date: 'Дата',
+    format: 'Формат поставки',
+    stage: 'Стадия объекта',
+    preferred_messenger: 'Мессенджер',
+    link: 'Ссылка',
+    service: 'Услуга',
+    address: 'Адрес',
+  };
+
+  // Readable display values for select options
+  const VALUE_LABELS = {
+    ozelenenie: 'Озеленение', gazon: 'Газон',
+    sadovye_centry: 'Садовые центры', b2b: 'B2B',
+    roll: 'Поставка рулонного газона',
+    combined: 'Комбинированное решение',
+    plants: 'Контрактные поставки растений',
+    turnkey: 'Реализация под ключ',
+    partial: 'Частичная реализация',
+    partner: 'Партнёрство с ландшафтными компаниями',
+    uk: 'Сопровождение для УК',
+    max: 'MAX', telegram: 'Telegram', email: 'Эл. почта',
+  };
+
+  // care_*/promo_* checkbox labels
+  const CARE_LABELS = {
+    care_gazon: 'Газон', care_conifer: 'Хвойные',
+    care_deciduous_trees: 'Лиственные деревья',
+    care_deciduous_shrubs: 'Лиственные кустарники',
+    care_hydrangea: 'Гортензия', care_peony: 'Пионы',
+    care_ornamental_apple: 'Яблони декоративные',
+    care_perennials: 'Многолетние цветы', care_roses: 'Розы',
+    promo_news: 'Новинки', promo_sales: 'Акции',
+  };
+
   const sendLeadToB24 = (tag, payload) => {
     const [section, formName] = tag.includes('/') ? tag.split('/', 2) : ['other', tag];
 
     const fields = {
-      TITLE: `Сайт: ${formName}`,
+      TITLE: `Сайт: ${FORM_TITLES[formName] || formName}`,
+      SOURCE_ID: 'WEB',
       UTM_SOURCE: 'website',
       UTM_MEDIUM: section,
       UTM_CONTENT: formName,
       UTM_TERM: window.location.pathname,
     };
 
+    // ── Map contact info to CRM fields ──
     if (payload.name) fields.NAME = payload.name;
+    if (payload.contactPerson) fields.NAME = payload.contactPerson;
     if (payload.phone) {
       fields.PHONE = [{ VALUE: payload.phone, VALUE_TYPE: 'WORK' }];
     }
     if (payload.email) {
       fields.EMAIL = [{ VALUE: payload.email, VALUE_TYPE: 'WORK' }];
     }
+    // B2B forms use combined "contact" field for phone or email
+    if (payload.contact) {
+      var val = payload.contact.trim();
+      if (val.includes('@')) {
+        fields.EMAIL = [{ VALUE: val, VALUE_TYPE: 'WORK' }];
+      } else {
+        fields.PHONE = [{ VALUE: val, VALUE_TYPE: 'WORK' }];
+      }
+    }
     if (payload.company) fields.COMPANY_TITLE = payload.company;
 
-    fields.SOURCE_ID = 'WEB';
+    // ── Build COMMENTS from remaining fields ──
+    var skipKeys = [
+      'name', 'phone', 'email', 'company', 'formTag', 'consent',
+      'contactPerson', 'contact', 'consent_messages',
+    ];
 
-    // Все остальные поля формы → COMMENTS (HTML для Bitrix24)
-    const skipKeys = ['name', 'phone', 'email', 'company', 'formTag', 'consent'];
-    const fieldLabels = {
-      area: 'Площадь',
-      service: 'Услуга',
-      message: 'Сообщение',
-      address: 'Адрес',
-      city: 'Город',
-      budget: 'Бюджет',
-      deadline: 'Сроки',
-      quantity: 'Количество',
-      comment: 'Комментарий',
-    };
-    const extra = Object.entries(payload)
-      .filter(([k]) => !skipKeys.includes(k))
-      .map(([k, v]) => {
-        const label = fieldLabels[k] || k;
-        return `<b>${label}:</b> ${v}`;
+    var lines = [];
+
+    // Group care_*/promo_* checkboxes into one line
+    var subs = Object.keys(payload)
+      .filter(function (k) { return (k.startsWith('care_') || k.startsWith('promo_')) && payload[k]; })
+      .map(function (k) { return CARE_LABELS[k] || k; });
+    if (subs.length) lines.push('<b>Подписки:</b> ' + subs.join(', '));
+
+    Object.entries(payload)
+      .filter(function (e) {
+        var k = e[0];
+        return !skipKeys.includes(k) && !k.startsWith('care_') && !k.startsWith('promo_');
       })
-      .join('<br>');
-    if (extra) fields.COMMENTS = extra;
+      .forEach(function (e) {
+        var k = e[0], v = e[1];
+        if (!v || v === '1') return; // skip empty and bare checkbox "1"
+        var label = FIELD_LABELS[k] || k;
+        var display = VALUE_LABELS[v] || v;
+        lines.push('<b>' + label + ':</b> ' + display);
+      });
+
+    if (lines.length) fields.COMMENTS = lines.join('<br>');
 
     fetch(`${B24_WEBHOOK}/crm.lead.add`, {
       method: 'POST',
