@@ -212,6 +212,7 @@ function initModal() {
   const templateMap = {
     'mini_brief': 'modal-template-mini_brief',
     'contact_zaboty': 'modal-template-contact_zaboty',
+    'zaboty_expert_visit': 'modal-template-zaboty_expert_visit',
     'contact_consult': 'modal-template-contact_consult',
     'b2b_cpo': 'modal-template-b2b_cpo',
     'b2b_price_stock': 'modal-template-b2b_price_stock',
@@ -255,9 +256,16 @@ function initModal() {
   };
 
   const openModal = (targetKey, title) => {
-    const tplId = templateMap[targetKey] || 'modal-template-success';
+    const tplId = templateMap[targetKey];
+    if (!tplId) {
+      console.warn('[SG modal] Неизвестный data-open-modal:', targetKey);
+      return;
+    }
     const tpl = document.getElementById(tplId);
-    if (!tpl) return;
+    if (!tpl) {
+      console.warn('[SG modal] Нет элемента #', tplId);
+      return;
+    }
 
     const sizeWrap = host.firstElementChild;
     if (sizeWrap) {
@@ -331,6 +339,7 @@ function initModal() {
     'request': 'Обращение с сайта',
     'mini-brief': 'Мини-бриф',
     'sluzhba-zaboty': 'Служба заботы',
+    'zaboty-expert-vyezd': 'Выезд специалиста (экспертная помощь)',
     'consultation': 'Консультация',
     'sadovye-novinki-notify': 'Уведомление о новинках',
     'contract-request': 'Запрос КП (B2B)',
