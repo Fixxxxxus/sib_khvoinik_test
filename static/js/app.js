@@ -271,7 +271,6 @@ function initModal() {
     if (sizeWrap) {
       sizeWrap.classList.remove('max-w-lg', 'max-w-2xl');
       const wide =
-        targetKey === 'contact_zaboty' ||
         targetKey === 'ozelenenie_mini_project' ||
         targetKey === 'gazon_calc' ||
         targetKey === 'sadovye_novinka_1' ||
