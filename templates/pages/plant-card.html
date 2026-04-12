@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Карточка растения — {{ brand }}{% endblock %}
+{% block title %}{{ active_plant.name|default:'Карточка растения' }} — {{ brand }}{% endblock %}
 
 {% block content %}
   <section class="mt-10">

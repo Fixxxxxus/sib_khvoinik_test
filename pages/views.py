@@ -53,6 +53,8 @@ def katalog_item(request, slug):
     if slug in category_slugs:
         ctx = dict(ctx_base)
         ctx["active_category_slug"] = slug
+        cat = next((c for c in ctx_base.get("categories", []) if c["slug"] == slug), None)
+        ctx["category_label"] = cat["label"] if cat else slug
         ctx["plants"] = [
             p for p in ctx.get("plants", []) if p.get("category_slug") == slug
         ]
