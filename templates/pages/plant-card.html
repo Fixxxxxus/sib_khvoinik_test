@@ -26,7 +26,7 @@
             </div>
             <div class="p-6">
               <div class="text-2xl font-semibold">{{ active_plant.name|default:'—' }}</div>
-              <div class="mt-1 text-sm text-slate-600">Латинское: {{ active_plant.latin|default:'—' }}</div>
+              <div class="mt-1 text-sm text-slate-600">{% include 'partials/plant_card_category.html' with category_slug=active_plant.category_slug %}</div>
             </div>
           </div>
         </div>
@@ -117,7 +117,7 @@
                 {% endif %}
               </div>
               <div class="mt-4 font-semibold text-sm">{{ p.name }}</div>
-              <div class="mt-1 text-xs text-slate-500">{{ p.latin }}</div>
+              <div class="mt-1 text-xs text-slate-500">{% include 'partials/plant_card_category.html' with category_slug=p.category_slug %}</div>
             </a>
           {% endfor %}
         </div>

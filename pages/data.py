@@ -297,10 +297,30 @@ KATALOG_PAGE = {
     **BASE,
     "title": "Каталог растений",
     "categories": [
-        {"slug": "hvoynye-derevya", "label": "Хвойные деревья", "desc": "плотная крона и выразительная фактура"},
-        {"slug": "listvennye-kustarniki", "label": "Лиственные деревья и кустарники", "desc": "декоративность круглый год"},
-        {"slug": "mnogoletnie-tsvety", "label": "Многолетние цветы", "desc": "цветение по сезонам и стабильность"},
-        {"slug": "rassada-odnoletniaia-ovoshchi", "label": "Однолетняя и овощная рассада", "desc": "быстрый старт сезона"},
+        {
+            "slug": "hvoynye-derevya",
+            "label": "Хвойные деревья",
+            "card_label": "Хвойные",
+            "desc": "плотная крона и выразительная фактура",
+        },
+        {
+            "slug": "listvennye-kustarniki",
+            "label": "Лиственные деревья и кустарники",
+            "card_label": "Лиственные",
+            "desc": "декоративность круглый год",
+        },
+        {
+            "slug": "mnogoletnie-tsvety",
+            "label": "Многолетние цветы",
+            "card_label": "Многолетние цветы",
+            "desc": "цветение по сезонам и стабильность",
+        },
+        {
+            "slug": "rassada-odnoletniaia-ovoshchi",
+            "label": "Однолетняя и овощная рассада",
+            "card_label": "Рассада",
+            "desc": "быстрый старт сезона",
+        },
     ],
     "plants": [
         {

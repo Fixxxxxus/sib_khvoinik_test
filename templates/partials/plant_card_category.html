@@ -1,0 +1,4 @@
+{% comment %}Подзаголовок на карточке: краткая категория по category_slug (см. categories[].card_label).{% endcomment %}
+{% for c in categories %}
+  {% if c.slug == category_slug %}{{ c.card_label|default:c.label }}{% endif %}
+{% endfor %}
