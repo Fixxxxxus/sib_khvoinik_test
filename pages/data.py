@@ -304,6 +304,27 @@ KATALOG_PAGE = {
     ],
     "plants": [
         {
+            "slug": "tuya-zapadnaya-thuja-occidentalis-brabant-s15-h-100-120",
+            "name": "Туя западная «Брабант», С15, h 100–120 см",
+            "latin": "Thuja occidentalis 'Brabant'",
+            "category_slug": "hvoynye-derevya",
+            "description": (
+                "Туя западная «Брабант» (Thuja occidentalis 'Brabant') — один из самых популярных сортов западной туи. "
+                "Стройное коническое дерево с пышной плотной кроной; прирост около 30–40 см в год, взрослая высота 4–5 м. "
+                "Светло-зелёная хвоя; со временем крона становится чуть рыхлее (обычно не раньше чем через 10–12 лет)."
+            ),
+            "height": "4–5 м (взрослое)",
+            "frost": "-35°C",
+            "light": "солнце/полутень",
+            "image": "media/images/catalog/migrated/tuya-zapadnaya-thuja-occidentalis-brabant-s15-h-100-120.jpg",
+            "legacy_paths": [
+                "/product/khvoynye/tuya/tuya_zapadnaya_thuja_occidentalis_brabant_s15_h_100_120/",
+            ],
+            "formats": [
+                {"format": "Контейнер", "size": "С15, высота 100–120 см", "price": "6 490 ₽"},
+            ],
+        },
+        {
             "slug": "tuya-zapadnaya",
             "name": "Туя западная",
             "latin": "Thuja occidentalis",

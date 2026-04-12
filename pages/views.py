@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.http import Http404
 from django.shortcuts import render
 
 from .data import (
@@ -45,24 +46,24 @@ def katalog(request):
     return render(request, "pages/katalog.html", KATALOG_PAGE)
 
 
-def katalog_category(request, category_slug):
-    ctx = dict(KATALOG_PAGE)
-    ctx["active_category_slug"] = category_slug
-    # Filter plants for the selected category (stage 1: UI-only data)
-    ctx["plants"] = [
-        p for p in ctx.get("plants", []) if p.get("category_slug") == category_slug
-    ]
-    return render(request, "pages/katalog-category.html", ctx)
-
-
-def plant_card(request, plant_slug):
-    ctx = dict(KATALOG_PAGE)
-    ctx["active_plant_slug"] = plant_slug
-    ctx["active_plant"] = next(
-        (p for p in ctx.get("plants", []) if p.get("slug") == plant_slug),
-        None,
-    )
-    return render(request, "pages/plant-card.html", ctx)
+def katalog_item(request, slug):
+    """Один URL /katalog/<slug>/: сначала категория, иначе карточка растения."""
+    ctx_base = dict(KATALOG_PAGE)
+    category_slugs = {c["slug"] for c in ctx_base.get("categories", [])}
+    if slug in category_slugs:
+        ctx = dict(ctx_base)
+        ctx["active_category_slug"] = slug
+        ctx["plants"] = [
+            p for p in ctx.get("plants", []) if p.get("category_slug") == slug
+        ]
+        return render(request, "pages/katalog-category.html", ctx)
+    plant = next((p for p in ctx_base.get("plants", []) if p.get("slug") == slug), None)
+    if plant:
+        ctx = dict(ctx_base)
+        ctx["active_plant_slug"] = slug
+        ctx["active_plant"] = plant
+        return render(request, "pages/plant-card.html", ctx)
+    raise Http404("Категория или растение не найдены")
 
 
 def sluzhba_zaboty(request):

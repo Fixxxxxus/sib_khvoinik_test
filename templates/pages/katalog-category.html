@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}Каталог — категория — {{ brand }}{% endblock %}
 
 {% block content %}
@@ -26,8 +27,12 @@
       <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {% for p in plants %}
           <div class="rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
-            <a href="{% url 'plant_card' plant_slug=p.slug %}">
-              <div class="h-28 rounded-2xl bg-gradient-to-br from-black/90 via-black/30 to-brand/20"></div>
+            <a href="{% url 'katalog_item' slug=p.slug %}">
+              <div class="h-28 rounded-2xl overflow-hidden bg-gradient-to-br from-black/90 via-black/30 to-brand/20">
+                {% if p.image %}
+                  <img src="{% static p.image %}" alt="" class="h-full w-full object-cover" loading="lazy" decoding="async" />
+                {% endif %}
+              </div>
             </a>
             <div class="mt-4 font-semibold">{{ p.name }}</div>
             <div class="mt-2 text-xs text-slate-500">{{ p.latin }}</div>
@@ -48,7 +53,7 @@
             </div>
 
             <div class="mt-5 flex flex-col sm:flex-row gap-2">
-              <a href="{% url 'plant_card' plant_slug=p.slug %}" class="flex-1 inline-flex items-center justify-center rounded-2xl border border-black/10 px-4 py-2 font-semibold hover:bg-black/5 transition">
+              <a href="{% url 'katalog_item' slug=p.slug %}" class="flex-1 inline-flex items-center justify-center rounded-2xl border border-black/10 px-4 py-2 font-semibold hover:bg-black/5 transition">
                 Подробнее
               </a>
               <button
