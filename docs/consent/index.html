@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>Согласие на обработку персональных данных — Сибирские газоны</title>
     <meta name="description" content="Сибирские газоны — технологичное озеленение, питомник и рулонный газон" />
-    <meta name="base-path" content="/sib_khvoinik_test" />
+    <meta name="base-path" content="" />
 
     <link rel="icon" href="/sib_khvoinik_test/static/media/branding/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/sib_khvoinik_test/static/media/branding/favicon-32.png" sizes="32x32" type="image/png" />
@@ -72,13 +72,15 @@
       <a href="/sib_khvoinik_test/sadovye-centry/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
         Садовые центры
       </a>
-      <!-- TODO: вернуть когда будет контент
       <a href="/sib_khvoinik_test/catalog/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
         Каталог
       </a>
+      <!-- TODO: вернуть когда будет контент
+      <!-- TODO: вернуть когда будет контент
       <a href="/sib_khvoinik_test/stati/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
         Статьи
       </a>
+      -->
       -->
       <a href="/sib_khvoinik_test/kontakty/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
         Контакты
@@ -203,13 +205,15 @@
         <a href="/sib_khvoinik_test/sadovye-centry/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
           Садовые центры
         </a>
-        <!-- TODO: вернуть когда будет контент
         <a href="/sib_khvoinik_test/catalog/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
           Каталог
         </a>
+        <!-- TODO: вернуть когда будет контент
+        <!-- TODO: вернуть когда будет контент
         <a href="/sib_khvoinik_test/stati/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
           Статьи
         </a>
+        -->
         -->
         <a href="/sib_khvoinik_test/kontakty/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
           Контакты
@@ -398,13 +402,13 @@
           <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/b2b/">B2B</a>
         </div>
         <div>
-          <!-- TODO: вернуть когда будет контент
           <div class="text-sm font-semibold mb-3">Каталог</div>
           <a class="block text-sm text-slate-700 hover:text-brand transition" href="/sib_khvoinik_test/catalog/">Каталог растений</a>
-          -->
           <a class="block text-sm text-slate-700 hover:text-brand transition" href="/sib_khvoinik_test/sadovye-centry/">Садовые центры</a>
           <!-- TODO: вернуть когда будет контент
+          <!-- TODO: вернуть когда будет контент
           <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/stati/">Статьи</a>
+          -->
           -->
         </div>
         <div>
@@ -510,6 +514,126 @@
       </span>
     </label>
     <button type="submit" data-consent-submit disabled class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60">
+      Отправить
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-zaboty_expert_visit">
+  <form class="space-y-5" data-ui-form data-form-tag="B2C/zaboty-expert-vyezd" data-consent-gated="1">
+    <input type="hidden" name="formTag" value="B2C/zaboty-expert-vyezd" />
+    <div class="flex items-start gap-3 rounded-2xl border border-amber-200/90 bg-gradient-to-br from-amber-50 via-white to-orange-50/50 px-4 py-3.5 text-sm text-amber-950 shadow-sm" role="note">
+      <i data-lucide="banknote" class="h-5 w-5 shrink-0 text-amber-800" aria-hidden="true"></i>
+      <p class="min-w-0 leading-snug">
+        <span class="font-semibold text-amber-900">Платная услуга.</span>
+        Стоимость выезда и диагностики согласуем с вами до визита специалиста.
+      </p>
+    </div>
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" autocomplete="name" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." autocomplete="tel" />
+      </label>
+    </div>
+    <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
+      <input type="checkbox" name="consent" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+      <span>
+        Даю согласие на обработку персональных данных в соответствии с
+        <a href="/sib_khvoinik_test/privacy/" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+      </span>
+    </label>
+    <button type="submit" data-consent-submit disabled class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-5 py-3.5 text-center text-sm font-semibold leading-snug text-white shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60 sm:text-base">
+      Заказать выезд специалиста на участок
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-contact_consult">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/consultation">
+    <input type="hidden" name="formTag" value="B2C/consultation" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Отправить
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-catalog_actual_stock">
+  <form class="space-y-4" data-ui-form data-form-tag="Catalog/actual-stock">
+    <input type="hidden" name="formTag" value="Catalog/actual-stock" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Выслать актуальные остатки
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-catalog_electronic_catalog">
+  <form class="space-y-4" data-ui-form data-form-tag="Catalog/electronic-catalog">
+    <input type="hidden" name="formTag" value="Catalog/electronic-catalog" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Получить каталог
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-sadovye_novinki_notify">
+  <form class="space-y-5" data-ui-form data-form-tag="B2C/sadovye-novinki-notify">
+    <input type="hidden" name="formTag" value="B2C/sadovye-novinki-notify" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <div class="space-y-3 rounded-2xl border border-brand/20 bg-gradient-to-r from-brand/10 via-brand2/5 to-transparent p-4">
+      <label class="block text-sm font-medium text-slate-700">
+        Удобный мессенджер
+        <select name="preferred_messenger" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="" disabled selected>Выберите мессенджер</option>
+          <option value="max">MAX</option>
+          <option value="telegram">Telegram</option>
+          <option value="email">Эл. Почта</option>
+        </select>
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
       Отправить
     </button>
   </form>
@@ -799,7 +923,7 @@
 </template>
 
 <template id="modal-template-gazon_calc">
-  <form id="gazonCalculatorModal" class="space-y-4" data-ui-form data-form-tag="Gas/gazon-calc" data-ui-action="none">
+  <form id="gazonCalculatorModal" class="space-y-4" data-ui-form data-form-tag="Gas/gazon-calc" data-ui-action="none" data-consent-gated="1">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label class="text-sm font-medium text-slate-700">
         Имя
@@ -837,30 +961,19 @@
       </select>
     </label>
 
-    <div id="modalCalcResultBlock" class="hidden rounded-3xl border border-black/5 bg-white p-5">
-      <div class="flex items-center justify-between gap-2">
-        <div class="font-semibold">Результат</div>
-        <div class="text-xs text-slate-500">ориентировочно</div>
-      </div>
-      <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="rounded-2xl border border-black/5 p-4">
-          <div class="text-xs text-slate-600">Цена за 1 м²</div>
-          <div class="text-2xl font-semibold mt-1" id="modalCalcPerM2">—</div>
-        </div>
-        <div class="rounded-2xl border border-black/5 p-4">
-          <div class="text-xs text-slate-600">Итого</div>
-          <div class="text-2xl font-semibold mt-1" id="modalCalcTotal">—</div>
-        </div>
-      </div>
-      <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-        Это ориентировочный расчет. Точная стоимость зависит от объема, региона и условий поставки.
-      </p>
-    </div>
+    <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
+      <input type="checkbox" name="consent" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+      <span>
+        Даю согласие на обработку персональных данных в соответствии с
+        <a href="/sib_khvoinik_test/privacy/" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+      </span>
+    </label>
 
     <button
-      type="button"
-      id="modalCalcBtn"
-      class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+      type="submit"
+      data-consent-submit
+      disabled
+      class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60"
     >
       Рассчитать
     </button>
@@ -1251,7 +1364,7 @@
 </div>
 
 
-    <script src="/sib_khvoinik_test/static/js/app.js?v=30" defer></script>
+    <script src="/sib_khvoinik_test/static/js/app.js?v=32" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {
