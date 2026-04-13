@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-Собирает статические HTML каталога в docs/katalog/ для GitHub Pages
+Собирает статические HTML каталога в docs/catalog/ для GitHub Pages
 (как на localhost с Django, с префиксом SITE_PREFIX).
 
 Запуск из корня проекта:
-  python3 scripts/export_katalog_to_docs.py
+  python3 scripts/export_catalog_to_docs.py
 
 Переменная окружения: SITE_PREFIX=/sib_khvoinik_test (по умолчанию).
-После изменений в templates/pages/katalog*.html или plant-card — перезапустите скрипт и закоммитьте docs/.
+После изменений в templates/pages/catalog*.html или plant-card — перезапустите скрипт и закоммитьте docs/.
 """
 from __future__ import annotations
 
@@ -18,7 +18,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PREFIX = os.environ.get("SITE_PREFIX", "/sib_khvoinik_test").rstrip("/") or ""
-DOCS_KATALOG = ROOT / "docs" / "katalog"
+DOCS_CATALOG = ROOT / "docs" / "catalog"
 
 
 def apply_site_prefix(html: str, prefix: str) -> str:
@@ -62,40 +62,40 @@ def main() -> int:
     django.setup()
 
     from django.template.loader import render_to_string
-    from pages.data import KATALOG_PAGE
+    from pages.data import CATALOG_PAGE
 
     n = 0
 
-    html = render_to_string("pages/katalog.html", KATALOG_PAGE)
-    write_html(DOCS_KATALOG / "index.html", apply_site_prefix(html, PREFIX))
+    html = render_to_string("pages/catalog.html", CATALOG_PAGE)
+    write_html(DOCS_CATALOG / "index.html", apply_site_prefix(html, PREFIX))
     n += 1
-    print(f"OK docs/katalog/index.html")
+    print(f"OK docs/catalog/index.html")
 
-    categories = KATALOG_PAGE.get("categories") or []
-    plants_all = KATALOG_PAGE.get("plants") or []
+    categories = CATALOG_PAGE.get("categories") or []
+    plants_all = CATALOG_PAGE.get("plants") or []
 
     for cat in categories:
         slug = cat["slug"]
-        ctx = dict(KATALOG_PAGE)
+        ctx = dict(CATALOG_PAGE)
         ctx["active_category_slug"] = slug
         ctx["category_label"] = cat.get("label") or slug
         ctx["plants"] = [p for p in plants_all if p.get("category_slug") == slug]
-        html = render_to_string("pages/katalog-category.html", ctx)
-        write_html(DOCS_KATALOG / slug / "index.html", apply_site_prefix(html, PREFIX))
+        html = render_to_string("pages/catalog-category.html", ctx)
+        write_html(DOCS_CATALOG / slug / "index.html", apply_site_prefix(html, PREFIX))
         n += 1
-        print(f"OK docs/katalog/{slug}/index.html")
+        print(f"OK docs/catalog/{slug}/index.html")
 
     for plant in plants_all:
         slug = plant.get("slug")
         if not slug:
             continue
-        ctx = dict(KATALOG_PAGE)
+        ctx = dict(CATALOG_PAGE)
         ctx["active_plant_slug"] = slug
         ctx["active_plant"] = plant
         html = render_to_string("pages/plant-card.html", ctx)
-        write_html(DOCS_KATALOG / slug / "index.html", apply_site_prefix(html, PREFIX))
+        write_html(DOCS_CATALOG / slug / "index.html", apply_site_prefix(html, PREFIX))
         n += 1
-        print(f"OK docs/katalog/{slug}/index.html")
+        print(f"OK docs/catalog/{slug}/index.html")
 
     print(f"Готово: {n} страниц каталога.")
     return 0

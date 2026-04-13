@@ -23,7 +23,7 @@ PREFIX = os.environ.get("SITE_PREFIX", "/sib_khvoinik_test").rstrip("/") or ""
 
 
 def redirect_html(target_path: str) -> str:
-    """target_path: абсолютный путь на сайте, напр. /sib_khvoinik_test/katalog/foo/"""
+    """target_path: абсолютный путь на сайте, напр. /sib_khvoinik_test/catalog/foo/"""
     safe = escape(target_path, quote=True)
     return f"""<!DOCTYPE html>
 <html lang="ru">
@@ -51,9 +51,9 @@ def main() -> int:
 
     django.setup()
 
-    from pages.data import KATALOG_PAGE
+    from pages.data import CATALOG_PAGE
 
-    plants = KATALOG_PAGE.get("plants") or []
+    plants = CATALOG_PAGE.get("plants") or []
     written = 0
     for plant in plants:
         slug = plant.get("slug")
@@ -65,7 +65,7 @@ def main() -> int:
             rel = legacy  # product/khvoynye/tuya/...
             out_dir = ROOT / "docs" / rel
             out_dir.mkdir(parents=True, exist_ok=True)
-            target = f"{PREFIX}/katalog/{slug}/"
+            target = f"{PREFIX}/catalog/{slug}/"
             (out_dir / "index.html").write_text(redirect_html(target), encoding="utf-8")
             written += 1
             print(f"OK docs/{rel}/index.html -> {target}")

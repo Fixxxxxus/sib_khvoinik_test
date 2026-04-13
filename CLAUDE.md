@@ -18,7 +18,7 @@ python manage.py runserver
 # Export pages to docs/ for GitHub Pages deployment
 python scripts/export_home_to_docs.py
 python scripts/export_gazon_page_to_docs.py
-python scripts/export_katalog_to_docs.py
+python scripts/export_catalog_to_docs.py
 ```
 
 There are no tests, linters, or frontend build steps configured.
