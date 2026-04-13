@@ -214,6 +214,8 @@ function initModal() {
     'contact_zaboty': 'modal-template-contact_zaboty',
     'zaboty_expert_visit': 'modal-template-zaboty_expert_visit',
     'contact_consult': 'modal-template-contact_consult',
+    'katalog_actual_stock': 'modal-template-katalog_actual_stock',
+    'katalog_electronic_catalog': 'modal-template-katalog_electronic_catalog',
     'b2b_cpo': 'modal-template-b2b_cpo',
     'b2b_price_stock': 'modal-template-b2b_price_stock',
     'b2b_care_reglement': 'modal-template-b2b_care_reglement',

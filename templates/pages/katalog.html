@@ -9,14 +9,17 @@
       <div class="rounded-3xl border border-white/15 bg-white/90 backdrop-blur p-8 md:p-12">
         <h1 class="text-3xl md:text-4xl font-semibold leading-tight">{{ title }}</h1>
         <p class="mt-3 text-slate-600 max-w-3xl">
-          Инструмент выбора растений: сегментируем ваш запрос, ведём к консультации и визиту в садовый центр (CRM-ready сценарий на этапе 2).
+          Каталог разрабатывается! Здесь будет представлен актуальный на сегодня ассортимент нашей продукции.
         </p>
-        <div class="mt-6 flex flex-col sm:flex-row gap-3">
+        <div class="mt-6 flex flex-col sm:flex-row sm:flex-wrap gap-3">
           <a href="{% url 'sadovye_centry' %}" class="inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-6 py-3 font-semibold hover:bg-black/5 transition">
-            Посмотреть в садовом центре
+            Посмотреть в садовых центрах
           </a>
-          <button type="button" data-open-modal="contact_zaboty" data-modal-title="Подбор растений" class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-            Подбор растений
+          <button type="button" data-open-modal="katalog_actual_stock" data-modal-title="Выслать актуальные остатки" class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+            Выслать актуальные остатки
+          </button>
+          <button type="button" data-open-modal="katalog_electronic_catalog" data-modal-title="Получить электронный каталог" class="inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-6 py-3 font-semibold hover:bg-black/5 transition">
+            Получить электронный каталог
           </button>
         </div>
       </div>
