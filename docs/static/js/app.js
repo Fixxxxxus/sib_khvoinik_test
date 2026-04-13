@@ -240,19 +240,21 @@ function initModal() {
   };
 
   const initConsentGate = (root) => {
-    const form = root.querySelector('form[data-consent-gated="1"]');
-    if (!form) return;
+    const forms = Array.from(root.querySelectorAll('form'));
+    forms.forEach((form) => {
+      const checkbox = form.querySelector('[data-consent-checkbox]');
+      const submitBtn = form.querySelector('[data-consent-submit]');
+      if (!checkbox || !submitBtn) return;
+      if (form.dataset.consentBound === '1') return;
+      form.dataset.consentBound = '1';
 
-    const checkbox = form.querySelector('[data-consent-checkbox]');
-    const submitBtn = form.querySelector('[data-consent-submit]');
-    if (!checkbox || !submitBtn) return;
+      const syncState = () => {
+        submitBtn.disabled = !checkbox.checked;
+      };
 
-    const syncState = () => {
-      submitBtn.disabled = !checkbox.checked;
-    };
-
-    checkbox.addEventListener('change', syncState);
-    syncState();
+      checkbox.addEventListener('change', syncState);
+      syncState();
+    });
   };
 
   const openModal = (targetKey, title) => {
