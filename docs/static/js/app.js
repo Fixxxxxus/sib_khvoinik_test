@@ -292,12 +292,6 @@ function initModal() {
       initConsentCheckboxes();
     }
 
-    // Калькулятор: передать форму из modalBody — иначе getElementById может попасть в <template> и повесить input на скрытые поля.
-    if (targetKey === 'gazon_calc') {
-      const calcForm = modalBody.querySelector('#gazonCalculatorModal');
-      initGazonCalculator(calcForm);
-    }
-
     overlay.classList.remove('hidden');
     host.classList.remove('hidden');
     host.classList.add('modal-enter');
@@ -782,16 +776,9 @@ function initBeforeAfterSliders() {
   });
 }
 
-/** @param {HTMLFormElement | null | undefined} modalFormFromModal — форма из открытого окна (не из &lt;template&gt;) */
-function initGazonCalculator(modalFormFromModal) {
+function initGazonCalculator() {
   const inlineForm = document.getElementById('gazonCalculator');
-  let modalForm = modalFormFromModal || null;
-  if (!modalForm) {
-    const m = document.getElementById('gazonCalculatorModal');
-    // Не инициализировать копию внутри <template> (иначе слушатели input висят на скрытом DOM)
-    if (m && !m.closest('template')) modalForm = m;
-  }
-  if (!inlineForm && !modalForm) return;
+  if (!inlineForm) return;
 
   /** Прайс-лист 2026 (с НДС 5%): только объём м²; регион и формат поставки на цену не влияют */
   const gazonPricePerM2 = (a) => {
@@ -847,43 +834,6 @@ function initGazonCalculator(modalFormFromModal) {
     });
   }
 
-  if (modalForm) {
-    const area = modalForm.querySelector('#modalCalcArea');
-    const region = modalForm.querySelector('#modalCalcRegion');
-    const format = modalForm.querySelector('#modalCalcFormat');
-    const outTotal = modalForm.querySelector('#modalCalcTotal');
-    const outPer = modalForm.querySelector('#modalCalcPerM2');
-    const outNote = modalForm.querySelector('#modalCalcNote');
-    const calcBtn = modalForm.querySelector('#modalCalcBtn');
-    const resultBlock = modalForm.querySelector('#modalCalcResultBlock');
-    if (!area || !region || !format || !outTotal || !outPer || !calcBtn) return;
-
-    const resetModalCalc = () => {
-      outPer.textContent = '—';
-      outTotal.textContent = '—';
-      if (outNote) outNote.textContent = '';
-      if (resultBlock) resultBlock.classList.add('hidden');
-    };
-
-    resetModalCalc();
-
-    const onCalc = () => {
-      calculate(area, outTotal, outPer, outNote, () => {
-        if (resultBlock) resultBlock.classList.remove('hidden');
-      });
-    };
-
-    calcBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      onCalc();
-    });
-
-    modalForm.addEventListener('submit', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      onCalc();
-    });
-  }
 }
 
 /** Карта на странице «Контакты»: три метки (API 2.1). Координаты фиксированы (OSM), без геокодера —
