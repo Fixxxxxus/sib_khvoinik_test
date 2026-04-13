@@ -1,0 +1,90 @@
+{# catalog_nav_sections, catalog_nav_active_slug — из pages.catalog_nav.enrich_catalog_context #}
+<div class="relative overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-soft">
+  <div class="pointer-events-none absolute -right-16 top-0 h-40 w-40 rounded-full bg-brand/[0.08] blur-3xl"></div>
+  <div class="pointer-events-none absolute -left-10 bottom-0 h-32 w-32 rounded-full bg-brand2/[0.1] blur-2xl"></div>
+  <div class="relative border-b border-black/[0.06] bg-gradient-to-r from-brand/[0.06] to-transparent px-5 py-4">
+    <div class="flex items-center gap-2.5">
+      <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand to-brand2 text-white shadow-glow">
+        <i data-lucide="layout-grid" class="h-5 w-5" aria-hidden="true"></i>
+      </span>
+      <div>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">Каталог</p>
+        <p class="text-sm font-semibold text-slate-800">Разделы</p>
+      </div>
+    </div>
+  </div>
+
+  <nav class="relative max-h-[min(70vh,36rem)] overflow-y-auto overscroll-contain p-2 sm:p-3" aria-label="Разделы каталога" data-accordion>
+    <ul class="space-y-0.5">
+      {% for section in catalog_nav_sections %}
+        <li>
+          {% if section.children %}
+            <div data-accordion-item>
+              <button
+                type="button"
+                class="group flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-semibold transition hover:bg-brand/[0.06] {% if section.nav_parent_active %}border-l-[3px] border-brand bg-brand/[0.06] pl-2{% else %}border-l-[3px] border-transparent pl-2{% endif %}"
+                data-accordion-toggle
+                aria-expanded="{% if section.nav_expanded %}true{% else %}false{% endif %}"
+              >
+                <span class="flex min-w-0 items-center gap-2.5">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                    <i data-lucide="{{ section.icon }}" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                  </span>
+                  <span class="truncate {% if section.nav_parent_active %}text-slate-900{% else %}text-slate-800{% endif %}">{{ section.label }}</span>
+                </span>
+                <i
+                  data-lucide="chevron-down"
+                  class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 {% if section.nav_expanded %}rotate-180{% endif %}"
+                  aria-hidden="true"
+                ></i>
+              </button>
+              <div class="pb-1 pt-0.5 {% if not section.nav_expanded %}hidden{% endif %}" data-accordion-panel>
+                <ul class="ml-2 space-y-0 border-l-2 border-brand/25 py-0.5 pl-3">
+                  {% for child in section.children %}
+                    <li>
+                      {% if child.soon %}
+                        <span class="flex items-center gap-2 rounded-lg px-2 py-1.5 text-[13px] leading-snug text-slate-400">
+                          <span class="truncate">{{ child.label }}</span>
+                        </span>
+                      {% else %}
+                        <a
+                          href="{{ child.href }}"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition {% if child.nav_active %}border-l-2 border-brand bg-brand/[0.07] font-semibold text-slate-900 -ml-[2px] pl-[6px]{% else %}text-slate-600 hover:bg-brand/[0.06] hover:text-brand{% endif %}"
+                        >
+                          {% if not child.nav_active %}
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          {% endif %}
+                          <span class="min-w-0 flex-1 truncate">{{ child.label }}</span>
+                        </a>
+                      {% endif %}
+                    </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          {% elif section.soon %}
+            <div class="flex items-center gap-2.5 rounded-xl border-l-[3px] border-transparent px-2.5 py-2 text-sm text-slate-400">
+              <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-400">
+                <i data-lucide="{{ section.icon }}" class="h-3.5 w-3.5" aria-hidden="true"></i>
+              </span>
+              <span class="truncate font-medium">{{ section.label }}</span>
+            </div>
+          {% else %}
+            <a
+              href="{{ section.href }}"
+              class="group flex items-center justify-between gap-2 rounded-xl border-l-[3px] px-2.5 py-2 text-sm font-semibold transition hover:bg-brand/[0.06] {% if section.nav_active %}border-brand bg-brand/[0.06] text-slate-900{% else %}border-transparent text-slate-800{% endif %}"
+            >
+              <span class="flex min-w-0 items-center gap-2.5">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand group-hover:from-brand/20 group-hover:to-brand2/15">
+                  <i data-lucide="{{ section.icon }}" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                </span>
+                <span class="truncate">{{ section.label }}</span>
+              </span>
+              <i data-lucide="chevron-right" class="h-4 w-4 shrink-0 text-brand/35 group-hover:text-brand" aria-hidden="true"></i>
+            </a>
+          {% endif %}
+        </li>
+      {% endfor %}
+    </ul>
+  </nav>
+</div>

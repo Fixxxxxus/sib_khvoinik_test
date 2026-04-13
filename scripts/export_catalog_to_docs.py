@@ -62,11 +62,13 @@ def main() -> int:
     django.setup()
 
     from django.template.loader import render_to_string
+    from pages.catalog_nav import enrich_catalog_context
+    from pages.catalog_products import plant_belongs_to_category
     from pages.data import CATALOG_PAGE
 
     n = 0
 
-    html = render_to_string("pages/catalog.html", CATALOG_PAGE)
+    html = render_to_string("pages/catalog.html", enrich_catalog_context(dict(CATALOG_PAGE)))
     write_html(DOCS_CATALOG / "index.html", apply_site_prefix(html, PREFIX))
     n += 1
     print(f"OK docs/catalog/index.html")
@@ -79,8 +81,9 @@ def main() -> int:
         ctx = dict(CATALOG_PAGE)
         ctx["active_category_slug"] = slug
         ctx["category_label"] = cat.get("label") or slug
-        ctx["plants"] = [p for p in plants_all if p.get("category_slug") == slug]
-        html = render_to_string("pages/catalog-category.html", ctx)
+        ctx["category_hub_links"] = cat.get("category_hub_links")
+        ctx["plants"] = [p for p in plants_all if plant_belongs_to_category(p, slug)]
+        html = render_to_string("pages/catalog-category.html", enrich_catalog_context(ctx))
         write_html(DOCS_CATALOG / slug / "index.html", apply_site_prefix(html, PREFIX))
         n += 1
         print(f"OK docs/catalog/{slug}/index.html")
@@ -92,7 +95,7 @@ def main() -> int:
         ctx = dict(CATALOG_PAGE)
         ctx["active_plant_slug"] = slug
         ctx["active_plant"] = plant
-        html = render_to_string("pages/plant-card.html", ctx)
+        html = render_to_string("pages/plant-card.html", enrich_catalog_context(ctx))
         write_html(DOCS_CATALOG / slug / "index.html", apply_site_prefix(html, PREFIX))
         n += 1
         print(f"OK docs/catalog/{slug}/index.html")

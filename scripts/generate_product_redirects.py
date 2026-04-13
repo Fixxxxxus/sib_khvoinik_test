@@ -53,22 +53,32 @@ def main() -> int:
 
     from pages.data import CATALOG_PAGE
 
-    plants = CATALOG_PAGE.get("plants") or []
-    written = 0
-    for plant in plants:
-        slug = plant.get("slug")
-        for legacy in plant.get("legacy_paths") or []:
+    def write_legacy_redirects(slug: str, legacy_paths: list) -> int:
+        n = 0
+        for legacy in legacy_paths or []:
             legacy = legacy.strip("/")
             if not legacy.startswith("product/"):
                 print(f"skip (unexpected path): /{legacy}/", file=sys.stderr)
                 continue
-            rel = legacy  # product/khvoynye/tuya/...
+            rel = legacy
             out_dir = ROOT / "docs" / rel
             out_dir.mkdir(parents=True, exist_ok=True)
             target = f"{PREFIX}/catalog/{slug}/"
             (out_dir / "index.html").write_text(redirect_html(target), encoding="utf-8")
-            written += 1
+            n += 1
             print(f"OK docs/{rel}/index.html -> {target}")
+        return n
+
+    written = 0
+    for plant in CATALOG_PAGE.get("plants") or []:
+        s = plant.get("slug")
+        if s:
+            written += write_legacy_redirects(s, plant.get("legacy_paths"))
+
+    for cat in CATALOG_PAGE.get("categories") or []:
+        s = cat.get("slug")
+        if s:
+            written += write_legacy_redirects(s, cat.get("legacy_paths"))
 
     print(f"Готово: {written} редирект(ов).")
     return 0

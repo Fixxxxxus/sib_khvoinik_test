@@ -952,6 +952,92 @@ function initContactsYandexMap() {
     .catch(() => showFallback());
 }
 
+/** Карточка товара: варианты высота + контейнер → цена и наличие (data-plant-variant-picker). */
+function initPlantVariantPicker() {
+  const root = document.querySelector('[data-plant-variant-picker]');
+  if (!root) return;
+  const jsonEl = document.getElementById('plant-variants-json');
+  if (!jsonEl || !jsonEl.textContent) return;
+  let variants;
+  try {
+    variants = JSON.parse(jsonEl.textContent);
+  } catch (e) {
+    return;
+  }
+  if (!Array.isArray(variants) || variants.length === 0) return;
+
+  const selH = root.querySelector('[data-pv-height]');
+  const selC = root.querySelector('[data-pv-container]');
+  const priceEl = root.querySelector('[data-pv-price]');
+  const hintEl = root.querySelector('[data-pv-stock-hint]');
+  const badgeEl = root.querySelector('[data-pv-stock-badge]');
+  const productName = root.getAttribute('data-product-name') || '';
+
+  if (!selH || !selC || !priceEl) return;
+
+  const uniq = (arr) => [...new Set(arr)];
+
+  function fillSel(sel, values) {
+    sel.innerHTML = '';
+    values.forEach((v) => {
+      const o = document.createElement('option');
+      o.value = v;
+      o.textContent = v;
+      sel.appendChild(o);
+    });
+  }
+
+  function findByHeight(h) {
+    return variants.find((x) => x.height === h);
+  }
+  function findByContainer(c) {
+    return variants.find((x) => x.container === c);
+  }
+
+  function applyVariant(v) {
+    if (!v) return;
+    priceEl.textContent = v.price;
+    const stock = Boolean(v.in_stock);
+    if (hintEl) {
+      hintEl.textContent = stock
+        ? 'В продаже (точное наличие — по запросу).'
+        : 'Этого формата сейчас нет в наличии; спросите о поступлении.';
+      hintEl.className = stock ? 'mt-2 text-sm text-slate-600' : 'mt-2 text-sm font-medium text-slate-500';
+    }
+    if (badgeEl) {
+      badgeEl.textContent = stock ? 'В наличии: уточняйте' : 'Нет в наличии';
+      badgeEl.className = stock
+        ? 'rounded-2xl border border-black/5 bg-brand/10 px-4 py-2 text-sm font-semibold text-brand min-h-[2.75rem] flex items-center'
+        : 'rounded-2xl border border-black/10 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-500 min-h-[2.75rem] flex items-center';
+    }
+
+    const detail = `${v.height}, ${v.container}`;
+    const contact = `Уточнить наличие: ${productName} (${detail})`;
+    const contactBtn = root.querySelector('[data-pv-sync-modal-title="contact"]');
+    if (contactBtn) contactBtn.setAttribute('data-modal-title', contact);
+  }
+
+  fillSel(selH, uniq(variants.map((x) => x.height)));
+  fillSel(selC, uniq(variants.map((x) => x.container)));
+
+  selH.addEventListener('change', () => {
+    const v = findByHeight(selH.value);
+    if (v) {
+      selC.value = v.container;
+      applyVariant(v);
+    }
+  });
+  selC.addEventListener('change', () => {
+    const v = findByContainer(selC.value);
+    if (v) {
+      selH.value = v.height;
+      applyVariant(v);
+    }
+  });
+
+  applyVariant(findByHeight(selH.value) || variants[0]);
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initYear();
   initViewportHeroHeights();
@@ -980,5 +1066,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactsYandexMap();
   initConsentCheckboxes();
   initCookieBanner();
+  initPlantVariantPicker();
 });
 

@@ -2,6 +2,8 @@ from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
 
+from .catalog_nav import enrich_catalog_context
+from .catalog_products import plant_belongs_to_category
 from .data import (
     HOME_PAGE,
     GAZON_PAGE,
@@ -43,7 +45,7 @@ def sadovye_centry(request):
 
 
 def catalog(request):
-    return render(request, "pages/catalog.html", CATALOG_PAGE)
+    return render(request, "pages/catalog.html", enrich_catalog_context(dict(CATALOG_PAGE)))
 
 
 def catalog_item(request, slug):
@@ -55,16 +57,17 @@ def catalog_item(request, slug):
         ctx["active_category_slug"] = slug
         cat = next((c for c in ctx_base.get("categories", []) if c["slug"] == slug), None)
         ctx["category_label"] = cat["label"] if cat else slug
+        ctx["category_hub_links"] = (cat or {}).get("category_hub_links")
         ctx["plants"] = [
-            p for p in ctx.get("plants", []) if p.get("category_slug") == slug
+            p for p in ctx.get("plants", []) if plant_belongs_to_category(p, slug)
         ]
-        return render(request, "pages/catalog-category.html", ctx)
+        return render(request, "pages/catalog-category.html", enrich_catalog_context(ctx))
     plant = next((p for p in ctx_base.get("plants", []) if p.get("slug") == slug), None)
     if plant:
         ctx = dict(ctx_base)
         ctx["active_plant_slug"] = slug
         ctx["active_plant"] = plant
-        return render(request, "pages/plant-card.html", ctx)
+        return render(request, "pages/plant-card.html", enrich_catalog_context(ctx))
     raise Http404("Категория или растение не найдены")
 
 
