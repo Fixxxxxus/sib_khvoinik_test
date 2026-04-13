@@ -9,8 +9,8 @@ urlpatterns = [
     path("b2b/", views.b2b, name="b2b"),
     path("pitomnik/", views.pitomnik, name="pitomnik"),
     path("sadovye-centry/", views.sadovye_centry, name="sadovye_centry"),
-    path("katalog/", views.katalog, name="katalog"),
-    path("katalog/<slug:slug>/", views.katalog_item, name="katalog_item"),
+    path("catalog/", views.catalog, name="catalog"),
+    path("catalog/<slug:slug>/", views.catalog_item, name="catalog_item"),
     path("sluzhba-zaboty/", views.sluzhba_zaboty, name="sluzhba_zaboty"),
     path("stati/", views.stati_list, name="stati_list"),
     path("stati/<slug:article_slug>/", views.stati_detail, name="stati_detail"),
@@ -18,4 +18,3 @@ urlpatterns = [
     path("privacy/", views.privacy, name="privacy"),
     path("consent/", views.consent, name="consent"),
 ]
-

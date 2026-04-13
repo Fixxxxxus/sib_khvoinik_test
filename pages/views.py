@@ -10,7 +10,7 @@ from .data import (
     PITOMNIK_PAGE,
     SADOVYE_CENTRY_PAGE,
     SLUZHBA_ZABOTY_PAGE,
-    KATALOG_PAGE,
+    CATALOG_PAGE,
     STATI_PAGE,
     KONTAKTY_PAGE,
     PRIVACY_PAGE,
@@ -42,13 +42,13 @@ def sadovye_centry(request):
     return render(request, "pages/sadovye-centry.html", SADOVYE_CENTRY_PAGE)
 
 
-def katalog(request):
-    return render(request, "pages/katalog.html", KATALOG_PAGE)
+def catalog(request):
+    return render(request, "pages/catalog.html", CATALOG_PAGE)
 
 
-def katalog_item(request, slug):
-    """Один URL /katalog/<slug>/: сначала категория, иначе карточка растения."""
-    ctx_base = dict(KATALOG_PAGE)
+def catalog_item(request, slug):
+    """Один URL /catalog/<slug>/: сначала категория, иначе карточка растения."""
+    ctx_base = dict(CATALOG_PAGE)
     category_slugs = {c["slug"] for c in ctx_base.get("categories", [])}
     if slug in category_slugs:
         ctx = dict(ctx_base)
@@ -58,7 +58,7 @@ def katalog_item(request, slug):
         ctx["plants"] = [
             p for p in ctx.get("plants", []) if p.get("category_slug") == slug
         ]
-        return render(request, "pages/katalog-category.html", ctx)
+        return render(request, "pages/catalog-category.html", ctx)
     plant = next((p for p in ctx_base.get("plants", []) if p.get("slug") == slug), None)
     if plant:
         ctx = dict(ctx_base)
@@ -96,4 +96,3 @@ def privacy(request):
 
 def consent(request):
     return render(request, "pages/consent.html", CONSENT_PAGE)
-

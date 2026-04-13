@@ -288,6 +288,19 @@ function initModal() {
     modalBody.innerHTML = '';
     modalBody.appendChild(tpl.content.cloneNode(true));
     if (window.lucide) window.lucide.createIcons();
+
+    // Inject modal title as hidden field so it reaches B24 lead COMMENTS
+    if (title) {
+      const mForm = modalBody.querySelector('form[data-ui-form]');
+      if (mForm) {
+        const h = document.createElement('input');
+        h.type = 'hidden';
+        h.name = 'modalContext';
+        h.value = title;
+        mForm.appendChild(h);
+      }
+    }
+
     initConsentGate(modalBody);
 
     // Inject consent checkbox into freshly cloned modal form
@@ -382,6 +395,7 @@ function initModal() {
     link: 'Ссылка',
     service: 'Услуга',
     address: 'Адрес',
+    modalContext: 'Запрос',
   };
 
   // Readable display values for select options
@@ -412,8 +426,11 @@ function initModal() {
   const sendLeadToB24 = (tag, payload) => {
     const [section, formName] = tag.includes('/') ? tag.split('/', 2) : ['other', tag];
 
+    var leadTitle = FORM_TITLES[formName] || formName;
+    if (payload.modalContext) leadTitle += ' — ' + payload.modalContext;
+
     const fields = {
-      TITLE: `Сайт: ${FORM_TITLES[formName] || formName}`,
+      TITLE: `Сайт: ${leadTitle}`,
       SOURCE_ID: 'WEB',
       UTM_SOURCE: 'website',
       UTM_MEDIUM: section,

@@ -42,7 +42,7 @@ Note: `sender.*` (email marketing) module is not available on this portal — ma
 
 ### Data flow: Python dicts → Django templates → static HTML → GitHub Pages
 
-1. **`pages/data.py`** — all page content lives here as Python dictionaries (no database models). Each page has its own dict: `HOME_PAGE`, `GAZON_PAGE`, `KATALOG_PAGE`, etc.
+1. **`pages/data.py`** — all page content lives here as Python dictionaries (no database models). Each page has its own dict: `HOME_PAGE`, `GAZON_PAGE`, `CATALOG_PAGE`, etc.
 2. **`pages/views.py`** — function-based views that pass data dicts to templates via `render()`.
 3. **`templates/`** — Django templates with Tailwind utility classes. `base.html` is the layout; `pages/` has per-page templates; `partials/` has navbar, footer, modals.
 4. **`scripts/`** — export scripts render templates to static HTML, rewrite paths (`/static/` → `/sib_khvoinik_test/static/`), and save to `docs/`.
@@ -61,7 +61,7 @@ Single JS file handling: hero viewport sizing, mobile menu, modal system, accord
 
 ### Routing (`pages/urls.py`)
 
-All routes are flat: `/gazon/`, `/pitomnik/`, `/sadovye-centry/`, `/katalog/`, `/katalog/<slug>/`, `/stati/`, `/kontakty/`, etc.
+All routes are flat: `/gazon/`, `/pitomnik/`, `/sadovye-centry/`, `/catalog/`, `/catalog/<slug>/`, `/stati/`, `/kontakty/`, etc.
 
 ## Key Conventions
 
