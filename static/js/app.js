@@ -208,6 +208,9 @@ function initModal() {
   const modalTitle = document.getElementById('modalTitle');
   const modalBody = document.getElementById('modalBody');
   if (!overlay || !host || !closeTop || !modalTitle || !modalBody) return;
+  const sizeWrap = host.firstElementChild;
+  const modalCard = sizeWrap && sizeWrap.firstElementChild;
+  let activeNoOverlay = false;
 
   const templateMap = {
     'mini_brief': 'modal-template-mini_brief',
@@ -259,7 +262,8 @@ function initModal() {
     });
   };
 
-  const openModal = (targetKey, title) => {
+  const openModal = (targetKey, title, options) => {
+    const opts = options || {};
     const tplId = templateMap[targetKey];
     if (!tplId) {
       console.warn('[SG modal] Неизвестный data-open-modal:', targetKey);
@@ -271,7 +275,6 @@ function initModal() {
       return;
     }
 
-    const sizeWrap = host.firstElementChild;
     if (sizeWrap) {
       sizeWrap.classList.remove('max-w-lg', 'max-w-2xl');
       const wide =
@@ -282,6 +285,16 @@ function initModal() {
         targetKey === 'sadovye_novinka_3' ||
         targetKey === 'sadovye_novinka_4';
       sizeWrap.classList.add(wide ? 'max-w-2xl' : 'max-w-lg');
+    }
+
+    if (host) {
+      host.classList.toggle('backdrop-blur-[2px]', Boolean(opts.noOverlay));
+      host.classList.toggle('bg-white/20', Boolean(opts.noOverlay));
+    }
+    if (modalCard) {
+      modalCard.classList.toggle('border-brand/35', Boolean(opts.noOverlay));
+      modalCard.classList.toggle('bg-white/95', Boolean(opts.noOverlay));
+      modalCard.classList.toggle('shadow-[0_30px_80px_-30px_rgba(15,23,42,0.65)]', Boolean(opts.noOverlay));
     }
 
     modalTitle.textContent = title || '';
@@ -309,10 +322,15 @@ function initModal() {
       initConsentCheckboxes();
     }
 
-    overlay.classList.remove('hidden');
+    activeNoOverlay = Boolean(opts.noOverlay);
+    if (activeNoOverlay) {
+      overlay.classList.add('hidden');
+    } else {
+      overlay.classList.remove('hidden');
+    }
     host.classList.remove('hidden');
     host.classList.add('modal-enter');
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = activeNoOverlay ? '' : 'hidden';
   };
 
   // Make it accessible for auto-open based on URL params.
@@ -322,6 +340,11 @@ function initModal() {
     overlay.classList.add('hidden');
     host.classList.add('hidden');
     host.classList.remove('modal-enter');
+    activeNoOverlay = false;
+    host.classList.remove('backdrop-blur-[2px]', 'bg-white/20');
+    if (modalCard) {
+      modalCard.classList.remove('border-brand/35', 'bg-white/95', 'shadow-[0_30px_80px_-30px_rgba(15,23,42,0.65)]');
+    }
     document.body.style.overflow = '';
   };
 
@@ -337,7 +360,8 @@ function initModal() {
     btn.addEventListener('click', () => {
       const key = btn.getAttribute('data-open-modal');
       const title = btn.getAttribute('data-modal-title') || '';
-      openModal(key, title);
+      const noOverlay = btn.getAttribute('data-modal-no-overlay') === '1';
+      openModal(key, title, { noOverlay });
     });
   });
 
@@ -532,9 +556,21 @@ function initModal() {
     }
 
     // Ensure success is visible even for non-modal forms
-    overlay.classList.remove('hidden');
+    if (activeNoOverlay) {
+      overlay.classList.add('hidden');
+      host.classList.add('backdrop-blur-[2px]', 'bg-white/20');
+      if (modalCard) {
+        modalCard.classList.add('border-brand/35', 'bg-white/95', 'shadow-[0_30px_80px_-30px_rgba(15,23,42,0.65)]');
+      }
+    } else {
+      overlay.classList.remove('hidden');
+      host.classList.remove('backdrop-blur-[2px]', 'bg-white/20');
+      if (modalCard) {
+        modalCard.classList.remove('border-brand/35', 'bg-white/95', 'shadow-[0_30px_80px_-30px_rgba(15,23,42,0.65)]');
+      }
+    }
     host.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
+    document.body.style.overflow = activeNoOverlay ? '' : 'hidden';
   };
 
   document.addEventListener('submit', (e) => {
@@ -1012,9 +1048,12 @@ function initPlantVariantPicker() {
     }
 
     const detail = `${v.height}, ${v.container}`;
-    const contact = `Уточнить наличие: ${productName} (${detail})`;
-    const contactBtn = root.querySelector('[data-pv-sync-modal-title="contact"]');
-    if (contactBtn) contactBtn.setAttribute('data-modal-title', contact);
+    const selectionBtn = root.querySelector('[data-pv-sync-selection-button="1"]');
+    if (selectionBtn) {
+      selectionBtn.setAttribute('data-selection-variant', detail);
+      selectionBtn.setAttribute('data-selection-price', v.price || '');
+      selectionBtn.setAttribute('data-selection-id', `${selectionBtn.getAttribute('data-selection-id') || productName}-${detail}`);
+    }
   }
 
   fillSel(selH, uniq(variants.map((x) => x.height)));
@@ -1036,6 +1075,184 @@ function initPlantVariantPicker() {
   });
 
   applyVariant(findByHeight(selH.value) || variants[0]);
+}
+
+function initCatalogSelection() {
+  const STORAGE_KEY = 'sg_catalog_selection_v1';
+  const addButtons = Array.from(document.querySelectorAll('[data-selection-add]'));
+  const panels = Array.from(document.querySelectorAll('[data-selection-panel]'));
+  if (!addButtons.length && !panels.length) return;
+  let memorySelection = [];
+
+  const parseSelection = () => {
+    try {
+      const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+      return Array.isArray(raw) ? raw : [];
+    } catch (e) {
+      return memorySelection;
+    }
+  };
+
+  let selection = parseSelection();
+  let noticeEl = null;
+
+  const normalizeText = (value) => (value || '').replace(/\s+/g, ' ').trim();
+  const fallbackId = (btn) => {
+    const name = normalizeText(btn.getAttribute('data-selection-name')) || 'item';
+    return `item-${name.toLowerCase().replace(/[^a-zа-я0-9]+/gi, '-')}`;
+  };
+
+  const readItem = (btn) => {
+    const itemId = normalizeText(btn.getAttribute('data-selection-id')) || fallbackId(btn);
+    const variant = normalizeText(btn.getAttribute('data-selection-variant'));
+    return {
+      id: itemId,
+      name: normalizeText(btn.getAttribute('data-selection-name')) || 'Позиция каталога',
+      category: normalizeText(btn.getAttribute('data-selection-category')),
+      description: normalizeText(btn.getAttribute('data-selection-description')),
+      price: normalizeText(btn.getAttribute('data-selection-price')),
+      image: btn.getAttribute('data-selection-image') || '',
+      url: btn.getAttribute('data-selection-url') || '',
+      variant,
+      note: variant ? `Вариант: ${variant}` : '',
+    };
+  };
+
+  const save = () => {
+    memorySelection = [...selection];
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(selection));
+    } catch (e) {
+      // localStorage can be unavailable in private mode or strict privacy settings.
+    }
+  };
+  const hasItem = (id) => selection.some((x) => x.id === id);
+
+  const closeNotice = () => {
+    if (!noticeEl) return;
+    noticeEl.remove();
+    noticeEl = null;
+  };
+
+  const showAddedNotice = () => {
+    closeNotice();
+    const panel = panels[0];
+    noticeEl = document.createElement('div');
+    noticeEl.className = 'fixed bottom-4 left-4 right-4 z-[80] md:left-auto md:right-6 md:w-[28rem]';
+    noticeEl.innerHTML = `
+      <div class="rounded-2xl border border-brand/20 bg-white p-4 shadow-[0_18px_40px_-22px_rgba(15,23,42,0.45)]">
+        <div class="text-base font-semibold text-slate-900">Товар успешно добавлен в подбор!</div>
+        <div class="mt-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
+          <button type="button" data-selection-notice-go class="rounded-xl bg-gradient-to-r from-brand to-brand2 px-4 py-2.5 text-sm font-semibold text-white hover:brightness-105 transition">Перейти в подбор</button>
+          <button type="button" data-selection-notice-close class="rounded-xl border border-black/10 px-4 py-2.5 text-sm font-semibold text-slate-700 hover:bg-black/5 transition">Продолжить просмотр каталога</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(noticeEl);
+
+    const goBtn = noticeEl.querySelector('[data-selection-notice-go]');
+    const closeBtn = noticeEl.querySelector('[data-selection-notice-close]');
+    goBtn?.addEventListener('click', () => {
+      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      closeNotice();
+    });
+    closeBtn?.addEventListener('click', closeNotice);
+    window.setTimeout(() => {
+      closeNotice();
+    }, 6000);
+  };
+
+  const syncAddButtons = () => {
+    addButtons.forEach((btn) => {
+      const id = normalizeText(btn.getAttribute('data-selection-id')) || fallbackId(btn);
+      const active = hasItem(id);
+      btn.textContent = active ? 'В подборе' : 'Добавить в подбор';
+      btn.classList.toggle('whitespace-nowrap', active);
+      btn.classList.toggle('text-sm', active);
+      btn.classList.toggle('opacity-80', active);
+    });
+  };
+
+  const composeModalTitle = () => {
+    const names = selection.map((item) => (item.variant ? `${item.name} (${item.variant})` : item.name));
+    if (!names.length) return 'Уточнить наличие';
+    const preview = names.slice(0, 4).join('; ');
+    const tail = names.length > 4 ? `; + ещё ${names.length - 4}` : '';
+    return `Подбор: ${preview}${tail}`;
+  };
+
+  const escapeHtml = (text) =>
+    String(text || '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+
+  const renderPanels = () => {
+    panels.forEach((panel) => {
+      const countEl = panel.querySelector('[data-selection-count]');
+      const emptyEl = panel.querySelector('[data-selection-empty]');
+      const listEl = panel.querySelector('[data-selection-list]');
+      const submitBtn = panel.querySelector('[data-selection-submit]');
+      if (!listEl || !submitBtn) return;
+
+      if (countEl) countEl.textContent = String(selection.length);
+      submitBtn.disabled = selection.length === 0;
+      submitBtn.setAttribute('data-modal-title', composeModalTitle());
+      if (emptyEl) emptyEl.classList.toggle('hidden', selection.length > 0);
+
+      listEl.innerHTML = '';
+      selection.forEach((item) => {
+        const card = document.createElement('article');
+        card.className = 'rounded-2xl border border-black/10 bg-white p-4';
+        const imageHtml = item.image
+          ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" class="h-full w-full object-cover" loading="lazy" decoding="async" />`
+          : '<div class="h-full w-full bg-slate-100"></div>';
+        const metaParts = [item.category, item.note].filter(Boolean).join(' • ');
+        const price = item.price ? `<div class="mt-2 text-sm font-semibold text-brand">${escapeHtml(item.price)}</div>` : '';
+        const link = item.url
+          ? `<a href="${escapeHtml(item.url)}" class="mt-3 inline-flex items-center text-sm font-semibold text-brand hover:text-brand2">Подробнее</a>`
+          : '';
+        card.innerHTML = `
+          <div class="h-28 overflow-hidden rounded-xl bg-slate-100">${imageHtml}</div>
+          <div class="mt-3 text-lg font-semibold">${escapeHtml(item.name)}</div>
+          ${metaParts ? `<div class="mt-1 text-xs text-slate-500">${escapeHtml(metaParts)}</div>` : ''}
+          ${price}
+          <div class="mt-3 flex items-center justify-between gap-3">
+            ${link}
+            <button type="button" data-selection-remove="${escapeHtml(item.id)}" class="rounded-xl border border-black/10 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-black/5 transition">Удалить</button>
+          </div>
+        `;
+        listEl.appendChild(card);
+      });
+    });
+  };
+
+  document.addEventListener('click', (e) => {
+    const removeBtn = e.target && e.target.closest('[data-selection-remove]');
+    if (!removeBtn) return;
+    const id = removeBtn.getAttribute('data-selection-remove');
+    selection = selection.filter((x) => x.id !== id);
+    save();
+    syncAddButtons();
+    renderPanels();
+  });
+
+  addButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const item = readItem(btn);
+      const exists = hasItem(item.id);
+      selection = exists ? selection.filter((x) => x.id !== item.id) : [...selection, item];
+      save();
+      syncAddButtons();
+      renderPanels();
+      if (!exists) showAddedNotice();
+    });
+  });
+
+  syncAddButtons();
+  renderPanels();
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -1067,5 +1284,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initConsentCheckboxes();
   initCookieBanner();
   initPlantVariantPicker();
+  initCatalogSelection();
 });
 

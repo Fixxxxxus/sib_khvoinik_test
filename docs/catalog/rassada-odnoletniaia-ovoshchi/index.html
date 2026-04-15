@@ -1663,6 +1663,38 @@
         
       </div>
       
+
+      <section class="mt-10 rounded-3xl border border-brand/20 bg-white p-6 md:p-8 shadow-sm" data-selection-panel>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="text-2xl font-semibold">Подбор</h2>
+            <p class="mt-2 text-sm text-slate-600">
+              Добавляйте интересующие вас позиции и отправляйте запрос на наличие.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-semibold text-brand">
+            В подборе: <span data-selection-count>0</span>
+          </div>
+        </div>
+        <div class="mt-5 hidden" data-selection-empty>
+          <div class="rounded-2xl border border-dashed border-black/15 bg-slate-50 px-4 py-6 text-sm text-slate-600">
+            В подбор пока ничего не добавлено.
+          </div>
+        </div>
+        <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3" data-selection-list></div>
+        <div class="mt-5">
+          <button
+            type="button"
+            data-open-modal="contact_zaboty"
+            data-modal-no-overlay="1"
+            data-selection-submit
+            class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-sm font-semibold text-white shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60"
+            disabled
+          >
+            Уточнить наличие
+          </button>
+        </div>
+      </section>
         </div>
       </div>
     </div>
