@@ -646,6 +646,150 @@ function initModal() {
   });
 }
 
+/**
+ * Страницы раздела каталога (шаблон с #catalog-category-main): на узком экране
+ * длинная навигация «Каталог» занимает весь вид — подсказка прокрутить к контенту.
+ * Только max-width 1023px; на десктопе не создаём элемент.
+ */
+function initCatalogCategoryMobileScrollHint() {
+  const main = document.getElementById('catalog-category-main');
+  if (!main) return;
+
+  const mqMobile = window.matchMedia('(max-width: 1023px)');
+  const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  let nudgeRoot = null;
+  let io = null;
+  let dismissed = false;
+
+  const cleanup = () => {
+    if (nudgeRoot && nudgeRoot.parentNode) nudgeRoot.parentNode.removeChild(nudgeRoot);
+    nudgeRoot = null;
+    if (io) {
+      io.disconnect();
+      io = null;
+    }
+  };
+
+  const isMainBelowFold = () => {
+    const r = main.getBoundingClientRect();
+    return r.top > Math.min(window.innerHeight * 0.4, 520);
+  };
+
+  const scrollMainIntoView = () => {
+    main.scrollIntoView({
+      behavior: mqReduce.matches ? 'auto' : 'smooth',
+      block: 'start',
+    });
+  };
+
+  const tryShow = () => {
+    if (dismissed) return;
+    if (!mqMobile.matches) {
+      cleanup();
+      return;
+    }
+    if (!isMainBelowFold()) {
+      cleanup();
+      return;
+    }
+    if (nudgeRoot) return;
+
+    const wrap = document.createElement('div');
+    wrap.className =
+      'pointer-events-none fixed inset-x-0 z-[52] flex justify-center px-3 pb-1 lg:hidden';
+    wrap.style.bottom = 'max(5.5rem, env(safe-area-inset-bottom, 0px))';
+    wrap.setAttribute('data-catalog-mobile-nudge', '1');
+
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className =
+      'pointer-events-auto flex w-full max-w-sm items-center justify-center gap-2 rounded-2xl border border-brand/30 bg-white/95 px-4 py-3 text-sm font-semibold text-brand shadow-glow backdrop-blur-md transition-transform active:scale-[0.98]';
+    btn.setAttribute('aria-label', 'Прокрутить к списку позиций раздела');
+
+    const label = document.createElement('span');
+    label.className = 'text-center leading-snug';
+    label.textContent = 'Ниже — позиции раздела';
+
+    const icon = document.createElement('i');
+    icon.setAttribute('data-lucide', 'chevron-down');
+    icon.className = 'h-5 w-5 shrink-0 text-brand';
+    icon.setAttribute('aria-hidden', 'true');
+    if (!mqReduce.matches) icon.classList.add('animate-bounce');
+
+    btn.appendChild(label);
+    btn.appendChild(icon);
+
+    btn.addEventListener('click', () => {
+      dismissed = true;
+      cleanup();
+      scrollMainIntoView();
+    });
+
+    wrap.appendChild(btn);
+    document.body.appendChild(wrap);
+    nudgeRoot = wrap;
+
+    try {
+      if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons();
+    } catch (e) {
+      // ignore
+    }
+
+    io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          if (entry.intersectionRatio < 0.1) return;
+          dismissed = true;
+          cleanup();
+        });
+      },
+      { threshold: [0, 0.1, 0.2] }
+    );
+    io.observe(main);
+  };
+
+  const schedule = () => {
+    window.requestAnimationFrame(() => {
+      tryShow();
+      window.setTimeout(tryShow, 200);
+    });
+  };
+
+  schedule();
+
+  const aside = main.previousElementSibling;
+  if (aside) {
+    aside.addEventListener('click', (e) => {
+      if (e.target.closest('[data-accordion-toggle]')) window.setTimeout(schedule, 380);
+    });
+  }
+
+  let resizeT = null;
+  window.addEventListener('resize', () => {
+    window.clearTimeout(resizeT);
+    resizeT = window.setTimeout(() => {
+      if (!mqMobile.matches) {
+        dismissed = true;
+        cleanup();
+      } else {
+        schedule();
+      }
+    }, 160);
+  });
+
+  mqMobile.addEventListener('change', () => {
+    if (!mqMobile.matches) {
+      dismissed = true;
+      cleanup();
+    } else {
+      dismissed = false;
+      schedule();
+    }
+  });
+}
+
 function initAccordion() {
   document.querySelectorAll('[data-accordion]').forEach((acc) => {
     const items = acc.querySelectorAll('[data-accordion-item]');
@@ -1627,6 +1771,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ignore
   }
   initAccordion();
+  initCatalogCategoryMobileScrollHint();
   initAnimations();
   initCounters();
   initBeforeAfterSliders();
