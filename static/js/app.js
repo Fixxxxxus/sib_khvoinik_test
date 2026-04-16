@@ -666,6 +666,8 @@ function initCatalogCategoryMobileScrollHint() {
   const getNavCard = () => {
     const prev = main.previousElementSibling;
     if (!(prev instanceof HTMLElement)) return null;
+    const byAttr = prev.querySelector('[data-catalog-nav-card]');
+    if (byAttr instanceof HTMLElement) return byAttr;
     const card = prev.firstElementChild;
     return card instanceof HTMLElement ? card : null;
   };
