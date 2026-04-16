@@ -10,6 +10,7 @@ from .data import (
     PITOMNIK_PAGE,
     SADOVYE_CENTRY_PAGE,
     SLUZHBA_ZABOTY_PAGE,
+    CALENDAR_PAGE,
     CATALOG_PAGE,
     STATI_PAGE,
     KONTAKTY_PAGE,
@@ -70,6 +71,33 @@ def catalog_item(request, slug):
 
 def sluzhba_zaboty(request):
     return render(request, "pages/sluzhba-zaboty.html", SLUZHBA_ZABOTY_PAGE)
+
+
+def calendar(request):
+    return render(request, "pages/calendar.html", CALENDAR_PAGE)
+
+
+def calendar_category(request, category):
+    ctx = dict(CALENDAR_PAGE)
+    cat = next((c for c in ctx["categories"] if c["slug"] == category), None)
+    if not cat:
+        raise Http404("Категория не найдена")
+    ctx["active_category"] = cat
+    ctx["category_plants"] = [
+        p for p in ctx["plants"] if p["category_slug"] == category
+    ]
+    return render(request, "pages/calendar-category.html", ctx)
+
+
+def calendar_plant(request, category, plant):
+    ctx = dict(CALENDAR_PAGE)
+    p = next((p for p in ctx["plants"] if p["slug"] == plant), None)
+    if not p:
+        raise Http404("Растение не найдено")
+    cat = next((c for c in ctx["categories"] if c["slug"] == category), None)
+    ctx["active_category"] = cat
+    ctx["active_plant"] = p
+    return render(request, "pages/calendar-plant.html", ctx)
 
 
 def stati_list(request):
