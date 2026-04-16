@@ -28,10 +28,10 @@
   <section class="relative pb-16 pt-2 md:pb-20">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
       <div class="flex flex-col gap-10 lg:flex-row lg:items-start lg:gap-12">
-        <aside class="w-full shrink-0 lg:sticky lg:top-24 lg:w-[min(100%,20rem)]" data-animate="fadeInUp">
+        <aside class="order-2 w-full shrink-0 lg:order-none lg:sticky lg:top-24 lg:w-[min(100%,20rem)]" data-animate="fadeInUp">
           {% include 'partials/catalog_nav.html' %}
         </aside>
-        <div class="min-w-0 flex-1 space-y-6" data-animate="fadeInUp">
+        <div class="order-1 min-w-0 flex-1 space-y-6 lg:order-none" data-animate="fadeInUp">
           <div class="relative overflow-hidden rounded-3xl border border-black/[0.06] bg-gradient-to-br from-white via-white to-brand/[0.04] p-8 shadow-soft md:p-10">
             <div class="pointer-events-none absolute right-0 top-0 h-48 w-48 rounded-full bg-accent/15 blur-3xl"></div>
             <div class="relative">
@@ -40,7 +40,8 @@
                 Ассортимент обновляется
               </div>
               <h2 class="mt-4 text-2xl font-semibold leading-tight text-slate-900 md:text-3xl">
-                Выберите раздел слева
+                <span class="lg:hidden">Выберите раздел ниже</span>
+                <span class="hidden lg:inline">Выберите раздел слева</span>
               </h2>
               <p class="mt-3 max-w-2xl text-base leading-relaxed text-slate-600">
                 Мы переносим каталог с прежнего сайта: дубликаты карточек объединяем, цены привязываем к формату посадки (высота, контейнер). Ниже появится сетка товаров и фильтры — пока ориентируйтесь по разделам.
