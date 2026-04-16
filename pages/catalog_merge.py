@@ -136,9 +136,13 @@ def _variant_from_member(member: dict[str, Any], v0: dict[str, Any], fallback_ta
 
 
 def _catalog_teaser_bundle(n_variants: int, min_price: int) -> tuple[str, str, str]:
-    price_s = f"{min_price:,}".replace(",", " ")
-    line1 = f"от {price_s} ₽ · {n_variants} варианта(ов)"
     line2 = "(высота и формат)"
+    # Нет числовой цены в данных (часто «уточняйте» на старом сайте) — без «от … ₽»
+    if min_price <= 0:
+        line1 = f"уточняйте · {n_variants} вариант(-а)"
+    else:
+        price_s = f"{min_price:,}".replace(",", " ")
+        line1 = f"от {price_s} ₽ · {n_variants} вариант(-а)"
     return f"{line1} {line2}", line1, line2
 
 

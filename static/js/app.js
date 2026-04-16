@@ -211,6 +211,7 @@ function initModal() {
   const sizeWrap = host.firstElementChild;
   const modalCard = sizeWrap && sizeWrap.firstElementChild;
   let activeNoOverlay = false;
+  let titleFxStyleReady = false;
 
   const templateMap = {
     'mini_brief': 'modal-template-mini_brief',
@@ -262,6 +263,58 @@ function initModal() {
     });
   };
 
+  const ensureModalTitleFx = () => {
+    if (titleFxStyleReady || document.getElementById('sg-modal-title-fx')) return;
+    const st = document.createElement('style');
+    st.id = 'sg-modal-title-fx';
+    st.textContent =
+      '.sg-modal-title-arrow{display:inline-block;animation:sg-modal-arrow-bob 1.2s ease-in-out infinite;}' +
+      '@keyframes sg-modal-arrow-bob{0%,100%{transform:translateX(0)}50%{transform:translateX(3px)}}';
+    document.head.appendChild(st);
+    titleFxStyleReady = true;
+  };
+
+  const escapeTitleHtml = (text) =>
+    String(text || '')
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+
+  const setModalTitle = (title) => {
+    const t = String(title || '');
+    if (!t.includes('→')) {
+      modalTitle.textContent = t;
+      return;
+    }
+    ensureModalTitleFx();
+    const i = t.indexOf('→');
+    const left = escapeTitleHtml(t.slice(0, i));
+    const right = escapeTitleHtml(t.slice(i + 1));
+    modalTitle.innerHTML = `${left}<span class="sg-modal-title-arrow" aria-hidden="true">→</span>${right}`;
+  };
+
+  const renderSelectionModalPreview = (root, names) => {
+    if (!root || !Array.isArray(names) || !names.length) return;
+    const wrap = document.createElement('div');
+    wrap.className = 'mb-4 rounded-2xl border border-brand/20 bg-brand/5 p-3';
+    const title = document.createElement('div');
+    title.className = 'text-xs font-semibold uppercase tracking-wide text-brand';
+    title.textContent = 'Вы выбрали:';
+    const chips = document.createElement('div');
+    chips.className = 'mt-2 flex max-h-28 flex-wrap gap-2 overflow-y-auto pr-1';
+    names.forEach((n) => {
+      const chip = document.createElement('span');
+      chip.className = 'inline-flex items-center rounded-full border border-brand/25 bg-white px-2.5 py-1 text-xs font-medium text-slate-700';
+      chip.textContent = n;
+      chips.appendChild(chip);
+    });
+    wrap.appendChild(title);
+    wrap.appendChild(chips);
+    root.insertBefore(wrap, root.firstChild);
+  };
+
   const openModal = (targetKey, title, options) => {
     const opts = options || {};
     const tplId = templateMap[targetKey];
@@ -297,19 +350,21 @@ function initModal() {
       modalCard.classList.toggle('shadow-[0_30px_80px_-30px_rgba(15,23,42,0.65)]', Boolean(opts.noOverlay));
     }
 
-    modalTitle.textContent = title || '';
+    setModalTitle(title || '');
     modalBody.innerHTML = '';
     modalBody.appendChild(tpl.content.cloneNode(true));
+    renderSelectionModalPreview(modalBody, opts.selectionNames);
     if (window.lucide) window.lucide.createIcons();
 
     // Inject modal title as hidden field so it reaches B24 lead COMMENTS
-    if (title) {
+    const modalContext = opts.contextTitle || title;
+    if (modalContext) {
       const mForm = modalBody.querySelector('form[data-ui-form]');
       if (mForm) {
         const h = document.createElement('input');
         h.type = 'hidden';
         h.name = 'modalContext';
-        h.value = title;
+        h.value = modalContext;
         mForm.appendChild(h);
       }
     }
@@ -361,7 +416,16 @@ function initModal() {
       const key = btn.getAttribute('data-open-modal');
       const title = btn.getAttribute('data-modal-title') || '';
       const noOverlay = btn.getAttribute('data-modal-no-overlay') === '1';
-      openModal(key, title, { noOverlay });
+      const contextTitle = btn.getAttribute('data-modal-context') || title;
+      let selectionNames = [];
+      try {
+        const rawNames = btn.getAttribute('data-modal-selection-names');
+        const parsed = rawNames ? JSON.parse(rawNames) : [];
+        selectionNames = Array.isArray(parsed) ? parsed.map((x) => String(x || '').trim()).filter(Boolean) : [];
+      } catch (e) {
+        selectionNames = [];
+      }
+      openModal(key, title, { noOverlay, contextTitle, selectionNames });
     });
   });
 
@@ -1001,6 +1065,20 @@ function initPlantVariantPicker() {
     return;
   }
   if (!Array.isArray(variants) || variants.length === 0) return;
+  const normalizeHeightLabel = (v) => {
+    const s = String(v || '').trim();
+    return /^уточняйте$/i.test(s) ? 'фиксированная' : s;
+  };
+  const normalizeContainerLabel = (v) => {
+    const s = String(v || '').trim();
+    if (/^формат\s+уточняйте$/i.test(s) || /^уточняйте$/i.test(s)) return 'формат фиксированный';
+    return s;
+  };
+  variants = variants.map((x) => ({
+    ...x,
+    height: normalizeHeightLabel(x && x.height),
+    container: normalizeContainerLabel(x && x.container),
+  }));
 
   const selH = root.querySelector('[data-pv-height]');
   const selC = root.querySelector('[data-pv-container]');
@@ -1164,6 +1242,129 @@ function playSelectionAddedBurst(btn) {
   }, 820);
 }
 
+/**
+ * Название для блока «Подбор»: короче и без «ломаного» текста.
+ * 1) Убираем латинские/английские сорта в ASCII/типографских кавычках "…" / "…"
+ *    (русские названия в «ёлочках» не трогаем).
+ * 2) Если есть кириллица — отрезаем хвост латинского рода/вида (Cineraria maritima …).
+ * 3) Снимаем висячие кавычки после обрезки (баг «Роза … "»).
+ */
+function selectionDisplayNameForPodbor(name) {
+  const raw = String(name || '').trim();
+  let s = raw.replace(/\s+/g, ' ').trim();
+  if (!s) return s;
+
+  const countLat = (t) => (t.match(/[A-Za-z]/g) || []).length;
+  const countCyr = (t) => (t.match(/[\u0400-\u04FF]/g) || []).length;
+
+  const stripLatinInAsciiQuotes = (str) => {
+    let out = str;
+    let prev;
+    do {
+      prev = out;
+      out = out.replace(/\s*["\u201c\u201d]([^"\u201c\u201d]*?)["\u201c\u201d]\s*/g, (full, inner) => {
+        const t = inner.trim();
+        if (!t) return ' ';
+        const lat = countLat(t);
+        const cyr = countCyr(t);
+        if (lat === 0) return full;
+        if (cyr > 0 && cyr >= lat) return full;
+        if (lat >= 2 && lat >= cyr) return ' ';
+        if (cyr === 0 && lat >= 1) return ' ';
+        return full;
+      });
+      out = out.replace(/\s+/g, ' ').trim();
+    } while (out !== prev);
+    return out;
+  };
+
+  s = stripLatinInAsciiQuotes(s);
+  if (!s) return raw;
+
+  if (/[\u0400-\u04FF]/.test(s)) {
+    // Не отрезать «…" Hosta (ML)» по первому латинскому слову — иначе теряется (ML) С2/3;
+    // латиница сразу после закрывающей " / типографской кавычки не считаем хвостом бинома.
+    const re = /(?<![\u0022\u201c\u201d])\s+[A-Z][a-z]{2,}\b/;
+    const idx = s.search(re);
+    if (idx !== -1) s = s.slice(0, idx).trim();
+    // Дублирующее латинское имя рода перед скобкой: … "Frances" … Hosta (ML)
+    s = s.replace(/\s+[A-Z][a-z]{2,}\b(?=\s*\()/g, ' ').replace(/\s+/g, ' ').trim();
+  }
+
+  s = s
+    .replace(/^[\s"'„“‚‘\u201c\u201d\u201e]+/g, '')
+    .replace(/[\s"'„“‚‘\u201c\u201d\u201e]+$/g, '')
+    .trim();
+  s = s.replace(/"+$/g, '').replace(/^"+/g, '').trim();
+  s = s.replace(/\s+/g, ' ').trim();
+
+  // Каталог в ASCII/«типографских» кавычках держит англ. сорт; «ёлочки» для RU не трогаем
+  if (/[\u0400-\u04FF]/.test(s)) {
+    s = s.replace(/[\u0022\u201c\u201d]/g, '').replace(/\s+/g, ' ').trim();
+    // Остаток одного латинского слова (битые данные / незакрытая кавычка)
+    s = s.replace(/\s+[A-Z][a-z]{2,}\s*$/g, '').trim();
+  }
+
+  return s || raw;
+}
+
+/** Сброс битых имён вроде «Роза английская (William» после старой логики / обрезки. */
+function selectionRepairTruncatedRoseCardName(name) {
+  const n = String(name || '').replace(/\s+/g, ' ').trim();
+  if (!/^роза английская/i.test(n)) return n;
+  const closed = /\(\s*([^)]*)\)\s*$/.exec(n);
+  if (closed) {
+    const inner = closed[1].trim();
+    const lat = (inner.match(/[A-Za-z]/g) || []).length;
+    const cyr = (inner.match(/[\u0400-\u04FF]/g) || []).length;
+    if (inner && lat >= 3 && cyr === 0) return 'Роза английская';
+    return n;
+  }
+  if (/\(\s*[A-Za-z]/.test(n) && !/\)\s*$/.test(n)) return 'Роза английская';
+  return n;
+}
+
+function selectionSuffixFromDescription(description) {
+  const d = String(description || '').replace(/\s+/g, ' ').trim();
+  if (!d) return '';
+  let m = d.match(/\(([А-ЯЁа-яё][^)]{1,48})\)/);
+  if (m) return m[1].trim();
+  m = d.match(/«([^»]{2,48})»/);
+  if (m) return m[1].trim();
+  if (/[Вв]ильям\s+[Шш]експир/.test(d)) return 'Вильям Шекспир';
+  return '';
+}
+
+function selectionSuffixFromUrl(url) {
+  const u = String(url || '').trim();
+  if (!u) return '';
+  const parts = u.split('/').filter(Boolean);
+  const slug = parts[parts.length - 1] || '';
+  if (!slug) return '';
+  const rosePrefix = 'roza-angliyskaya-';
+  if (!slug.startsWith(rosePrefix)) return '';
+  let rest = slug.slice(rosePrefix.length);
+  rest = rest.replace(/-(s|r|p)\d+(?:-\d+)?$/i, '');
+  rest = rest.replace(/-kashpo-\d+(?:-\d+)?l?$/i, '');
+  rest = rest
+    .split('-')
+    .filter(Boolean)
+    .map((w) => (w ? w[0].toUpperCase() + w.slice(1) : w))
+    .join(' ')
+    .trim();
+  if (!rest) return '';
+  return `(${rest})`;
+}
+
+function selectionFixAmbiguousName(item) {
+  const repaired = selectionRepairTruncatedRoseCardName(item && item.name);
+  const base = selectionDisplayNameForPodbor(repaired);
+  if (base.toLowerCase() !== 'роза английская') return base;
+  const suffix = selectionSuffixFromDescription(item && item.description) || selectionSuffixFromUrl(item && item.url);
+  if (!suffix) return base;
+  return `${base} ${suffix}`;
+}
+
 function initCatalogSelection() {
   const STORAGE_KEY = 'sg_catalog_selection_v1';
   const addButtons = Array.from(document.querySelectorAll('[data-selection-add]'));
@@ -1175,7 +1376,19 @@ function initCatalogSelection() {
   const parseSelection = () => {
     try {
       const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      return Array.isArray(raw) ? raw : [];
+      const arr = Array.isArray(raw) ? raw : [];
+      const migrated = arr.map((item) => ({
+        ...item,
+        name: selectionFixAmbiguousName(item),
+      }));
+      try {
+        if (JSON.stringify(arr) !== JSON.stringify(migrated)) {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+        }
+      } catch (e2) {
+        // ignore quota / privacy mode
+      }
+      return migrated;
     } catch (e) {
       return memorySelection;
     }
@@ -1193,9 +1406,15 @@ function initCatalogSelection() {
   const readItem = (btn) => {
     const itemId = normalizeText(btn.getAttribute('data-selection-id')) || fallbackId(btn);
     const variant = normalizeText(btn.getAttribute('data-selection-variant'));
+    const rawName = normalizeText(btn.getAttribute('data-selection-name'));
+    const shortName = selectionFixAmbiguousName({
+      name: rawName,
+      description: normalizeText(btn.getAttribute('data-selection-description')),
+      url: btn.getAttribute('data-selection-url') || '',
+    }) || rawName || 'Позиция каталога';
     return {
       id: itemId,
-      name: normalizeText(btn.getAttribute('data-selection-name')) || 'Позиция каталога',
+      name: shortName,
       category: normalizeText(btn.getAttribute('data-selection-category')),
       description: normalizeText(btn.getAttribute('data-selection-description')),
       price: normalizeText(btn.getAttribute('data-selection-price')),
@@ -1277,11 +1496,8 @@ function initCatalogSelection() {
   };
 
   const composeModalTitle = () => {
-    const names = selection.map((item) => (item.variant ? `${item.name} (${item.variant})` : item.name));
-    if (!names.length) return 'Уточнить наличие';
-    const preview = names.slice(0, 4).join('; ');
-    const tail = names.length > 4 ? `; + ещё ${names.length - 4}` : '';
-    return `Подбор: ${preview}${tail}`;
+    if (!selection.length) return 'Уточнить наличие';
+    return `Позиций в подборе → ${selection.length}`;
   };
 
   const escapeHtml = (text) =>
@@ -1303,14 +1519,23 @@ function initCatalogSelection() {
       if (countEl) countEl.textContent = String(selection.length);
       submitBtn.disabled = selection.length === 0;
       submitBtn.setAttribute('data-modal-title', composeModalTitle());
+      const namesForModal = selection.map((item) => {
+        const n = (item.name || '').trim();
+        return item.variant ? `${n} (${item.variant})` : n;
+      });
+      const preview = namesForModal.slice(0, 6).join('; ');
+      const more = namesForModal.length > 6 ? `; + ещё ${namesForModal.length - 6}` : '';
+      submitBtn.setAttribute('data-modal-context', namesForModal.length ? `Подбор: ${preview}${more}` : 'Уточнить наличие');
+      submitBtn.setAttribute('data-modal-selection-names', JSON.stringify(namesForModal.slice(0, 24)));
       if (emptyEl) emptyEl.classList.toggle('hidden', selection.length > 0);
 
       listEl.innerHTML = '';
       selection.forEach((item) => {
+        const displayName = (item.name || '').trim();
         const card = document.createElement('article');
         card.className = 'rounded-2xl border border-black/10 bg-white p-4 h-full min-h-[20rem] flex flex-col';
         const imageHtml = item.image
-          ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" class="h-full w-full object-cover" loading="lazy" decoding="async" />`
+          ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(displayName)}" class="h-full w-full object-cover" loading="lazy" decoding="async" />`
           : '<div class="h-full w-full bg-slate-100"></div>';
         const categoryHtml = item.category
           ? `<div class="mt-2 text-xs text-slate-500">${escapeHtml(item.category)}</div>`
@@ -1326,7 +1551,7 @@ function initCatalogSelection() {
           : '<span></span>';
         card.innerHTML = `
           <div class="h-28 overflow-hidden rounded-xl bg-slate-100">${imageHtml}</div>
-          <div class="mt-3 text-lg font-semibold min-h-[5.5rem]">${escapeHtml(item.name)}</div>
+          <div class="mt-3 text-lg font-semibold min-h-[5.5rem]">${escapeHtml(displayName)}</div>
           <div class="min-h-[4.5rem]">
             ${categoryHtml}
             ${noteHtml}

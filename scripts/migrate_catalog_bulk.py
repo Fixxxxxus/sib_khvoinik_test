@@ -288,7 +288,7 @@ def main() -> int:
     for item in grouped.values():
         item["legacy_paths"] = sorted({p for p in item["legacy_paths"] if p})
         item["catalog_teaser"] = (
-            f"от {item['variants'][0]['price']} · {len(item['variants'])} варианта(ов) (высота и формат)"
+            f"от {item['variants'][0]['price']} · {len(item['variants'])} вариант(-а) (высота и формат)"
             if item["variants"]
             else "цена по запросу"
         )
