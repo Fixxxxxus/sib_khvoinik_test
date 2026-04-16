@@ -81,7 +81,39 @@ def parse_product_page(html_text: str, page_url: str) -> dict:
 
     img_link = soup.select_one('link[itemprop="image"]')
     image_rel = img_link["href"].strip() if img_link and img_link.get("href") else ""
-    image_abs = absolutize(page_url, image_rel) if image_rel else ""
+    if not image_rel:
+        og = soup.select_one('meta[property="og:image"]')
+        if og and og.get("content"):
+            cand = og["content"].strip()
+            # og:image на Aspro часто — фирменная полоска/логотип (CAllcorp3), не фото товара.
+            # Реальные фото товаров лежат в /upload/iblock/...
+            if "/iblock/" in cand:
+                image_rel = cand
+    if not image_rel:
+        # Иногда в разметке только картинка в блоке галереи
+        gal = soup.select_one(
+            ".detail-gallery img[src], .catalog-detail__gallery img[src], "
+            ".detail-gallery img[data-src], .catalog-detail__gallery img[data-src]"
+        )
+        if gal:
+            src = (gal.get("src") or "").strip()
+            data_src = (gal.get("data-src") or "").strip()
+            if src and not src.startswith("data:"):
+                image_rel = src
+            elif data_src and "/iblock/" in data_src:
+                image_rel = data_src
+    if not image_rel:
+        # Lazyload: реальный URL в data-src (src — прозрачный GIF)
+        for img in soup.select("img[data-src]"):
+            ds = (img.get("data-src") or "").strip()
+            if "/upload/iblock/" in ds and "/resize_cache/" not in ds:
+                image_rel = ds
+                break
+
+    if image_rel.startswith(("http://", "https://")):
+        image_abs = image_rel
+    else:
+        image_abs = absolutize(page_url, image_rel) if image_rel else ""
 
     price_el = soup.select_one("span.price__new-val")
     price_raw = price_el.get_text() if price_el else ""

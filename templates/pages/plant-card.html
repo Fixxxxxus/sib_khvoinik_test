@@ -127,9 +127,9 @@
               data-selection-image="{% if active_plant.image %}{% static active_plant.image %}{% endif %}"
               data-selection-url="{{ request.path }}"
               {% if active_plant.variants %}data-pv-sync-selection-button="1"{% endif %}
-              class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-sm font-semibold text-white shadow-glow hover:brightness-105 transition"
+              class="relative overflow-visible inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-sm font-semibold text-white shadow-glow hover:brightness-105 transition"
             >
-              Добавить в подбор
+              <span data-selection-label class="relative z-[1] inline-block">Добавить в подбор</span>
             </button>
           </div>
           </div>

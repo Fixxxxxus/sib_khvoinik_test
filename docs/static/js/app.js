@@ -1077,11 +1077,90 @@ function initPlantVariantPicker() {
   applyVariant(findByHeight(selH.value) || variants[0]);
 }
 
+const SG_SELECTION_ADD_ANIM_MS = 800;
+const SG_SELECTION_PULSE_MS = 200;
+
+function ensureSelectionAddEffectStyles() {
+  if (document.getElementById('sg-selection-add-fx')) return;
+  const st = document.createElement('style');
+  st.id = 'sg-selection-add-fx';
+  st.textContent =
+    '.sg-selection-pulse{animation:sg-selection-pulse-anim ' +
+    SG_SELECTION_PULSE_MS +
+    'ms ease-in-out}' +
+    '@keyframes sg-selection-pulse-anim{0%{transform:scale(1)}50%{transform:scale(1.08)}100%{transform:scale(1)}}' +
+    '.sg-selection-flash-layer{position:absolute;inset:0;border-radius:inherit;pointer-events:none;z-index:0;opacity:0;' +
+    'background:linear-gradient(135deg,#fff 0%,#fef9c3 42%,#fde68a 100%)}' +
+    '.sg-selection-flash-layer.sg-selection-flash-on{animation:sg-selection-flash-anim .24s ease-out forwards}' +
+    '@keyframes sg-selection-flash-anim{0%{opacity:.88}55%{opacity:.45}100%{opacity:0}}' +
+    '.sg-selection-petal{position:absolute;left:50%;top:50%;width:7px;height:11px;margin-left:-3.5px;margin-top:-5.5px;' +
+    'border-radius:50% 50% 50% 50%/65% 65% 35% 35%;' +
+    'background:radial-gradient(circle at 30% 25%,#fecdd3 0%,#e11d48 42%,#9f1239 88%);' +
+    'box-shadow:0 0 2px rgba(190,18,60,.35);transform-origin:50% 85%;pointer-events:none;z-index:2;opacity:1;' +
+    'animation:sg-selection-petal-burst .8s cubic-bezier(.22,1,.36,1) forwards}' +
+    '@keyframes sg-selection-petal-burst{0%{transform:translate3d(0,0,0) rotate(var(--sg-p-r,0deg)) scale(1);opacity:1}' +
+    '100%{transform:translate3d(var(--sg-tx,0),var(--sg-ty,0),0) rotate(calc(var(--sg-p-r,0deg) + 28deg)) scale(.15);opacity:0}}' +
+    '@media (prefers-reduced-motion:reduce){.sg-selection-pulse{animation:none}' +
+    '.sg-selection-petal{animation-duration:.01ms!important;opacity:0!important}' +
+    '.sg-selection-flash-layer.sg-selection-flash-on{animation-duration:.01ms!important}}';
+  document.head.appendChild(st);
+}
+
+function ensureSelectionButtonLabel(btn) {
+  let label = btn.querySelector('[data-selection-label]');
+  if (label) return label;
+  const text = (btn.textContent || '').replace(/\s+/g, ' ').trim() || 'Добавить в подбор';
+  btn.textContent = '';
+  label = document.createElement('span');
+  label.setAttribute('data-selection-label', '');
+  label.className = 'relative z-[1] inline-block';
+  label.textContent = text;
+  btn.appendChild(label);
+  return label;
+}
+
+function playSelectionAddedBurst(btn) {
+  ensureSelectionAddEffectStyles();
+  btn.classList.add('sg-selection-pulse');
+  window.setTimeout(() => btn.classList.remove('sg-selection-pulse'), SG_SELECTION_PULSE_MS);
+
+  const flash = document.createElement('span');
+  flash.className = 'sg-selection-flash-layer';
+  flash.setAttribute('aria-hidden', 'true');
+  btn.insertBefore(flash, btn.firstChild);
+  window.requestAnimationFrame(() => flash.classList.add('sg-selection-flash-on'));
+  window.setTimeout(() => flash.remove(), 400);
+
+  const reduce =
+    typeof window.matchMedia === 'function' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const count = reduce ? 0 : 14;
+  const petals = [];
+  for (let i = 0; i < count; i += 1) {
+    const petal = document.createElement('span');
+    petal.className = 'sg-selection-petal';
+    const spread = -1.12 + (i / Math.max(1, count - 1)) * 2.24;
+    const angle = -Math.PI / 2 + spread * 0.58 + (Math.random() - 0.5) * 0.28;
+    const dist = 50 + Math.random() * 52;
+    const tx = Math.cos(angle) * dist;
+    const ty = Math.sin(angle) * dist;
+    const rot = ((i * 23 + Math.random() * 55) % 360) - 48;
+    petal.style.setProperty('--sg-tx', `${tx.toFixed(1)}px`);
+    petal.style.setProperty('--sg-ty', `${ty.toFixed(1)}px`);
+    petal.style.setProperty('--sg-p-r', `${rot.toFixed(1)}deg`);
+    btn.appendChild(petal);
+    petals.push(petal);
+  }
+  window.setTimeout(() => {
+    petals.forEach((p) => p.remove());
+  }, 820);
+}
+
 function initCatalogSelection() {
   const STORAGE_KEY = 'sg_catalog_selection_v1';
   const addButtons = Array.from(document.querySelectorAll('[data-selection-add]'));
   const panels = Array.from(document.querySelectorAll('[data-selection-panel]'));
   if (!addButtons.length && !panels.length) return;
+  addButtons.forEach((b) => ensureSelectionButtonLabel(b));
   let memorySelection = [];
 
   const parseSelection = () => {
@@ -1166,7 +1245,12 @@ function initCatalogSelection() {
     addButtons.forEach((btn) => {
       const id = normalizeText(btn.getAttribute('data-selection-id')) || fallbackId(btn);
       const active = hasItem(id);
-      btn.textContent = active ? 'В подборе' : 'Добавить в подбор';
+      if (btn.dataset.selectionAnimating === '1') {
+        if (!active) delete btn.dataset.selectionAnimating;
+        else return;
+      }
+      const label = ensureSelectionButtonLabel(btn);
+      label.textContent = active ? 'В подборе!' : 'Добавить в подбор';
       btn.classList.toggle('whitespace-nowrap', active);
       btn.classList.toggle('text-sm', active);
       btn.classList.toggle('opacity-80', active);
@@ -1241,13 +1325,29 @@ function initCatalogSelection() {
 
   addButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
+      if (btn.dataset.selectionAnimating === '1') return;
       const item = readItem(btn);
       const exists = hasItem(item.id);
-      selection = exists ? selection.filter((x) => x.id !== item.id) : [...selection, item];
+      if (!exists) {
+        btn.dataset.selectionAnimating = '1';
+        selection = [...selection, item];
+        save();
+        const label = ensureSelectionButtonLabel(btn);
+        label.textContent = 'В подборе!';
+        btn.classList.add('whitespace-nowrap', 'text-sm', 'opacity-80');
+        renderPanels();
+        playSelectionAddedBurst(btn);
+        showAddedNotice();
+        window.setTimeout(() => {
+          delete btn.dataset.selectionAnimating;
+          syncAddButtons();
+        }, SG_SELECTION_ADD_ANIM_MS);
+        return;
+      }
+      selection = selection.filter((x) => x.id !== item.id);
       save();
       syncAddButtons();
       renderPanels();
-      if (!exists) showAddedNotice();
     });
   });
 
