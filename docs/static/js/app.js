@@ -649,6 +649,7 @@ function initModal() {
 /**
  * Страницы раздела каталога (шаблон с #catalog-category-main): на узком экране
  * длинная навигация «Каталог» занимает весь вид — подсказка прокрутить к контенту.
+ * Блок вставляется внизу карточки разделов (aside), а не fixed поверх списка.
  * Только max-width 1023px; на десктопе не создаём элемент.
  */
 function initCatalogCategoryMobileScrollHint() {
@@ -661,6 +662,13 @@ function initCatalogCategoryMobileScrollHint() {
   let nudgeRoot = null;
   let io = null;
   let dismissed = false;
+
+  const getNavCard = () => {
+    const prev = main.previousElementSibling;
+    if (!(prev instanceof HTMLElement)) return null;
+    const card = prev.firstElementChild;
+    return card instanceof HTMLElement ? card : null;
+  };
 
   const cleanup = () => {
     if (nudgeRoot && nudgeRoot.parentNode) nudgeRoot.parentNode.removeChild(nudgeRoot);
@@ -695,16 +703,18 @@ function initCatalogCategoryMobileScrollHint() {
     }
     if (nudgeRoot) return;
 
+    const navCard = getNavCard();
+    if (!navCard) return;
+
     const wrap = document.createElement('div');
     wrap.className =
-      'pointer-events-none fixed inset-x-0 z-[52] flex justify-center px-3 pb-1 lg:hidden';
-    wrap.style.bottom = 'max(5.5rem, env(safe-area-inset-bottom, 0px))';
+      'pointer-events-none shrink-0 border-t border-black/[0.06] bg-white px-3 py-3 lg:hidden';
     wrap.setAttribute('data-catalog-mobile-nudge', '1');
 
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.className =
-      'pointer-events-auto flex w-full max-w-sm items-center justify-center gap-2 rounded-2xl border border-brand/30 bg-white/95 px-4 py-3 text-sm font-semibold text-brand shadow-glow backdrop-blur-md transition-transform active:scale-[0.98]';
+      'pointer-events-auto flex w-full items-center justify-center gap-2 rounded-2xl border border-brand/30 bg-white/95 px-4 py-2.5 text-sm font-semibold text-brand shadow-sm backdrop-blur-md transition-transform active:scale-[0.98]';
     btn.setAttribute('aria-label', 'Прокрутить к списку позиций раздела');
 
     const label = document.createElement('span');
@@ -727,7 +737,7 @@ function initCatalogCategoryMobileScrollHint() {
     });
 
     wrap.appendChild(btn);
-    document.body.appendChild(wrap);
+    navCard.appendChild(wrap);
     nudgeRoot = wrap;
 
     try {
