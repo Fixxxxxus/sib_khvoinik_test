@@ -665,10 +665,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'формат уточняйте', 'price': '5 290 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/el_kolyuchaya/el_kanadskaya_picea_glauca_december_s7_5_h_60_80/']},
  {'slug': 'el-kanadskaya-picea-glauca-rainbow-s-end',
-  'name': 'Ель канадская Picea glauca "Rainbow`s End" :',
+  'name': 'Ель канадская Picea glauca "Rainbow`s End"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/el-kanadskaya-picea-glauca-rainbow-s-end.jpg',
-  'image_alt': 'Ель канадская Picea glauca "Rainbow`s End" :',
+  'image_alt': 'Ель канадская Picea glauca "Rainbow`s End"',
   'description': 'Ель канадская Рэйнбоуз Энд - Карликовое деревце ростом до\xa0\xa01,5-2 м. В 10 лет высота до 1 м, '
                  'при диаметре 0,6 м.\xa0\xa0Растет очень медленно, по 5-6 см. В молодом возрасте побеги развиваются '
                  'неравномерно: нижние интенсивнее, а верхние как бы отстают от них в развитии. В результате крона '
@@ -687,10 +687,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'C3', 'price': '2 185 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/el_kolyuchaya/el_kanadskaya_picea_glauca_rainbow_s_end_c3_h_30_40/']},
  {'slug': 'el-kanadskaya-picea-glauca-sander-s-blue',
-  'name': 'Ель канадская Picea glauca "Sander \'s Blue" :',
+  'name': 'Ель канадская Picea glauca "Sander \'s Blue"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/el-kanadskaya-picea-glauca-sander-s-blue.jpg',
-  'image_alt': 'Ель канадская Picea glauca "Sander \'s Blue" :',
+  'image_alt': 'Ель канадская Picea glauca "Sander \'s Blue"',
   'description': 'Ель канадская Сандерс Блю (Picea glauca Sanders Blue) - имеет карликовые размеры и конусовидную '
                  'форму, благодаря чему заслужили немалую популярность среди ландшафтных дизайнеров. Красивая '
                  'конусовидная форма кроны, вместе с нежной голубой раскраской кроны идеально подчеркивает практически '
@@ -770,10 +770,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'формат уточняйте', 'price': 'уточняйте', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/el_kolyuchaya/el_krasnaya_picea_rubens_s2_3_h_15_25/']},
  {'slug': 'el-obyknovennaya-picea-abies-little-gem',
-  'name': 'Ель обыкновенная Picea abies "Little Gem" :',
+  'name': 'Ель обыкновенная Picea abies "Little Gem"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/el-obyknovennaya-picea-abies-little-gem.png',
-  'image_alt': 'Ель обыкновенная Picea abies "Little Gem" :',
+  'image_alt': 'Ель обыкновенная Picea abies "Little Gem"',
   'description': 'Карликовый хвойный кустарник с подушковидной кроной. Высота взрослого растения до 50 см, диаметр '
                  'кроны до 1 м. В 10 лет диаметр кроны 0,3-0,5 м. Хвоя насыщенного зелёного цвета, очень густая, '
                  'короткая, длинной всего 2-5 мм. Очень медленнорастущий сорт, годовой прирост 2-3 см. Ветви с '
@@ -786,10 +786,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'C7,5', 'price': '6 190 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/el_kolyuchaya/el_obyknovennaya_picea_abies_little_gem_c7_5_h_30_40/']},
  {'slug': 'el-obyknovennaya-picea-abies-nidiformis',
-  'name': 'Ель обыкновенная Picea abies "Nidiformis" :',
+  'name': 'Ель обыкновенная Picea abies "Nidiformis"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/el-obyknovennaya-picea-abies-nidiformis.jpg',
-  'image_alt': 'Ель обыкновенная Picea abies "Nidiformis" :',
+  'image_alt': 'Ель обыкновенная Picea abies "Nidiformis"',
   'description': "Ель обыкновенная 'Nidiformis' — популярный неприхотливый сорт ели обыкновенной, карлик. Форма кроны "
                  "подушковидная. Побеги расположены симметрично, плотными ярусами. Ель обыкновенная 'Nidiformis' "
                  'формирует густую красивую крону даже при посадке со значительным затенением. Растет сравнительно '
@@ -970,10 +970,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'формат уточняйте', 'price': '5 290 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mikrobiota_perekrestnoparnaya_microbiota_decussata_s7_5_h_40_50/']},
  {'slug': 'mozhzhevelnik-gorizontalnyy-juniperus-horizontalis-andorra-compacta',
-  'name': "Можжевельник горизонтальный Juniperus horizontalis 'Andorra Compacta' :",
+  'name': "Можжевельник горизонтальный Juniperus horizontalis 'Andorra Compacta'",
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-gorizontalnyy-juniperus-horizontalis-andorra-compacta.png',
-  'image_alt': "Можжевельник горизонтальный Juniperus horizontalis 'Andorra Compacta' :",
+  'image_alt': "Можжевельник горизонтальный Juniperus horizontalis 'Andorra Compacta'",
   'description': 'Juniperus horizontalis Andorra Compact - кустарник, стелющийся по земле с плотной подушкообразной '
                  'кроной высотой. В 10 лет высотой до 0,3-0,4 м и диаметром кроны более 1 метра, позднее достигает '
                  'высоты 0,4-0,5 и диаметра 2 м. Хвоя в основном чешуевидная, изредка игловидная, мелкая, '
@@ -1006,10 +1006,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'формат уточняйте', 'price': '1 890 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mozhzhevelnik_gorizontalnyy_juniperus_horizontalis_golden_carpet_s3_h_20_30/']},
  {'slug': 'mozhzhevelnik-gorizontalnyy-juniperus-horizontalis-prince-of-wales',
-  'name': "Можжевельник горизонтальный Juniperus horizontalis 'Prince of Wales' :",
+  'name': "Можжевельник горизонтальный Juniperus horizontalis 'Prince of Wales'",
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-gorizontalnyy-juniperus-horizontalis-prince-of-wales.jpg',
-  'image_alt': "Можжевельник горизонтальный Juniperus horizontalis 'Prince of Wales' :",
+  'image_alt': "Можжевельник горизонтальный Juniperus horizontalis 'Prince of Wales'",
   'description': 'Вечнозеленый стелющийся кустарник, образующий плотные ковры. Чешуйчатая хвоя с насыщенным зеленым '
                  'окрасом с серебристым отливом зимой приобретает фиолетовые оттенки. За год прирост кустарника '
                  'составляет около 7 см в ширину. К 10 годам крона вырастает до 150 см в диаметре и 10 см в высоту.',
@@ -1022,10 +1022,10 @@ CATALOG_PAGE = {
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mozhzhevelnik_gorizontalnyy_juniperus_horizontalis_prince_of_wales_c3_h_20_30/',
                    '/product/khvoynye/mozhzhevelnik/mozhzhevelnik_gorizontalnyy_juniperus_horizontalis_prince_of_wales_c7_5_h_30_40/']},
  {'slug': 'mozhzhevelnik-kitayskiy-juniperus-chinensis-blue-alps',
-  'name': "Можжевельник китайский Juniperus chinensis 'Blue Alps' :",
+  'name': "Можжевельник китайский Juniperus chinensis 'Blue Alps'",
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-kitayskiy-juniperus-chinensis-blue-alps.jpg',
-  'image_alt': "Можжевельник китайский Juniperus chinensis 'Blue Alps' :",
+  'image_alt': "Можжевельник китайский Juniperus chinensis 'Blue Alps'",
   'description': 'Можжевельник китайский Блю Альпс - это хвойный вечнозеленый кустарник высотой до 4 м и до 2 м в '
                  'диаметре с красивой компактной зелено-голубой кроной. Игловидная, грубая, очень колючая хвоя снизу '
                  'окрашена в сизо-серебристый цвет. Скелетные ветви мощные и сильные, а кончики побегов элегантно '
@@ -1040,10 +1040,10 @@ CATALOG_PAGE = {
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mozhzhevelnik_kitayskiy_juniperus_chinensis_blue_alps_c3_h_30_40/',
                    '/product/khvoynye/mozhzhevelnik/mozhzhevelnik_kitayskiy_juniperus_chinensis_blue_alps_c7_5_h_60_80/']},
  {'slug': 'mozhzhevelnik-kitayskiy-juniperus-chinensis-stricta',
-  'name': "Можжевельник китайский Juniperus chinensis 'Stricta' :",
+  'name': "Можжевельник китайский Juniperus chinensis 'Stricta'",
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-kitayskiy-juniperus-chinensis-stricta.jpg',
-  'image_alt': "Можжевельник китайский Juniperus chinensis 'Stricta' :",
+  'image_alt': "Можжевельник китайский Juniperus chinensis 'Stricta'",
   'description': "Можжевельник китайский 'Stricta' — самый стройный из сортов можжевельника китайского, отличается "
                  'правильной конусовидной формой кроны. Хвоя сизовато-голубая, не колючая. Растет довольно медленно. '
                  "Можжевельник китайский 'Stricta' можно купить для использования в качестве вертикального и цветового "
@@ -1074,10 +1074,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'формат уточняйте', 'price': '5 290 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mozhzhevelnik_obyknovennyy_juniperus_communis_green_carpet_s7_5_h_30_40/']},
  {'slug': 'mozhzhevelnik-obyknovennyy-juniperus-communis-repanda',
-  'name': 'Можжевельник обыкновенный Juniperus communis "Repanda" :',
+  'name': 'Можжевельник обыкновенный Juniperus communis "Repanda"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-obyknovennyy-juniperus-communis-repanda.jpg',
-  'image_alt': 'Можжевельник обыкновенный Juniperus communis "Repanda" :',
+  'image_alt': 'Можжевельник обыкновенный Juniperus communis "Repanda"',
   'description': "Можжевельник обыкновенный 'Repanda' — стелющийся можжевельник. Крона почти плоская, густая. Цвет "
                  'хвои, темно-зеленый в течение сезона, меняется на зиму на коричневато-зеленый. При близком '
                  "рассмотрении на иглах видны серебристые полоски. Растет можжевельник обыкновенный 'Repanda' с "
@@ -1091,10 +1091,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'C3', 'price': '1 890 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mozhzhevelnik_obyknovennyy_juniperus_communis_repanda_c3_h_20_30/']},
  {'slug': 'mozhzhevelnik-obyknovennyy-juniperus-communis-arnold',
-  'name': "Можжевельник обыкновенный Juniperus communis 'Arnold' :",
+  'name': "Можжевельник обыкновенный Juniperus communis 'Arnold'",
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-obyknovennyy-juniperus-communis-arnold.jpg',
-  'image_alt': "Можжевельник обыкновенный Juniperus communis 'Arnold' :",
+  'image_alt': "Можжевельник обыкновенный Juniperus communis 'Arnold'",
   'description': 'Можжевельник обыкновенный Арнольд (Juniperus communis Arnold) – медленнорастущее хвойное дерево '
                  'семейства кипарисовых с колоннообразной кроной. Ветви его направлены вертикально, плотно прижимаются '
                  'друг к другу и устремляются вверх под острым углом. Игольчатая хвоя длиной 1,5 см имеет зеленый, '
@@ -1115,10 +1115,10 @@ CATALOG_PAGE = {
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mozhzhevelnik_obyknovennyy_juniperus_communis_arnold_c3_h_40_50/',
                    '/product/khvoynye/mozhzhevelnik/mozhzhevelnik_obyknovennyy_juniperus_communis_arnold_c7_5_h_100_120/']},
  {'slug': 'mozhzhevelnik-obyknovennyy-juniperus-communis-goldschatz',
-  'name': "Можжевельник обыкновенный Juniperus communis 'Goldschatz' :",
+  'name': "Можжевельник обыкновенный Juniperus communis 'Goldschatz'",
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-obyknovennyy-juniperus-communis-goldschatz.jpg',
-  'image_alt': "Можжевельник обыкновенный Juniperus communis 'Goldschatz' :",
+  'image_alt': "Можжевельник обыкновенный Juniperus communis 'Goldschatz'",
   'description': "Можжевельник обыкновенный 'Goldschatz' - вечнозелёное декоративное растение. Хвоя мягкая и мелкая, в "
                  'высоту достигает не более 50 см. Летом хвоя золотистая, весной с оранжевым оттенком, к зиме '
                  "буреет.\xa0\xa0Устойчив к солнечным ожогам.\xa0\xa0Можжевельник обыкновенный 'Goldschatz' "
@@ -1149,10 +1149,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'формат уточняйте', 'price': '1 890 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mozhzhevelnik_obyknovennyy_juniperus_communis_green_carpet_s3_h_20_30/']},
  {'slug': 'mozhzhevelnik-pribrezhnyy-juniperus-conferta-blue-pacyfic',
-  'name': 'Можжевельник прибрежный Juniperus conferta "Blue Pacyfic" :',
+  'name': 'Можжевельник прибрежный Juniperus conferta "Blue Pacyfic"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-pribrezhnyy-juniperus-conferta-blue-pacyfic.jpg',
-  'image_alt': 'Можжевельник прибрежный Juniperus conferta "Blue Pacyfic" :',
+  'image_alt': 'Можжевельник прибрежный Juniperus conferta "Blue Pacyfic"',
   'description': 'Можжевельник прибрежный Блю Пасифик - медленнорастущий карликовый кустарник, с побегами стелющимися '
                  'по земле, достигающий 30 см высоты и около 2 м в диаметре. Хвоя голубовато–зелёного цвета, колючая. '
                  'Густые жесткие побеги украшают многочисленные ягоды черного цвета с сизоватым налетом. Требования к '
@@ -1179,10 +1179,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'формат уточняйте', 'price': '1 890 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mozhzhevelnik_pribrezhnyy_juniperus_conferta_blue_pacyfic_s3_h_20_30/']},
  {'slug': 'mozhzhevelnik-pribrezhnyy-juniperus-conferta-schlager',
-  'name': 'Можжевельник прибрежный Juniperus conferta "Schlager" :',
+  'name': 'Можжевельник прибрежный Juniperus conferta "Schlager"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-pribrezhnyy-juniperus-conferta-schlager.jpg',
-  'image_alt': 'Можжевельник прибрежный Juniperus conferta "Schlager" :',
+  'image_alt': 'Можжевельник прибрежный Juniperus conferta "Schlager"',
   'description': 'Можжевельник прибрежный Шлягер - Раскидистая, медленнорастущая форма, со стелющимися побегами. Хвоя '
                  'длинная темно-зеленая с голубовато-белой полоской с верхней стороны, поэтому создается общее '
                  'впечатление что хвоя голубовато-зеленого цвета. Побеги длинные, с красно-коричневой корой, концы '
@@ -1211,10 +1211,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'формат уточняйте', 'price': '9 690 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mozhzhevelnik_pribrezhnyy_juniperus_conferta_schlager_s12_h_40_60/']},
  {'slug': 'mozhzhevelnik-skalnyy-juniperus-scopulorum-blue-arrow',
-  'name': "Можжевельник скальный Juniperus scopulorum 'Blue Arrow' :",
+  'name': "Можжевельник скальный Juniperus scopulorum 'Blue Arrow'",
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-skalnyy-juniperus-scopulorum-blue-arrow.png',
-  'image_alt': "Можжевельник скальный Juniperus scopulorum 'Blue Arrow' :",
+  'image_alt': "Можжевельник скальный Juniperus scopulorum 'Blue Arrow'",
   'description': "Можжевельник скальный 'Blue Arrow' — можжевельник вертикального характера роста. Крона "
                  'колонновидная, побеги близко расположены к стволу. Хвоя не колючая, серо-голубая. С возрастом '
                  "можжевельник скальный 'Blue Arrow' достигает 4-5 м в высоту при диаметре кроны около 1 м. Подходит "
@@ -1232,10 +1232,10 @@ CATALOG_PAGE = {
                    '/product/khvoynye/mozhzhevelnik/mozhzhevelnik_skalnyy_juniperus_scopulorum_blue_arrow_c3_h_60_80/',
                    '/product/khvoynye/mozhzhevelnik/mozhzhevelnik_skalnyy_juniperus_scopulorum_blue_arrow_c7_5_h_100_120/']},
  {'slug': 'mozhzhevelnik-sredniy-juniperus-media-gold-coast',
-  'name': 'Можжевельник средний Juniperus media "Gold Coast" :',
+  'name': 'Можжевельник средний Juniperus media "Gold Coast"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-sredniy-juniperus-media-gold-coast.jpg',
-  'image_alt': 'Можжевельник средний Juniperus media "Gold Coast" :',
+  'image_alt': 'Можжевельник средний Juniperus media "Gold Coast"',
   'description': 'Можжевельник средний Голд Коаст - быстрорастущий кустарник с плотной золотисто-зеленой раскидистой '
                  'кроной. Взрослое растение достигает высоты 1 м и диаметра 2 м. Годовой прирост 10-15 см. '
                  'Горизонтально расположенные с элегантно опущенными кончиками побеги в период роста имеют особенно '
@@ -1249,10 +1249,10 @@ CATALOG_PAGE = {
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mozhzhevelnik_sredniy_juniperus_media_gold_coast_c3_h_20_30/',
                    '/product/khvoynye/mozhzhevelnik/mozhzhevelnik_sredniy_juniperus_media_gold_coast_c7_5_h_30_40/']},
  {'slug': 'mozhzhevelnik-cheshuychatyy-juniperus-squamata-blue-carpet',
-  'name': 'Можжевельник чешуйчатый Juniperus squamata "Blue Carpet" :',
+  'name': 'Можжевельник чешуйчатый Juniperus squamata "Blue Carpet"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-cheshuychatyy-juniperus-squamata-blue-carpet.png',
-  'image_alt': 'Можжевельник чешуйчатый Juniperus squamata "Blue Carpet" :',
+  'image_alt': 'Можжевельник чешуйчатый Juniperus squamata "Blue Carpet"',
   'description': 'Можжевельник чешуйчатый Блю Карпет\xa0\xa0– быстрорастущий хвойный вечнозеленый кустарник, '
                  'достигающий к десяти годам высоты 0,3 м, диаметра – 1,5 м. Крона плоская, широкая, сильноветвистая. '
                  'Хвоя колючая серебристо-голубая. Плоды – темно-синие с белесым восковым налетом шишкоягоды. Ценится '
@@ -1266,10 +1266,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'C7,5', 'price': '5 290 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mozhzhevelnik_cheshuychatyy_juniperus_squamata_blue_carpet_c7_5_h_30_40/']},
  {'slug': 'mozhzhevelnik-cheshuychatyy-juniperus-squamata-blue-star',
-  'name': 'Можжевельник чешуйчатый Juniperus squamata "Blue Star" :',
+  'name': 'Можжевельник чешуйчатый Juniperus squamata "Blue Star"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/mozhzhevelnik-cheshuychatyy-juniperus-squamata-blue-star.png',
-  'image_alt': 'Можжевельник чешуйчатый Juniperus squamata "Blue Star" :',
+  'image_alt': 'Можжевельник чешуйчатый Juniperus squamata "Blue Star"',
   'description': 'Можжевельник чешуйчатый Блю Карпет\xa0\xa0– быстрорастущий хвойный вечнозеленый кустарник, '
                  'достигающий к десяти годам высоты 0,3 м, диаметра – 1,5 м. Крона плоская, широкая, сильноветвистая. '
                  'Хвоя колючая серебристо-голубая. Плоды – темно-синие с белесым восковым налетом шишкоягоды. Ценится '
@@ -1285,10 +1285,10 @@ CATALOG_PAGE = {
   'legacy_paths': ['/product/khvoynye/mozhzhevelnik/mozhzhevelnik_cheshuychatyy_juniperus_squamata_blue_star_c3_h_20_30/',
                    '/product/khvoynye/mozhzhevelnik/mozhzhevelnik_cheshuychatyy_juniperus_squamata_blue_star_c7_5_h_20_30/']},
  {'slug': 'pihta-koreyskaya-abies-koreana-silberlocke',
-  'name': 'Пихта корейская Abies koreana "Silberlocke" :',
+  'name': 'Пихта корейская Abies koreana "Silberlocke"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/pihta-koreyskaya-abies-koreana-silberlocke-fe5e9f3b.jpg',
-  'image_alt': 'Пихта корейская Abies koreana "Silberlocke" :',
+  'image_alt': 'Пихта корейская Abies koreana "Silberlocke"',
   'description': 'Пихта корейская Сильберлок\n'
                  '(Abies koreana Silberlocke)\n'
                  'Представляет собой невысокое дерево с правильной конусовидной или пирамидальной симметричной кроной. '
@@ -1302,10 +1302,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'C7', 'price': '10 390 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/pikhta/pikhta_koreyskaya_abies_koreana_silberlocke_c7_5_h_80_100/']},
  {'slug': 'pihta-odnotsvetnaya-abies-concolor-piggelmee',
-  'name': 'Пихта одноцветная Abies concolor "Piggelmee" :',
+  'name': 'Пихта одноцветная Abies concolor "Piggelmee"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/pihta-odnotsvetnaya-abies-concolor-piggelmee.jpg',
-  'image_alt': 'Пихта одноцветная Abies concolor "Piggelmee" :',
+  'image_alt': 'Пихта одноцветная Abies concolor "Piggelmee"',
   'description': 'Пихта одноцветная Пиггельми\n'
                  '(Abies concolor Piggelmee)\n'
                  'Карликовая, медленнорастущая очень плотная. Сплющенно-подушковидно-распростертая форма. Получена как '
@@ -1326,10 +1326,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'C7', 'price': '10 390 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/pikhta/pikhta_odnotsvetnaya_abies_concolor_piggelmee_c7_5_h_20_40/']},
  {'slug': 'pihta-shershavoplodnaya-abies-lasiocarpa-compacta',
-  'name': 'Пихта шершавоплодная Abies lasiocarpa "Compacta" :',
+  'name': 'Пихта шершавоплодная Abies lasiocarpa "Compacta"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/pihta-shershavoplodnaya-abies-lasiocarpa-compacta.jpg',
-  'image_alt': 'Пихта шершавоплодная Abies lasiocarpa "Compacta" :',
+  'image_alt': 'Пихта шершавоплодная Abies lasiocarpa "Compacta"',
   'description': 'Пихта субальпийская Компакта Abies lasiocarpa Compacta.\n'
                  'Во взрослом возрасте — идеальное «Новогоднее дерево». Волшебный серебристый цвет хвои,\xa0\xa0'
                  'изумительная форма правильного конуса,очень плотная, пушистая, набитая крона — все это делает пихту '
@@ -1344,10 +1344,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'C7', 'price': '10 390 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/pikhta/pikhta_shershavoplodnaya_abies_lasiocarpa_compacta_c7_5_h_40_60/']},
  {'slug': 'sosna-gornaya-pinus-mugo-mughus',
-  'name': 'Сосна горная Pinus mugo "Mughus" :',
+  'name': 'Сосна горная Pinus mugo "Mughus"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/sosna-gornaya-pinus-mugo-mughus.png',
-  'image_alt': 'Сосна горная Pinus mugo "Mughus" :',
+  'image_alt': 'Сосна горная Pinus mugo "Mughus"',
   'description': 'Сосна горная ф. мугус (Pinus mugo var. mughus) - кустарниковая форма сосны. Крона, распростертая, '
                  'стелющаяся. Растет медленно, во взрослом состоянии достигает высоты 2-3м и диаметра 3-4м. Короткие '
                  'побеги направлены вверх. Ежегодный прирост составляет 10 см в высоту и 12 см в ширину. Темно-зеленая '
@@ -1550,10 +1550,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'формат уточняйте', 'price': '1 890 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/khvoynye/tuya/tuya_zapadnaya_thuja_occidentalis_columna_s3_h_50_60/']},
  {'slug': 'tuya-zapadnaya-thuja-occidentalis-danica',
-  'name': 'Туя западная Thuja occidentalis "Danica" :',
+  'name': 'Туя западная Thuja occidentalis "Danica"',
   'category_slug': 'hvoynye-derevya',
   'image': 'media/images/catalog/migrated/tuya-zapadnaya-thuja-occidentalis-danica.jpg',
-  'image_alt': 'Туя западная Thuja occidentalis "Danica" :',
+  'image_alt': 'Туя западная Thuja occidentalis "Danica"',
   'description': "Туя западная 'Danica' — карликовая туя, один из лучших шаровидных сортов, способный самостоятельно "
                  "поддерживать четкий силуэт кроны. Хвоя ярко-зеленая, густая. Растет туя западная 'Danica' медленно, "
                  'с годами достигая 0,7 м в высоту и около 1 м в диаметре кроны.',
