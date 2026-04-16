@@ -62,11 +62,15 @@ def main() -> int:
     django.setup()
 
     from django.template.loader import render_to_string
+    from pages.catalog_merge import find_merged_plant, get_merged_catalog_plants, resolve_catalog_plant_slug
     from pages.catalog_nav import enrich_catalog_context
-    from pages.catalog_products import plant_belongs_to_category
+    from pages.catalog_products import plant_belongs_to_category, similar_plants_for_detail
+    from pages.catalog_subcategories import all_subcategory_slugs, category_heading_for_slug
     from pages.data import CATALOG_PAGE
 
     n = 0
+
+    merged_plants, _ = get_merged_catalog_plants()
 
     html = render_to_string("pages/catalog.html", enrich_catalog_context(dict(CATALOG_PAGE)))
     write_html(DOCS_CATALOG / "index.html", apply_site_prefix(html, PREFIX))
@@ -74,7 +78,6 @@ def main() -> int:
     print(f"OK docs/catalog/index.html")
 
     categories = CATALOG_PAGE.get("categories") or []
-    plants_all = CATALOG_PAGE.get("plants") or []
 
     for cat in categories:
         slug = cat["slug"]
@@ -82,23 +85,44 @@ def main() -> int:
         ctx["active_category_slug"] = slug
         ctx["category_label"] = cat.get("label") or slug
         ctx["category_hub_links"] = cat.get("category_hub_links")
-        ctx["plants"] = [p for p in plants_all if plant_belongs_to_category(p, slug)]
+        ctx["plants"] = [p for p in merged_plants if plant_belongs_to_category(p, slug)]
         html = render_to_string("pages/catalog-category.html", enrich_catalog_context(ctx))
         write_html(DOCS_CATALOG / slug / "index.html", apply_site_prefix(html, PREFIX))
         n += 1
         print(f"OK docs/catalog/{slug}/index.html")
 
-    for plant in plants_all:
+    for sub_slug in sorted(all_subcategory_slugs()):
+        ctx = dict(CATALOG_PAGE)
+        ctx["active_category_slug"] = sub_slug
+        ctx["category_label"] = category_heading_for_slug(sub_slug, categories)
+        ctx["category_hub_links"] = None
+        ctx["plants"] = [p for p in merged_plants if plant_belongs_to_category(p, sub_slug)]
+        html = render_to_string("pages/catalog-category.html", enrich_catalog_context(ctx))
+        write_html(DOCS_CATALOG / sub_slug / "index.html", apply_site_prefix(html, PREFIX))
+        n += 1
+        print(f"OK docs/catalog/{sub_slug}/index.html")
+
+    written_plant_paths: set[str] = set()
+    for plant in merged_plants:
         slug = plant.get("slug")
         if not slug:
             continue
-        ctx = dict(CATALOG_PAGE)
-        ctx["active_plant_slug"] = slug
-        ctx["active_plant"] = plant
-        html = render_to_string("pages/plant-card.html", enrich_catalog_context(ctx))
-        write_html(DOCS_CATALOG / slug / "index.html", apply_site_prefix(html, PREFIX))
-        n += 1
-        print(f"OK docs/catalog/{slug}/index.html")
+        alias_slugs = [slug] + list(plant.get("merged_member_slugs") or [])
+        for sp in alias_slugs:
+            if sp in written_plant_paths:
+                continue
+            written_plant_paths.add(sp)
+            ctx = dict(CATALOG_PAGE)
+            ctx["plants"] = merged_plants
+            ctx["active_plant_slug"] = resolve_catalog_plant_slug(sp)
+            ctx["active_plant"] = find_merged_plant(merged_plants, sp)
+            if not ctx["active_plant"]:
+                continue
+            ctx["similar_plants"] = similar_plants_for_detail(ctx["active_plant"], merged_plants)
+            html = render_to_string("pages/plant-card.html", enrich_catalog_context(ctx))
+            write_html(DOCS_CATALOG / sp / "index.html", apply_site_prefix(html, PREFIX))
+            n += 1
+            print(f"OK docs/catalog/{sp}/index.html")
 
     print(f"Готово: {n} страниц каталога.")
     return 0

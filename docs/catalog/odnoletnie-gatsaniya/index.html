@@ -1,0 +1,3388 @@
+
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Однолетние цветы → Гацания — каталог — Сибирские газоны</title>
+    <meta name="description" content="Сибирские газоны — технологичное озеленение, питомник и рулонный газон" />
+    <meta name="base-path" content="/sib_khvoinik_test" />
+
+    <link rel="icon" href="/sib_khvoinik_test/static/media/branding/favicon.svg" type="image/svg+xml" />
+    <link rel="icon" href="/sib_khvoinik_test/static/media/branding/favicon-32.png" sizes="32x32" type="image/png" />
+
+    <!-- Tailwind: локальный скрипт (CDN без сети ломает всю вёрстку — классы hidden/md:* не работают) -->
+    <script src="/sib_khvoinik_test/static/js/tailwind.browser.js?v=1"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              brand: '#2D6A4F',
+              brand2: '#40916C',
+              accent: '#E9C46A',
+            },
+            boxShadow: {
+              soft: '0 10px 30px rgba(0,0,0,0.08)',
+              glow: '0 0 0 1px rgba(64,145,108,0.25), 0 20px 60px rgba(45,106,79,0.22)',
+            },
+          },
+        },
+      };
+    </script>
+
+    <!-- Lucide icons -->
+    <script src="https://unpkg.com/lucide@0.546.0"></script>
+
+    <link rel="stylesheet" href="/sib_khvoinik_test/static/css/styles.css?v=21" />
+  </head>
+  <body class="bg-white text-slate-900 antialiased">
+    
+<header id="site-header" class="sticky top-0 z-50 border-b border-slate-200 bg-white">
+  <!-- Десктоп: логотип слева, ссылки по центру, справа мессенджеры и звонок -->
+  <div class="sg-nav-fallback-desktop mx-auto hidden w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 md:flex lg:gap-6 lg:px-8">
+    <a href="/sib_khvoinik_test/" class="flex shrink-0 items-center">
+      <img
+        src="/sib_khvoinik_test/static/media/branding/logo-main.webp"
+        alt="Сибирские газоны"
+        class="h-9 w-auto sm:h-10"
+        loading="eager"
+        decoding="async"
+      />
+    </a>
+    <nav
+      class="flex min-w-0 flex-1 flex-nowrap items-center justify-center gap-x-2 gap-y-1 overflow-x-auto px-1.5 py-0.5 sm:gap-x-2.5 sm:px-2 lg:gap-x-3 lg:px-2.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      aria-label="Основное меню"
+    >
+      <a href="/sib_khvoinik_test/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Главная
+      </a>
+      <a href="/sib_khvoinik_test/gazon/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Газон
+      </a>
+      <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Озеленение
+      </a>
+      <a href="/sib_khvoinik_test/b2b/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        B2B
+      </a>
+      <a href="/sib_khvoinik_test/pitomnik/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Питомник
+      </a>
+      <a href="/sib_khvoinik_test/sadovye-centry/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Садовые центры
+      </a>
+      <a href="/sib_khvoinik_test/catalog/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Каталог
+      </a>
+      <!-- TODO: вернуть когда будет контент
+      <a href="/sib_khvoinik_test/stati/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Статьи
+      </a>
+      -->
+      <a href="/sib_khvoinik_test/kontakty/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Контакты
+      </a>
+    </nav>
+    <div class="flex shrink-0 items-center gap-2">
+      <a
+        href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="MAX"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[11px] font-semibold text-indigo-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow"
+      >
+        MAX
+      </a>
+      <a
+        href="https://t.me/sibirskie_gazony"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Telegram"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow"
+      >
+        <i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i>
+      </a>
+      <a
+        href="https://vk.com/sibirskiegazony"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="VK"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow"
+      >
+        VK
+      </a>
+      <a
+        href="tel:+73832010600"
+        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-2 text-sm font-semibold text-white shadow-glow transition hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand sm:px-5 sm:py-2.5 sm:text-[15px]"
+      >
+        <i data-lucide="phone-call" class="h-4 w-4 shrink-0" aria-hidden="true"></i>
+        Позвонить
+      </a>
+    </div>
+  </div>
+
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <!-- Мобильная верхняя строка: лого + действия -->
+    <div class="sg-nav-fallback-mobile-bar flex items-center justify-between gap-3 py-2.5 md:hidden">
+      <a href="/sib_khvoinik_test/" class="flex min-w-0 items-center">
+        <img
+          src="/sib_khvoinik_test/static/media/branding/logo-main.webp"
+          alt="Сибирские газоны"
+          class="h-9 w-auto max-h-9"
+          loading="eager"
+          decoding="async"
+        />
+      </a>
+      <div class="flex shrink-0 items-center gap-1.5">
+        <a
+          href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="MAX"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[9px] font-semibold text-indigo-700 shadow-sm"
+        >
+          MAX
+        </a>
+        <a
+          href="https://t.me/sibirskie_gazony"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Telegram"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm"
+        >
+          <i data-lucide="send" class="h-3.5 w-3.5" aria-hidden="true"></i>
+        </a>
+        <a
+          href="https://vk.com/sibirskiegazony"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="VK"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[10px] font-semibold tracking-wide text-blue-700 shadow-sm"
+        >
+          VK
+        </a>
+        <a
+          href="tel:+73832010600"
+          aria-label="Позвонить"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-200/80 bg-gradient-to-br from-emerald-50 to-green-50 text-emerald-700 shadow-sm"
+        >
+          <i data-lucide="phone-call" class="h-3.5 w-3.5" aria-hidden="true"></i>
+        </a>
+        <button
+          id="burgerBtn"
+          type="button"
+          class="inline-flex items-center justify-center rounded-xl border border-slate-200 p-2 text-slate-700 hover:bg-slate-50 transition"
+          aria-label="Открыть меню"
+          aria-expanded="false"
+        >
+          <i data-lucide="menu" class="h-5 w-5"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="mobileMenu" class="sg-mobile-menu-panel hidden border-b border-slate-200 bg-white md:hidden">
+    <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 gap-1">
+        <a href="/sib_khvoinik_test/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Главная
+        </a>
+        <a href="/sib_khvoinik_test/gazon/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Газон
+        </a>
+        <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Озеленение
+        </a>
+        <a href="/sib_khvoinik_test/b2b/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          B2B
+        </a>
+        <a href="/sib_khvoinik_test/pitomnik/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Питомник
+        </a>
+        <a href="/sib_khvoinik_test/sadovye-centry/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Садовые центры
+        </a>
+        <a href="/sib_khvoinik_test/catalog/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Каталог
+        </a>
+        <!-- TODO: вернуть когда будет контент
+        <a href="/sib_khvoinik_test/stati/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Статьи
+        </a>
+        -->
+        <a href="/sib_khvoinik_test/kontakty/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Контакты
+        </a>
+        <div class="mt-2 grid grid-cols-4 gap-2">
+          <a
+            href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="MAX"
+            class="inline-flex items-center justify-center rounded-xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 px-2 py-2.5 text-[11px] font-semibold text-indigo-700 shadow-sm"
+          >
+            MAX
+          </a>
+          <a
+            href="https://t.me/sibirskie_gazony"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Telegram"
+            class="inline-flex items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 px-2 py-2.5 text-sky-700 shadow-sm"
+          >
+            <i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i>
+          </a>
+          <a
+            href="https://vk.com/sibirskiegazony"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="VK"
+            class="inline-flex items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 px-2 py-2.5 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm"
+          >
+            VK
+          </a>
+          <a
+            href="tel:+73832010600"
+            class="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand to-brand2 px-2 py-2.5 text-xs font-semibold text-white shadow-glow"
+          >
+            Звонок
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+
+    <main>
+      
+  <section class="mt-10">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col gap-10 lg:flex-row lg:items-start">
+        <aside class="w-full shrink-0 lg:sticky lg:top-24 lg:w-[min(100%,20rem)]" data-animate="fadeInUp">
+          
+<div class="relative overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-soft">
+  <div class="pointer-events-none absolute -right-16 top-0 h-40 w-40 rounded-full bg-brand/[0.08] blur-3xl"></div>
+  <div class="pointer-events-none absolute -left-10 bottom-0 h-32 w-32 rounded-full bg-brand2/[0.1] blur-2xl"></div>
+  <div class="relative border-b border-black/[0.06] bg-gradient-to-r from-brand/[0.06] to-transparent px-5 py-4">
+    <div class="flex items-center gap-2.5">
+      <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand to-brand2 text-white shadow-glow">
+        <i data-lucide="layout-grid" class="h-5 w-5" aria-hidden="true"></i>
+      </span>
+      <div>
+        <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">Каталог</p>
+        <p class="text-sm font-semibold text-slate-800">Разделы</p>
+      </div>
+    </div>
+  </div>
+
+  <nav class="relative max-h-[min(70vh,36rem)] overflow-y-auto overscroll-contain p-2 sm:p-3" aria-label="Разделы каталога" data-accordion>
+    <ul class="space-y-0.5">
+      
+        <li>
+          
+            <a
+              href="/sib_khvoinik_test/gazon/"
+              class="group flex items-center justify-between gap-2 rounded-xl border-l-[3px] px-2.5 py-2 text-sm font-semibold transition hover:bg-brand/[0.06] border-transparent text-slate-800"
+            >
+              <span class="flex min-w-0 items-center gap-2.5">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand group-hover:from-brand/20 group-hover:to-brand2/15">
+                  <i data-lucide="layers" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                </span>
+                <span class="truncate">Рулонные газоны</span>
+              </span>
+              <i data-lucide="chevron-right" class="h-4 w-4 shrink-0 text-brand/35 group-hover:text-brand" aria-hidden="true"></i>
+            </a>
+          
+        </li>
+      
+        <li>
+          
+            <a
+              href="/sib_khvoinik_test/catalog/klubnika/"
+              class="group flex items-center justify-between gap-2 rounded-xl border-l-[3px] px-2.5 py-2 text-sm font-semibold transition hover:bg-brand/[0.06] border-transparent text-slate-800"
+            >
+              <span class="flex min-w-0 items-center gap-2.5">
+                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand group-hover:from-brand/20 group-hover:to-brand2/15">
+                  <i data-lucide="cherry" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                </span>
+                <span class="truncate">Клубника</span>
+              </span>
+              <i data-lucide="chevron-right" class="h-4 w-4 shrink-0 text-brand/35 group-hover:text-brand" aria-hidden="true"></i>
+            </a>
+          
+        </li>
+      
+        <li>
+          
+            <div data-accordion-item>
+              <button
+                type="button"
+                class="group flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-semibold transition hover:bg-brand/[0.06] border-l-[3px] border-brand bg-brand/[0.06] pl-2"
+                data-accordion-toggle
+                aria-expanded="true"
+              >
+                <span class="flex min-w-0 items-center gap-2.5">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                    <i data-lucide="flower-2" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                  </span>
+                  <span class="truncate text-slate-900">Однолетние цветы</span>
+                </span>
+                <i
+                  data-lucide="chevron-down"
+                  class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 rotate-180"
+                  aria-hidden="true"
+                ></i>
+              </button>
+              <div class="pb-1 pt-0.5 " data-accordion-panel>
+                <ul class="ml-2 space-y-0 border-l-2 border-brand/25 py-0.5 pl-3">
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletniaia-rassada/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Все однолетние цветы</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-ageratum/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Агератум</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-ampelnye/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Ампельные</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-verbena/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Вербена</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-viola/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Виола</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-gatsaniya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition border-l-2 border-brand bg-brand/[0.07] font-semibold text-slate-900 -ml-[2px] pl-[6px]"
+                        >
+                          
+                          <span class="min-w-0 flex-1 truncate">Гацания</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-georgina/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Георгина</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-gipoestes/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Гипоэстес</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-koleus/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Колеус</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-lobeliya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Лобелия</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-petuniya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Петуния</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-alissium/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Алиссиум</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-kokhiya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Кохия</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-salviya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Сальвия</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-lvinnyy-zev-antirrinum/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Львиный зев (Антирринум)</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-tsinerariya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Цинерария</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/odnoletnie-barkhattsy/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Бархатцы</span>
+                        </a>
+                      
+                    </li>
+                  
+                </ul>
+              </div>
+            </div>
+          
+        </li>
+      
+        <li>
+          
+            <div data-accordion-item>
+              <button
+                type="button"
+                class="group flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-semibold transition hover:bg-brand/[0.06] border-l-[3px] border-transparent pl-2"
+                data-accordion-toggle
+                aria-expanded="false"
+              >
+                <span class="flex min-w-0 items-center gap-2.5">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                    <i data-lucide="tree-deciduous" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                  </span>
+                  <span class="truncate text-slate-800">Деревья</span>
+                </span>
+                <i
+                  data-lucide="chevron-down"
+                  class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 "
+                  aria-hidden="true"
+                ></i>
+              </button>
+              <div class="pb-1 pt-0.5 hidden" data-accordion-panel>
+                <ul class="ml-2 space-y-0 border-l-2 border-brand/25 py-0.5 pl-3">
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/derevya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Все деревья</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/derevya-dub/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Дуб</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/derevya-vyaz/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Вяз</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/derevya-klyen/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Клён</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/derevya-ryabina/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Рябина</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/derevya-cheryemukha/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Черёмуха</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/derevya-yablonya-dekorativnaya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Яблоня декоративная</span>
+                        </a>
+                      
+                    </li>
+                  
+                </ul>
+              </div>
+            </div>
+          
+        </li>
+      
+        <li>
+          
+            <div data-accordion-item>
+              <button
+                type="button"
+                class="group flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-semibold transition hover:bg-brand/[0.06] border-l-[3px] border-transparent pl-2"
+                data-accordion-toggle
+                aria-expanded="false"
+              >
+                <span class="flex min-w-0 items-center gap-2.5">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                    <i data-lucide="trees" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                  </span>
+                  <span class="truncate text-slate-800">Кустарники</span>
+                </span>
+                <i
+                  data-lucide="chevron-down"
+                  class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 "
+                  aria-hidden="true"
+                ></i>
+              </button>
+              <div class="pb-1 pt-0.5 hidden" data-accordion-panel>
+                <ul class="ml-2 space-y-0 border-l-2 border-brand/25 py-0.5 pl-3">
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/listvennye-kustarniki/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Все кустарники</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-beresklet/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Бересклет</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-barbaris/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Барбарис</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-biryuchina/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Бирючина</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-gortenziya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Гортензия</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-deren/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Дерен</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-zhimolost/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Жимолость</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-kalina/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Калина</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-kizilnik/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Кизильник</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-lapchatka/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Лапчатка</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-lokh/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Лох</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-mindal/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Миндаль</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-puzyreplodnik/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Пузыреплодник</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-roza-morshchinistaya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Роза морщинистая</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-ryabinnik/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Рябинник</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-siren/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Сирень</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-smorodina-alpiyskaya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Смородина альпийская</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-snezhnoyagodnik/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Снежноягодник</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-spireya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Спирея</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/kustarniki-chubushnik/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Чубушник</span>
+                        </a>
+                      
+                    </li>
+                  
+                </ul>
+              </div>
+            </div>
+          
+        </li>
+      
+        <li>
+          
+            <div data-accordion-item>
+              <button
+                type="button"
+                class="group flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-semibold transition hover:bg-brand/[0.06] border-l-[3px] border-transparent pl-2"
+                data-accordion-toggle
+                aria-expanded="false"
+              >
+                <span class="flex min-w-0 items-center gap-2.5">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                    <i data-lucide="leaf" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                  </span>
+                  <span class="truncate text-slate-800">Многолетние цветы</span>
+                </span>
+                <i
+                  data-lucide="chevron-down"
+                  class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 "
+                  aria-hidden="true"
+                ></i>
+              </button>
+              <div class="pb-1 pt-0.5 hidden" data-accordion-panel>
+                <ul class="ml-2 space-y-0 border-l-2 border-brand/25 py-0.5 pl-3">
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-tsvety/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Все многолетние цветы</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-akvilegiya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Аквилегия</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-brunnera/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Бруннера</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-geran/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Герань</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-pion/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Пион</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-anemona/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Анемона</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-gortenziya-krupnolistnaya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Гортензия крупнолистная</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-irisy/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Ирисы</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-klematis/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Клематис</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-obrieta/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Обриета</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-platikodon/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Платикодон</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-armeriya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Армерия</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-gvozdika/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Гвоздика</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-koreopsis/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Кореопсис</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-lyupin/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Люпин</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-barvinok/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Барвинок</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-gaylardiya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Гайлардия</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-shtokroza/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Штокроза</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-gelenium/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Гелениум</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-ekhinatseya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Эхинацея</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-gravilat/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Гравилат</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-delfinium/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Дельфиниум</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-kolokolchik/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Колокольчик</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-kupalnitsa/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Купальница</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-landysh-mayskiy/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Ландыш майский</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-lapchatka/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Лапчатка</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-lileynik/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Лилейник</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-astilba/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Астильба</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-astra/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Астра</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-badan/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Бадан</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-veronika-veronikastrum/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Вероника/Вероникаструм</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-geykhera/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Гейхера</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-derbennik/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Дербенник</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-zlaki/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Злаки</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-monarda/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Монарда</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-nivyannik/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Нивянник</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-prochie/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Прочие</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-pryano-dekorativnye-travy/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Пряно-декоративные травы</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-sedum/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Седум</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-tysyachelistnik/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Тысячелистник</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-floks/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Флокс</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-khosta/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Хоста</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/mnogoletnie-khrizantema/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Хризантема</span>
+                        </a>
+                      
+                    </li>
+                  
+                </ul>
+              </div>
+            </div>
+          
+        </li>
+      
+        <li>
+          
+            <div data-accordion-item>
+              <button
+                type="button"
+                class="group flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-semibold transition hover:bg-brand/[0.06] border-l-[3px] border-transparent pl-2"
+                data-accordion-toggle
+                aria-expanded="false"
+              >
+                <span class="flex min-w-0 items-center gap-2.5">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                    <i data-lucide="carrot" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                  </span>
+                  <span class="truncate text-slate-800">Овощная рассада</span>
+                </span>
+                <i
+                  data-lucide="chevron-down"
+                  class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 "
+                  aria-hidden="true"
+                ></i>
+              </button>
+              <div class="pb-1 pt-0.5 hidden" data-accordion-panel>
+                <ul class="ml-2 space-y-0 border-l-2 border-brand/25 py-0.5 pl-3">
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/ovoshchnaya-rassada/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Вся овощная рассада</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/ovoshchi-tykvy/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Тыквы</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/ovoshchi-baklazhany/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Баклажаны</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/ovoshchi-tomaty/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Томаты</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/ovoshchi-arbuz-dynya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Арбуз/Дыня</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/ovoshchi-kabachki/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Кабачки</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/ovoshchi-ogurtsy/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Огурцы</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/ovoshchi-pertsy/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Перцы</span>
+                        </a>
+                      
+                    </li>
+                  
+                </ul>
+              </div>
+            </div>
+          
+        </li>
+      
+        <li>
+          
+            <div data-accordion-item>
+              <button
+                type="button"
+                class="group flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-semibold transition hover:bg-brand/[0.06] border-l-[3px] border-transparent pl-2"
+                data-accordion-toggle
+                aria-expanded="false"
+              >
+                <span class="flex min-w-0 items-center gap-2.5">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                    <i data-lucide="apple" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                  </span>
+                  <span class="truncate text-slate-800">Плодовые</span>
+                </span>
+                <i
+                  data-lucide="chevron-down"
+                  class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 "
+                  aria-hidden="true"
+                ></i>
+              </button>
+              <div class="pb-1 pt-0.5 hidden" data-accordion-panel>
+                <ul class="ml-2 space-y-0 border-l-2 border-brand/25 py-0.5 pl-3">
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/plodovye/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Все плодовые</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/plodovye-vishnya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Вишня</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/plodovye-grusha/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Груша</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/plodovye-zhimolost-1/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Жимолость</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/plodovye-malina/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Малина</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/plodovye-oblepikha/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Облепиха</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/plodovye-sliva-svg/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Слива/СВГ</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/plodovye-smorodina/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Смородина</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/plodovye-yablonya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Яблоня</span>
+                        </a>
+                      
+                    </li>
+                  
+                </ul>
+              </div>
+            </div>
+          
+        </li>
+      
+        <li>
+          
+            <div data-accordion-item>
+              <button
+                type="button"
+                class="group flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-semibold transition hover:bg-brand/[0.06] border-l-[3px] border-transparent pl-2"
+                data-accordion-toggle
+                aria-expanded="false"
+              >
+                <span class="flex min-w-0 items-center gap-2.5">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                    <i data-lucide="rose" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                  </span>
+                  <span class="truncate text-slate-800">Розы</span>
+                </span>
+                <i
+                  data-lucide="chevron-down"
+                  class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 "
+                  aria-hidden="true"
+                ></i>
+              </button>
+              <div class="pb-1 pt-0.5 hidden" data-accordion-panel>
+                <ul class="ml-2 space-y-0 border-l-2 border-brand/25 py-0.5 pl-3">
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/rozy/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Все розы</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/rozy-angliyskie/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Английские</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/rozy-pletistye/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Плетистые</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/rozy-sprey/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Спрей</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/rozy-floribunda/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Флорибунда</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/rozy-chayno-gibridnye/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Чайно-гибридные</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/rozy-shraby/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Шрабы</span>
+                        </a>
+                      
+                    </li>
+                  
+                </ul>
+              </div>
+            </div>
+          
+        </li>
+      
+        <li>
+          
+            <div data-accordion-item>
+              <button
+                type="button"
+                class="group flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-semibold transition hover:bg-brand/[0.06] border-l-[3px] border-transparent pl-2"
+                data-accordion-toggle
+                aria-expanded="false"
+              >
+                <span class="flex min-w-0 items-center gap-2.5">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                    <i data-lucide="wheat" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                  </span>
+                  <span class="truncate text-slate-800">Семена газонных трав</span>
+                </span>
+                <i
+                  data-lucide="chevron-down"
+                  class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 "
+                  aria-hidden="true"
+                ></i>
+              </button>
+              <div class="pb-1 pt-0.5 hidden" data-accordion-panel>
+                <ul class="ml-2 space-y-0 border-l-2 border-brand/25 py-0.5 pl-3">
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/semena-gazonnyh-trav/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Все семена газонных трав</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/semena-gazonnaya-travosmes-grinkiper/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Газонная травосмесь Гринкипер</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/semena-gazonnaya-travosmes-zelenyy-kover-kanada/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Газонная травосмесь Зеленый ковер/Канада</span>
+                        </a>
+                      
+                    </li>
+                  
+                </ul>
+              </div>
+            </div>
+          
+        </li>
+      
+        <li>
+          
+            <div data-accordion-item>
+              <button
+                type="button"
+                class="group flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-semibold transition hover:bg-brand/[0.06] border-l-[3px] border-transparent pl-2"
+                data-accordion-toggle
+                aria-expanded="false"
+              >
+                <span class="flex min-w-0 items-center gap-2.5">
+                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                    <i data-lucide="tree-pine" class="h-3.5 w-3.5" aria-hidden="true"></i>
+                  </span>
+                  <span class="truncate text-slate-800">Хвойные</span>
+                </span>
+                <i
+                  data-lucide="chevron-down"
+                  class="h-4 w-4 shrink-0 text-slate-400 transition-transform duration-200 "
+                  aria-hidden="true"
+                ></i>
+              </button>
+              <div class="pb-1 pt-0.5 hidden" data-accordion-panel>
+                <ul class="ml-2 space-y-0 border-l-2 border-brand/25 py-0.5 pl-3">
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/hvoynye-derevya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Все хвойные</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/hvoynye-listvennitsa/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Лиственница</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/hvoynye-el-kolyuchaya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Ель колючая</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/hvoynye-mozhzhevelnik/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Можжевельник</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/hvoynye-pikhta/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Пихта</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/hvoynye-sosna/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Сосна</span>
+                        </a>
+                      
+                    </li>
+                  
+                    <li>
+                      
+                        <a
+                          href="/sib_khvoinik_test/catalog/hvoynye-tuya/"
+                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition text-slate-600 hover:bg-brand/[0.06] hover:text-brand"
+                        >
+                          
+                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                          
+                          <span class="min-w-0 flex-1 truncate">Туя</span>
+                        </a>
+                      
+                    </li>
+                  
+                </ul>
+              </div>
+            </div>
+          
+        </li>
+      
+    </ul>
+  </nav>
+</div>
+
+        </aside>
+        <div class="min-w-0 flex-1 space-y-8">
+      <div
+        class="relative overflow-hidden rounded-3xl border border-brand/20 bg-gradient-to-br from-brand/[0.08] via-white to-brand2/[0.12] p-8 md:p-12 shadow-[0_24px_60px_-28px_rgba(45,106,79,0.22)]"
+        data-animate="fadeInUp"
+      >
+        <div class="pointer-events-none absolute -right-14 -top-14 h-52 w-52 rounded-full bg-gradient-to-br from-brand/30 to-transparent blur-3xl"></div>
+        <div class="pointer-events-none absolute -bottom-20 -left-16 h-64 w-64 rounded-full bg-gradient-to-tr from-brand2/25 to-transparent blur-3xl"></div>
+        <div class="relative">
+          <h1 class="text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
+            <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand2">Однолетние цветы → Гацания</span>
+          </h1>
+          <p class="mt-3 max-w-xl text-slate-600 leading-relaxed md:text-lg">
+            
+              Выберите позицию в списке ниже.
+            
+          </p>
+        </div>
+      </div>
+
+      
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+        
+          <div class="flex h-full min-h-0 flex-col rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+            <a href="/sib_khvoinik_test/catalog/gatsaniya-zhestkovataya-nyu-dey-miks-gazania-rigens-new-day-mix/" class="shrink-0">
+              <div class="h-28 rounded-2xl overflow-hidden bg-gradient-to-br from-black/90 via-black/30 to-brand/20">
+                
+                  <img src="/sib_khvoinik_test/static/media/images/catalog/migrated/gatsaniya-zhestkovataya-nyu-dey-miks-gazania-rigens-new-day-mix.jpg" alt="Гацания жестковатая &quot;Нью Дей Микс&quot; Gazania rigens &quot;New Day Mix&quot;" class="h-full w-full object-cover" loading="lazy" decoding="async" />
+                
+              </div>
+            </a>
+            <div class="mt-4 min-h-[4.25rem] font-semibold leading-snug text-slate-900 line-clamp-3">Гацания жестковатая &quot;Нью Дей Микс&quot; Gazania rigens &quot;New Day Mix&quot;</div>
+            <div class="mt-2 shrink-0 text-xs text-slate-500">Однолетняя рассада
+</div>
+
+            <div class="mt-auto flex min-h-0 flex-col pt-4">
+              <div>
+              
+                <div class="text-xs text-slate-500">Цена</div>
+                <div class="mt-1 text-sm font-semibold text-brand">от 60 ₽ · 1 варианта(ов) (высота и формат)</div>
+              
+              </div>
+
+            <div class="mt-5 flex flex-col gap-2 sm:flex-row">
+              <a href="/sib_khvoinik_test/catalog/gatsaniya-zhestkovataya-nyu-dey-miks-gazania-rigens-new-day-mix/" class="flex-1 inline-flex items-center justify-center rounded-2xl border border-black/10 px-4 py-2 font-semibold hover:bg-black/5 transition">
+                Подробнее
+              </a>
+              <button
+                type="button"
+                data-selection-add
+                data-selection-id="gatsaniya-zhestkovataya-nyu-dey-miks-gazania-rigens-new-day-mix"
+                data-selection-name="Гацания жестковатая &quot;Нью Дей Микс&quot; Gazania rigens &quot;New Day Mix&quot;"
+                data-selection-category="Однолетняя рассада
+"
+                data-selection-description="Гацания жестковатая &quot;Нью Дей Микс&quot;— это компактный гибрид, который идеально подходит для солнечных клумб и контейнер. Компактные кустики высотой 20–25 см и шириной около 15–20 см.Цветки крупные (до 8 см в диаметре), ярких оттенков: желтые, оранжевые, розовые, бронзовые и полосатые («тигровые»).Цветки остаются открытыми дольше, чем у других сортов, и распускаются даже при неполном освещении."
+                data-selection-price="от 60 ₽ · 1 варианта(ов) (высота и формат)"
+                data-selection-image="/sib_khvoinik_test/static/media/images/catalog/migrated/gatsaniya-zhestkovataya-nyu-dey-miks-gazania-rigens-new-day-mix.jpg"
+                data-selection-url="/catalog/gatsaniya-zhestkovataya-nyu-dey-miks-gazania-rigens-new-day-mix/"
+                class="relative overflow-visible flex-1 inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-2 text-white font-semibold shadow-glow hover:brightness-105 transition"
+              >
+                <span data-selection-label class="relative z-[1] inline-block">Добавить в подбор</span>
+              </button>
+            </div>
+            </div>
+          </div>
+        
+      </div>
+      
+
+      <section class="mt-10 scroll-mt-28 rounded-3xl border border-brand/20 bg-white p-6 md:p-8 shadow-sm" data-selection-panel>
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 class="text-2xl font-semibold">Подбор</h2>
+            <p class="mt-2 text-sm text-slate-600">
+              Добавляйте интересующие вас позиции и отправляйте запрос на наличие.
+            </p>
+          </div>
+          <div class="rounded-2xl border border-brand/20 bg-brand/5 px-4 py-2 text-sm font-semibold text-brand">
+            В подборе: <span data-selection-count>0</span>
+          </div>
+        </div>
+        <div class="mt-5 hidden" data-selection-empty>
+          <div class="rounded-2xl border border-dashed border-black/15 bg-slate-50 px-4 py-6 text-sm text-slate-600">
+            В подбор пока ничего не добавлено.
+          </div>
+        </div>
+        <div class="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3" data-selection-list></div>
+        <div class="mt-5">
+          <button
+            type="button"
+            data-open-modal="contact_zaboty"
+            data-modal-no-overlay="1"
+            data-selection-submit
+            class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-sm font-semibold text-white shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60"
+            disabled
+          >
+            Уточнить наличие
+          </button>
+        </div>
+      </section>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    </main>
+
+    
+<footer class="mt-20 border-t border-black/5 bg-white">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+    <div class="grid grid-cols-1 gap-10 md:grid-cols-5">
+      <div class="md:col-span-2">
+        <div class="flex items-center">
+          <img
+            src="/sib_khvoinik_test/static/media/branding/logo-main.webp"
+            alt="Сибирские газоны"
+            class="h-12 w-auto sm:h-14"
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <div class="mt-4 text-sm text-slate-600 max-w-md space-y-2">
+          <p>Технологичное озеленение с гарантированным результатом: от производства до Службы заботы.</p>
+          <p>Собственное выращивание рулонного газона, питомник растений и тепличный комплекс позволяют держать качество и сроки под контролем.</p>
+          <p>Работаем с частными участками, девелоперами и подрядчиками. Помогаем не только реализовать проект, но и сохранить декоративность результата на годы.</p>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-8 md:col-span-3">
+        <div>
+          <div class="text-sm font-semibold mb-3">О компании</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="/sib_khvoinik_test/pitomnik/">Питомник</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/gazon/">Рулонный газон</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/b2b/">B2B</a>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Каталог</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="/sib_khvoinik_test/catalog/">Каталог растений</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="/sib_khvoinik_test/sadovye-centry/">Садовые центры</a>
+          <!-- TODO: вернуть когда будет контент
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/stati/">Статьи</a>
+          -->
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Покупателям</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="/sib_khvoinik_test/ozelenenie-b2c/">Озеленение под ключ</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/sluzhba-zaboty/">Служба заботы</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/kontakty/">Контакты</a>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Контакты</div>
+          <div class="text-sm text-slate-700">Тел: +7 (383) 201-06-00</div>
+          <div class="text-sm text-slate-700 mt-2">Email: price@gazony.ru</div>
+          <div class="text-sm text-slate-700 mt-2">Адрес: г. Новосибирск, ул. Железнодорожная, 12/1, оф.501</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-10 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+      <div class="flex items-center gap-3">
+        <a href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM" target="_blank" rel="noopener noreferrer" aria-label="MAX" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[11px] font-semibold text-indigo-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow">MAX</a>
+        <a href="https://t.me/sibirskie_gazony" target="_blank" rel="noopener noreferrer" aria-label="Telegram" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow"><i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i></a>
+        <a href="https://vk.com/sibirskiegazony" target="_blank" rel="noopener noreferrer" aria-label="VK" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow">VK</a>
+      </div>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
+        <span>© <span id="year"></span> «Сибирские газоны». Все права защищены.</span>
+        <a href="/sib_khvoinik_test/privacy/" class="hover:text-brand transition">Политика конфиденциальности</a>
+        <a href="/sib_khvoinik_test/consent/" class="hover:text-brand transition">Согласие на обработку ПД</a>
+        <button type="button" id="cookieSettingsBtn" class="hover:text-brand transition">Настройки cookie</button>
+      </div>
+    </div>
+  </div>
+</footer>
+
+
+    <div id="modalOverlay" class="fixed inset-0 bg-black/40 z-[60] hidden"></div>
+
+<!-- Generic modal wrapper -->
+<div id="modalHost" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4">
+  <div class="w-full max-w-lg">
+    <div class="relative overflow-hidden rounded-3xl border border-black/10 bg-white shadow-soft">
+      <button
+        type="button"
+        id="modalCloseTop"
+        class="absolute right-3 top-3 inline-flex h-9 w-9 items-center justify-center rounded-xl hover:bg-black/5 transition"
+        aria-label="Закрыть"
+      >
+        <i data-lucide="x" class="h-5 w-5"></i>
+      </button>
+      <div class="p-6">
+        <h3 id="modalTitle" class="text-xl font-semibold leading-tight"></h3>
+        <div id="modalBody" class="mt-4"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- UI-only content templates -->
+<template id="modal-template-mini_brief">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/mini-brief" data-modal-success="true">
+    <input type="hidden" name="formTag" value="B2C/mini-brief" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Тип объекта
+        <input name="objectType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Частный дом / коттедж / ЖК" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input name="area" type="number" required min="1" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 350" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Регион
+        <input name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Отправить
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-contact_zaboty">
+  <form class="space-y-5" data-ui-form data-form-tag="B2C/sluzhba-zaboty" data-consent-gated="1">
+    <input type="hidden" name="formTag" value="B2C/sluzhba-zaboty" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" autocomplete="name" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." autocomplete="tel" />
+      </label>
+    </div>
+    <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
+      <input type="checkbox" name="consent" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+      <span>
+        Даю согласие на обработку персональных данных в соответствии с
+        <a href="/sib_khvoinik_test/privacy/" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+      </span>
+    </label>
+    <button type="submit" data-consent-submit disabled class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60">
+      Отправить
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-zaboty_expert_visit">
+  <form class="space-y-5" data-ui-form data-form-tag="B2C/zaboty-expert-vyezd" data-consent-gated="1">
+    <input type="hidden" name="formTag" value="B2C/zaboty-expert-vyezd" />
+    <div class="flex items-start gap-3 rounded-2xl border border-amber-200/90 bg-gradient-to-br from-amber-50 via-white to-orange-50/50 px-4 py-3.5 text-sm text-amber-950 shadow-sm" role="note">
+      <i data-lucide="banknote" class="h-5 w-5 shrink-0 text-amber-800" aria-hidden="true"></i>
+      <p class="min-w-0 leading-snug">
+        <span class="font-semibold text-amber-900">Платная услуга.</span>
+        Стоимость выезда и диагностики согласуем с вами до визита специалиста.
+      </p>
+    </div>
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" autocomplete="name" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." autocomplete="tel" />
+      </label>
+    </div>
+    <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
+      <input type="checkbox" name="consent" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+      <span>
+        Даю согласие на обработку персональных данных в соответствии с
+        <a href="/sib_khvoinik_test/privacy/" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+      </span>
+    </label>
+    <button type="submit" data-consent-submit disabled class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-5 py-3.5 text-center text-sm font-semibold leading-snug text-white shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60 sm:text-base">
+      Заказать выезд специалиста на участок
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-contact_consult">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/consultation">
+    <input type="hidden" name="formTag" value="B2C/consultation" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Отправить
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-catalog_actual_stock">
+  <form class="space-y-4" data-ui-form data-form-tag="Catalog/actual-stock">
+    <input type="hidden" name="formTag" value="Catalog/actual-stock" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Выслать актуальные остатки
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-catalog_electronic_catalog">
+  <form class="space-y-4" data-ui-form data-form-tag="Catalog/electronic-catalog">
+    <input type="hidden" name="formTag" value="Catalog/electronic-catalog" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Получить каталог
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-sadovye_novinki_notify">
+  <form class="space-y-5" data-ui-form data-form-tag="B2C/sadovye-novinki-notify">
+    <input type="hidden" name="formTag" value="B2C/sadovye-novinki-notify" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <div class="space-y-3 rounded-2xl border border-brand/20 bg-gradient-to-r from-brand/10 via-brand2/5 to-transparent p-4">
+      <label class="block text-sm font-medium text-slate-700">
+        Удобный мессенджер
+        <select name="preferred_messenger" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="" disabled selected>Выберите мессенджер</option>
+          <option value="max">MAX</option>
+          <option value="telegram">Telegram</option>
+          <option value="email">Эл. Почта</option>
+        </select>
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Отправить
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-b2b_cpo">
+  <form class="space-y-4" data-ui-form data-form-tag="B2B/contract-request">
+    <input type="hidden" name="formTag" value="B2B/contract-request" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Компания
+        <input name="company" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Регион
+        <input name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Город/регион" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Тип объекта
+        <input name="objectType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="ЖК / УК / подряд" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input type="number" min="1" name="area" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Формат сотрудничества
+        <select name="collaborationFormat" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="" disabled selected>Выберите формат</option>
+          <option value="roll">Поставка рулонного газона</option>
+          <option value="combined">Комбинированное решение</option>
+          <option value="plants">Контрактные поставки растений</option>
+          <option value="turnkey">Реализация под ключ</option>
+          <option value="partial">Частичная реализация</option>
+          <option value="partner">Партнёрство с ландшафтными компаниями</option>
+          <option value="uk">Сопровождение для УК</option>
+        </select>
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Контактное лицо
+        <input name="contactPerson" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Имя и должность" />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Телефон / e-mail
+        <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Телефон или email" />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Пожелания
+        <input name="notes" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="График, ограничения, комментарии" />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Выслать коммерческое предложение
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-b2b_price_stock">
+  <form class="space-y-4" data-ui-form data-form-tag="B2B/price-stock">
+    <input type="hidden" name="formTag" value="B2B/price-stock" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Компания
+        <input name="company" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Регион
+        <input name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Город/регион" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Тип объекта
+        <input name="objectType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="ЖК / УК / подряд" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input name="area" type="number" min="1" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Формат сотрудничества
+        <select name="collaborationFormat" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="" disabled selected>Выберите формат</option>
+          <option value="roll">Поставка рулонного газона</option>
+          <option value="combined">Комбинированное решение</option>
+          <option value="plants">Контрактные поставки растений</option>
+          <option value="turnkey">Реализация под ключ</option>
+          <option value="partial">Частичная реализация</option>
+          <option value="partner">Партнёрство с ландшафтными компаниями</option>
+          <option value="uk">Сопровождение для УК</option>
+        </select>
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Контактное лицо
+        <input name="contactPerson" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Имя и должность" />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Телефон / e-mail
+        <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ... или name@example.com" />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить полную презентацию
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-b2b_care_reglement">
+  <form class="space-y-4" data-ui-form data-form-tag="B2B/reglement-uhoda">
+    <input type="hidden" name="formTag" value="B2B/reglement-uhoda" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Компания (необязательно)
+        <input name="company" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Контактное лицо
+        <input name="contactPerson" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Имя и должность" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон / e-mail
+        <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ... или name@example.com" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Описание объекта / сезон
+        <textarea name="notes" rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр.: объект введут в апреле, требуется регламент ухода на сезон"></textarea>
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Запросить регламент ухода
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_price_list">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-price-list">
+    <input type="hidden" name="formTag" value="Gas/gazon-price-list" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Email
+        <input name="email" type="email" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="name@example.com" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Тип клиента
+        <select name="clientType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="частный">Частный</option>
+          <option value="B2B">B2B</option>
+        </select>
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить прайс-лист
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_cpo">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-cpo" data-ui-action="none">
+    <input type="hidden" name="formTag" value="Gas/gazon-cpo" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Email
+        <input name="email" type="email" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="name@example.com" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Тип клиента
+        <select name="clientType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="частный">Частный</option>
+          <option value="B2B">B2B</option>
+        </select>
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить коммерческое предложение
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_checklist">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-checklist" data-ui-action="download_gazon_checklist">
+    <input type="hidden" name="formTag" value="Gas/gazon-checklist" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Скачать чек-лист (PDF)
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_open_day">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-open-day">
+    <input type="hidden" name="formTag" value="Gas/gazon-open-day" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Город
+        <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Удобная дата (опционально)
+        <input name="date" type="date" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Записаться на день открытых дверей
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_logistics">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-logistics">
+    <input type="hidden" name="formTag" value="Gas/gazon-logistics" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Город
+        <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Красноярск" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Кол-во, м²
+        <input name="area" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 600" />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Сроки поставки (опционально)
+        <input name="deliveryWhen" type="text" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. в августе / конкретная дата" />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Уточнить логистику
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_presentation">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-presentation">
+    <input type="hidden" name="formTag" value="Gas/gazon-presentation" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Выслать полную презентацию
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_calc">
+  <form id="gazonCalculatorModal" class="space-y-4" data-ui-form data-form-tag="Gas/gazon-calc" data-ui-action="none" data-consent-gated="1">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input id="modalCalcArea" name="area" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 350" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Регион / город
+        <select id="modalCalcRegion" name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option>Новосибирск</option>
+          <option>Красноярск</option>
+          <option>Томск</option>
+          <option>Иркутск</option>
+          <option>Кемерово</option>
+          <option>Норильск</option>
+          <option>Другое</option>
+        </select>
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Формат поставки
+      <select id="modalCalcFormat" name="format" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+        <option>Самовывоз</option>
+        <option>Доставка</option>
+        <option>Сборная поставка</option>
+      </select>
+    </label>
+
+    <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
+      <input type="checkbox" name="consent" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+      <span>
+        Даю согласие на обработку персональных данных в соответствии с
+        <a href="/sib_khvoinik_test/privacy/" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+      </span>
+    </label>
+
+    <button
+      type="submit"
+      data-consent-submit
+      disabled
+      class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60"
+    >
+      Рассчитать
+    </button>
+  </form>
+</template>
+
+<!-- ozelenenie-b2c templates -->
+<template id="modal-template-ozelenenie-ready_project">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-ready-project">
+    <input type="hidden" name="formTag" value="B2C/ozelenenie-ready-project" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input name="area" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 420" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Город
+        <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Стадия объекта
+        <select name="stage" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="стройка-завершается">Стройка завершается</option>
+          <option value="участок-готов">Участок уже готов</option>
+        </select>
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Рассчитать готовый проект
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-ozelenenie-mini_project">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/mini-project">
+    <input type="hidden" name="formTag" value="B2C/mini-project" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь участка
+        <input type="number" name="area" required min="1" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 420" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Город
+        <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+      </label>
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Стадия объекта
+        <select name="stage" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="стройка-завершается">Стройка завершается</option>
+          <option value="участок-готов">Участок уже готов</option>
+        </select>
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Формат сотрудничества
+        <select name="format" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="под-ключ">Под ключ</option>
+          <option value="частично">Частично</option>
+          <option value="делаем-сами">Делаем сами</option>
+        </select>
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Комментарий / пожелания
+      <textarea name="comment" required rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Коротко опишите ожидания, сроки, ограничения"></textarea>
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить концепцию
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-ozelenenie-audit_plan">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-audit-plan">
+    <input type="hidden" name="formTag" value="B2C/ozelenenie-audit-plan" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input name="area" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 420" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Город
+        <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Комментарий
+      <textarea name="comment" rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Коротко опишите участок и ожидания"></textarea>
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Заказать аудит участка
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-ozelenenie-assess_upload">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-assess-upload">
+    <input type="hidden" name="formTag" value="B2C/ozelenenie-assess-upload" />
+    <label class="text-sm font-medium text-slate-700">
+      Фото/файл участка
+      <input type="file" name="file" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" />
+    </label>
+    <label class="text-sm font-medium text-slate-700">
+      Ссылка (опционально)
+      <input name="link" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="https://..." />
+    </label>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Комментарий
+      <textarea name="comment" rows="4" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Какие работы/результат вам нужны?"></textarea>
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Отправить участок на оценку
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-ozelenenie-send_project">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-send-project">
+    <input type="hidden" name="formTag" value="B2C/ozelenenie-send-project" />
+    <label class="text-sm font-medium text-slate-700">
+      Файл/ссылка на проект
+      <input type="file" name="file" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" />
+    </label>
+    <label class="text-sm font-medium text-slate-700">
+      Ссылка (опционально)
+      <input name="link" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="https://..." />
+    </label>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Комментарий
+      <textarea name="comment" rows="4" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Коротко опишите задачу и сроки"></textarea>
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Отправить проект на проверку
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-ozelenenie-materials_scheme">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-materials-scheme">
+    <input type="hidden" name="formTag" value="B2C/ozelenenie-materials-scheme" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Площадь, м²
+        <input name="area" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 420" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Город
+        <input name="city" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. Новосибирск" />
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Пожелания по участку / что нужно
+      <textarea name="comment" required rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Например: газон, посадки, дорожки, зоны отдыха"></textarea>
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Подобрать материалы и схему
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-pitomnik_presentation">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/pitomnik-presentation">
+    <input type="hidden" name="formTag" value="B2C/pitomnik-presentation" />
+    <p class="text-sm text-slate-600">
+      Оставьте контактные данные — расскажем, как выращиваются растения в питомнике, и вышлем полную презентацию.
+    </p>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        E-mail
+        <input name="email" type="email" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="name@example.com" />
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Комментарий (необязательно)
+      <textarea name="comment" rows="3" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Интересующая категория или вопрос"></textarea>
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Выслать полную презентацию питомника
+    </button>
+  </form>
+</template>
+
+<!-- Садовые центры: заявка на цифровую карту -->
+<template id="modal-template-sadovye_digital_card">
+  <form class="space-y-4" data-ui-form data-form-tag="SadovyeCentr/digital-card">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить цифровую карту
+    </button>
+  </form>
+</template>
+
+<!-- Садовые центры: новинки (тексты можно править под сезон) -->
+<template id="modal-template-sadovye_novinka_1">
+  <div class="space-y-3 text-sm leading-relaxed text-slate-600">
+    <p>
+      Лантана камара <strong>Gem Compact Rose Quartz</strong> (кашпо 4 л) - современный компактный сорт для
+      балконов, террас и входных групп. Формирует плотный аккуратный куст с мягкими розово-кварцевыми
+      соцветиями.
+    </p>
+    <p>
+      Сорт ценят за длительное цветение с весны до заморозков, устойчивость к жаре и засухе, а также
+      неприхотливость в уходе: он подходит даже тем, кто только начинает оформлять растения в контейнерах.
+    </p>
+    <p>
+      Лантана поддерживает тренд на натуральное городское озеленение и привлекает опылителей. Идеальный выбор,
+      если нужен максимум декоративности при минимуме усилий.
+    </p>
+  </div>
+</template>
+
+<template id="modal-template-sadovye_novinka_2">
+  <div class="space-y-3 text-sm leading-relaxed text-slate-600">
+    <p>
+      <strong>Штокроза "Spring Celebrities Crimson"</strong> (Alcea rosea, C2/3) - яркая новинка 2026 года для
+      компактных садов, террас и балконов. Сорт формирует аккуратный куст до 60-70 см вместо классической
+      высокорослой формы.
+    </p>
+    <p>
+      Главные преимущества: крупные махровые цветки насыщенного гранатово-красного оттенка, цветение уже в первый
+      год и длительный декоративный эффект с начала лета до осени.
+    </p>
+    <p>
+      Сорт неприхотлив и подходит для контейнеров, клумб и городского озеленения - отличный выбор, если нужен
+      выразительный "cottage garden" с минимальным уходом.
+    </p>
+  </div>
+</template>
+
+<template id="modal-template-sadovye_novinka_3">
+  <div class="space-y-3 text-sm leading-relaxed text-slate-600">
+    <p>
+      <strong>Платикодон крупноцветковый "Mariesii"</strong> (Platycodon grandiflorus, C2/3) - новинка 2026 и
+      один из самых заметных многолетников сезона. Его бутоны похожи на аккуратные "воздушные шарики", которые
+      раскрываются в крупные звёздчатые цветы.
+    </p>
+    <p>
+      Сорт ценят за неприхотливость, длительное цветение до двух месяцев, зимостойкость без укрытия и способность
+      годами расти на одном месте. Компактная форма подходит для клумб, бордюров, рокариев, террас и кашпо.
+    </p>
+    <p>
+      Платикодон Mariesii - отличный выбор для современного "сада без хлопот": выразительный декоративный эффект
+      на всех стадиях роста при минимальном уходе.
+    </p>
+  </div>
+</template>
+
+<template id="modal-template-sadovye_novinka_4">
+  <div class="space-y-4 text-sm leading-relaxed text-slate-600">
+    <p>
+      <strong>Гортензия метельчатая «Metallica»</strong> (Hydrangea paniculata, h 40–60 см, C2/3) — компактный густой
+      куст с прочными побегами, который держит форму и не требует подвязки. Соцветия очень крупные и плотные, с плавной
+      сменой оттенков в течение сезона и характерным металлическим блеском. Цветёт обильно и долго, оставаясь
+      декоративной всё лето и осень.
+    </p>
+    <div>
+      <p class="font-semibold text-slate-800">Характеристики</p>
+      <ul class="mt-2 list-disc space-y-1 pl-5">
+        <li>Высота куста: 1,2–1,5 м, ширина до 1 м</li>
+        <li>Соцветия: 40–60 см, плотные</li>
+        <li>Цветение: июль – октябрь</li>
+        <li>Окраска: лайм → розовый → бордовый с металлическим эффектом</li>
+        <li>Побеги прочные, не «разваливаются» под тяжестью метёлок</li>
+        <li>Место: солнце или полутень</li>
+        <li>Морозостойкость: до −30…−34 °C</li>
+      </ul>
+    </div>
+    <div>
+      <p class="font-semibold text-slate-800">Преимущества</p>
+      <ul class="mt-2 list-disc space-y-1 pl-5">
+        <li>Уникальный «металлик»-эффект на лепестках</li>
+        <li>Очень крупные декоративные соцветия</li>
+        <li>Компактный, аккуратный куст без сложной формировки</li>
+        <li>Длительное и обильное цветение, неприхотливость</li>
+      </ul>
+    </div>
+    <p>
+      «Metallica» — гортензия нового поколения: эффектная, визуально «дорогая» и хорошо смотрится в современных садах и
+      на фото. Идеальна для акцентных групп и солитеров.
+    </p>
+  </div>
+</template>
+
+<!-- Success state -->
+<template id="modal-template-success">
+  <div class="space-y-3">
+    <div class="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-brand/5 px-4 py-3 text-sm">
+      <i data-lucide="check-circle-2" class="h-5 w-5 text-brand"></i>
+      <span class="font-semibold">Заявка принята</span>
+    </div>
+    <p class="text-sm text-slate-600">
+      Мы свяжемся с вами в ближайшее время.
+    </p>
+    <button type="button" data-close-modal class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Ок
+    </button>
+  </div>
+</template>
+
+
+    <div id="cookieBanner" class="fixed bottom-0 inset-x-0 z-50 hidden">
+  <div class="mx-auto max-w-5xl px-4 pb-4">
+    <div class="rounded-2xl border border-white/15 bg-[#2D6A4F] p-4 shadow-lg sm:flex sm:items-center sm:gap-4">
+      <p class="flex-1 text-sm text-white/90">
+        Мы используем файлы cookie для работы сайта и аналитики.
+        <a href="/sib_khvoinik_test/privacy/" class="underline hover:text-white">Подробнее</a>
+      </p>
+      <div class="mt-3 flex gap-2 sm:mt-0 sm:shrink-0">
+        <button type="button" id="cookieAcceptAll" class="rounded-xl bg-[#E9C46A] px-4 py-2 text-sm font-semibold text-slate-900 hover:brightness-105 transition">
+          Принять все
+        </button>
+        <button type="button" id="cookieNecessaryOnly" class="rounded-xl border border-white/30 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10 transition">
+          Только необходимые
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+    <script src="/sib_khvoinik_test/static/js/app.js?v=37" defer></script>
+    <script>
+      // Initialize lucide icons after the DOM is ready.
+      document.addEventListener('DOMContentLoaded', () => {
+        if (window.lucide) window.lucide.createIcons();
+      });
+    </script>
+  </body>
+</html>
+

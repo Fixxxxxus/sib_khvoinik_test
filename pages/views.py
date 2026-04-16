@@ -3,7 +3,9 @@ from django.http import Http404
 from django.shortcuts import render
 
 from .catalog_nav import enrich_catalog_context
-from .catalog_products import plant_belongs_to_category
+from .catalog_merge import find_merged_plant, get_merged_catalog_plants, resolve_catalog_plant_slug
+from .catalog_products import plant_belongs_to_category, similar_plants_for_detail
+from .catalog_subcategories import all_catalog_category_slugs, category_heading_for_slug
 from .data import (
     HOME_PAGE,
     GAZON_PAGE,
@@ -51,22 +53,25 @@ def catalog(request):
 def catalog_item(request, slug):
     """Один URL /catalog/<slug>/: сначала категория, иначе карточка растения."""
     ctx_base = dict(CATALOG_PAGE)
-    category_slugs = {c["slug"] for c in ctx_base.get("categories", [])}
+    merged_plants, _ = get_merged_catalog_plants()
+    ctx_base["plants"] = merged_plants
+    categories = ctx_base.get("categories") or []
+    category_slugs = all_catalog_category_slugs(categories)
     if slug in category_slugs:
         ctx = dict(ctx_base)
         ctx["active_category_slug"] = slug
-        cat = next((c for c in ctx_base.get("categories", []) if c["slug"] == slug), None)
-        ctx["category_label"] = cat["label"] if cat else slug
+        cat = next((c for c in categories if c.get("slug") == slug), None)
+        ctx["category_label"] = category_heading_for_slug(slug, categories)
         ctx["category_hub_links"] = (cat or {}).get("category_hub_links")
-        ctx["plants"] = [
-            p for p in ctx.get("plants", []) if plant_belongs_to_category(p, slug)
-        ]
+        ctx["plants"] = [p for p in merged_plants if plant_belongs_to_category(p, slug)]
         return render(request, "pages/catalog-category.html", enrich_catalog_context(ctx))
-    plant = next((p for p in ctx_base.get("plants", []) if p.get("slug") == slug), None)
+    canon = resolve_catalog_plant_slug(slug)
+    plant = find_merged_plant(merged_plants, slug)
     if plant:
         ctx = dict(ctx_base)
-        ctx["active_plant_slug"] = slug
+        ctx["active_plant_slug"] = canon
         ctx["active_plant"] = plant
+        ctx["similar_plants"] = similar_plants_for_detail(plant, merged_plants)
         return render(request, "pages/plant-card.html", enrich_catalog_context(ctx))
     raise Http404("Категория или растение не найдены")
 

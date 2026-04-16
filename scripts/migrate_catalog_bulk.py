@@ -78,6 +78,53 @@ def extract_variant_from_name(name: str) -> tuple[str, str]:
     return height, container
 
 
+def _format_container_c(a: str, b: str) -> str:
+    if b:
+        if a == "7" and b == "5":
+            return "C7,5"
+        return f"C{a}/{b}"
+    return f"C{a}"
+
+
+def extract_variant_from_legacy_path(legacy_path: str) -> tuple[str, str]:
+    """
+    Высота и контейнер из URL Bitrix: ..._h_40_60_s2_3/, ..._c3_h_50_60/, ..._h_40_60_s5/
+    Префикс s2 / s5 в хвосте URL — объём контейнера, в UI показываем как C2/3, C5.
+    """
+    lp = (legacy_path or "").strip().rstrip("/")
+    if not lp:
+        return "", ""
+
+    height = ""
+    h_m = re.search(r"_h_(\d+)_(\d+)", lp, re.I)
+    if h_m:
+        height = f"h {h_m.group(1)}-{h_m.group(2)}"
+
+    container = ""
+    # ..._c3_h_50_60 или ..._c7_5_h_100_120
+    c_before = re.search(r"_c(\d+)(?:_(\d+))?_h_\d", lp, re.I)
+    if c_before:
+        container = _format_container_c(c_before.group(1), c_before.group(2) or "")
+    if not container:
+        c_tail = re.search(r"_c(\d+)(?:_(\d+))?(?:/|$)", lp, re.I)
+        if c_tail:
+            container = _format_container_c(c_tail.group(1), c_tail.group(2) or "")
+    if not container:
+        s_m = re.search(r"_s(\d+)(?:_(\d+))?(?:/|$)", lp, re.I)
+        if s_m:
+            container = _format_container_c(s_m.group(1), s_m.group(2) or "")
+    if not container:
+        # ..._h_40_60_c2_3 или ..._h_40_60_c2_3_1/
+        hs_m = re.search(r"_h_(\d+)_(\d+)_(c|s)(\d+)(?:_(\d+))?(?:_\d+)?(?:/|$)", lp, re.I)
+        if hs_m:
+            if not height:
+                height = f"h {hs_m.group(1)}-{hs_m.group(2)}"
+            kind, a, b = hs_m.group(3).lower(), hs_m.group(4), hs_m.group(5) or ""
+            container = _format_container_c(a, b)
+
+    return height, container
+
+
 def base_name_for_grouping(name: str) -> str:
     n = normalize_spaces(name)
     # remove trailing variant chunks (height, brackets, container codes)
@@ -171,10 +218,13 @@ def main() -> int:
             continue
 
         group_key = slugify(base_name)
-        height, container = extract_variant_from_name(raw.get("name", ""))
+        hn, cn = extract_variant_from_name(raw.get("name", ""))
+        hl, cl = extract_variant_from_legacy_path(raw.get("legacy_path", ""))
+        height = hl or hn or "уточняйте"
+        container = cl or cn or "формат уточняйте"
         variant = {
-            "height": height or "уточняйте",
-            "container": container or "формат уточняйте",
+            "height": height,
+            "container": container,
             "price": raw.get("price_display") or "уточняйте",
             "in_stock": True,
         }
@@ -208,6 +258,14 @@ def main() -> int:
             if raw.get("legacy_path"):
                 item["legacy_paths"].append(raw["legacy_path"])
             if variant not in item["variants"]:
+                base_c = variant["container"]
+                bump = 2
+                while any(
+                    v.get("height") == variant["height"] and v.get("container") == variant["container"]
+                    for v in item["variants"]
+                ):
+                    variant["container"] = f"{base_c} ({bump})"
+                    bump += 1
                 item["variants"].append(variant)
             if not item.get("image") and args.download_images and raw.get("image_url"):
                 try:

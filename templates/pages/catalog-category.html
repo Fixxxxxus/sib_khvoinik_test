@@ -48,7 +48,11 @@
 
             <div class="mt-auto flex min-h-0 flex-col pt-4">
               <div>
-              {% if p.catalog_teaser %}
+              {% if p.catalog_price_line and p.catalog_variant_line %}
+                <div class="text-xs text-slate-500">Цена</div>
+                <div class="mt-1 text-sm font-semibold text-brand leading-snug">{{ p.catalog_price_line }}</div>
+                <div class="text-sm font-semibold text-brand leading-snug">{{ p.catalog_variant_line }}</div>
+              {% elif p.catalog_teaser %}
                 <div class="text-xs text-slate-500">Цена</div>
                 <div class="mt-1 text-sm font-semibold text-brand">{{ p.catalog_teaser }}</div>
               {% elif p.formats %}
@@ -111,7 +115,7 @@
       </div>
       {% endif %}
 
-      <section class="mt-10 rounded-3xl border border-brand/20 bg-white p-6 md:p-8 shadow-sm" data-selection-panel>
+      <section class="mt-10 scroll-mt-28 rounded-3xl border border-brand/20 bg-white p-6 md:p-8 shadow-sm" data-selection-panel>
         <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <h2 class="text-2xl font-semibold">Подбор</h2>

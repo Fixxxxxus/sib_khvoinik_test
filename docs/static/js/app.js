@@ -1023,11 +1023,23 @@ function initPlantVariantPicker() {
     });
   }
 
-  function findByHeight(h) {
-    return variants.find((x) => x.height === h);
+  function variantsForHeight(h) {
+    return variants.filter((x) => x.height === h);
   }
-  function findByContainer(c) {
-    return variants.find((x) => x.container === c);
+
+  function findVariant(h, c) {
+    return variants.find((x) => x.height === h && x.container === c);
+  }
+
+  function refreshContainerOptions() {
+    const h = selH.value;
+    const list = variantsForHeight(h);
+    const conts = uniq(list.map((x) => x.container));
+    const fallback = uniq(variants.map((x) => x.container));
+    fillSel(selC, conts.length ? conts : fallback);
+    if (conts.length && !conts.includes(selC.value)) {
+      selC.value = conts[0];
+    }
   }
 
   function applyVariant(v) {
@@ -1057,24 +1069,21 @@ function initPlantVariantPicker() {
   }
 
   fillSel(selH, uniq(variants.map((x) => x.height)));
-  fillSel(selC, uniq(variants.map((x) => x.container)));
+  if (!selH.options.length) return;
+  if (!selH.value) selH.value = selH.options[0].value;
+  refreshContainerOptions();
 
   selH.addEventListener('change', () => {
-    const v = findByHeight(selH.value);
-    if (v) {
-      selC.value = v.container;
-      applyVariant(v);
-    }
+    refreshContainerOptions();
+    const v = findVariant(selH.value, selC.value);
+    if (v) applyVariant(v);
   });
   selC.addEventListener('change', () => {
-    const v = findByContainer(selC.value);
-    if (v) {
-      selH.value = v.height;
-      applyVariant(v);
-    }
+    const v = findVariant(selH.value, selC.value);
+    if (v) applyVariant(v);
   });
 
-  applyVariant(findByHeight(selH.value) || variants[0]);
+  applyVariant(findVariant(selH.value, selC.value) || variants[0]);
 }
 
 const SG_SELECTION_ADD_ANIM_MS = 800;
@@ -1213,9 +1222,19 @@ function initCatalogSelection() {
     noticeEl = null;
   };
 
-  const showAddedNotice = () => {
+  const panelForAddButton = (btn) => {
+    if (!panels.length) return null;
+    if (panels.length === 1) return panels[0];
+    const root = btn.closest('main') || document.body;
+    const local = panels.filter((p) => root.contains(p));
+    if (local.length === 1) return local[0];
+    const after = local.filter((p) => btn.compareDocumentPosition(p) & Node.DOCUMENT_POSITION_FOLLOWING);
+    return after[0] || local[local.length - 1] || panels[0];
+  };
+
+  const showAddedNotice = (fromButton) => {
     closeNotice();
-    const panel = panels[0];
+    const panel = fromButton ? panelForAddButton(fromButton) : panels[0];
     noticeEl = document.createElement('div');
     noticeEl.className = 'fixed bottom-4 left-4 right-4 z-[80] md:left-auto md:right-6 md:w-[28rem]';
     noticeEl.innerHTML = `
@@ -1232,7 +1251,7 @@ function initCatalogSelection() {
     const goBtn = noticeEl.querySelector('[data-selection-notice-go]');
     const closeBtn = noticeEl.querySelector('[data-selection-notice-close]');
     goBtn?.addEventListener('click', () => {
-      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      if (panel) panel.scrollIntoView({ behavior: 'smooth', block: 'start', inline: 'nearest' });
       closeNotice();
     });
     closeBtn?.addEventListener('click', closeNotice);
@@ -1289,21 +1308,31 @@ function initCatalogSelection() {
       listEl.innerHTML = '';
       selection.forEach((item) => {
         const card = document.createElement('article');
-        card.className = 'rounded-2xl border border-black/10 bg-white p-4';
+        card.className = 'rounded-2xl border border-black/10 bg-white p-4 h-full min-h-[20rem] flex flex-col';
         const imageHtml = item.image
           ? `<img src="${escapeHtml(item.image)}" alt="${escapeHtml(item.name)}" class="h-full w-full object-cover" loading="lazy" decoding="async" />`
           : '<div class="h-full w-full bg-slate-100"></div>';
-        const metaParts = [item.category, item.note].filter(Boolean).join(' • ');
-        const price = item.price ? `<div class="mt-2 text-sm font-semibold text-brand">${escapeHtml(item.price)}</div>` : '';
-        const link = item.url
-          ? `<a href="${escapeHtml(item.url)}" class="mt-3 inline-flex items-center text-sm font-semibold text-brand hover:text-brand2">Подробнее</a>`
+        const categoryHtml = item.category
+          ? `<div class="mt-2 text-xs text-slate-500">${escapeHtml(item.category)}</div>`
+          : '<div class="mt-2 text-xs text-transparent select-none">.</div>';
+        const noteHtml = item.note
+          ? `<div class="mt-1 text-xs text-slate-500">${escapeHtml(item.note)}</div>`
           : '';
+        const priceHtml = item.price
+          ? `<div class="mt-2 text-sm font-semibold text-brand">${escapeHtml(item.price)}</div>`
+          : '<div class="mt-2 text-sm text-transparent select-none">.</div>';
+        const link = item.url
+          ? `<a href="${escapeHtml(item.url)}" class="inline-flex items-center text-sm font-semibold text-brand hover:text-brand2">Подробнее</a>`
+          : '<span></span>';
         card.innerHTML = `
           <div class="h-28 overflow-hidden rounded-xl bg-slate-100">${imageHtml}</div>
-          <div class="mt-3 text-lg font-semibold">${escapeHtml(item.name)}</div>
-          ${metaParts ? `<div class="mt-1 text-xs text-slate-500">${escapeHtml(metaParts)}</div>` : ''}
-          ${price}
-          <div class="mt-3 flex items-center justify-between gap-3">
+          <div class="mt-3 text-lg font-semibold min-h-[5.5rem]">${escapeHtml(item.name)}</div>
+          <div class="min-h-[4.5rem]">
+            ${categoryHtml}
+            ${noteHtml}
+            ${priceHtml}
+          </div>
+          <div class="mt-auto pt-3 flex items-end justify-between gap-3">
             ${link}
             <button type="button" data-selection-remove="${escapeHtml(item.id)}" class="rounded-xl border border-black/10 px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-black/5 transition">Удалить</button>
           </div>
@@ -1337,7 +1366,7 @@ function initCatalogSelection() {
         btn.classList.add('whitespace-nowrap', 'text-sm', 'opacity-80');
         renderPanels();
         playSelectionAddedBurst(btn);
-        showAddedNotice();
+        showAddedNotice(btn);
         window.setTimeout(() => {
           delete btn.dataset.selectionAnimating;
           syncAddButtons();

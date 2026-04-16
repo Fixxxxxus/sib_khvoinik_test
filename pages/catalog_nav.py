@@ -9,10 +9,6 @@ from __future__ import annotations
 from typing import Any
 
 
-def _soon(label: str) -> dict[str, Any]:
-    return {"label": label, "soon": True}
-
-
 def _link(label: str, catalog_slug: str) -> dict[str, Any]:
     return {"label": label, "catalog_slug": catalog_slug}
 
@@ -20,162 +16,158 @@ def _link(label: str, catalog_slug: str) -> dict[str, Any]:
 # --- Кустарники ---
 _KUSTARNIKI_CHILDREN: list[dict[str, Any]] = [
     _link("Все кустарники", "listvennye-kustarniki"),
-    _soon("Бересклет"),
-    _soon("Барбарис"),
-    _soon("Бирючина"),
-    _soon("Гортензия"),
-    _soon("Дерен"),
-    _soon("Жимолость"),
-    _soon("Калина"),
-    _soon("Кизильник"),
-    _soon("Лапчатка"),
-    _soon("Лох"),
-    _soon("Миндаль"),
-    {
-        "label": "Пузыреплодник",
-        "catalog_slug": "puzyreplodnik",
-        "match_slugs": ["puzyreplodnik-luteus"],
-    },
-    _soon("Роза морщинистая"),
-    _soon("Рябинник"),
-    _soon("Сирень"),
-    _soon("Смородина альпийская"),
-    _soon("Снежноягодник"),
-    _soon("Спирея"),
-    _soon("Чубушник"),
+    _link("Бересклет", "kustarniki-beresklet"),
+    _link("Барбарис", "kustarniki-barbaris"),
+    _link("Бирючина", "kustarniki-biryuchina"),
+    _link("Гортензия", "kustarniki-gortenziya"),
+    _link("Дерен", "kustarniki-deren"),
+    _link("Жимолость", "kustarniki-zhimolost"),
+    _link("Калина", "kustarniki-kalina"),
+    _link("Кизильник", "kustarniki-kizilnik"),
+    _link("Лапчатка", "kustarniki-lapchatka"),
+    _link("Лох", "kustarniki-lokh"),
+    _link("Миндаль", "kustarniki-mindal"),
+    _link("Пузыреплодник", "kustarniki-puzyreplodnik"),
+    _link("Роза морщинистая", "kustarniki-roza-morshchinistaya"),
+    _link("Рябинник", "kustarniki-ryabinnik"),
+    _link("Сирень", "kustarniki-siren"),
+    _link("Смородина альпийская", "kustarniki-smorodina-alpiyskaya"),
+    _link("Снежноягодник", "kustarniki-snezhnoyagodnik"),
+    _link("Спирея", "kustarniki-spireya"),
+    _link("Чубушник", "kustarniki-chubushnik"),
 ]
 
 # --- Однолетние цветы (полный список со старого меню) ---
 _ODNOLETNIE_CHILDREN: list[dict[str, Any]] = [
     _link("Все однолетние цветы", "odnoletniaia-rassada"),
-    _soon("Агератум"),
-    _soon("Ампельные"),
-    _soon("Вербена"),
-    _soon("Виола"),
-    _soon("Гацания"),
-    _soon("Георгина"),
-    _soon("Гипоэстес"),
-    _soon("Колеус"),
-    _soon("Лобелия"),
-    _soon("Петуния"),
-    _soon("Алиссиум"),
-    _soon("Кохия"),
-    _soon("Сальвия"),
-    _soon("Львиный зев (Антирринум)"),
-    _soon("Цинерария"),
-    _soon("Бархатцы"),
+    _link("Агератум", "odnoletnie-ageratum"),
+    _link("Ампельные", "odnoletnie-ampelnye"),
+    _link("Вербена", "odnoletnie-verbena"),
+    _link("Виола", "odnoletnie-viola"),
+    _link("Гацания", "odnoletnie-gatsaniya"),
+    _link("Георгина", "odnoletnie-georgina"),
+    _link("Гипоэстес", "odnoletnie-gipoestes"),
+    _link("Колеус", "odnoletnie-koleus"),
+    _link("Лобелия", "odnoletnie-lobeliya"),
+    _link("Петуния", "odnoletnie-petuniya"),
+    _link("Алиссиум", "odnoletnie-alissium"),
+    _link("Кохия", "odnoletnie-kokhiya"),
+    _link("Сальвия", "odnoletnie-salviya"),
+    _link("Львиный зев (Антирринум)", "odnoletnie-lvinnyy-zev-antirrinum"),
+    _link("Цинерария", "odnoletnie-tsinerariya"),
+    _link("Бархатцы", "odnoletnie-barkhattsy"),
 ]
 
 # --- Деревья ---
 _DEREVYA_CHILDREN: list[dict[str, Any]] = [
     _link("Все деревья", "derevya"),
-    _soon("Дуб"),
-    _soon("Вяз"),
-    _soon("Клён"),
-    _soon("Рябина"),
-    _soon("Черёмуха"),
-    _soon("Яблоня декоративная"),
+    _link("Дуб", "derevya-dub"),
+    _link("Вяз", "derevya-vyaz"),
+    _link("Клён", "derevya-klyen"),
+    _link("Рябина", "derevya-ryabina"),
+    _link("Черёмуха", "derevya-cheryemukha"),
+    _link("Яблоня декоративная", "derevya-yablonya-dekorativnaya"),
 ]
 
 # --- Многолетние цветы (два блока списка со скринов, объединены) ---
 _MNOGOLETNIE_CHILDREN: list[dict[str, Any]] = [
     _link("Все многолетние цветы", "mnogoletnie-tsvety"),
-    _soon("Аквилегия"),
-    _soon("Бруннера"),
-    _soon("Герань"),
-    _soon("Пион"),
-    _soon("Анемона"),
-    _soon("Гортензия крупнолистная"),
-    _soon("Ирисы"),
-    _soon("Клематис"),
-    _soon("Обриета"),
-    _soon("Платикодон"),
-    _soon("Армерия"),
-    _soon("Гвоздика"),
-    _soon("Кореопсис"),
-    _soon("Люпин"),
-    _soon("Барвинок"),
-    _soon("Гайлардия"),
-    _soon("Штокроза"),
-    _soon("Гелениум"),
-    _soon("Эхинацея"),
-    _soon("Гравилат"),
-    _soon("Дельфиниум"),
-    _soon("Колокольчик"),
-    _soon("Купальница"),
-    _soon("Ландыш майский"),
-    _soon("Лапчатка"),
-    _soon("Лилейник"),
-    _soon("Астильба"),
-    _soon("Астра"),
-    _soon("Бадан"),
-    _soon("Вероника/Вероникаструм"),
-    _soon("Гейхера"),
-    _soon("Дербенник"),
-    _soon("Злаки"),
-    _soon("Монарда"),
-    _soon("Нивянник"),
-    _soon("Прочие"),
-    _soon("Пряно-декоративные травы"),
-    _soon("Седум"),
-    _soon("Тысячелистник"),
-    _soon("Флокс"),
-    _soon("Хоста"),
-    _soon("Хризантема"),
+    _link("Аквилегия", "mnogoletnie-akvilegiya"),
+    _link("Бруннера", "mnogoletnie-brunnera"),
+    _link("Герань", "mnogoletnie-geran"),
+    _link("Пион", "mnogoletnie-pion"),
+    _link("Анемона", "mnogoletnie-anemona"),
+    _link("Гортензия крупнолистная", "mnogoletnie-gortenziya-krupnolistnaya"),
+    _link("Ирисы", "mnogoletnie-irisy"),
+    _link("Клематис", "mnogoletnie-klematis"),
+    _link("Обриета", "mnogoletnie-obrieta"),
+    _link("Платикодон", "mnogoletnie-platikodon"),
+    _link("Армерия", "mnogoletnie-armeriya"),
+    _link("Гвоздика", "mnogoletnie-gvozdika"),
+    _link("Кореопсис", "mnogoletnie-koreopsis"),
+    _link("Люпин", "mnogoletnie-lyupin"),
+    _link("Барвинок", "mnogoletnie-barvinok"),
+    _link("Гайлардия", "mnogoletnie-gaylardiya"),
+    _link("Штокроза", "mnogoletnie-shtokroza"),
+    _link("Гелениум", "mnogoletnie-gelenium"),
+    _link("Эхинацея", "mnogoletnie-ekhinatseya"),
+    _link("Гравилат", "mnogoletnie-gravilat"),
+    _link("Дельфиниум", "mnogoletnie-delfinium"),
+    _link("Колокольчик", "mnogoletnie-kolokolchik"),
+    _link("Купальница", "mnogoletnie-kupalnitsa"),
+    _link("Ландыш майский", "mnogoletnie-landysh-mayskiy"),
+    _link("Лапчатка", "mnogoletnie-lapchatka"),
+    _link("Лилейник", "mnogoletnie-lileynik"),
+    _link("Астильба", "mnogoletnie-astilba"),
+    _link("Астра", "mnogoletnie-astra"),
+    _link("Бадан", "mnogoletnie-badan"),
+    _link("Вероника/Вероникаструм", "mnogoletnie-veronika-veronikastrum"),
+    _link("Гейхера", "mnogoletnie-geykhera"),
+    _link("Дербенник", "mnogoletnie-derbennik"),
+    _link("Злаки", "mnogoletnie-zlaki"),
+    _link("Монарда", "mnogoletnie-monarda"),
+    _link("Нивянник", "mnogoletnie-nivyannik"),
+    _link("Прочие", "mnogoletnie-prochie"),
+    _link("Пряно-декоративные травы", "mnogoletnie-pryano-dekorativnye-travy"),
+    _link("Седум", "mnogoletnie-sedum"),
+    _link("Тысячелистник", "mnogoletnie-tysyachelistnik"),
+    _link("Флокс", "mnogoletnie-floks"),
+    _link("Хоста", "mnogoletnie-khosta"),
+    _link("Хризантема", "mnogoletnie-khrizantema"),
 ]
 
 # --- Овощная рассада ---
 _OVOSHCHI_CHILDREN: list[dict[str, Any]] = [
     _link("Вся овощная рассада", "ovoshchnaya-rassada"),
-    _soon("Тыквы"),
-    _soon("Баклажаны"),
-    _soon("Томаты"),
-    _soon("Арбуз/Дыня"),
-    _soon("Кабачки"),
-    _soon("Огурцы"),
-    _soon("Перцы"),
+    _link("Тыквы", "ovoshchi-tykvy"),
+    _link("Баклажаны", "ovoshchi-baklazhany"),
+    _link("Томаты", "ovoshchi-tomaty"),
+    _link("Арбуз/Дыня", "ovoshchi-arbuz-dynya"),
+    _link("Кабачки", "ovoshchi-kabachki"),
+    _link("Огурцы", "ovoshchi-ogurtsy"),
+    _link("Перцы", "ovoshchi-pertsy"),
 ]
 
 # --- Плодовые ---
 _PLODOVYE_CHILDREN: list[dict[str, Any]] = [
     _link("Все плодовые", "plodovye"),
-    _soon("Вишня"),
-    _soon("Груша"),
-    _soon("Жимолость"),
-    _soon("Малина"),
-    _soon("Облепиха"),
-    _soon("Слива/СВГ"),
-    _soon("Смородина"),
-    _soon("Яблоня"),
+    _link("Вишня", "plodovye-vishnya"),
+    _link("Груша", "plodovye-grusha"),
+    _link("Жимолость", "plodovye-zhimolost-1"),
+    _link("Малина", "plodovye-malina"),
+    _link("Облепиха", "plodovye-oblepikha"),
+    _link("Слива/СВГ", "plodovye-sliva-svg"),
+    _link("Смородина", "plodovye-smorodina"),
+    _link("Яблоня", "plodovye-yablonya"),
 ]
 
 # --- Розы ---
 _ROZY_CHILDREN: list[dict[str, Any]] = [
     _link("Все розы", "rozy"),
-    _soon("Английские"),
-    _soon("Плетистые"),
-    _soon("Спрей"),
-    _soon("Флорибунда"),
-    _soon("Чайно-гибридные"),
-    _soon("Шрабы"),
+    _link("Английские", "rozy-angliyskie"),
+    _link("Плетистые", "rozy-pletistye"),
+    _link("Спрей", "rozy-sprey"),
+    _link("Флорибунда", "rozy-floribunda"),
+    _link("Чайно-гибридные", "rozy-chayno-gibridnye"),
+    _link("Шрабы", "rozy-shraby"),
 ]
 
 # --- Семена газонных трав ---
 _SEMENA_CHILDREN: list[dict[str, Any]] = [
     _link("Все семена газонных трав", "semena-gazonnyh-trav"),
-    _soon("Газонная травосмесь Гринкипер"),
-    _soon("Газонная травосмесь Зеленый ковер/Канада"),
+    _link("Газонная травосмесь Гринкипер", "semena-gazonnaya-travosmes-grinkiper"),
+    _link("Газонная травосмесь Зеленый ковер/Канада", "semena-gazonnaya-travosmes-zelenyy-kover-kanada"),
 ]
 
 # --- Хвойные: только роды/группы, без карточек «ель сибирская», «туя западная» и т.п. ---
 _KHOYNYE_CHILDREN: list[dict[str, Any]] = [
     _link("Все хвойные", "hvoynye-derevya"),
-    _soon("Лиственница"),
-    _soon("Ель колючая"),
-    _soon("Можжевельник"),
-    _soon("Пихта"),
-    _soon("Сосна"),
-    _soon("Туя"),
+    _link("Лиственница", "hvoynye-listvennitsa"),
+    _link("Ель колючая", "hvoynye-el-kolyuchaya"),
+    _link("Можжевельник", "hvoynye-mozhzhevelnik"),
+    _link("Пихта", "hvoynye-pikhta"),
+    _link("Сосна", "hvoynye-sosna"),
+    _link("Туя", "hvoynye-tuya"),
 ]
 
 # Раскрывать раздел, если открыта эта категория каталога или карточка товара из неё
@@ -210,10 +202,13 @@ def _active_category_slug(ctx: dict, active_plant_slug: str) -> str:
     ac = (ctx.get("active_category_slug") or "").strip()
     if ac:
         return ac
+    ap = ctx.get("active_plant")
+    if isinstance(ap, dict) and (ap.get("category_slug") or "").strip():
+        return str(ap.get("category_slug") or "").strip()
     if not active_plant_slug:
         return ""
     for p in ctx.get("plants") or []:
-        if p.get("slug") == active_plant_slug:
+        if p.get("slug") == active_plant_slug or active_plant_slug in (p.get("merged_member_slugs") or []):
             return (p.get("category_slug") or "").strip()
     return ""
 
@@ -276,9 +271,14 @@ def enrich_catalog_context(ctx: dict) -> dict:
             sec["nav_expanded"] = False
             sec["nav_parent_active"] = False
 
+    from pages.catalog_subcategories import subcategory_slugs_for_nav_section
+
     for sec in sections:
         need_cats = _SECTION_EXPAND_CATEGORIES.get(sec["label"])
-        if need_cats and active_cat in need_cats and sec.get("children"):
+        if not need_cats or not sec.get("children"):
+            continue
+        sub_slugs = subcategory_slugs_for_nav_section(sec["label"])
+        if active_cat in need_cats or active_cat in sub_slugs:
             sec["nav_expanded"] = True
             sec["nav_parent_active"] = True
 
