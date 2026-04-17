@@ -25,7 +25,10 @@ FORMAT_TAIL_RE = re.compile(
     r"\s*$",
     re.IGNORECASE,
 )
-TRAILING_CONTAINER_RE = re.compile(r"\s+(?:[PРCС]\s*\d+(?:/\d+)?)\s*$", re.IGNORECASE)
+TRAILING_CONTAINER_RE = re.compile(
+    r"\s+(?:[PРCС]\s*\d+(?:[.,/]\d+)?)\s*$",
+    re.IGNORECASE,
+)
 TRAILING_HEIGHT_RE = re.compile(r"\s*,?\s*h\s*=?\s*\d+(?:[-–]\d+)?\*?\s*$", re.IGNORECASE)
 # «… Кашпо 5л», «… кашпо 5,5 л» — хвост формата для группировки с P9/Р9 и т.п.
 TRAILING_KASHPO_RE = re.compile(r"\s+кашпо\s*[\d.,/]+\s*л\b", re.IGNORECASE)
@@ -265,22 +268,146 @@ def normalize_plant_variants_legacy_containers(plant: dict[str, Any]) -> None:
             v["container"] = inf
 
 
-def split_russian_latin_title(name: str) -> tuple[str, str]:
-    """Крупный русский заголовок + мелкая латиница (сортовое название)."""
+# Частые опечатки: кириллица вместо латиницы в роде/эпитете (Astilbe Аrendsii, рacific, Мentha).
+_CYR_LAT_HOMOGLYPHS = str.maketrans(
+    {
+        "\u0410": "A",
+        "\u0430": "a",
+        "\u0412": "B",
+        "\u0432": "b",
+        "\u0415": "E",
+        "\u0435": "e",
+        "\u041a": "K",
+        "\u043a": "k",
+        "\u041c": "M",
+        "\u043c": "m",
+        "\u041d": "H",
+        "\u043d": "n",
+        "\u041e": "O",
+        "\u043e": "o",
+        "\u0420": "P",
+        "\u0440": "p",
+        "\u0421": "C",
+        "\u0441": "c",
+        "\u0422": "T",
+        "\u0442": "t",
+        "\u0423": "Y",
+        "\u0443": "y",
+        "\u0425": "X",
+        "\u0445": "x",
+    }
+)
+
+
+def _deconfuse_cyrillic_in_latinish_tokens(s: str) -> str:
+    """В токенах вроде «Аrendsii», «рacific» заменяем похожие кириллические буквы на латиницу."""
+
+    def repl(m: re.Match[str]) -> str:
+        w = m.group(0)
+        if not re.search(r"[\u0400-\u04FF]", w):
+            return w
+        if not re.search(r"[A-Za-z]{2,}", w):
+            return w
+        return w.translate(_CYR_LAT_HOMOGLYPHS)
+
+    return re.sub(r"[\w\.\-]+", repl, s, flags=re.UNICODE)
+
+
+def _quoted_inner_is_latin_cultivar(inner: str) -> bool:
+    """Сорт в кавычках латиницей (Charles Austin, Beatrice), не русское «Альба»."""
+    t = (inner or "").strip()
+    if len(t) < 2:
+        return False
+    cyr = sum(1 for c in t if "\u0400" <= c <= "\u04FF")
+    lat = sum(1 for c in t if ("A" <= c <= "Z") or ("a" <= c <= "z"))
+    if cyr == 0:
+        return lat >= 2
+    return lat >= 4 and lat > cyr * 2
+
+
+def _split_roza_quoted_cultivar_title(name: str) -> tuple[str, str] | None:
+    """Роза … "Cultivar" Транслит — без латинского рода в строке; сорт уводим в title_latin."""
     s = _normalize_spaces(name)
+    if not re.match(r"^Роза\s+", s, re.IGNORECASE):
+        return None
+    qpos = s.find('"')
+    if qpos < 0:
+        return None
+    prefix = s[:qpos].strip()
+    rest = s[qpos:].strip()
+    latin_parts: list[str] = []
+    work = rest
+    while work.startswith('"'):
+        m = re.match(r'^"([^"]*)"', work)
+        if not m:
+            break
+        inner = m.group(1).strip()
+        work = work[m.end() :].strip()
+        if not inner:
+            continue
+        if not _quoted_inner_is_latin_cultivar(inner):
+            return None
+        latin_parts.append(inner)
+    if not latin_parts:
+        return None
+    cyr_tail = _normalize_spaces(work)
+    ru = _normalize_spaces(f"{prefix} {cyr_tail}".strip())
+    lat = " · ".join(latin_parts)
+    return ru, lat
+
+
+def split_russian_latin_title(name: str) -> tuple[str, str]:
+    """Крупный русский заголовок + мелкая латиница (сортовое название).
+
+    Учитываем: эпитеты со строчной буквы (horizontalis), латиницу с диакритикой
+    (decídua, Pínus), сорт в кавычках '…' или «…» / "…".
+    """
+    s = _deconfuse_cyrillic_in_latinish_tokens(_normalize_spaces(name))
     if not s:
         return "", ""
+    # Эпитеты / f. / скобки: «слова» без кириллицы (\\w тянет кириллицу).
+    _lat_tail = r"(?:\s+(?:[×\u00d7x]\s+)?[^\s\u0400-\u04FF,;]+)*"
     m = re.search(
         r"^(?P<ru>.+?)\s+"
-        r'(?P<lat>(?:[A-Z][a-z]+\.\s+)?[A-Z][a-z]+'
-        r'(?:\s*[×\u00d7x]\s+[A-Za-z][a-z0-9\-]*)?'
-        r'(?:\s+[A-Za-z][a-z0-9\-]*)*'
-        r'(?:\s+[\"«][^\"»\n]{1,120}[\"»])?)\s*$',
+        r"(?P<lat>"
+        r"(?:[A-Z]\w*\.\s+)?"  # сокр. род, напр. «R. »
+        r"[A-Z]\w*"  # род
+        + _lat_tail
+        + r'(?:\s+(?P<q>[\'"«])(?P<cult>(?:(?!(?P=q)).){1,400})(?P=q))?'  # сорт в кавычках
+        r")"
+        r"(?:\s+(?P<suf>[\u0400-\u04FF][\w\-]*(?:\s+[\u0400-\u04FF][\w\-]*)*))?"
+        r"\s*$",
         s,
+        re.UNICODE,
     )
     if m:
-        return m.group("ru").strip(), m.group("lat").strip()
+        ru0 = m.group("ru").strip()
+        lat0 = m.group("lat").strip()
+        suf = (m.group("suf") or "").strip()
+        if suf:
+            ru0 = _normalize_spaces(f"{ru0} {suf}")
+        return ru0, lat0
+    rz = _split_roza_quoted_cultivar_title(s)
+    if rz:
+        return rz
+    tailq = _split_trailing_quoted_latin_cultivar(s)
+    if tailq:
+        return tailq
     return s, ""
+
+
+def _split_trailing_quoted_latin_cultivar(s: str) -> tuple[str, str] | None:
+    """«Русское название "Latin Cultivar"» в конце строки, без латинского рода (хризантемы и т.п.)."""
+    m = re.match(r"^(.+?)\s+\"([^\"]{2,200})\"\s*$", s.strip())
+    if not m:
+        return None
+    ru_p = m.group(1).strip()
+    inner = m.group(2).strip()
+    if not _quoted_inner_is_latin_cultivar(inner):
+        return None
+    if sum(1 for c in ru_p if "\u0400" <= c <= "\u04FF") < 3:
+        return None
+    return ru_p, inner
 
 
 def _variant_from_member(member: dict[str, Any], v0: dict[str, Any], fallback_tail: str) -> dict[str, Any]:
