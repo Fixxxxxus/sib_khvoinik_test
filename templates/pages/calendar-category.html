@@ -14,8 +14,8 @@
       </nav>
 
       <div class="mt-5 flex items-center gap-4" data-animate="fadeInUp">
-        <div class="text-4xl">
-          {% if active_category.slug == 'derevya' %}🌲{% elif active_category.slug == 'kustarniki' %}🌿{% elif active_category.slug == 'mnogoletniki' %}🌸{% elif active_category.slug == 'rozy' %}🌹{% elif active_category.slug == 'gazon' %}🌱{% else %}🌳{% endif %}
+        <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+          <i data-lucide="{% if active_category.slug == 'derevya' %}tree-pine{% elif active_category.slug == 'kustarniki' %}leaf{% elif active_category.slug == 'mnogoletniki' %}flower{% elif active_category.slug == 'rozy' %}flower-2{% elif active_category.slug == 'gazon' %}sprout{% else %}tree-deciduous{% endif %}" class="h-7 w-7"></i>
         </div>
         <div>
           <h1 class="text-3xl md:text-4xl font-semibold leading-tight">{{ active_category.label }}</h1>
