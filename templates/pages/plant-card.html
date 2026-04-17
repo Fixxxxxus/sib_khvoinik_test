@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{{ active_plant.name|default:'Карточка растения' }} — {{ brand }}{% endblock %}
+{% block title %}{{ active_plant.catalog_display_name|default:active_plant.name|default:'Карточка растения' }} — {{ brand }}{% endblock %}
 
 {% block content %}
   <section class="mt-10">
@@ -17,7 +17,7 @@
               {% if active_plant.image %}
                 <img
                   src="{% static active_plant.image %}"
-                  alt="{{ active_plant.name }}"
+                  alt="{{ active_plant.catalog_display_name|default:active_plant.name }}"
                   class="h-full w-full object-cover"
                   loading="lazy"
                   decoding="async"
@@ -30,8 +30,8 @@
               {% endif %}
             </div>
             <div class="p-6">
-              <div class="text-2xl font-semibold">{{ active_plant.name|default:'—' }}</div>
-              {% if active_plant.latin %}
+              {% include 'partials/plant_catalog_title.html' with item=active_plant size="lg" %}
+              {% if not active_plant.title_latin and active_plant.latin %}
                 <div class="mt-1 text-sm italic text-slate-500">{{ active_plant.latin }}</div>
               {% endif %}
               <div class="mt-1 text-sm text-slate-600">{% include 'partials/plant_card_category.html' with category_slug=active_plant.category_slug %}</div>
@@ -42,7 +42,7 @@
         <div class="lg:col-span-6" data-animate="fadeInUp">
           <div
             class="rounded-3xl border border-black/5 bg-white p-6"
-            data-product-name="{{ active_plant.name|escape }}"
+            data-product-name="{{ active_plant.catalog_display_name|default:active_plant.name|escape }}"
             {% if active_plant.variants %}data-plant-variant-picker{% endif %}
           >
             {% if active_plant.variants %}
@@ -128,12 +128,13 @@
               type="button"
               data-selection-add
               data-selection-id="{{ active_plant.slug|default:'' }}"
-              data-selection-name="{{ active_plant.name|default:'—'|escape }}"
+              data-selection-name="{{ active_plant.catalog_display_name|default:active_plant.name|default:'—'|escape }}"
               data-selection-category="{% include 'partials/plant_card_category.html' with category_slug=active_plant.category_slug %}"
               data-selection-description="{{ active_plant.description|default:''|escape }}"
-              data-selection-price="{% if active_plant.catalog_teaser %}{{ active_plant.catalog_teaser|escape }}{% endif %}"
+              data-selection-price="{% if active_plant.catalog_price_line %}{{ active_plant.catalog_price_line|escape }}{% elif active_plant.catalog_teaser %}{{ active_plant.catalog_teaser|escape }}{% endif %}"
               data-selection-image="{% if active_plant.image %}{% static active_plant.image %}{% endif %}"
               data-selection-url="{{ request.path }}"
+              {% if active_plant.selection_qty_step %}data-selection-qty-step="{{ active_plant.selection_qty_step }}"{% endif %}
               {% if active_plant.variants %}data-pv-sync-selection-button="1"{% endif %}
               class="relative overflow-visible inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-sm font-semibold text-white shadow-glow hover:brightness-105 transition"
             >
@@ -155,7 +156,7 @@
                   <img src="{% static p.image %}" alt="" class="h-full w-full object-cover" loading="lazy" decoding="async" />
                 {% endif %}
               </div>
-              <div class="mt-4 font-semibold text-sm">{{ p.name }}</div>
+              <div class="mt-4">{% include 'partials/plant_catalog_title.html' with item=p size="sm" %}</div>
               <div class="mt-1 text-xs text-slate-500">{% include 'partials/plant_card_category.html' with category_slug=p.category_slug %}</div>
             </a>
           {% endfor %}

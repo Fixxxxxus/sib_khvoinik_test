@@ -43,15 +43,17 @@
                 {% endif %}
               </div>
             </a>
-            <div class="mt-4 font-semibold leading-snug text-slate-900 line-clamp-3">{{ p.name }}</div>
+            <div class="mt-4">{% include 'partials/plant_catalog_title.html' with item=p %}</div>
             <div class="mt-2 shrink-0 text-xs text-slate-500">{% include 'partials/plant_card_category.html' with category_slug=p.category_slug %}</div>
 
             <div class="mt-auto flex min-h-0 flex-col pt-4">
               <div>
-              {% if p.catalog_price_line and p.catalog_variant_line %}
+              {% if p.catalog_price_line %}
                 <div class="text-xs text-slate-500">Цена</div>
                 <div class="mt-1 text-sm font-semibold text-brand leading-snug">{{ p.catalog_price_line }}</div>
-                <div class="text-sm font-semibold text-brand leading-snug">{{ p.catalog_variant_line }}</div>
+                {% if p.catalog_container_line %}
+                <div class="mt-1 text-xs text-slate-600">Тара: <span class="font-medium text-slate-800">{{ p.catalog_container_line }}</span></div>
+                {% endif %}
               {% elif p.catalog_teaser %}
                 <div class="text-xs text-slate-500">Цена</div>
                 <div class="mt-1 text-sm font-semibold text-brand">{{ p.catalog_teaser }}</div>
@@ -75,12 +77,13 @@
                 type="button"
                 data-selection-add
                 data-selection-id="{{ p.slug }}"
-                data-selection-name="{{ p.name|escape }}"
+                data-selection-name="{{ p.catalog_display_name|default:p.name|escape }}"
                 data-selection-category="{% include 'partials/plant_card_category.html' with category_slug=p.category_slug %}"
                 data-selection-description="{{ p.description|default:''|escape }}"
-                data-selection-price="{{ p.catalog_teaser|default:''|escape }}"
+                data-selection-price="{{ p.catalog_price_line|default:p.catalog_teaser|default:''|escape }}"
                 data-selection-image="{% if p.image %}{% static p.image %}{% endif %}"
                 data-selection-url="{% url 'catalog_item' slug=p.slug %}"
+                {% if p.selection_qty_step %}data-selection-qty-step="{{ p.selection_qty_step }}"{% endif %}
                 class="relative overflow-visible flex-1 inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-2 text-white font-semibold shadow-glow hover:brightness-105 transition"
               >
                 <span data-selection-label class="relative z-[1] inline-block">Добавить в подбор</span>

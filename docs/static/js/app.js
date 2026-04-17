@@ -1227,6 +1227,8 @@ function initPlantVariantPicker() {
   };
   const normalizeContainerLabel = (v) => {
     const s = String(v || '').trim();
+    if (s === 'кассета 6 ячеек' || s === 'кассета из 6 ячеек') return s;
+    if (s === 'кассета из 4 ячеек' || s === 'кассета 4 ячеек') return s;
     if (/^формат\s+уточняйте$/i.test(s) || /^уточняйте$/i.test(s)) return 'формат фиксированный';
     return s;
   };
@@ -1522,7 +1524,8 @@ function selectionFixAmbiguousName(item) {
 }
 
 function initCatalogSelection() {
-  const STORAGE_KEY = 'sg_catalog_selection_v1';
+  const STORAGE_KEY = 'sg_catalog_selection_v2';
+  const LEGACY_STORAGE_KEY = 'sg_catalog_selection_v1';
   const addButtons = Array.from(document.querySelectorAll('[data-selection-add]'));
   const panels = Array.from(document.querySelectorAll('[data-selection-panel]'));
   if (!addButtons.length && !panels.length) return;
@@ -1531,16 +1534,29 @@ function initCatalogSelection() {
 
   const parseSelection = () => {
     try {
-      const raw = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-      const arr = Array.isArray(raw) ? raw : [];
-      const migrated = arr.map((item) => ({
-        ...item,
-        name: selectionFixAmbiguousName(item),
-      }));
-      try {
-        if (JSON.stringify(arr) !== JSON.stringify(migrated)) {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+      let raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) raw = localStorage.getItem(LEGACY_STORAGE_KEY);
+      raw = raw || '[]';
+      const parsed = JSON.parse(raw);
+      const arr = Array.isArray(parsed) ? parsed : [];
+      const migrated = arr.map((item) => {
+        const rawStep = item && item.qtyStep;
+        const qtyStep =
+          typeof rawStep === 'number' && Number.isFinite(rawStep) && rawStep >= 2 ? Math.floor(rawStep) : 1;
+        let qty = typeof item.qty === 'number' && item.qty >= 1 ? Math.floor(item.qty) : qtyStep >= 2 ? qtyStep : 1;
+        if (qtyStep >= 2 && qty % qtyStep !== 0) {
+          qty = Math.max(qtyStep, Math.ceil(qty / qtyStep) * qtyStep);
         }
+        return {
+          ...item,
+          qty,
+          qtyStep,
+          name: selectionFixAmbiguousName(item),
+        };
+      });
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(migrated));
+        localStorage.removeItem(LEGACY_STORAGE_KEY);
       } catch (e2) {
         // ignore quota / privacy mode
       }
@@ -1568,6 +1584,10 @@ function initCatalogSelection() {
       description: normalizeText(btn.getAttribute('data-selection-description')),
       url: btn.getAttribute('data-selection-url') || '',
     }) || rawName || 'Позиция каталога';
+    const rawStep = normalizeText(btn.getAttribute('data-selection-qty-step'));
+    const parsedStep = parseInt(rawStep, 10);
+    const qtyStep = Number.isFinite(parsedStep) && parsedStep >= 2 ? parsedStep : 1;
+    const qty = qtyStep >= 2 ? qtyStep : 1;
     return {
       id: itemId,
       name: shortName,
@@ -1578,6 +1598,8 @@ function initCatalogSelection() {
       url: btn.getAttribute('data-selection-url') || '',
       variant,
       note: variant ? `Вариант: ${variant}` : '',
+      qty,
+      qtyStep,
     };
   };
 
@@ -1651,8 +1673,13 @@ function initCatalogSelection() {
     });
   };
 
+  const selectionTotalUnits = () =>
+    selection.reduce((acc, item) => acc + (typeof item.qty === 'number' && item.qty >= 1 ? item.qty : 1), 0);
+
   const composeModalTitle = () => {
     if (!selection.length) return 'Уточнить наличие';
+    const u = selectionTotalUnits();
+    if (u > selection.length) return `Позиций в подборе → ${selection.length} · ${u} шт.`;
     return `Позиций в подборе → ${selection.length}`;
   };
 
@@ -1672,12 +1699,17 @@ function initCatalogSelection() {
       const submitBtn = panel.querySelector('[data-selection-submit]');
       if (!listEl || !submitBtn) return;
 
-      if (countEl) countEl.textContent = String(selection.length);
+      if (countEl) {
+        const u = selectionTotalUnits();
+        countEl.textContent = u > selection.length ? `${selection.length} · ${u} шт.` : String(selection.length);
+      }
       submitBtn.disabled = selection.length === 0;
       submitBtn.setAttribute('data-modal-title', composeModalTitle());
       const namesForModal = selection.map((item) => {
         const n = (item.name || '').trim();
-        return item.variant ? `${n} (${item.variant})` : n;
+        const q = typeof item.qty === 'number' && item.qty > 1 ? item.qty : 0;
+        const base = item.variant ? `${n} (${item.variant})` : n;
+        return q ? `${base} ×${q}` : base;
       });
       const preview = namesForModal.slice(0, 6).join('; ');
       const more = namesForModal.length > 6 ? `; + ещё ${namesForModal.length - 6}` : '';
@@ -1688,6 +1720,7 @@ function initCatalogSelection() {
       listEl.innerHTML = '';
       selection.forEach((item) => {
         const displayName = (item.name || '').trim();
+        const qty = typeof item.qty === 'number' && item.qty >= 1 ? item.qty : 1;
         const card = document.createElement('article');
         card.className = 'rounded-2xl border border-black/10 bg-white p-4 h-full min-h-[20rem] flex flex-col';
         const imageHtml = item.image
@@ -1705,6 +1738,12 @@ function initCatalogSelection() {
         const link = item.url
           ? `<a href="${escapeHtml(item.url)}" class="inline-flex items-center text-sm font-semibold text-brand hover:text-brand2">Подробнее</a>`
           : '<span></span>';
+        const qtyHtml = `<div class="mt-3 flex items-center gap-2">
+            <span class="text-xs text-slate-500">Кол-во</span>
+            <button type="button" data-selection-qty-dec="${escapeHtml(item.id)}" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-black/10 text-lg font-medium text-slate-700 hover:bg-black/5 transition" aria-label="Минус">−</button>
+            <span data-selection-qty-label="${escapeHtml(item.id)}" class="min-w-[1.5rem] text-center text-sm font-semibold text-slate-900">${qty}</span>
+            <button type="button" data-selection-qty-inc="${escapeHtml(item.id)}" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-black/10 text-lg font-medium text-slate-700 hover:bg-black/5 transition" aria-label="Плюс">+</button>
+          </div>`;
         card.innerHTML = `
           <div class="h-28 overflow-hidden rounded-xl bg-slate-100">${imageHtml}</div>
           <div class="mt-3 text-lg font-semibold min-h-[5.5rem]">${escapeHtml(displayName)}</div>
@@ -1712,6 +1751,7 @@ function initCatalogSelection() {
             ${categoryHtml}
             ${noteHtml}
             ${priceHtml}
+            ${qtyHtml}
           </div>
           <div class="mt-auto pt-3 flex items-end justify-between gap-3">
             ${link}
@@ -1724,6 +1764,27 @@ function initCatalogSelection() {
   };
 
   document.addEventListener('click', (e) => {
+    const incBtn = e.target && e.target.closest('[data-selection-qty-inc]');
+    const decBtn = e.target && e.target.closest('[data-selection-qty-dec]');
+    if (incBtn || decBtn) {
+      const id = incBtn ? incBtn.getAttribute('data-selection-qty-inc') : decBtn.getAttribute('data-selection-qty-dec');
+      const idx = selection.findIndex((x) => x.id === id);
+      if (idx < 0) return;
+      const stepRaw = selection[idx].qtyStep;
+      const step = typeof stepRaw === 'number' && Number.isFinite(stepRaw) && stepRaw >= 2 ? stepRaw : 1;
+      const cur = typeof selection[idx].qty === 'number' && selection[idx].qty >= 1 ? selection[idx].qty : step;
+      if (incBtn) {
+        selection[idx] = { ...selection[idx], qty: cur + step };
+      } else if (cur <= step) {
+        selection = selection.filter((x) => x.id !== id);
+      } else {
+        selection[idx] = { ...selection[idx], qty: cur - step };
+      }
+      save();
+      syncAddButtons();
+      renderPanels();
+      return;
+    }
     const removeBtn = e.target && e.target.closest('[data-selection-remove]');
     if (!removeBtn) return;
     const id = removeBtn.getAttribute('data-selection-remove');
@@ -1754,10 +1815,17 @@ function initCatalogSelection() {
         }, SG_SELECTION_ADD_ANIM_MS);
         return;
       }
-      selection = selection.filter((x) => x.id !== item.id);
-      save();
-      syncAddButtons();
-      renderPanels();
+      const idx = selection.findIndex((x) => x.id === item.id);
+      if (idx >= 0) {
+        const stepRaw = selection[idx].qtyStep;
+        const step = typeof stepRaw === 'number' && Number.isFinite(stepRaw) && stepRaw >= 2 ? stepRaw : 1;
+        const cur = typeof selection[idx].qty === 'number' && selection[idx].qty >= 1 ? selection[idx].qty : step;
+        selection[idx] = { ...selection[idx], qty: cur + step };
+        save();
+        renderPanels();
+        playSelectionAddedBurst(btn);
+        showAddedNotice(btn);
+      }
     });
   });
 

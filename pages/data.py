@@ -11178,10 +11178,10 @@ CATALOG_PAGE = {
   'variants': [{'height': 'уточняйте', 'container': 'формат уточняйте', 'price': '1 100 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/odnoletnie_tsvety/ampelnye/kalliziya_polzuchaya_callisia_repens_kashpo_4l/']},
  {'slug': 'katarantus-mediterranean-burgundi-halo-catharanthus-roseus-mediterranean-burgundy-halo-kashpo-4l',
-  'name': 'Катарантус "Медитерранеан Бургунди Хало" Catharanthus roseus "Mediterranean Burgundy Halo" Кашпо 4л',
+  'name': 'Катарантус "Медитерранеан Бургунди Хало" Catharanthus roseus "Mediterranean XP Burgundy Halo" Кашпо 4л',
   'category_slug': 'odnoletniaia-rassada',
   'image': 'media/images/catalog/migrated/katarantus-mediterranean-burgundi-halo-catharanthus-roseus-mediterranean-burgundy-halo-kashpo-4l.jpg',
-  'image_alt': 'Катарантус "Медитерранеан Бургунди Хало" Catharanthus roseus "Mediterranean Burgundy Halo" Кашпо 4л',
+  'image_alt': 'Катарантус "Медитерранеан Бургунди Хало" Catharanthus roseus "Mediterranean XP Burgundy Halo" Кашпо 4л',
   'description': 'Катарантус ампельный "Медитерранеан Икс Пи Бургунди Хало" — это современный гибрид, который идеально '
                  'подходит для создания «цветочных водопадов» в подвесных кашпо и балконных ящиках. Растение образует '
                  'плотные кустики высотой всего 10–15 см, но выпускает длинные ниспадающие побеги до 50–75 см. Крупные '
