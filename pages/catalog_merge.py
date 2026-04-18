@@ -508,7 +508,6 @@ def _apply_ovoshchnaya_rassada_4cell_packaging_rules(plant: dict[str, Any]) -> N
 def _catalog_listing_bundle(variants: list[dict[str, Any]]) -> tuple[str, str, str]:
     """Цена для сетки каталога, строка тары, объединённый тизер для кнопок/форм."""
     vars_eff = variants if variants else [{}]
-    n = max(1, len(variants or []))
     prices = [_price_num({"variants": [x]}) for x in vars_eff]
     mn = min(prices) if prices else 0
     containers = _unique_containers_ordered(list(variants or []))
@@ -517,7 +516,7 @@ def _catalog_listing_bundle(variants: list[dict[str, Any]]) -> tuple[str, str, s
         price_line = "уточняйте"
     else:
         ps = f"{mn:,}".replace(",", " ")
-        price_line = f"от {ps} ₽" if n > 1 else f"{ps} ₽"
+        price_line = f"{ps} ₽"
     teaser = price_line + (f" · {container_line}" if container_line else "")
     return teaser, price_line, container_line
 
