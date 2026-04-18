@@ -9,6 +9,7 @@ from .catalog_subcategories import all_catalog_category_slugs, category_heading_
 from .data import (
     HOME_PAGE,
     GAZON_PAGE,
+    ROLL_LAWN_PRICE_PAGE,
     OZELENENIE_B2C_PAGE,
     B2B_PAGE,
     PITOMNIK_PAGE,
@@ -28,6 +29,13 @@ def home(request):
 
 def gazon(request):
     return render(request, "pages/gazon.html", GAZON_PAGE)
+
+
+def roll_lawn_price(request):
+    """Прайс рулонного газона — пункт «Рулонные газоны» в боковом меню каталога."""
+    ctx = dict(ROLL_LAWN_PRICE_PAGE)
+    ctx["active_catalog_nav_route"] = "roll_lawn_price"
+    return render(request, "pages/roll-lawn-price.html", enrich_catalog_context(ctx))
 
 
 def ozelenenie_b2c(request):

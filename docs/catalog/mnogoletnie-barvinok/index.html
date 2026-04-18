@@ -283,7 +283,7 @@
         <li>
           
             <a
-              href="/sib_khvoinik_test/gazon/"
+              href="/sib_khvoinik_test/prais-rulonnyy-gazon/"
               class="group flex items-center justify-between gap-2 rounded-xl border-l-[3px] px-2.5 py-2 text-sm font-semibold transition hover:bg-brand/[0.06] border-transparent text-slate-800"
             >
               <span class="flex min-w-0 items-center gap-2.5">
@@ -2328,7 +2328,17 @@
                 <div class="text-xs text-slate-500">Цена</div>
                 <div class="mt-1 text-sm font-semibold text-brand leading-snug">810 ₽</div>
                 
-                <div class="mt-1 text-xs text-slate-600">Тара: <span class="font-medium text-slate-800">С2/3</span></div>
+                <div class="mt-1 flex flex-wrap items-center gap-x-1 text-xs text-slate-600">
+                  <span>Тара: <span class="font-medium text-slate-800">С2/3</span></span>
+                  <button
+                    type="button"
+                    class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-brand/85 hover:bg-brand/10 hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
+                    data-packaging-formats-open
+                    aria-label="Справка по форматам тары"
+                  >
+                    <span class="select-none text-[11px] font-semibold leading-none" aria-hidden="true">ⓘ</span>
+                  </button>
+                </div>
                 
               
               </div>
@@ -2382,7 +2392,17 @@
                 <div class="text-xs text-slate-500">Цена</div>
                 <div class="mt-1 text-sm font-semibold text-brand leading-snug">810 ₽</div>
                 
-                <div class="mt-1 text-xs text-slate-600">Тара: <span class="font-medium text-slate-800">С2/3</span></div>
+                <div class="mt-1 flex flex-wrap items-center gap-x-1 text-xs text-slate-600">
+                  <span>Тара: <span class="font-medium text-slate-800">С2/3</span></span>
+                  <button
+                    type="button"
+                    class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-brand/85 hover:bg-brand/10 hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
+                    data-packaging-formats-open
+                    aria-label="Справка по форматам тары"
+                  >
+                    <span class="select-none text-[11px] font-semibold leading-none" aria-hidden="true">ⓘ</span>
+                  </button>
+                </div>
                 
               
               </div>
@@ -2445,6 +2465,133 @@
           </button>
         </div>
       </section>
+      
+<style>
+  /* Tailwind `flex` на самом <dialog> ломает встроенное скрытие без [open] — панель «залипает». */
+  #sg-packaging-formats-dialog:not([open]) {
+    display: none;
+  }
+  #sg-packaging-formats-dialog::backdrop {
+    background: rgba(15, 23, 42, 0.42);
+  }
+</style>
+<dialog
+  id="sg-packaging-formats-dialog"
+  class="w-[min(100%,42rem)] max-w-[calc(100vw-1.5rem)] rounded-3xl border border-black/10 bg-white p-0 text-slate-800 shadow-[0_24px_64px_-20px_rgba(15,23,42,0.35)]"
+  aria-labelledby="sg-packaging-formats-title"
+>
+  <div class="flex max-h-[min(88vh,36rem)] flex-col overflow-hidden rounded-[inherit]">
+  <div class="flex shrink-0 items-start justify-between gap-3 border-b border-black/10 px-5 py-4">
+    <div>
+      <h2 id="sg-packaging-formats-title" class="text-base font-semibold text-slate-900">Форматы тары</h2>
+      <p class="mt-0.5 text-xs text-slate-500">Кратко для ориентира при выборе</p>
+    </div>
+    <button
+      type="button"
+      data-packaging-formats-close
+      class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-black/10 text-lg leading-none text-slate-500 hover:bg-black/[0.04] hover:text-slate-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
+      aria-label="Закрыть"
+    >
+      ×
+    </button>
+  </div>
+  <div class="min-h-0 flex-1 overflow-auto px-3 py-3 sm:px-4">
+    <div class="overflow-x-auto rounded-2xl border border-black/[0.06]">
+      <table class="w-full min-w-[34rem] border-collapse text-left text-[11px] leading-snug sm:text-xs">
+        <thead>
+          <tr class="border-b border-black/10 bg-slate-50/95 text-slate-600">
+            <th class="sticky top-0 z-[1] whitespace-nowrap px-2 py-2.5 font-semibold sm:px-2.5">Формат</th>
+            <th class="sticky top-0 z-[1] whitespace-nowrap px-2 py-2.5 font-semibold sm:px-2.5">Тип</th>
+            <th class="sticky top-0 z-[1] whitespace-nowrap px-2 py-2.5 font-semibold sm:px-2.5">Объём / размер</th>
+            <th class="sticky top-0 z-[1] px-2 py-2.5 font-semibold sm:px-2.5">Что это значит для покупателя</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-black/[0.06] bg-white">
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">Р9</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Пластиковый стакан</td>
+            <td class="whitespace-nowrap px-2 py-2 text-slate-600 sm:px-2.5">0,5 л / 9×9 см</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">Самый маленький формат. Молодой саженец (черенок или сеянец). Требует доращивания 1–2 месяца перед высадкой в грунт. Самая низкая цена.</td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">С2</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Контейнер</td>
+            <td class="whitespace-nowrap px-2 py-2 text-slate-600 sm:px-2.5">2 литра</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">Растение 1–2 лет. Готово к посадке. Корневая система хорошо сформирована.</td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">С3</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Контейнер</td>
+            <td class="whitespace-nowrap px-2 py-2 text-slate-600 sm:px-2.5">3 литра</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">Стандартный посадочный материал. Оптимальный выбор для большинства кустарников и хвойников.</td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">С2/3</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Контейнер (вариативно)</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">2 или 3 литра</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">В зависимости от партии растение может быть в С2 или С3. Уточняйте при заказе. Цена и размер примерно одинаковы.</td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">С5</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Контейнер</td>
+            <td class="whitespace-nowrap px-2 py-2 text-slate-600 sm:px-2.5">5 литров</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">Крупный куст или небольшое деревце. Мгновенный ландшафтный эффект после посадки.</td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">С7</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Контейнер</td>
+            <td class="whitespace-nowrap px-2 py-2 text-slate-600 sm:px-2.5">7 литров</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">Взрослое растение высотой 60–100 см. Для акцентных посадок и солитеров.</td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">С5/7</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Контейнер (вариативно)</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">5 или 7 литров</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">Допустимы оба объёма. Уточняйте наличие. С7 предпочтительнее для быстрого результата.</td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">Кашпо 4л</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Декоративное кашпо</td>
+            <td class="whitespace-nowrap px-2 py-2 text-slate-600 sm:px-2.5">4 литра</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">Растение уже в красивом кашпо. Можно не пересаживать — сразу использовать для балкона, террасы, входа в дом.</td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">ком+сетка</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Ком с сеткой</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">≈ 5–15 л (ком)</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">Растение выкопано с комом земли, который обёрнут в мешковину и/или сетку. Для посадки крупномеров. Сетка не разлагается — её лучше снять или сильно разрезать при посадке.</td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">ком+сетка d=400</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Ком с сеткой</td>
+            <td class="whitespace-nowrap px-2 py-2 text-slate-600 sm:px-2.5">Диаметр кома 40 см</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">Крупномер высотой около 1,5–2 м. Вес кома ~30–50 кг. Требуется механизация (тачка, 2 человека).</td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">ком+сетка d=600</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Ком с сеткой</td>
+            <td class="whitespace-nowrap px-2 py-2 text-slate-600 sm:px-2.5">Диаметр кома 60 см</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">Очень крупное дерево (2,5–4 м). Вес кома ~100–150 кг. Посадка только со спецтехникой или бригадой.</td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">кассета из 4 ячеек</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Мульти-горшок</td>
+            <td class="whitespace-nowrap px-2 py-2 text-slate-600 sm:px-2.5">4 растения в одной кассете</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">Эконом-вариант для массовой посадки (живая изгородь, бордюр, газонные цветы). Каждое растение в отдельной ячейке. Перед посадкой ячейки легко разделяются.</td>
+          </tr>
+          <tr>
+            <td class="whitespace-nowrap px-2 py-2 font-medium text-slate-900 sm:px-2.5">кассета из 6 ячеек</td>
+            <td class="px-2 py-2 text-slate-600 sm:px-2.5">Мульти-горшок</td>
+            <td class="whitespace-nowrap px-2 py-2 text-slate-600 sm:px-2.5">6 растений в одной кассете</td>
+            <td class="px-2 py-2 text-slate-700 sm:px-2.5">То же, что и 4-ячеечная, но более плотная раскладка. Удобно для рассады однолетников и почвопокровных многолетников.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+</dialog>
+
         </div>
       </div>
     </div>

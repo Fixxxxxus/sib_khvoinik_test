@@ -1245,6 +1245,19 @@ function initPlantVariantPicker() {
   const badgeEl = root.querySelector('[data-pv-stock-badge]');
   const productName = root.getAttribute('data-product-name') || '';
 
+  if (!root.dataset.pvInquiryStockBound) {
+    root.dataset.pvInquiryStockBound = '1';
+    root.addEventListener('click', (e) => {
+      const link = e.target && e.target.closest('[data-pv-inquiry-stock]');
+      if (!link) return;
+      e.preventDefault();
+      const selBtn = root.querySelector('[data-pv-sync-selection-button="1"]');
+      if (selBtn && typeof window.SGOpenPodborInquiryFromButton === 'function') {
+        window.SGOpenPodborInquiryFromButton(selBtn);
+      }
+    });
+  }
+
   if (!selH || !selC || !priceEl) return;
 
   const uniq = (arr) => [...new Set(arr)];
@@ -1289,10 +1302,16 @@ function initPlantVariantPicker() {
       hintEl.className = stock ? 'mt-2 text-sm text-slate-600' : 'mt-2 text-sm font-medium text-slate-500';
     }
     if (badgeEl) {
-      badgeEl.textContent = stock ? 'В наличии: уточняйте' : 'Нет в наличии';
-      badgeEl.className = stock
-        ? 'rounded-2xl border border-black/5 bg-brand/10 px-4 py-2 text-sm font-semibold text-brand min-h-[2.75rem] flex items-center'
-        : 'rounded-2xl border border-black/10 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-500 min-h-[2.75rem] flex items-center';
+      if (stock) {
+        badgeEl.innerHTML =
+          'Наличие:&nbsp;<a href="#" class="underline decoration-brand/40 underline-offset-2 hover:text-brand2 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/35 rounded-sm" data-pv-inquiry-stock aria-label="Открыть форму уточнения наличия для выбранного варианта">уточнить</a>';
+        badgeEl.className =
+          'rounded-2xl border border-black/5 bg-brand/10 px-4 py-2 text-sm font-semibold text-brand min-h-[2.75rem] flex items-center';
+      } else {
+        badgeEl.textContent = 'Нет в наличии';
+        badgeEl.className =
+          'rounded-2xl border border-black/10 bg-slate-100 px-4 py-2 text-sm font-semibold text-slate-500 min-h-[2.75rem] flex items-center';
+      }
     }
 
     const detail = `${v.height}, ${v.container}`;
@@ -1794,6 +1813,41 @@ function initCatalogSelection() {
     renderPanels();
   });
 
+  /**
+   * Добавить/обновить позицию в подборе по кнопке data-selection-add и открыть форму «Позиций в подборе»
+   * (тот же поток, что и у «Уточнить наличие» после renderPanels).
+   */
+  window.SGOpenPodborInquiryFromButton = (btn) => {
+    if (!btn || typeof btn.matches !== 'function' || !btn.matches('[data-selection-add]')) return;
+    const item = readItem(btn);
+    const idx = selection.findIndex((x) => x.id === item.id);
+    if (idx < 0) {
+      selection = [...selection, item];
+    } else {
+      selection[idx] = { ...selection[idx], ...item };
+    }
+    save();
+    syncAddButtons();
+    renderPanels();
+    const panel = panelForAddButton(btn);
+    const submitBtn = panel && panel.querySelector('[data-selection-submit]');
+    if (!submitBtn || typeof window.SGOpenModal !== 'function') return;
+    const key = submitBtn.getAttribute('data-open-modal');
+    if (!key) return;
+    const title = submitBtn.getAttribute('data-modal-title') || '';
+    const noOverlay = submitBtn.getAttribute('data-modal-no-overlay') === '1';
+    const contextTitle = submitBtn.getAttribute('data-modal-context') || title;
+    let selectionNames = [];
+    try {
+      const rawNames = submitBtn.getAttribute('data-modal-selection-names');
+      const parsed = rawNames ? JSON.parse(rawNames) : [];
+      selectionNames = Array.isArray(parsed) ? parsed.map((x) => String(x || '').trim()).filter(Boolean) : [];
+    } catch (e) {
+      selectionNames = [];
+    }
+    window.SGOpenModal(key, title, { noOverlay, contextTitle, selectionNames });
+  };
+
   addButtons.forEach((btn) => {
     btn.addEventListener('click', () => {
       if (btn.dataset.selectionAnimating === '1') return;
@@ -1833,6 +1887,57 @@ function initCatalogSelection() {
   renderPanels();
 }
 
+/** Справочная таблица форматов тары: страницы категорий каталога (#sg-packaging-formats-dialog, data-packaging-formats-open). */
+function initPackagingFormatsDialog() {
+  const dlg = document.getElementById('sg-packaging-formats-dialog');
+  if (!dlg || dlg.dataset.sgPackagingBound === '1') return;
+  dlg.dataset.sgPackagingBound = '1';
+
+  let suppressOpenerUntil = 0;
+
+  const forceClose = () => {
+    suppressOpenerUntil = performance.now() + 450;
+    if (dlg.open) dlg.close();
+  };
+
+  const closeBtn = dlg.querySelector('[data-packaging-formats-close]');
+  if (closeBtn) {
+    closeBtn.addEventListener(
+      'pointerdown',
+      (e) => {
+        e.stopPropagation();
+      },
+      true
+    );
+    closeBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      forceClose();
+    });
+  }
+
+  dlg.addEventListener('click', (e) => {
+    if (e.target !== dlg) return;
+    e.preventDefault();
+    e.stopPropagation();
+    forceClose();
+  });
+
+  document.addEventListener('click', (e) => {
+    const opener = e.target.closest('[data-packaging-formats-open]');
+    if (!opener) return;
+    if (performance.now() < suppressOpenerUntil) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    if (dlg.contains(opener)) return;
+    e.preventDefault();
+    e.stopPropagation();
+    if (typeof dlg.showModal === 'function' && !dlg.open) dlg.showModal();
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initYear();
   initViewportHeroHeights();
@@ -1862,7 +1967,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactsYandexMap();
   initConsentCheckboxes();
   initCookieBanner();
-  initPlantVariantPicker();
+  initPackagingFormatsDialog();
   initCatalogSelection();
+  initPlantVariantPicker();
 });
 

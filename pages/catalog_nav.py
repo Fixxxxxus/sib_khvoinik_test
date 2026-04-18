@@ -184,7 +184,7 @@ _SECTION_EXPAND_CATEGORIES: dict[str, frozenset[str]] = {
 }
 
 CATALOG_NAV_SECTIONS_RAW: list[dict[str, Any]] = [
-    {"label": "Рулонные газоны", "icon": "layers", "named_url": "gazon"},
+    {"label": "Рулонные газоны", "icon": "layers", "named_url": "roll_lawn_price"},
     {"label": "Клубника", "icon": "cherry", "catalog_slug": "klubnika"},
     {"label": "Однолетние цветы", "icon": "flower-2", "children": _ODNOLETNIE_CHILDREN},
     {"label": "Деревья", "icon": "tree-deciduous", "children": _DEREVYA_CHILDREN},
@@ -235,6 +235,7 @@ def enrich_catalog_context(ctx: dict) -> dict:
 
         if raw.get("named_url"):
             item["href"] = reverse(raw["named_url"])
+            item["named_url_name"] = raw["named_url"]
         elif raw.get("catalog_slug"):
             item["href"] = reverse("catalog_item", kwargs={"slug": raw["catalog_slug"]})
             item["nav_slug"] = raw["catalog_slug"]
@@ -253,6 +254,9 @@ def enrich_catalog_context(ctx: dict) -> dict:
     def section_is_active(sec: dict[str, Any]) -> bool:
         if sec.get("soon"):
             return False
+        nav_route = (ctx.get("active_catalog_nav_route") or "").strip()
+        if nav_route and sec.get("named_url_name") == nav_route:
+            return True
         if active and active in (sec.get("match_slugs") or []):
             return True
         nav_slug = sec.get("nav_slug")

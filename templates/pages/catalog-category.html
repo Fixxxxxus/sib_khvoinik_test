@@ -52,7 +52,17 @@
                 <div class="text-xs text-slate-500">Цена</div>
                 <div class="mt-1 text-sm font-semibold text-brand leading-snug">{{ p.catalog_price_line }}</div>
                 {% if p.catalog_container_line %}
-                <div class="mt-1 text-xs text-slate-600">Тара: <span class="font-medium text-slate-800">{{ p.catalog_container_line }}</span></div>
+                <div class="mt-1 flex flex-wrap items-center gap-x-1 text-xs text-slate-600">
+                  <span>Тара: <span class="font-medium text-slate-800">{{ p.catalog_container_line }}</span></span>
+                  <button
+                    type="button"
+                    class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-brand/85 hover:bg-brand/10 hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
+                    data-packaging-formats-open
+                    aria-label="Справка по форматам тары"
+                  >
+                    <span class="select-none text-[11px] font-semibold leading-none" aria-hidden="true">ⓘ</span>
+                  </button>
+                </div>
                 {% endif %}
               {% elif p.catalog_teaser %}
                 <div class="text-xs text-slate-500">Цена</div>
@@ -149,6 +159,7 @@
           </button>
         </div>
       </section>
+      {% include 'partials/packaging_formats_dialog.html' %}
         </div>
       </div>
     </div>
