@@ -1923,19 +1923,34 @@ function initPackagingFormatsDialog() {
     forceClose();
   });
 
-  document.addEventListener('click', (e) => {
-    const opener = e.target.closest('[data-packaging-formats-open]');
-    if (!opener) return;
-    if (performance.now() < suppressOpenerUntil) {
+  /* capture: true — срабатывает до всплытия; на Pages не теряется из‑за чужих обработчиков */
+  document.addEventListener(
+    'click',
+    (e) => {
+      const opener = e.target.closest('[data-packaging-formats-open]');
+      if (!opener) return;
+      if (performance.now() < suppressOpenerUntil) {
+        e.preventDefault();
+        e.stopPropagation();
+        return;
+      }
+      if (dlg.contains(opener)) return;
       e.preventDefault();
       e.stopPropagation();
-      return;
-    }
-    if (dlg.contains(opener)) return;
-    e.preventDefault();
-    e.stopPropagation();
-    if (typeof dlg.showModal === 'function' && !dlg.open) dlg.showModal();
-  });
+      if (dlg.open) return;
+      try {
+        if (typeof dlg.showModal === 'function') dlg.showModal();
+        else if (typeof dlg.show === 'function') dlg.show();
+      } catch (err) {
+        try {
+          if (typeof dlg.show === 'function') dlg.show();
+        } catch (e2) {
+          console.warn('Packaging dialog open failed', e2);
+        }
+      }
+    },
+    true
+  );
 }
 
 document.addEventListener('DOMContentLoaded', () => {
