@@ -4,14 +4,14 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Служба заботы — Сибирские газоны</title>
+    <title>Лилейник гибридный — Календарь ухода за растениями — Сибирские газоны</title>
     <meta name="description" content="Сибирские газоны — технологичное озеленение, питомник и рулонный газон" />
     <meta name="base-path" content="/sib_khvoinik_test" />
 
     <link rel="icon" href="/sib_khvoinik_test/static/media/branding/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/sib_khvoinik_test/static/media/branding/favicon-32.png" sizes="32x32" type="image/png" />
 
-    <!-- Tailwind: локальный бандл (GitHub Pages без внешнего CDN) -->
+    <!-- Tailwind: локальный скрипт (CDN без сети ломает всю вёрстку — классы hidden/md:* не работают) -->
     <script src="/sib_khvoinik_test/static/js/tailwind.browser.js?v=1"></script>
     <script>
       tailwind.config = {
@@ -39,6 +39,7 @@
   <body class="bg-white text-slate-900 antialiased">
     
 <header id="site-header" class="sticky top-0 z-50 border-b border-slate-200 bg-white">
+  <!-- Десктоп: логотип слева, ссылки по центру, справа мессенджеры и звонок -->
   <div class="sg-nav-fallback-desktop mx-auto hidden w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 md:flex lg:gap-6 lg:px-8">
     <a href="/sib_khvoinik_test/" class="flex shrink-0 items-center">
       <img
@@ -53,27 +54,76 @@
       class="flex min-w-0 flex-1 flex-nowrap items-center justify-center gap-x-2 gap-y-1 overflow-x-auto px-1.5 py-0.5 sm:gap-x-2.5 sm:px-2 lg:gap-x-3 lg:px-2.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
       aria-label="Основное меню"
     >
-      <a href="/sib_khvoinik_test/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Главная</a>
-      <a href="/sib_khvoinik_test/gazon/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Газон</a>
-      <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Озеленение</a>
-      <a href="/sib_khvoinik_test/b2b/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">B2B</a>
-      <a href="/sib_khvoinik_test/pitomnik/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Питомник</a>
-      <a href="/sib_khvoinik_test/sadovye-centry/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Садовые центры</a>
-      <a href="/sib_khvoinik_test/catalog/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Каталог</a>
+      <a href="/sib_khvoinik_test/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Главная
+      </a>
+      <a href="/sib_khvoinik_test/gazon/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Газон
+      </a>
+      <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Озеленение
+      </a>
+      <a href="/sib_khvoinik_test/b2b/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        B2B
+      </a>
+      <a href="/sib_khvoinik_test/pitomnik/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Питомник
+      </a>
+      <a href="/sib_khvoinik_test/sadovye-centry/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Садовые центры
+      </a>
+      <a href="/sib_khvoinik_test/catalog/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Каталог
+      </a>
       <!-- TODO: вернуть когда будет контент
-      <a href="/sib_khvoinik_test/stati/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Статьи</a>
+      <a href="/sib_khvoinik_test/stati/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Статьи
+      </a>
       -->
-      <a href="/sib_khvoinik_test/kontakty/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">Контакты</a>
+      <a href="/sib_khvoinik_test/kontakty/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+        Контакты
+      </a>
     </nav>
     <div class="flex shrink-0 items-center gap-2">
-      <a href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM" target="_blank" rel="noopener noreferrer" aria-label="MAX" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[11px] font-semibold text-indigo-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow">MAX</a>
-      <a href="https://t.me/sibirskie_gazony" target="_blank" rel="noopener noreferrer" aria-label="Telegram" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow"><i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i></a>
-      <a href="https://vk.com/sibirskiegazony" target="_blank" rel="noopener noreferrer" aria-label="VK" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow">VK</a>
-      <a href="tel:+73832010600" class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-2 text-sm font-semibold text-white shadow-glow transition hover:brightness-105 sm:px-5 sm:py-2.5 sm:text-[15px]"><i data-lucide="phone-call" class="h-4 w-4 shrink-0" aria-hidden="true"></i>Позвонить</a>
+      <a
+        href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="MAX"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[11px] font-semibold text-indigo-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow"
+      >
+        MAX
+      </a>
+      <a
+        href="https://t.me/sibirskie_gazony"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Telegram"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow"
+      >
+        <i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i>
+      </a>
+      <a
+        href="https://vk.com/sibirskiegazony"
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="VK"
+        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow"
+      >
+        VK
+      </a>
+      <a
+        href="tel:+73832010600"
+        class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-2 text-sm font-semibold text-white shadow-glow transition hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand sm:px-5 sm:py-2.5 sm:text-[15px]"
+      >
+        <i data-lucide="phone-call" class="h-4 w-4 shrink-0" aria-hidden="true"></i>
+        Позвонить
+      </a>
     </div>
   </div>
 
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <!-- Мобильная верхняя строка: лого + действия -->
     <div class="sg-nav-fallback-mobile-bar flex items-center justify-between gap-3 py-2.5 md:hidden">
       <a href="/sib_khvoinik_test/" class="flex min-w-0 items-center">
         <img
@@ -85,10 +135,40 @@
         />
       </a>
       <div class="flex shrink-0 items-center gap-1.5">
-        <a href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM" target="_blank" rel="noopener noreferrer" aria-label="MAX" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[9px] font-semibold text-indigo-700 shadow-sm">MAX</a>
-        <a href="https://t.me/sibirskie_gazony" target="_blank" rel="noopener noreferrer" aria-label="Telegram" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm"><i data-lucide="send" class="h-3.5 w-3.5" aria-hidden="true"></i></a>
-        <a href="https://vk.com/sibirskiegazony" target="_blank" rel="noopener noreferrer" aria-label="VK" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[10px] font-semibold tracking-wide text-blue-700 shadow-sm">VK</a>
-        <a href="tel:+73832010600" aria-label="Позвонить" class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-200/80 bg-gradient-to-br from-emerald-50 to-green-50 text-emerald-700 shadow-sm"><i data-lucide="phone-call" class="h-3.5 w-3.5" aria-hidden="true"></i></a>
+        <a
+          href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="MAX"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[9px] font-semibold text-indigo-700 shadow-sm"
+        >
+          MAX
+        </a>
+        <a
+          href="https://t.me/sibirskie_gazony"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Telegram"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm"
+        >
+          <i data-lucide="send" class="h-3.5 w-3.5" aria-hidden="true"></i>
+        </a>
+        <a
+          href="https://vk.com/sibirskiegazony"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="VK"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[10px] font-semibold tracking-wide text-blue-700 shadow-sm"
+        >
+          VK
+        </a>
+        <a
+          href="tel:+73832010600"
+          aria-label="Позвонить"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-200/80 bg-gradient-to-br from-emerald-50 to-green-50 text-emerald-700 shadow-sm"
+        >
+          <i data-lucide="phone-call" class="h-3.5 w-3.5" aria-hidden="true"></i>
+        </a>
         <button
           id="burgerBtn"
           type="button"
@@ -105,22 +185,69 @@
   <div id="mobileMenu" class="sg-mobile-menu-panel hidden border-b border-slate-200 bg-white md:hidden">
     <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 gap-1">
-        <a href="/sib_khvoinik_test/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Главная</a>
-        <a href="/sib_khvoinik_test/gazon/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Газон</a>
-        <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Озеленение</a>
-        <a href="/sib_khvoinik_test/b2b/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">B2B</a>
-        <a href="/sib_khvoinik_test/pitomnik/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Питомник</a>
-        <a href="/sib_khvoinik_test/sadovye-centry/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Садовые центры</a>
-        <a href="/sib_khvoinik_test/catalog/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Каталог</a>
+        <a href="/sib_khvoinik_test/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Главная
+        </a>
+        <a href="/sib_khvoinik_test/gazon/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Газон
+        </a>
+        <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Озеленение
+        </a>
+        <a href="/sib_khvoinik_test/b2b/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          B2B
+        </a>
+        <a href="/sib_khvoinik_test/pitomnik/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Питомник
+        </a>
+        <a href="/sib_khvoinik_test/sadovye-centry/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Садовые центры
+        </a>
+        <a href="/sib_khvoinik_test/catalog/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Каталог
+        </a>
         <!-- TODO: вернуть когда будет контент
-        <a href="/sib_khvoinik_test/stati/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Статьи</a>
+        <a href="/sib_khvoinik_test/stati/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Статьи
+        </a>
         -->
-        <a href="/sib_khvoinik_test/kontakty/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">Контакты</a>
+        <a href="/sib_khvoinik_test/kontakty/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+          Контакты
+        </a>
         <div class="mt-2 grid grid-cols-4 gap-2">
-          <a href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM" target="_blank" rel="noopener noreferrer" aria-label="MAX" class="inline-flex items-center justify-center rounded-xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 px-2 py-2.5 text-[11px] font-semibold text-indigo-700 shadow-sm">MAX</a>
-          <a href="https://t.me/sibirskie_gazony" target="_blank" rel="noopener noreferrer" aria-label="Telegram" class="inline-flex items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 px-2 py-2.5 text-sky-700 shadow-sm"><i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i></a>
-          <a href="https://vk.com/sibirskiegazony" target="_blank" rel="noopener noreferrer" aria-label="VK" class="inline-flex items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 px-2 py-2.5 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm">VK</a>
-          <a href="tel:+73832010600" class="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand to-brand2 px-2 py-2.5 text-xs font-semibold text-white shadow-glow">Звонок</a>
+          <a
+            href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="MAX"
+            class="inline-flex items-center justify-center rounded-xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 px-2 py-2.5 text-[11px] font-semibold text-indigo-700 shadow-sm"
+          >
+            MAX
+          </a>
+          <a
+            href="https://t.me/sibirskie_gazony"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Telegram"
+            class="inline-flex items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 px-2 py-2.5 text-sky-700 shadow-sm"
+          >
+            <i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i>
+          </a>
+          <a
+            href="https://vk.com/sibirskiegazony"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="VK"
+            class="inline-flex items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 px-2 py-2.5 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm"
+          >
+            VK
+          </a>
+          <a
+            href="tel:+73832010600"
+            class="inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand to-brand2 px-2 py-2.5 text-xs font-semibold text-white shadow-glow"
+          >
+            Звонок
+          </a>
         </div>
       </div>
     </div>
@@ -128,295 +255,717 @@
 </header>
 
 
-
     <main>
-      <section
-          data-zaboty-hero
-          class="relative isolate flex h-[calc(100dvh-4.5rem)] w-full flex-col overflow-hidden md:h-[calc(100dvh-5rem)]"
-          aria-label="Служба заботы"
-        >
-          <div class="absolute inset-0 -z-10 bg-[url('/sib_khvoinik_test/static/media/images/sluzhba-zaboty-hero-bg.png')] bg-cover bg-center"></div>
-          <div class="absolute inset-0 -z-10 bg-gradient-to-br from-black/65 via-slate-900/45 to-brand2/30"></div>
-          <div class="relative z-10 flex min-h-0 w-full flex-1 items-center px-4 py-12 sm:px-8 sm:py-14 lg:px-14 lg:py-16 xl:px-20">
-            <div class="mx-auto w-full max-w-7xl">
-              <div class="max-w-4xl">
-                <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/90">
-                  <i data-lucide="heart" class="h-4 w-4 text-accent"></i>
-                  Система напоминаний и экспертная поддержка
-                </div>
-                <h1 class="mt-5 text-4xl font-semibold leading-[1.05] text-white md:text-5xl lg:text-6xl">
-                  Служба заботы
-                </h1>
-                <p class="mt-5 max-w-2xl text-base text-white/75 md:text-lg lg:text-xl">
-                  Система напоминаний, инструкций и экспертной поддержки наших клиентов.
-                </p>
-                <button
-                  type="button"
-                  data-open-modal="contact_zaboty"
-                  data-modal-title="Подключиться"
-                  class="mt-7 inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 font-semibold text-white shadow-glow transition hover:brightness-105 sm:w-auto"
-                >
-                  <i data-lucide="sparkles" class="h-5 w-5"></i>
-                  Подключиться
-                </button>
-              </div>
-            </div>
-          </div>
-        </section>
+      
+  <!-- Breadcrumbs -->
+  <section class="mt-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <nav class="flex items-center gap-1.5 text-sm text-slate-500" data-animate="fadeInUp">
+        <a href="/sib_khvoinik_test/sluzhba-zaboty/calendar/" class="hover:text-brand transition">Календарь</a>
+        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+        
+          <a href="/sib_khvoinik_test/sluzhba-zaboty/calendar/mnogoletniki/" class="hover:text-brand transition">Многолетники</a>
+          <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+        
+        <span class="text-slate-900 font-medium">Лилейник гибридный</span>
+      </nav>
+    </div>
+  </section>
 
-        <!-- Why -->
-        <section id="conditions" class="-mt-px scroll-mt-24 bg-white pt-14">
-          <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
-              <div class="lg:col-span-6" data-animate="fadeInUp">
-                <h2 class="text-3xl font-semibold leading-tight">Зачем нужна Служба заботы</h2>
-                <p class="mt-3 text-slate-600 text-base">
-                  Сибирский климат требует точного ухода по срокам. Пропущенный срок может стоить декоративности на годы.
-                </p>
-                <div class="mt-6 rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-6">
-                  <div class="font-semibold">Проблема обычно не в растении</div>
-                  <div class="mt-2 text-sm text-slate-600">
-                    Большинство проблем возникает из-за неправильного или несвоевременного ухода.
-                  </div>
-                  <button
-                    type="button"
-                    data-open-modal="contact_zaboty"
-                    data-modal-title="Получать календарь сезонных работ"
-                    class="mt-5 w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
-                  >
-                    Получать календарь сезонных работ
-                  </button>
-                </div>
-              </div>
-              <div class="lg:col-span-6" data-animate="fadeInUp">
-                <div class="rounded-3xl border border-black/5 bg-white p-6">
-                  <div class="flex items-center justify-between">
-                    <div class="font-semibold">Базовое сопровождение</div>
-                    <div class="text-xs text-slate-500">входит бесплатно</div>
-                  </div>
-                  <ul class="mt-4 space-y-3">
+  <!-- Title block -->
+  <section class="mt-5">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-white p-6 md:p-8" data-animate="fadeInUp">
+        <h1 class="text-3xl md:text-4xl font-semibold leading-tight">Лилейник гибридный</h1>
+        
+          <div class="mt-2 text-lg text-slate-500 italic">Hemerocallis</div>
+        
+        
+          <div class="mt-3 text-slate-600">[&#x27;Arctic Snow&#x27;, &#x27;Byzantine Emperor&#x27;, &#x27;Janice Brown&#x27;, &#x27;Chicago Apache&#x27;, &#x27;El Desperado&#x27;]</div>
+        
+      </div>
+    </div>
+  </section>
 
-                      <li class="flex items-start gap-3">
-                        <i data-lucide="check-circle-2" class="h-5 w-5 text-brand mt-0.5"></i>
-                        <div>
-                          <div class="text-sm font-semibold">Календарь сезонных работ</div>
-                        </div>
-                      </li>
-
-                      <li class="flex items-start gap-3">
-                        <i data-lucide="check-circle-2" class="h-5 w-5 text-brand mt-0.5"></i>
-                        <div>
-                          <div class="text-sm font-semibold">Напоминания через CRM</div>
-                        </div>
-                      </li>
-
-                      <li class="flex items-start gap-3">
-                        <i data-lucide="check-circle-2" class="h-5 w-5 text-brand mt-0.5"></i>
-                        <div>
-                          <div class="text-sm font-semibold">Короткие видеоинструкции</div>
-                        </div>
-                      </li>
-
-                      <li class="flex items-start gap-3">
-                        <i data-lucide="check-circle-2" class="h-5 w-5 text-brand mt-0.5"></i>
-                        <div>
-                          <div class="text-sm font-semibold">Схемы и рекомендации</div>
-                        </div>
-                      </li>
-
-                      <li class="flex items-start gap-3">
-                        <i data-lucide="check-circle-2" class="h-5 w-5 text-brand mt-0.5"></i>
-                        <div>
-                          <div class="text-sm font-semibold">Подбор препаратов под типовую задачу</div>
-                        </div>
-                      </li>
-
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- Expanded help -->
-        <section class="mt-14">
-          <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
-              <div class="grid grid-cols-1 gap-8 items-start lg:grid-cols-12" data-zaboty-expert-slider>
-                <div class="lg:col-span-5">
-                  <h2 class="text-3xl font-semibold leading-tight">Расширенная экспертная помощь</h2>
-                  <p class="mt-3 text-slate-600">
-                    Выезд специалиста, диагностика, отбор образцов и рекомендации по восстановлению.
-                  </p>
-                  <div class="mt-5 space-y-3">
-                    <div class="flex items-start gap-3">
-                      <i data-lucide="map-pin" class="h-5 w-5 text-brand mt-0.5"></i>
-                      <div class="text-sm text-slate-600">Выезд специалиста при необходимости</div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                      <i data-lucide="stethoscope" class="h-5 w-5 text-brand mt-0.5"></i>
-                      <div class="text-sm text-slate-600">Диагностика проблем и заключение</div>
-                    </div>
-                    <div class="flex items-start gap-3">
-                      <i data-lucide="wrench" class="h-5 w-5 text-brand mt-0.5"></i>
-                      <div class="text-sm text-slate-600">Рекомендации по восстановлению</div>
-                    </div>
-                  </div>
-                </div>
-                <div class="lg:col-span-7">
-                  <div class="w-full rounded-3xl border border-black/5 bg-white p-6">
-                    <div class="relative aspect-[16/8] w-full overflow-hidden rounded-2xl bg-slate-100" data-zaboty-expert-slider-viewport>
-                      <div class="h-full overflow-hidden">
-                        <div class="flex h-full transition-transform duration-500 ease-out" data-zaboty-expert-track style="transform: translateX(0px)">
-                          <div class="relative h-full w-full shrink-0 bg-slate-100" data-zaboty-expert-slide data-caption="Выезд специалиста и первичная диагностика на месте">
-                            <img src="/sib_khvoinik_test/static/media/images/sluzhba-expert-01.png" alt="Ландшафт с хвойными: выезд специалиста и первичная диагностика на месте" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
-                          </div>
-                          <div class="relative h-full w-full shrink-0 bg-slate-100" data-zaboty-expert-slide data-caption="Лабораторный анализ и точное определение причины">
-                            <img src="/sib_khvoinik_test/static/media/images/sluzhba-expert-02.png" alt="Лаборатория: микроскопический анализ образцов растений" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
-                          </div>
-                          <div class="relative h-full w-full shrink-0 bg-slate-100" data-zaboty-expert-slide data-caption="Выявляем болезни: грибки, инфекции, стресс">
-                            <img src="/sib_khvoinik_test/static/media/images/sluzhba-expert-03.png" alt="Поражённые хвоинки: признаки болезней и стресса" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
-                          </div>
-                          <div class="relative h-full w-full shrink-0 bg-slate-100" data-zaboty-expert-slide data-caption="Обнаруживаем повреждения на ранней стадии, пока проблему можно легко устранить">
-                            <img src="/sib_khvoinik_test/static/media/images/sluzhba-expert-04.png" alt="Кора дерева с ходами вредителей: раннее выявление повреждений" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
-                          </div>
-                          <div class="relative h-full w-full shrink-0 bg-slate-100" data-zaboty-expert-slide data-caption="Сохраняем растения, а не меняем их">
-                            <img src="/sib_khvoinik_test/static/media/images/sluzhba-expert-05.png" alt="Здоровый ландшафт с хвойными: сохранение растений" class="h-full w-full object-cover object-center" loading="lazy" decoding="async" />
-                          </div>
-                        </div>
-                      </div>
-                      <div class="pointer-events-none absolute inset-0 flex items-center justify-between px-2">
-                        <button type="button" class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white" data-zaboty-expert-prev aria-label="Предыдущий слайд">
-                          <i data-lucide="chevron-left" class="h-5 w-5 shrink-0"></i>
-                        </button>
-                        <button type="button" class="pointer-events-auto z-[2] inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-black/10 bg-white/95 text-slate-800 shadow-md backdrop-blur-sm transition-colors hover:bg-white" data-zaboty-expert-next aria-label="Следующий слайд">
-                          <i data-lucide="chevron-right" class="h-5 w-5 shrink-0"></i>
-                        </button>
-                      </div>
-                      <div class="absolute bottom-3 left-0 right-0 flex items-center justify-center gap-1.5">
-                        <button type="button" class="h-1.5 w-1.5 rounded-full bg-slate-400/45 data-[active=true]:w-5 data-[active=true]:bg-brand transition-all" data-zaboty-expert-dot="0" data-active="true" aria-label="Слайд 1"></button>
-                        <button type="button" class="h-1.5 w-1.5 rounded-full bg-slate-400/45 data-[active=true]:w-5 data-[active=true]:bg-brand transition-all" data-zaboty-expert-dot="1" aria-label="Слайд 2"></button>
-                        <button type="button" class="h-1.5 w-1.5 rounded-full bg-slate-400/45 data-[active=true]:w-5 data-[active=true]:bg-brand transition-all" data-zaboty-expert-dot="2" aria-label="Слайд 3"></button>
-                        <button type="button" class="h-1.5 w-1.5 rounded-full bg-slate-400/45 data-[active=true]:w-5 data-[active=true]:bg-brand transition-all" data-zaboty-expert-dot="3" aria-label="Слайд 4"></button>
-                        <button type="button" class="h-1.5 w-1.5 rounded-full bg-slate-400/45 data-[active=true]:w-5 data-[active=true]:bg-brand transition-all" data-zaboty-expert-dot="4" aria-label="Слайд 5"></button>
-                      </div>
-                    </div>
-                    <p class="mt-4 text-lg font-semibold leading-snug text-slate-800 md:text-xl md:leading-snug" data-zaboty-expert-caption aria-live="polite">
-                      Выезд специалиста и первичная диагностика на месте
-                    </p>
-                    <button
-                      type="button"
-                      data-open-modal="zaboty_expert_visit"
-                      data-modal-title="Запросить экспертную помощь"
-                      class="mt-3 w-full inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
-                    >
-                      Запросить экспертную помощь
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- For whom -->
-        <section class="mt-14">
-          <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
-              <h2 class="text-3xl font-semibold leading-tight">Для кого подходит Служба заботы</h2>
-              <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
-                <div class="rounded-3xl border border-black/5 bg-white p-6">
-                  <div class="font-semibold text-sm">Владельцы загородных домов и дач</div>
-                  <div class="mt-2 text-sm text-slate-600">Сохранение декоративности по сезонам.</div>
-                </div>
-                <div class="rounded-3xl border border-black/5 bg-white p-6">
-                  <div class="font-semibold text-sm">Ландшафтные компании</div>
-                  <div class="mt-2 text-sm text-slate-600">Регламент + сопровождение клиентов.</div>
-                </div>
-                <div class="rounded-3xl border border-black/5 bg-white p-6">
-                  <div class="font-semibold text-sm">Управляющие организации</div>
-                  <div class="mt-2 text-sm text-slate-600">Контроль ухода и типовые сценарии.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- How it works -->
-        <section class="mt-14">
-          <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <h2 class="text-3xl font-semibold leading-tight" data-animate="fadeInUp">Как это работает</h2>
-            <div class="mt-8 grid grid-cols-1 md:grid-cols-5 gap-4">
-
-                <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-                  <div class="text-sm font-semibold text-brand">Шаг 1</div>
-                  <div class="mt-3 text-sm text-slate-700 font-semibold">Вы покупаете растения или газон</div>
-                </div>
-
-                <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-                  <div class="text-sm font-semibold text-brand">Шаг 2</div>
-                  <div class="mt-3 text-sm text-slate-700 font-semibold">Получаете цифровую карту</div>
-                </div>
-
-                <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-                  <div class="text-sm font-semibold text-brand">Шаг 3</div>
-                  <div class="mt-3 text-sm text-slate-700 font-semibold">Подключаетесь к Службе заботы</div>
-                </div>
-
-                <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-                  <div class="text-sm font-semibold text-brand">Шаг 4</div>
-                  <div class="mt-3 text-sm text-slate-700 font-semibold">Получаете напоминания</div>
-                </div>
-
-                <div class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition" data-animate="fadeInUp">
-                  <div class="text-sm font-semibold text-brand">Шаг 5</div>
-                  <div class="mt-3 text-sm text-slate-700 font-semibold">При необходимости — экспертная помощь</div>
-                </div>
-
-            </div>
-            <div
-              class="mt-8 rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-10 shadow-[0_1px_0_rgba(15,23,42,0.04)]"
-              data-animate="fadeInUp"
+  <!-- Plant timeline -->
+  
+    <div class="sticky top-[4.5rem] z-40 mt-6 border-b border-black/5 bg-white/95 backdrop-blur">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex gap-2 overflow-x-auto py-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          
+            <a
+              href="#period-1"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="28 апреля"
             >
-              <div class="flex flex-col lg:flex-row lg:items-start lg:gap-10 xl:gap-14">
-                <div class="min-w-0 flex-1">
-                  <h3 class="text-xl font-semibold leading-snug text-slate-900">Почему это важно</h3>
-                  <p class="mt-3 text-sm leading-relaxed text-slate-600">
-                    Когда срок обработки пропущен, газон желтеет, хвойные получают ожоги, кустарники теряют декоративность, а растения начинают болеть.
-                    Повторная покупка дороже своевременного ухода.
-                  </p>
-                </div>
-                <div class="mt-8 flex min-w-0 flex-col justify-center border-t border-black/5 pt-8 lg:mt-0 lg:w-[min(100%,22rem)] lg:flex-shrink-0 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0 xl:w-[min(100%,24rem)]">
-                  <p class="text-sm font-medium leading-relaxed text-slate-800">
-                    Сад — это долгосрочный проект. Мы помогаем сохранить его результат.
-                  </p>
-                  <button
-                    type="button"
-                    data-open-modal="contact_zaboty"
-                    data-modal-title="Подключиться к Службе заботы"
-                    class="mt-5 w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3.5 text-center text-white font-semibold shadow-glow transition hover:brightness-105"
-                  >
-                    Подключиться к Службе заботы
-                  </button>
-                </div>
+              28 апреля
+            </a>
+          
+            <a
+              href="#period-2"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="13 мая"
+            >
+              13 мая
+            </a>
+          
+            <a
+              href="#period-3"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="29 мая"
+            >
+              29 мая
+            </a>
+          
+            <a
+              href="#period-4"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="15 июня"
+            >
+              15 июня
+            </a>
+          
+            <a
+              href="#period-5"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="1 июля"
+            >
+              1 июля
+            </a>
+          
+            <a
+              href="#period-6"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="14 июля"
+            >
+              14 июля
+            </a>
+          
+            <a
+              href="#period-7"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="28 июля"
+            >
+              28 июля
+            </a>
+          
+            <a
+              href="#period-8"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="12 августа"
+            >
+              12 августа
+            </a>
+          
+            <a
+              href="#period-9"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="26 августа"
+            >
+              26 августа
+            </a>
+          
+            <a
+              href="#period-10"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="9 сентября"
+            >
+              9 сентября
+            </a>
+          
+            <a
+              href="#period-11"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="24 сентября"
+            >
+              24 сентября
+            </a>
+          
+            <a
+              href="#period-12"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="10 октября"
+            >
+              10 октября
+            </a>
+          
+            <a
+              href="#period-13"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="23 октября"
+            >
+              23 октября
+            </a>
+          
+        </div>
+      </div>
+    </div>
+  
+
+  <!-- Period cards -->
+  <section class="mt-8 mb-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
+      
+        <div
+          id="period-1"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            28 апреля
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Старт без лишней суеты</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            
+              <div class="mt-4 text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>Лилейники просыпаются уверенно и практически не требуют вмешательства.</p>
+<p>Достаточно:</p>
+<ul class="list-disc ml-5 space-y-1">
+<li>убрать сухую листву</li>
+<li>слегка разрыхлить почву</li>
+<li>при необходимости добавить компост</li>
+</ul>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>это один из самых «самостоятельных» многолетников</span></div></div>
+            
+          
+
+          <!-- Products -->
+          
+
+          <!-- Videos -->
+          
+        </div>
+      
+        <div
+          id="period-2"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            13 мая
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Формирование плотного куста</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            
+              <div class="mt-4 text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>Начинает активно расти листва — формируется мощная куртина.</p>
+<p>Поддержка:</p>
+<ul class="list-disc ml-5 space-y-1">
+<li><strong>Фертика Весна-Лето</strong></li>
+</ul>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>перекорм не нужен — лилейник и так сильный</span></div>
+<p>💡 Подкормки и всё необходимое можно удобно подобрать у нас.</p></div>
+            
+          
+
+          <!-- Products -->
+          
+
+          <!-- Videos -->
+          
+        </div>
+      
+        <div
+          id="period-3"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            29 мая
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Закладка цветоносов</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            
+              <div class="mt-4 text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>Появляются первые цветочные стрелки.</p>
+<p>Важно:</p>
+<ul class="list-disc ml-5 space-y-1">
+<li>солнце или лёгкая полутень</li>
+<li>умеренный полив</li>
+</ul>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>при хорошем освещении цветение будет ярче</span></div></div>
+            
+          
+
+          <!-- Products -->
+          
+
+          <!-- Videos -->
+          
+        </div>
+      
+        <div
+          id="period-4"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            15 июня
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Бутоны на подходе</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            
+              <div class="mt-4 text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>Формируются бутоны — уже видно потенциал сорта.</p>
+<p>Добавьте:</p>
+<ul class="list-disc ml-5 space-y-1">
+<li><strong>Монофосфат калия</strong></li>
+</ul>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>влияет на размер и насыщенность цвета</span></div></div>
+            
+          
+
+          <!-- Products -->
+          
+
+          <!-- Videos -->
+          
+        </div>
+      
+        <div
+          id="period-5"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            1 июля
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Первое цветение</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            <div class="mt-4 flex flex-col lg:flex-row lg:gap-6">
+              <!-- Text column -->
+              <div class="lg:flex-[3] min-w-0">
+                
+                  <div class="text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>Начинается цветение — и здесь раскрывается весь ассортимент:</p>
+<ul class="list-disc ml-5 space-y-1">
+<li><strong>Arctic Snow</strong> — чисто-белый, элегантный</li>
+<li><strong>Byzantine Emperor</strong> — тёмный, насыщенный, «бархатный»</li>
+<li><strong>Janice Brown</strong> — мягкие тёплые оттенки</li>
+<li><strong>Chicago Apache</strong> — ярко-красный акцент</li>
+<li><strong>El Desperado</strong> — контраст жёлтого и красного</li>
+</ul></div>
+                
+              </div>
+              <!-- Image column -->
+              <div class="mt-4 lg:mt-0 lg:flex-[2] shrink-0">
+                
+                  <div class="plant-gallery" data-gallery>
+                    <div class="aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100 cursor-pointer" data-gallery-main>
+                      <img
+                        src="https://www.ballyrobertgardens.com/cdn/shop/products/Hemerocallis_Arctic_Snow_1_nbrcg.jpg?v=1569402208"
+                        alt="Лилейник гибридный — Первое цветение"
+                        class="h-full w-full object-cover transition-opacity duration-300"
+                        loading="lazy"
+                      >
+                    </div>
+                    <div class="mt-2 flex gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                      
+                        <button
+                          class="shrink-0 h-14 w-14 overflow-hidden rounded-lg bg-slate-100 ring-2 transition ring-brand"
+                          data-gallery-thumb="0"
+                        >
+                          <img src="https://www.ballyrobertgardens.com/cdn/shop/products/Hemerocallis_Arctic_Snow_1_nbrcg.jpg?v=1569402208" alt="" class="h-full w-full object-cover" loading="lazy">
+                        </button>
+                      
+                        <button
+                          class="shrink-0 h-14 w-14 overflow-hidden rounded-lg bg-slate-100 ring-2 transition ring-transparent hover:ring-brand/40"
+                          data-gallery-thumb="1"
+                        >
+                          <img src="https://oakesdaylilies.com/cdn/shop/files/Chicago-Apache-Daylily-Nancy-Dudrick-1080x1080.jpg?v=1765313998&amp;width=800" alt="" class="h-full w-full object-cover" loading="lazy">
+                        </button>
+                      
+                    </div>
+                    <div class="hidden">
+                      
+                        <span data-gallery-src="0">https://www.ballyrobertgardens.com/cdn/shop/products/Hemerocallis_Arctic_Snow_1_nbrcg.jpg?v=1569402208</span>
+                      
+                        <span data-gallery-src="1">https://oakesdaylilies.com/cdn/shop/files/Chicago-Apache-Daylily-Nancy-Dudrick-1080x1080.jpg?v=1765313998&amp;width=800</span>
+                      
+                    </div>
+                  </div>
+                
               </div>
             </div>
-          </div>
-        </section>
+          
 
+          <!-- Products -->
+          
 
-      <section class="mt-14 mb-16">
-        <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/5 via-white to-brand2/5 p-8 md:p-12 text-center" data-animate="fadeInUp">
-            <h2 class="text-2xl md:text-3xl font-semibold">Календарь ухода за растениями</h2>
-            <p class="mt-3 text-slate-600 max-w-2xl mx-auto">115 растений с точными сроками и инструкциями по уходу для сибирского климата</p>
-            <a href="/sib_khvoinik_test/sluzhba-zaboty/calendar/" class="mt-6 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-8 py-4 text-white font-semibold shadow-glow hover:brightness-105 transition">
-              Открыть календарь
-              <i data-lucide="arrow-right" class="h-5 w-5"></i>
-            </a>
-          </div>
+          <!-- Videos -->
+          
         </div>
-      </section>
+      
+        <div
+          id="period-6"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            14 июля
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Массовое цветение</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            
+              <div class="mt-4 text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>Кусты цветут активно и одновременно.</p>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>особенность лилейника:</span></div>
+<p>каждый цветок живёт 1 день, но их очень много</p>
+<p>Чтобы поддержать цветение:</p>
+<ul class="list-disc ml-5 space-y-1">
+<li><strong>Акварин Цветочный</strong></li>
+</ul></div>
+            
+          
+
+          <!-- Products -->
+          
+
+          <!-- Videos -->
+          
+        </div>
+      
+        <div
+          id="period-7"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            28 июля
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Уход без усилий</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            
+              <div class="mt-4 text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>В этот период достаточно:</p>
+<ul class="list-disc ml-5 space-y-1">
+<li>удалять отцветшие цветы (по желанию)</li>
+</ul>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>это больше про эстетику, чем необходимость</span></div></div>
+            
+          
+
+          <!-- Products -->
+          
+
+          <!-- Videos -->
+          
+        </div>
+      
+        <div
+          id="period-8"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            12 августа
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Завершение цветения</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            
+              <div class="mt-4 text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>Цветение постепенно заканчивается.</p>
+<p>Что можно сделать:</p>
+<ul class="list-disc ml-5 space-y-1">
+<li>удалить цветоносы</li>
+<li>оставить листву</li>
+</ul>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>листва остаётся декоративной</span></div></div>
+            
+          
+
+          <!-- Products -->
+          
+
+          <!-- Videos -->
+          
+        </div>
+      
+        <div
+          id="period-9"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            26 августа
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Восстановление куста</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            
+              <div class="mt-4 text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>Растение накапливает силы.</p>
+<p>Можно поддержать:</p>
+<ul class="list-disc ml-5 space-y-1">
+<li><strong>Акварин универсальный</strong></li>
+</ul></div>
+            
+          
+
+          <!-- Products -->
+          
+
+          <!-- Videos -->
+          
+        </div>
+      
+        <div
+          id="period-10"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            9 сентября
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Деление (если нужно)</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            
+              <div class="mt-4 text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>Лучшее время для деления:</p>
+<ul class="list-disc ml-5 space-y-1">
+<li>при загущении</li>
+<li>раз в 4–5 лет</li>
+</ul>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>это омолаживает куст</span></div></div>
+            
+          
+
+          <!-- Products -->
+          
+
+          <!-- Videos -->
+          
+        </div>
+      
+        <div
+          id="period-11"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            24 сентября
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Подготовка к осени</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            <div class="mt-4 flex flex-col lg:flex-row lg:gap-6">
+              <!-- Text column -->
+              <div class="lg:flex-[3] min-w-0">
+                
+                  <div class="text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>Листва начинает желтеть.</p>
+<p>Сделайте:</p>
+<ul class="list-disc ml-5 space-y-1">
+<li>частично обрежьте листья</li>
+<li>приведите посадку в порядок</li>
+</ul></div>
+                
+              </div>
+              <!-- Image column -->
+              <div class="mt-4 lg:mt-0 lg:flex-[2] shrink-0">
+                
+                  <div class="aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100">
+                    <img
+                      src="https://images.immediate.co.uk/production/volatile/sites/10/2018/04/2048x1365-Hemerocallis-to-grow-LI3549809-609e7bf.jpg?quality=90"
+                      alt="Лилейник гибридный — Подготовка к осени"
+                      class="h-full w-full object-cover"
+                      loading="lazy"
+                    >
+                  </div>
+                
+              </div>
+            </div>
+          
+
+          <!-- Products -->
+          
+
+          <!-- Videos -->
+          
+        </div>
+      
+        <div
+          id="period-12"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            10 октября
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Подготовка к зиме</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            
+              <div class="mt-4 text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>Лилейники отлично зимуют.</p>
+<p>Достаточно:</p>
+<ul class="list-disc ml-5 space-y-1">
+<li>обрезать листву</li>
+<li>можно слегка замульчировать</li>
+</ul></div>
+            
+          
+
+          <!-- Products -->
+          
+
+          <!-- Videos -->
+          
+        </div>
+      
+        <div
+          id="period-13"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            23 октября
+          </div>
+
+          <!-- Theme -->
+          
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">Покой</h2>
+          
+
+          <!-- Content + Images row -->
+          
+            
+              <div class="mt-4 text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed"><p>Растение уходит в зимний режим.</p>
+<p>---</p>
+<p># ✅ Особенности ассортимента</p>
+<p>### 🤍 Светлые и нежные</p>
+<ul class="list-disc ml-5 space-y-1">
+<li><strong>Arctic Snow</strong></li>
+</ul>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>чистый, спокойный акцент</span></div>
+<p>### 🔥 Яркие и насыщенные</p>
+<ul class="list-disc ml-5 space-y-1">
+<li><strong>Chicago Apache, El Desperado</strong></li>
+</ul>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>создают контраст и динамику</span></div>
+<p>### 🍷 Глубокие оттенки</p>
+<ul class="list-disc ml-5 space-y-1">
+<li><strong>Byzantine Emperor</strong></li>
+</ul>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>«дорогой» тёмный цвет</span></div>
+<p>### 🌸 Мягкие переходы</p>
+<ul class="list-disc ml-5 space-y-1">
+<li><strong>Janice Brown</strong></li>
+</ul>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>универсален в композициях</span></div>
+<p>---</p>
+<p># 💡 Почему лилейники — база ассортимента</p>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>это растения «без риска»:</span></div>
+<ul class="list-disc ml-5 space-y-1">
+<li>зимостойкие</li>
+<li>не требуют укрытия</li>
+<li>устойчивы к погоде</li>
+</ul>
+<p>---</p>
+<p># 💡 Ключ к идеальному цветению</p>
+<ul class="list-disc ml-5 space-y-1">
+<li>солнце</li>
+<li>умеренный полив</li>
+<li>редкое деление</li>
+</ul>
+<div class="mt-2 flex gap-2 text-brand"><span>👉</span><span>и куст будет стабильно цвести каждый год</span></div></div>
+            
+          
+
+          <!-- Products -->
+          
+
+          <!-- Videos -->
+          
+        </div>
+      
+
+      
+
+      <!-- Back to category -->
+      
+        <div class="pt-4">
+          <a
+            href="/sib_khvoinik_test/sluzhba-zaboty/calendar/mnogoletniki/"
+            class="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-white px-5 py-3 font-semibold text-slate-700 hover:bg-black/5 transition"
+          >
+            <i data-lucide="arrow-left" class="h-4 w-4"></i>
+            Назад к категории Многолетники
+          </a>
+        </div>
+      
+    </div>
+  </section>
 
     </main>
 
@@ -451,7 +1000,7 @@
         <div>
           <div class="text-sm font-semibold mb-3">Каталог</div>
           <a class="block text-sm text-slate-700 hover:text-brand transition" href="/sib_khvoinik_test/catalog/">Каталог растений</a>
-          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/sadovye-centry/">Садовые центры</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="/sib_khvoinik_test/sadovye-centry/">Садовые центры</a>
           <!-- TODO: вернуть когда будет контент
           <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="/sib_khvoinik_test/stati/">Статьи</a>
           -->
@@ -477,9 +1026,8 @@
         <a href="https://t.me/sibirskie_gazony" target="_blank" rel="noopener noreferrer" aria-label="Telegram" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow"><i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i></a>
         <a href="https://vk.com/sibirskiegazony" target="_blank" rel="noopener noreferrer" aria-label="VK" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow">VK</a>
       </div>
-      <div class="text-sm text-slate-600">
-        © <span id="year"></span> «Сибирские газоны». Все права защищены.
-      
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
+        <span>© <span id="year"></span> «Сибирские газоны». Все права защищены.</span>
         <a href="/sib_khvoinik_test/privacy/" class="hover:text-brand transition">Политика конфиденциальности</a>
         <a href="/sib_khvoinik_test/consent/" class="hover:text-brand transition">Согласие на обработку ПД</a>
         <button type="button" id="cookieSettingsBtn" class="hover:text-brand transition">Настройки cookie</button>
@@ -598,10 +1146,97 @@
   </form>
 </template>
 
-<template id="modal-template-b2b_cpo">
-  <form class="space-y-4" data-ui-form data-form-tag="B2B/zapros-cp">
-    <input type="hidden" name="formTag" value="B2B/zapros-cp" />
+<template id="modal-template-contact_consult">
+  <form class="space-y-4" data-ui-form data-form-tag="B2C/consultation">
+    <input type="hidden" name="formTag" value="B2C/consultation" />
     <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Отправить
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-catalog_actual_stock">
+  <form class="space-y-4" data-ui-form data-form-tag="Catalog/actual-stock">
+    <input type="hidden" name="formTag" value="Catalog/actual-stock" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Выслать актуальные остатки
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-catalog_electronic_catalog">
+  <form class="space-y-4" data-ui-form data-form-tag="Catalog/electronic-catalog">
+    <input type="hidden" name="formTag" value="Catalog/electronic-catalog" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Получить каталог
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-sadovye_novinki_notify">
+  <form class="space-y-5" data-ui-form data-form-tag="B2C/sadovye-novinki-notify">
+    <input type="hidden" name="formTag" value="B2C/sadovye-novinki-notify" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <div class="space-y-3 rounded-2xl border border-brand/20 bg-gradient-to-r from-brand/10 via-brand2/5 to-transparent p-4">
+      <label class="block text-sm font-medium text-slate-700">
+        Удобный мессенджер
+        <select name="preferred_messenger" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="" disabled selected>Выберите мессенджер</option>
+          <option value="max">MAX</option>
+          <option value="telegram">Telegram</option>
+          <option value="email">Эл. Почта</option>
+        </select>
+      </label>
+    </div>
+    <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Отправить
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-b2b_cpo">
+  <form class="space-y-4" data-ui-form data-form-tag="B2B/contract-request">
+    <input type="hidden" name="formTag" value="B2B/contract-request" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label class="text-sm font-medium text-slate-700">
         Компания
         <input name="company" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
@@ -616,15 +1251,36 @@
       </label>
       <label class="text-sm font-medium text-slate-700">
         Площадь, м²
-        <input name="area" type="number" required min="1" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
+        <input type="number" min="1" name="area" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр. 1200" />
       </label>
       <label class="text-sm font-medium text-slate-700">
-        Контакт
+        Формат сотрудничества
+        <select name="collaborationFormat" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="" disabled selected>Выберите формат</option>
+          <option value="roll">Поставка рулонного газона</option>
+          <option value="combined">Комбинированное решение</option>
+          <option value="plants">Контрактные поставки растений</option>
+          <option value="turnkey">Реализация под ключ</option>
+          <option value="partial">Частичная реализация</option>
+          <option value="partner">Партнёрство с ландшафтными компаниями</option>
+          <option value="uk">Сопровождение для УК</option>
+        </select>
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Контактное лицо
+        <input name="contactPerson" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Имя и должность" />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Телефон / e-mail
         <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Телефон или email" />
       </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Пожелания
+        <input name="notes" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="График, ограничения, комментарии" />
+      </label>
     </div>
-    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-      Запросить КП
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Выслать коммерческое предложение
     </button>
   </form>
 </template>
@@ -672,7 +1328,7 @@
       </label>
     </div>
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
-      Получить прайс и остатки
+      Получить полную презентацию
     </button>
   </form>
 </template>
@@ -861,7 +1517,7 @@
 </template>
 
 <template id="modal-template-gazon_calc">
-  <form id="gazonCalculatorModal" class="space-y-4" data-ui-form data-form-tag="Gas/gazon-calc" data-ui-action="none">
+  <form id="gazonCalculatorModal" class="space-y-4" data-ui-form data-form-tag="Gas/gazon-calc" data-ui-action="none" data-consent-gated="1">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label class="text-sm font-medium text-slate-700">
         Имя
@@ -899,30 +1555,19 @@
       </select>
     </label>
 
-    <div id="modalCalcResultBlock" class="hidden rounded-3xl border border-black/5 bg-white p-5">
-      <div class="flex items-center justify-between gap-2">
-        <div class="font-semibold">Результат</div>
-        <div class="text-xs text-slate-500">ориентировочно</div>
-      </div>
-      <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div class="rounded-2xl border border-black/5 p-4">
-          <div class="text-xs text-slate-600">Цена за 1 м²</div>
-          <div class="text-2xl font-semibold mt-1" id="modalCalcPerM2">—</div>
-        </div>
-        <div class="rounded-2xl border border-black/5 p-4">
-          <div class="text-xs text-slate-600">Итого</div>
-          <div class="text-2xl font-semibold mt-1" id="modalCalcTotal">—</div>
-        </div>
-      </div>
-      <p class="mt-3 text-sm text-slate-600 leading-relaxed">
-        Это ориентировочный расчет. Точная стоимость зависит от объема, региона и условий поставки.
-      </p>
-    </div>
+    <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
+      <input type="checkbox" name="consent" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+      <span>
+        Даю согласие на обработку персональных данных в соответствии с
+        <a href="/sib_khvoinik_test/privacy/" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+      </span>
+    </label>
 
     <button
-      type="button"
-      id="modalCalcBtn"
-      class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+      type="submit"
+      data-consent-submit
+      disabled
+      class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60"
     >
       Рассчитать
     </button>
@@ -1165,6 +1810,117 @@
     </button>
   </form>
 </template>
+
+<!-- Садовые центры: заявка на цифровую карту -->
+<template id="modal-template-sadovye_digital_card">
+  <form class="space-y-4" data-ui-form data-form-tag="SadovyeCentr/digital-card">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить цифровую карту
+    </button>
+  </form>
+</template>
+
+<!-- Садовые центры: новинки (тексты можно править под сезон) -->
+<template id="modal-template-sadovye_novinka_1">
+  <div class="space-y-3 text-sm leading-relaxed text-slate-600">
+    <p>
+      Лантана камара <strong>Gem Compact Rose Quartz</strong> (кашпо 4 л) - современный компактный сорт для
+      балконов, террас и входных групп. Формирует плотный аккуратный куст с мягкими розово-кварцевыми
+      соцветиями.
+    </p>
+    <p>
+      Сорт ценят за длительное цветение с весны до заморозков, устойчивость к жаре и засухе, а также
+      неприхотливость в уходе: он подходит даже тем, кто только начинает оформлять растения в контейнерах.
+    </p>
+    <p>
+      Лантана поддерживает тренд на натуральное городское озеленение и привлекает опылителей. Идеальный выбор,
+      если нужен максимум декоративности при минимуме усилий.
+    </p>
+  </div>
+</template>
+
+<template id="modal-template-sadovye_novinka_2">
+  <div class="space-y-3 text-sm leading-relaxed text-slate-600">
+    <p>
+      <strong>Штокроза "Spring Celebrities Crimson"</strong> (Alcea rosea, C2/3) - яркая новинка 2026 года для
+      компактных садов, террас и балконов. Сорт формирует аккуратный куст до 60-70 см вместо классической
+      высокорослой формы.
+    </p>
+    <p>
+      Главные преимущества: крупные махровые цветки насыщенного гранатово-красного оттенка, цветение уже в первый
+      год и длительный декоративный эффект с начала лета до осени.
+    </p>
+    <p>
+      Сорт неприхотлив и подходит для контейнеров, клумб и городского озеленения - отличный выбор, если нужен
+      выразительный "cottage garden" с минимальным уходом.
+    </p>
+  </div>
+</template>
+
+<template id="modal-template-sadovye_novinka_3">
+  <div class="space-y-3 text-sm leading-relaxed text-slate-600">
+    <p>
+      <strong>Платикодон крупноцветковый "Mariesii"</strong> (Platycodon grandiflorus, C2/3) - новинка 2026 и
+      один из самых заметных многолетников сезона. Его бутоны похожи на аккуратные "воздушные шарики", которые
+      раскрываются в крупные звёздчатые цветы.
+    </p>
+    <p>
+      Сорт ценят за неприхотливость, длительное цветение до двух месяцев, зимостойкость без укрытия и способность
+      годами расти на одном месте. Компактная форма подходит для клумб, бордюров, рокариев, террас и кашпо.
+    </p>
+    <p>
+      Платикодон Mariesii - отличный выбор для современного "сада без хлопот": выразительный декоративный эффект
+      на всех стадиях роста при минимальном уходе.
+    </p>
+  </div>
+</template>
+
+<template id="modal-template-sadovye_novinka_4">
+  <div class="space-y-4 text-sm leading-relaxed text-slate-600">
+    <p>
+      <strong>Гортензия метельчатая «Metallica»</strong> (Hydrangea paniculata, h 40–60 см, C2/3) — компактный густой
+      куст с прочными побегами, который держит форму и не требует подвязки. Соцветия очень крупные и плотные, с плавной
+      сменой оттенков в течение сезона и характерным металлическим блеском. Цветёт обильно и долго, оставаясь
+      декоративной всё лето и осень.
+    </p>
+    <div>
+      <p class="font-semibold text-slate-800">Характеристики</p>
+      <ul class="mt-2 list-disc space-y-1 pl-5">
+        <li>Высота куста: 1,2–1,5 м, ширина до 1 м</li>
+        <li>Соцветия: 40–60 см, плотные</li>
+        <li>Цветение: июль – октябрь</li>
+        <li>Окраска: лайм → розовый → бордовый с металлическим эффектом</li>
+        <li>Побеги прочные, не «разваливаются» под тяжестью метёлок</li>
+        <li>Место: солнце или полутень</li>
+        <li>Морозостойкость: до −30…−34 °C</li>
+      </ul>
+    </div>
+    <div>
+      <p class="font-semibold text-slate-800">Преимущества</p>
+      <ul class="mt-2 list-disc space-y-1 pl-5">
+        <li>Уникальный «металлик»-эффект на лепестках</li>
+        <li>Очень крупные декоративные соцветия</li>
+        <li>Компактный, аккуратный куст без сложной формировки</li>
+        <li>Длительное и обильное цветение, неприхотливость</li>
+      </ul>
+    </div>
+    <p>
+      «Metallica» — гортензия нового поколения: эффектная, визуально «дорогая» и хорошо смотрится в современных садах и
+      на фото. Идеальна для акцентных групп и солитеров.
+    </p>
+  </div>
+</template>
+
 <!-- Success state -->
 <template id="modal-template-success">
   <div class="space-y-3">
@@ -1180,7 +1936,6 @@
     </button>
   </div>
 </template>
-
 
 
     <div id="cookieBanner" class="fixed bottom-0 inset-x-0 z-50 hidden">
@@ -1202,7 +1957,8 @@
   </div>
 </div>
 
-    <script src="/sib_khvoinik_test/static/js/app.js?v=40" defer></script>
+
+    <script src="/sib_khvoinik_test/static/js/app.js?v=41" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {
