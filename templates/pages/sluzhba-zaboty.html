@@ -227,5 +227,19 @@
       </div>
     </div>
   </section>
+
+{# Ссылка на календарь ухода #}
+<section class="mt-14 mb-16">
+  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+    <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/5 via-white to-brand2/5 p-8 md:p-12 text-center" data-animate="fadeInUp">
+      <h2 class="text-2xl md:text-3xl font-semibold">Календарь ухода за растениями</h2>
+      <p class="mt-3 text-slate-600 max-w-2xl mx-auto">115 растений с точными сроками и инструкциями по уходу для сибирского климата</p>
+      <a href="{% url 'calendar' %}" class="mt-6 inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-8 py-4 text-white font-semibold shadow-glow hover:brightness-105 transition">
+        Открыть календарь
+        <i data-lucide="arrow-right" class="h-5 w-5"></i>
+      </a>
+    </div>
+  </div>
+</section>
 {% endblock %}
 

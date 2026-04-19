@@ -1,0 +1,92 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ title }} — {{ brand }}{% endblock %}
+
+{% block content %}
+  <!-- Hero -->
+  <section class="relative isolate overflow-hidden bg-gradient-to-br from-brand via-brand2/90 to-brand">
+    <div class="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(233,196,106,0.15),transparent_50%)]"></div>
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-16 pb-12 md:pt-20 md:pb-14">
+      <div class="max-w-3xl" data-animate="fadeInUp">
+        <div class="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/10 px-4 py-2 text-sm text-white/90 backdrop-blur-sm">
+          <i data-lucide="calendar" class="h-4 w-4 text-accent"></i>
+          Персональные рекомендации
+        </div>
+        <h1 class="mt-5 text-4xl md:text-5xl font-semibold leading-tight text-white">{{ title }}</h1>
+        <p class="mt-4 text-lg text-white/80 max-w-2xl">{{ subtitle }}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sticky timeline bar -->
+  <div class="sticky top-[4.5rem] z-40 border-b border-black/5 bg-white/95 backdrop-blur">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex gap-2 overflow-x-auto py-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        {% for label in periods %}
+          <button
+            type="button"
+            class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+            data-period="{{ label }}"
+          >
+            {{ label }}
+          </button>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Categories -->
+  <section class="mt-12">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-semibold" data-animate="fadeInUp">Категории растений</h2>
+      <div class="mt-6 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
+        {% for cat in categories %}
+          <a
+            href="{% url 'calendar_category' category=cat.slug %}"
+            class="group rounded-3xl border border-black/5 bg-white p-6 text-center hover:shadow-glow transition"
+            data-animate="fadeInUp"
+          >
+            <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/10 text-brand mx-auto">
+              <i data-lucide="{% if cat.slug == 'derevya' %}tree-pine{% elif cat.slug == 'kustarniki' %}leaf{% elif cat.slug == 'mnogoletniki' %}flower{% elif cat.slug == 'rozy' %}flower-2{% elif cat.slug == 'gazon' %}sprout{% else %}tree-deciduous{% endif %}" class="h-7 w-7"></i>
+            </div>
+            <div class="mt-3 font-semibold group-hover:text-brand transition">{{ cat.label }}</div>
+            <div class="mt-1 text-sm text-slate-500">{{ cat.count }} растений</div>
+            <div class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-brand opacity-0 group-hover:opacity-100 transition">
+              Открыть <i data-lucide="chevron-right" class="h-4 w-4"></i>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- All plants -->
+  <section class="mt-14 mb-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-semibold" data-animate="fadeInUp">Все растения</h2>
+      <p class="mt-2 text-slate-600" data-animate="fadeInUp">{{ plants|length }} растений в календаре</p>
+      <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {% for p in plants %}
+          <a
+            href="{% url 'calendar_plant' category=p.category_slug plant=p.slug %}"
+            class="plant-card group flex items-center gap-3 rounded-2xl border border-black/5 bg-white px-4 py-3 hover:shadow-soft hover:border-brand/20 transition"
+            data-animate="fadeInUp"
+            data-periods="{% for period in p.periods %}{{ period.date_label }}{% if not forloop.last %}||{% endif %}{% endfor %}"
+          >
+            <div class="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
+              <i data-lucide="{% if p.category_slug == 'derevya' %}tree-pine{% elif p.category_slug == 'kustarniki' %}leaf{% elif p.category_slug == 'mnogoletniki' %}flower{% elif p.category_slug == 'rozy' %}flower-2{% elif p.category_slug == 'gazon' %}sprout{% else %}tree-deciduous{% endif %}" class="h-4.5 w-4.5"></i>
+            </div>
+            <div class="min-w-0">
+              <div class="font-semibold text-sm group-hover:text-brand transition truncate">{{ p.name }}</div>
+              {% if p.latin %}
+                <div class="text-xs text-slate-500 italic truncate">{{ p.latin }}</div>
+              {% endif %}
+            </div>
+            <i data-lucide="chevron-right" class="ml-auto h-4 w-4 shrink-0 text-slate-300 group-hover:text-brand transition"></i>
+          </a>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+{% endblock %}

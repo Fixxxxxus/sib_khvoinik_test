@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ active_category.label }} — {{ title }} — {{ brand }}{% endblock %}
+
+{% block content %}
+  <!-- Breadcrumbs + title -->
+  <section class="mt-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <nav class="flex items-center gap-1.5 text-sm text-slate-500" data-animate="fadeInUp">
+        <a href="{% url 'calendar' %}" class="hover:text-brand transition">Календарь</a>
+        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+        <span class="text-slate-900 font-medium">{{ active_category.label }}</span>
+      </nav>
+
+      <div class="mt-5 flex items-center gap-4" data-animate="fadeInUp">
+        <div class="inline-flex h-14 w-14 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+          <i data-lucide="{% if active_category.slug == 'derevya' %}tree-pine{% elif active_category.slug == 'kustarniki' %}leaf{% elif active_category.slug == 'mnogoletniki' %}flower{% elif active_category.slug == 'rozy' %}flower-2{% elif active_category.slug == 'gazon' %}sprout{% else %}tree-deciduous{% endif %}" class="h-7 w-7"></i>
+        </div>
+        <div>
+          <h1 class="text-3xl md:text-4xl font-semibold leading-tight">{{ active_category.label }}</h1>
+          <p class="mt-1 text-slate-600">{{ active_category.count }} растений в календаре ухода</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Timeline -->
+  <div class="sticky top-[4.5rem] z-40 mt-6 border-b border-black/5 bg-white/95 backdrop-blur">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex gap-2 overflow-x-auto py-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+        {% for label in periods %}
+          <button
+            type="button"
+            class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-3 py-1.5 text-xs whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+            data-period="{{ label }}"
+          >
+            {{ label }}
+          </button>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- Plant cards grid -->
+  <section class="mt-8 mb-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {% for p in category_plants %}
+          <a
+            href="{% url 'calendar_plant' category=active_category.slug plant=p.slug %}"
+            class="plant-card group rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition"
+            data-animate="fadeInUp"
+            data-periods="{% for period in p.periods %}{{ period.date_label }}{% if not forloop.last %}||{% endif %}{% endfor %}"
+          >
+            <div class="font-semibold text-lg group-hover:text-brand transition">{{ p.name }}</div>
+            {% if p.latin %}
+              <div class="mt-1 text-sm text-slate-500 italic">{{ p.latin }}</div>
+            {% endif %}
+            {% if p.varieties %}
+              <div class="mt-2 text-sm text-slate-600">{{ p.varieties|truncatewords:12 }}</div>
+            {% endif %}
+
+            {% if p.periods %}
+              <div class="mt-4 flex flex-wrap gap-2">
+                {% with first_period=p.periods.0 %}
+                  <div class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand">
+                    {{ first_period.date_label }}
+                  </div>
+                  {% if first_period.theme %}
+                    <div class="text-xs text-slate-500 self-center">{{ first_period.theme|truncatewords:6 }}</div>
+                  {% endif %}
+                {% endwith %}
+                {% if p.periods|length > 1 %}
+                  <div class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">
+                    +{{ p.periods|length|add:"-1" }} ещё
+                  </div>
+                {% endif %}
+              </div>
+            {% endif %}
+
+            <div class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand opacity-0 group-hover:opacity-100 transition">
+              Подробнее <i data-lucide="chevron-right" class="h-4 w-4"></i>
+            </div>
+          </a>
+        {% endfor %}
+      </div>
+
+      {% if not category_plants %}
+        <div class="mt-8 rounded-3xl border border-black/5 bg-white p-8 text-center text-slate-500">
+          В этой категории пока нет растений с рекомендациями.
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

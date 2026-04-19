@@ -15633,3 +15633,14 @@ PRIVACY_PAGE = {
     ],
 }
 
+from .calendar_data import CALENDAR_CATEGORIES, CALENDAR_PERIODS, CALENDAR_PLANTS
+
+CALENDAR_PAGE = {
+    **BASE,
+    "title": "Календарь ухода за растениями",
+    "subtitle": "Персональные рекомендации по сезону для вашего сада",
+    "categories": CALENDAR_CATEGORIES,
+    "periods": CALENDAR_PERIODS,
+    "plants": CALENDAR_PLANTS,
+}
+

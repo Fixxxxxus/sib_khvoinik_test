@@ -1,0 +1,196 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ active_plant.name }} — {{ title }} — {{ brand }}{% endblock %}
+
+{% block content %}
+  <!-- Breadcrumbs -->
+  <section class="mt-8">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <nav class="flex items-center gap-1.5 text-sm text-slate-500" data-animate="fadeInUp">
+        <a href="{% url 'calendar' %}" class="hover:text-brand transition">Календарь</a>
+        <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+        {% if active_category %}
+          <a href="{% url 'calendar_category' category=active_category.slug %}" class="hover:text-brand transition">{{ active_category.label }}</a>
+          <i data-lucide="chevron-right" class="h-3.5 w-3.5"></i>
+        {% endif %}
+        <span class="text-slate-900 font-medium">{{ active_plant.name }}</span>
+      </nav>
+    </div>
+  </section>
+
+  <!-- Title block -->
+  <section class="mt-5">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-white p-6 md:p-8" data-animate="fadeInUp">
+        <h1 class="text-3xl md:text-4xl font-semibold leading-tight">{{ active_plant.name }}</h1>
+        {% if active_plant.latin %}
+          <div class="mt-2 text-lg text-slate-500 italic">{{ active_plant.latin }}</div>
+        {% endif %}
+        {% if active_plant.varieties %}
+          <div class="mt-3 text-slate-600">{{ active_plant.varieties }}</div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Plant timeline -->
+  {% if active_plant.periods %}
+    <div class="sticky top-[4.5rem] z-40 mt-6 border-b border-black/5 bg-white/95 backdrop-blur">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex gap-2 overflow-x-auto py-3 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+          {% for period in active_plant.periods %}
+            <a
+              href="#period-{{ forloop.counter }}"
+              class="timeline-pill shrink-0 rounded-full border border-black/10 bg-white px-4 py-2 text-sm whitespace-nowrap hover:border-brand/30 hover:text-brand transition"
+              data-period="{{ period.date_label }}"
+            >
+              {{ period.date_label }}
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Period cards -->
+  <section class="mt-8 mb-16">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 space-y-6">
+      {% for period in active_plant.periods %}
+        <div
+          id="period-{{ forloop.counter }}"
+          class="scroll-mt-24 rounded-3xl border border-black/5 bg-white p-6 md:p-8"
+          data-animate="fadeInUp"
+        >
+          <!-- Date label -->
+          <div class="text-xs font-semibold uppercase tracking-wider text-brand">
+            {{ period.date_label }}
+          </div>
+
+          <!-- Theme -->
+          {% if period.theme %}
+            <h2 class="mt-2 text-xl md:text-2xl font-semibold leading-snug">{{ period.theme }}</h2>
+          {% endif %}
+
+          <!-- Content + Images row -->
+          {% if period.images %}
+            <div class="mt-4 flex flex-col lg:flex-row lg:gap-6">
+              <!-- Text column -->
+              <div class="lg:flex-[3] min-w-0">
+                {% if period.content_html %}
+                  <div class="text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed">{{ period.content_html|safe }}</div>
+                {% elif period.content_text %}
+                  <div class="text-slate-700 leading-relaxed" style="white-space: pre-line;">{{ period.content_text }}</div>
+                {% endif %}
+              </div>
+              <!-- Image column -->
+              <div class="mt-4 lg:mt-0 lg:flex-[2] shrink-0">
+                {% if period.images|length == 1 %}
+                  <div class="aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100">
+                    <img
+                      src="{{ period.images.0 }}"
+                      alt="{{ active_plant.name }} — {{ period.theme }}"
+                      class="h-full w-full object-cover"
+                      loading="lazy"
+                    >
+                  </div>
+                {% else %}
+                  <div class="plant-gallery" data-gallery>
+                    <div class="aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100 cursor-pointer" data-gallery-main>
+                      <img
+                        src="{{ period.images.0 }}"
+                        alt="{{ active_plant.name }} — {{ period.theme }}"
+                        class="h-full w-full object-cover transition-opacity duration-300"
+                        loading="lazy"
+                      >
+                    </div>
+                    <div class="mt-2 flex gap-2 overflow-x-auto [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+                      {% for img_url in period.images %}
+                        <button
+                          class="shrink-0 h-14 w-14 overflow-hidden rounded-lg bg-slate-100 ring-2 transition {% if forloop.first %}ring-brand{% else %}ring-transparent hover:ring-brand/40{% endif %}"
+                          data-gallery-thumb="{{ forloop.counter0 }}"
+                        >
+                          <img src="{{ img_url }}" alt="" class="h-full w-full object-cover" loading="lazy">
+                        </button>
+                      {% endfor %}
+                    </div>
+                    <div class="hidden">
+                      {% for img_url in period.images %}
+                        <span data-gallery-src="{{ forloop.counter0 }}">{{ img_url }}</span>
+                      {% endfor %}
+                    </div>
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% else %}
+            {% if period.content_html %}
+              <div class="mt-4 text-slate-700 leading-relaxed space-y-2 [&_ul]:list-disc [&_ul]:ml-5 [&_ul]:space-y-1 [&_p]:leading-relaxed">{{ period.content_html|safe }}</div>
+            {% elif period.content_text %}
+              <div class="mt-4 text-slate-700 leading-relaxed" style="white-space: pre-line;">{{ period.content_text }}</div>
+            {% endif %}
+          {% endif %}
+
+          <!-- Products -->
+          {% if period.products %}
+            <div class="mt-5 rounded-2xl bg-brand/5 p-5">
+              <div class="flex items-center gap-2 font-semibold text-brand">
+                <i data-lucide="leaf" class="h-5 w-5"></i>
+                Рекомендуемые препараты
+              </div>
+              <ul class="mt-3 space-y-1.5">
+                {% for product in period.products %}
+                  <li class="flex items-start gap-2 text-sm text-slate-700">
+                    <span class="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-brand/50"></span>
+                    {{ product }}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+
+          <!-- Videos -->
+          {% if period.videos %}
+            <div class="mt-5 rounded-2xl border border-black/5 bg-slate-50 p-5">
+              <div class="flex items-center gap-2 font-semibold text-slate-800">
+                <i data-lucide="play-circle" class="h-5 w-5 text-brand"></i>
+                Видео
+              </div>
+              <ul class="mt-3 space-y-1.5">
+                {% for video in period.videos %}
+                  <li class="flex items-start gap-2 text-sm text-slate-700">
+                    <i data-lucide="play" class="mt-0.5 h-4 w-4 shrink-0 text-brand/60"></i>
+                    {% if video.url %}
+                      <a href="{{ video.url }}" target="_blank" rel="noopener" class="text-brand hover:underline">{{ video.label }}</a>
+                    {% else %}
+                      {{ video.label }}
+                    {% endif %}
+                  </li>
+                {% endfor %}
+              </ul>
+            </div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      {% if not active_plant.periods %}
+        <div class="rounded-3xl border border-black/5 bg-white p-8 text-center text-slate-500">
+          Для этого растения пока нет рекомендаций по срокам.
+        </div>
+      {% endif %}
+
+      <!-- Back to category -->
+      {% if active_category %}
+        <div class="pt-4">
+          <a
+            href="{% url 'calendar_category' category=active_category.slug %}"
+            class="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-white px-5 py-3 font-semibold text-slate-700 hover:bg-black/5 transition"
+          >
+            <i data-lucide="arrow-left" class="h-4 w-4"></i>
+            Назад к категории {{ active_category.label }}
+          </a>
+        </div>
+      {% endif %}
+    </div>
+  </section>
+{% endblock %}

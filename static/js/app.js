@@ -1953,6 +1953,113 @@ function initPackagingFormatsDialog() {
   );
 }
 
+/* ── Calendar timeline: auto-highlight current period ── */
+function initTimeline() {
+  const pills = document.querySelectorAll('.timeline-pill');
+  if (!pills.length) return;
+
+  const now = new Date();
+  const monthNames = {
+    'январ':0,'феврал':1,'март':2,'апрел':3,'ма':4,'май':4,
+    'июн':5,'июл':6,'август':7,'сентябр':8,'октябр':9,'ноябр':10,'декабр':11
+  };
+
+  function parseDate(text) {
+    const m = text.match(/(\d+)\s+(\S+?)\s*[–—-]\s*(\d+)\s+(\S+)/);
+    if (!m) {
+      const m2 = text.match(/(\d+)\s*[–—-]\s*(\d+)\s+(\S+)/);
+      if (!m2) return null;
+      const month = Object.entries(monthNames).find(([k]) => m2[3].toLowerCase().startsWith(k));
+      if (!month) return null;
+      return {
+        start: new Date(now.getFullYear(), month[1], parseInt(m2[1])),
+        end: new Date(now.getFullYear(), month[1], parseInt(m2[2]))
+      };
+    }
+    const sm = Object.entries(monthNames).find(([k]) => m[2].toLowerCase().startsWith(k));
+    const em = Object.entries(monthNames).find(([k]) => m[4].toLowerCase().startsWith(k));
+    if (!sm || !em) return null;
+    return {
+      start: new Date(now.getFullYear(), sm[1], parseInt(m[1])),
+      end: new Date(now.getFullYear(), em[1], parseInt(m[3]))
+    };
+  }
+
+  let activePill = null;
+  pills.forEach(pill => {
+    const range = parseDate(pill.dataset.period || pill.textContent);
+    if (range && now >= range.start && now <= range.end) {
+      pill.classList.remove('bg-white', 'border-black/10');
+      pill.classList.add('bg-brand', 'text-white', 'border-brand');
+      activePill = pill;
+    }
+  });
+
+  if (activePill) {
+    activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }
+
+  // Smooth scroll for anchor pills (plant page)
+  document.querySelectorAll('.timeline-pill[href^="#"]').forEach(pill => {
+    pill.addEventListener('click', (e) => {
+      e.preventDefault();
+      const target = document.querySelector(pill.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+
+  // Period filter for button pills (main/category pages)
+  const filterPills = document.querySelectorAll('.timeline-pill:not([href])');
+  const plantCards = document.querySelectorAll('.plant-card');
+  if (filterPills.length && plantCards.length) {
+    filterPills.forEach(pill => {
+      pill.addEventListener('click', () => {
+        const period = pill.dataset.period;
+        const wasActive = pill.dataset.filterActive === 'true';
+
+        // Reset all pills to default (preserve current-period highlight)
+        filterPills.forEach(p => {
+          p.dataset.filterActive = 'false';
+          if (p.dataset.currentPeriod !== 'true') {
+            p.classList.remove('bg-brand', 'text-white', 'border-brand');
+            p.classList.add('bg-white', 'border-black/10');
+          } else {
+            p.classList.remove('ring-2', 'ring-brand/50');
+          }
+        });
+
+        if (wasActive) {
+          // Deselect — show all
+          plantCards.forEach(c => { c.style.display = ''; });
+        } else {
+          // Activate this pill
+          pill.dataset.filterActive = 'true';
+          pill.classList.remove('bg-white', 'border-black/10');
+          pill.classList.add('bg-brand', 'text-white', 'border-brand');
+          if (pill.dataset.currentPeriod === 'true') {
+            pill.classList.add('ring-2', 'ring-brand/50');
+          }
+          // Filter cards
+          let visibleCount = 0;
+          plantCards.forEach(c => {
+            const periods = (c.dataset.periods || '').split('||');
+            const match = periods.includes(period);
+            c.style.display = match ? '' : 'none';
+            if (match) visibleCount++;
+          });
+        }
+      });
+    });
+
+    // Mark current-period pills for preserving highlight
+    filterPills.forEach(pill => {
+      if (pill.classList.contains('bg-brand')) {
+        pill.dataset.currentPeriod = 'true';
+      }
+    });
+  }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   initYear();
   initViewportHeroHeights();
@@ -1985,5 +2092,56 @@ document.addEventListener('DOMContentLoaded', () => {
   initPackagingFormatsDialog();
   initCatalogSelection();
   initPlantVariantPicker();
+  initTimeline();
+  initPlantGalleries();
 });
+
+// ── Plant image galleries ──
+function initPlantGalleries() {
+  document.querySelectorAll('[data-gallery]').forEach(function (gallery) {
+    var mainWrap = gallery.querySelector('[data-gallery-main]');
+    var mainImg = mainWrap ? mainWrap.querySelector('img') : null;
+    var thumbs = gallery.querySelectorAll('[data-gallery-thumb]');
+    var srcs = [];
+
+    gallery.querySelectorAll('[data-gallery-src]').forEach(function (el) {
+      srcs.push(el.textContent.trim());
+    });
+
+    if (!mainImg || srcs.length < 2) return;
+
+    var current = 0;
+
+    function show(idx) {
+      if (idx === current) return;
+      mainImg.style.opacity = '0';
+      setTimeout(function () {
+        mainImg.src = srcs[idx];
+        mainImg.style.opacity = '1';
+      }, 150);
+      thumbs.forEach(function (t) {
+        var i = parseInt(t.getAttribute('data-gallery-thumb'), 10);
+        if (i === idx) {
+          t.classList.remove('ring-transparent', 'hover:ring-brand/40');
+          t.classList.add('ring-brand');
+        } else {
+          t.classList.remove('ring-brand');
+          t.classList.add('ring-transparent', 'hover:ring-brand/40');
+        }
+      });
+      current = idx;
+    }
+
+    thumbs.forEach(function (thumb) {
+      thumb.addEventListener('click', function () {
+        show(parseInt(thumb.getAttribute('data-gallery-thumb'), 10));
+      });
+    });
+
+    // Click main image → next
+    mainWrap.addEventListener('click', function () {
+      show((current + 1) % srcs.length);
+    });
+  });
+}
 
