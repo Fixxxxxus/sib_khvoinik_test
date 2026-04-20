@@ -144,10 +144,28 @@ def subcategory_slugs_for_nav_section(section_label: str) -> frozenset[str]:
         parent = row["parent_slug"]
         if _PARENT_SLUG_TO_NAV_SECTION.get(parent) == section_label:
             out.add(row["slug"])
+    try:
+        from django.apps import apps
+
+        Sub = apps.get_model("pages", "CatalogSubcategory")
+        for row in Sub.objects.select_related("parent").values("slug", "parent__slug"):
+            parent = str(row["parent__slug"] or "")
+            if _PARENT_SLUG_TO_NAV_SECTION.get(parent) == section_label:
+                out.add(str(row["slug"]))
+    except Exception:  # pragma: no cover
+        pass
     return frozenset(out)
 
+
 def all_subcategory_slugs() -> frozenset[str]:
-    return frozenset(SUBCATEGORIES_BY_SLUG.keys())
+    base = frozenset(SUBCATEGORIES_BY_SLUG.keys())
+    try:
+        from django.apps import apps
+
+        Sub = apps.get_model("pages", "CatalogSubcategory")
+        return base | frozenset(Sub.objects.values_list("slug", flat=True))
+    except Exception:  # pragma: no cover
+        return base
 
 def plant_matches_subcategory(plant: dict[str, Any], slug: str) -> bool:
     rule = SUBCATEGORIES_BY_SLUG.get(slug)
@@ -164,6 +182,17 @@ def plant_matches_subcategory(plant: dict[str, Any], slug: str) -> bool:
                 return True
     return False
 
+def _db_subcategory_label(slug: str) -> str | None:
+    try:
+        from django.apps import apps
+
+        Sub = apps.get_model("pages", "CatalogSubcategory")
+        row = Sub.objects.filter(slug=slug).values_list("label", flat=True).first()
+        return str(row) if row else None
+    except Exception:  # pragma: no cover
+        return None
+
+
 def category_label_for_slug(slug: str, categories: list[dict[str, Any]] | None) -> str | None:
     if categories:
         for c in categories:
@@ -172,6 +201,9 @@ def category_label_for_slug(slug: str, categories: list[dict[str, Any]] | None) 
     rule = SUBCATEGORIES_BY_SLUG.get(slug)
     if rule:
         return str(rule.get("label") or slug)
+    db_label = _db_subcategory_label(slug)
+    if db_label:
+        return db_label
     return None
 
 
@@ -193,6 +225,24 @@ def category_heading_for_slug(slug: str, categories: list[dict[str, Any]] | None
         section = section or parent
         sub = str(rule.get("label") or slug)
         return f"{section} → {sub}"
+    try:
+        from django.apps import apps
+
+        Sub = apps.get_model("pages", "CatalogSubcategory")
+        row = Sub.objects.filter(slug=slug).select_related("parent").first()
+        if row:
+            parent = str(row.parent.slug)
+            section = _PARENT_SLUG_TO_NAV_SECTION.get(parent)
+            if not section and categories:
+                for c in categories:
+                    if c.get("slug") == parent:
+                        section = str(c.get("card_label") or c.get("label") or parent)
+                        break
+            section = section or str(row.parent.label or parent)
+            sub = str(row.label or slug)
+            return f"{section} → {sub}"
+    except Exception:  # pragma: no cover
+        pass
     return str(slug)
 
 def all_catalog_category_slugs(categories: list[dict[str, Any]]) -> frozenset[str]:

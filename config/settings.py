@@ -119,6 +119,9 @@ TIME_ZONE = 'Asia/Krasnoyarsk'
 
 USE_I18N = True
 
+# Перекрывает неверный перевод import_export (msgid «Delete» → «Удалено» вместо «Удалить»).
+LOCALE_PATHS = [BASE_DIR / "locale"]
+
 USE_TZ = True
 
 

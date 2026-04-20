@@ -82,6 +82,62 @@ class CatalogCategory(models.Model):
             raise ValidationError({"hub_links": "Ожидается JSON-массив объектов с полями label и slug."})
 
 
+class CatalogSubcategory(models.Model):
+    """Подраздел внутри категории (/catalog/<slug>/), как «Агератум» внутри однолетней рассады."""
+
+    parent = models.ForeignKey(
+        CatalogCategory,
+        verbose_name="Родительская категория",
+        related_name="subcategories",
+        on_delete=models.CASCADE,
+    )
+    label = models.CharField("Название подраздела", max_length=200)
+    slug = models.SlugField(
+        "URL-метка (slug)",
+        max_length=120,
+        unique=True,
+        help_text="Уникально во всём каталоге (не должен совпадать с другим разделом или карточкой растения): /catalog/&lt;slug&gt;/.",
+    )
+    sort_order = models.PositiveIntegerField(
+        "Порядок в списке",
+        default=0,
+        help_text="В боковом меню и в админке: меньше — выше.",
+    )
+
+    class Meta:
+        ordering = ["sort_order", "label"]
+        verbose_name = "подкатегория каталога"
+        verbose_name_plural = "подкатегории каталога"
+
+    def __str__(self) -> str:
+        return f"{self.label} ({self.parent.label})"
+
+    def save(self, *args: Any, **kwargs: Any) -> None:
+        if not (self.slug or "").strip():
+            base = ascii_slugify(self.label) or "subcategory"
+            self.slug = unique_slug_for_model(
+                CatalogSubcategory, base, instance_pk=self.pk, slug_field="slug"
+            )
+        super().save(*args, **kwargs)
+
+    def clean(self) -> None:
+        super().clean()
+        sl = (self.slug or "").strip()
+        if not sl:
+            return
+        if CatalogCategory.objects.filter(slug=sl).exists():
+            raise ValidationError({"slug": "Этот slug уже занят категорией верхнего уровня."})
+        if Plant.objects.filter(slug=sl).exists():
+            raise ValidationError(
+                {"slug": "Этот slug занят карточкой растения — в каталоге будет конфликт URL."}
+            )
+        parent_slug = ""
+        if self.parent_id:
+            parent_slug = (CatalogCategory.objects.filter(pk=self.parent_id).values_list("slug", flat=True).first() or "")
+        if parent_slug and sl == parent_slug:
+            raise ValidationError({"slug": "Подкатегория не может совпадать по slug с родительской категорией."})
+
+
 class Plant(models.Model):
     """Карточка растения в каталоге."""
 

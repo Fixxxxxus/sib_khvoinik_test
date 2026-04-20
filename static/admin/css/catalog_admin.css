@@ -1,3 +1,17 @@
 /* Доп. стили карточек растений в админке */
 .inline-group .tabular td.original p { margin: 0; }
 .aligned .help { max-width: 52rem; line-height: 1.45; }
+
+/* Зелёная кнопка «Добавить …» в списках растений и категорий */
+body.app-pages.model-plant.change-list .object-tools a.addlink,
+body.app-pages.model-catalogcategory.change-list .object-tools a.addlink {
+  background: #40916c;
+  border-color: #2d6a4f;
+  color: #fff;
+}
+body.app-pages.model-plant.change-list .object-tools a.addlink:hover,
+body.app-pages.model-catalogcategory.change-list .object-tools a.addlink:hover {
+  background: #2d6a4f;
+  border-color: #1b4332;
+  color: #fff;
+}

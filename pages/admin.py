@@ -9,11 +9,17 @@ from django.http import FileResponse, HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils.html import format_html
-from import_export.admin import ImportExportModelAdmin
 
 from pages.catalog_io import export_catalog_workbook, import_catalog_workbook
-from pages.models import CatalogCategory, Plant, PlantGalleryImage, PlantVariant
-from pages.resources import CatalogCategoryResource, PlantResource
+from pages.forms_catalog import PlantAdminForm
+from pages.models import CatalogCategory, CatalogSubcategory, Plant, PlantGalleryImage, PlantVariant
+
+
+class CatalogSubcategoryInline(admin.TabularInline):
+    model = CatalogSubcategory
+    extra = 1
+    fields = ("sort_order", "label", "slug")
+    prepopulated_fields = {"slug": ("label",)}
 
 
 class PlantVariantInline(admin.TabularInline):
@@ -61,8 +67,8 @@ class InStockFilter(admin.SimpleListFilter):
 
 
 @admin.register(CatalogCategory)
-class CatalogCategoryAdmin(ImportExportModelAdmin):
-    resource_classes = [CatalogCategoryResource]
+class CatalogCategoryAdmin(admin.ModelAdmin):
+    inlines = (CatalogSubcategoryInline,)
     list_display = ("sort_order", "label", "slug", "plant_count")
     list_display_links = ("label",)
     list_editable = ("sort_order",)
@@ -91,13 +97,15 @@ class CatalogCategoryAdmin(ImportExportModelAdmin):
 
     @admin.display(description="Растений")
     def plant_count(self, obj: CatalogCategory) -> int:
-        return obj.plants.count()
+        return obj.plants.count(    )
+
+    class Media:
+        css = {"all": ("admin/css/catalog_admin.css",)}
 
 
 @admin.register(Plant)
-class PlantAdmin(ImportExportModelAdmin):
-    resource_classes = [PlantResource]
-    change_list_template = "admin/pages/plant/change_list.html"
+class PlantAdmin(admin.ModelAdmin):
+    form = PlantAdminForm
     change_form_template = "admin/pages/plant/change_form.html"
     save_on_top = True
     list_display = (
@@ -128,6 +136,13 @@ class PlantAdmin(ImportExportModelAdmin):
             },
         ),
         (
+            "Подразделы каталога",
+            {
+                "fields": ("catalog_subcategory_slugs",),
+                "description": "Сначала сохраните категорию, если подразделы не отображаются. Подкатегории из БД задаются в карточке категории (блок внизу).",
+            },
+        ),
+        (
             "Описание",
             {
                 "fields": ("description",),
@@ -145,10 +160,9 @@ class PlantAdmin(ImportExportModelAdmin):
         (
             "JSON (редко нужно вручную)",
             {
-                "fields": ("also_in_category_slugs", "legacy_paths", "specs_json"),
+                "fields": ("legacy_paths", "specs_json"),
                 "classes": ("collapse", "sg-admin-tail"),
-                "description": "Дополнительные slug категорий и старые пути. "
-                "Характеристики для сайта — в поле «Характеристики (JSON)» (объект вида {\"Высота\": \"до 6 м\", …}).",
+                "description": "Подразделы выбираются чекбоксами выше; сюда — только старые URL и сырой JSON характеристик.",
             },
         ),
         (
@@ -170,11 +184,6 @@ class PlantAdmin(ImportExportModelAdmin):
             ),
         ]
         return custom + urls
-
-    def changelist_view(self, request: HttpRequest, extra_context: dict[str, Any] | None = None) -> Any:
-        extra = extra_context or {}
-        extra["import_workbook_url"] = reverse("admin:pages_plant_import_workbook")
-        return super().changelist_view(request, extra_context=extra)
 
     def import_workbook_view(self, request: HttpRequest) -> Any:
         if request.method == "POST" and request.FILES.get("file"):

@@ -262,6 +262,9 @@ def enrich_catalog_context(ctx: dict) -> dict:
         return out
 
     if getattr(settings, "USE_DATABASE_CATALOG", False):
+        from django.apps import apps
+
+        Sub = apps.get_model("pages", "CatalogSubcategory")
         seen_slugs = _collect_nav_slugs(sections)
         extra: list[tuple[int, dict[str, Any]]] = []
         for cat in ctx.get("categories") or []:
@@ -270,12 +273,49 @@ def enrich_catalog_context(ctx: dict) -> dict:
                 continue
             label = str((cat or {}).get("label") or (cat or {}).get("card_label") or slug).strip()
             order = int((cat or {}).get("sort_order") or 0)
-            raw = {"label": label, "icon": "sprout", "catalog_slug": slug}
-            extra.append((order, resolve(raw)))
+            subs = list(Sub.objects.filter(parent__slug=slug).order_by("sort_order", "label"))
+            if subs:
+                children_raw: list[dict[str, Any]] = [_link(f"Все {label}", slug)]
+                children_raw.extend(_link(s.label, str(s.slug)) for s in subs)
+                raw: dict[str, Any] = {"label": label, "icon": "sprout", "children": children_raw}
+            else:
+                raw = {"label": label, "icon": "sprout", "catalog_slug": slug}
+            item = resolve(raw)
+            extra.append((order, item))
             seen_slugs.add(slug)
+            if subs:
+                for s in subs:
+                    seen_slugs.add(str(s.slug))
         extra.sort(key=lambda x: x[0])
         for _, item in extra:
             sections.append(item)
+
+    try:
+        from django.apps import apps
+
+        Sub = apps.get_model("pages", "CatalogSubcategory")
+        for sub in Sub.objects.select_related("parent").order_by("parent_id", "sort_order", "label"):
+            ps = str(sub.parent.slug or "").strip()
+            sub_slug = str(sub.slug or "").strip()
+            if not ps or not sub_slug:
+                continue
+            for sec in sections:
+                ch = sec.get("children")
+                if not ch:
+                    continue
+                if not any(str(c.get("nav_slug") or "") == ps for c in ch):
+                    continue
+                if any(str(c.get("nav_slug") or "") == sub_slug for c in ch):
+                    continue
+                ch.append(
+                    {
+                        "label": sub.label,
+                        "href": reverse("catalog_item", kwargs={"slug": sub_slug}),
+                        "nav_slug": sub_slug,
+                    }
+                )
+    except Exception:  # pragma: no cover
+        pass
 
     def child_is_active(child: dict[str, Any]) -> bool:
         if child.get("soon"):
