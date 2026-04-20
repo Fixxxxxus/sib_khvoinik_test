@@ -1,0 +1,21 @@
+{% extends "admin/change_form.html" %}
+{% block admin_change_form_document_ready %}
+{{ block.super }}
+<script>
+(function () {
+  document.addEventListener("DOMContentLoaded", function () {
+    var form = document.getElementById("{{ opts.model_name }}_form");
+    if (!form) return;
+    var tails = form.querySelectorAll("fieldset.sg-admin-tail");
+    if (!tails.length) return;
+    var inlines = form.querySelectorAll(".inline-group");
+    if (!inlines.length) return;
+    var anchor = inlines[inlines.length - 1];
+    tails.forEach(function (fs) {
+      anchor.parentNode.insertBefore(fs, anchor.nextSibling);
+      anchor = fs;
+    });
+  });
+})();
+</script>
+{% endblock %}

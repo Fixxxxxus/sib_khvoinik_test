@@ -19,14 +19,13 @@ from pages.resources import CatalogCategoryResource, PlantResource
 class PlantVariantInline(admin.TabularInline):
     model = PlantVariant
     extra = 1
-    ordering = ("sort_order", "pk")
-    classes = ("collapse",)
+    fields = ("height", "container", "price", "in_stock")
 
 
 class PlantGalleryImageInline(admin.TabularInline):
     model = PlantGalleryImage
     extra = 1
-    ordering = ("sort_order", "pk")
+    fields = ("image", "preview")
     readonly_fields = ("preview",)
 
     @admin.display(description="Предпросмотр")
@@ -46,7 +45,6 @@ class PlantCharacteristicInline(admin.TabularInline):
     model = PlantCharacteristic
     extra = 1
     ordering = ("sort_order", "pk")
-    classes = ("collapse",)
 
 
 class InStockFilter(admin.SimpleListFilter):
@@ -124,6 +122,7 @@ class CatalogCategoryAdmin(ImportExportModelAdmin):
 class PlantAdmin(ImportExportModelAdmin):
     resource_classes = [PlantResource]
     change_list_template = "admin/pages/plant/change_list.html"
+    change_form_template = "admin/pages/plant/change_form.html"
     save_on_top = True
     list_display = (
         "list_cover",
@@ -136,7 +135,7 @@ class PlantAdmin(ImportExportModelAdmin):
     )
     list_display_links = ("name",)
     list_filter = ("category", "is_new", "is_published", InStockFilter)
-    search_fields = ("name", "description", "slug", "image_alt")
+    search_fields = ("name", "description", "slug")
     ordering = ("category", "name")
     autocomplete_fields = ("category",)
     inlines = (PlantVariantInline, PlantGalleryImageInline, PlantCharacteristicInline)
@@ -163,30 +162,28 @@ class PlantAdmin(ImportExportModelAdmin):
         (
             "Главное фото",
             {
-                "fields": ("cover_path", "cover_upload", "image_alt", "cover_preview_block"),
-                "description": "Заполните одно из двух: путь к файлу в static (как в git) или загрузите изображение — "
-                "оно появится по адресу /media/…. Формат: WebP/JPEG, ориентация 3:2 или 4:3, 1400–2400 px по длинной стороне.",
+                "fields": ("cover_upload", "cover_preview_block"),
+                "description": "Изображение для карточки на сайте.",
             },
         ),
         (
             "Краткие параметры (в карточке)",
             {
-                "fields": ("height_hint", "frost", "light", "catalog_teaser_override"),
-                "description": "Подпись высоты, морозостойкость и свет — короткие строки. "
-                "Тизер цены можно оставить пустым: сайт соберёт его из вариантов.",
+                "fields": ("height_hint", "frost", "light"),
+                "description": "Подпись высоты, морозостойкость и свет — короткие строки.",
             },
         ),
         (
             "JSON (редко нужно вручную)",
             {
                 "fields": ("also_in_category_slugs", "legacy_paths", "specs_json"),
-                "classes": ("collapse",),
+                "classes": ("sg-admin-tail",),
                 "description": "Дополнительные slug категорий и старые пути. specs_json синхронизируется с таблицей характеристик ниже.",
             },
         ),
         (
             "Служебное",
-            {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
+            {"fields": ("created_at", "updated_at"), "classes": ("sg-admin-tail",)},
         ),
     )
 

@@ -118,11 +118,12 @@ class Plant(models.Model):
         "Формат: JPEG/WebP, соотношение сторон около 4:3 или 3:2, по длинной стороне 1400–2400 px.",
     )
     cover_upload = models.ImageField(
-        "Или загрузить главное фото",
+        "Загрузить главное фото",
         upload_to="catalog/covers/%Y/%m/",
         blank=True,
         null=True,
-        help_text="Файл попадёт в MEDIA и будет отдан как /media/… Статические пути из поля выше имеют приоритет, если заполнены оба — используется путь в static.",
+        help_text="Файл сохранится в MEDIA (URL вида /media/…). Формат: WebP или JPEG. "
+        "Соотношение сторон около 4:3 или 3:2, по длинной стороне 1400–2400 px.",
     )
     image_alt = models.CharField(
         "Alt для главного фото",
@@ -194,7 +195,7 @@ class Plant(models.Model):
         super().clean()
         if not (self.cover_path or "").strip() and not self.cover_upload:
             raise ValidationError(
-                "Укажите либо путь к главному фото в static, либо загрузите файл — иначе на сайте будет пустая область."
+                "Загрузите главное фото — иначе на сайте не будет изображения в карточке."
             )
 
 
