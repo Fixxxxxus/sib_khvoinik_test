@@ -117,7 +117,7 @@ def calendar_plant(request, category, plant):
 
 
 def stati_list(request):
-    return render(request, "pages/stati.html", STATI_PAGE)
+    return render(request, "pages/calendar.html", CALENDAR_PAGE)
 
 
 def stati_detail(request, article_slug):
