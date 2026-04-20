@@ -69,28 +69,20 @@ class InStockFilter(admin.SimpleListFilter):
 @admin.register(CatalogCategory)
 class CatalogCategoryAdmin(ImportExportModelAdmin):
     resource_classes = [CatalogCategoryResource]
-    list_display = ("sort_order", "label", "slug", "cover_preview", "plant_count")
+    list_display = ("sort_order", "label", "slug", "plant_count")
     list_display_links = ("label",)
     list_editable = ("sort_order",)
     list_filter = ("sort_order",)
-    search_fields = ("label", "slug", "description")
+    search_fields = ("label", "slug")
     ordering = ("sort_order", "label")
     prepopulated_fields = {"slug": ("label",)}
-    readonly_fields = ("cover_preview",)
 
     fieldsets = (
         (
             None,
             {
-                "fields": ("label", "slug", "sort_order", "card_label", "description"),
+                "fields": ("label", "slug", "sort_order", "card_label"),
                 "description": "Название и порядок видны на сайте. Slug можно поправить вручную, если автозаполнение не устроило.",
-            },
-        ),
-        (
-            "Обложка раздела",
-            {
-                "fields": ("cover_path", "image_alt", "cover_preview"),
-                "description": "Путь к файлу внутри папки static/ (как в репозитории). Рекомендуемый формат: WebP или JPEG, не меньше 1200 px по длинной стороне.",
             },
         ),
         (
@@ -102,16 +94,6 @@ class CatalogCategoryAdmin(ImportExportModelAdmin):
             },
         ),
     )
-
-    @admin.display(description="Обложка")
-    def cover_preview(self, obj: CatalogCategory) -> str:
-        p = (obj.cover_path or "").strip()
-        if not p:
-            return "—"
-        return format_html(
-            '<img src="/static/{}" style="max-height:48px;border-radius:8px;object-fit:cover" alt="" />',
-            p,
-        )
 
     @admin.display(description="Растений")
     def plant_count(self, obj: CatalogCategory) -> int:
