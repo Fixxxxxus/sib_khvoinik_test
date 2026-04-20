@@ -8,6 +8,8 @@ from __future__ import annotations
 
 from typing import Any
 
+from django.conf import settings
+
 
 def _link(label: str, catalog_slug: str) -> dict[str, Any]:
     return {"label": label, "catalog_slug": catalog_slug}
@@ -242,6 +244,38 @@ def enrich_catalog_context(ctx: dict) -> dict:
         return item
 
     sections: list[dict[str, Any]] = [resolve(s) for s in CATALOG_NAV_SECTIONS_RAW]
+
+    def _collect_nav_slugs(sec_list: list[dict[str, Any]]) -> set[str]:
+        out: set[str] = set()
+        for sec in sec_list:
+            ns = sec.get("nav_slug")
+            if ns:
+                out.add(str(ns))
+            for m in sec.get("match_slugs") or []:
+                out.add(str(m))
+            for ch in sec.get("children") or []:
+                cns = ch.get("nav_slug")
+                if cns:
+                    out.add(str(cns))
+                for m in ch.get("match_slugs") or []:
+                    out.add(str(m))
+        return out
+
+    if getattr(settings, "USE_DATABASE_CATALOG", False):
+        seen_slugs = _collect_nav_slugs(sections)
+        extra: list[tuple[int, dict[str, Any]]] = []
+        for cat in ctx.get("categories") or []:
+            slug = str((cat or {}).get("slug") or "").strip()
+            if not slug or slug in seen_slugs:
+                continue
+            label = str((cat or {}).get("label") or (cat or {}).get("card_label") or slug).strip()
+            order = int((cat or {}).get("sort_order") or 0)
+            raw = {"label": label, "icon": "sprout", "catalog_slug": slug}
+            extra.append((order, resolve(raw)))
+            seen_slugs.add(slug)
+        extra.sort(key=lambda x: x[0])
+        for _, item in extra:
+            sections.append(item)
 
     def child_is_active(child: dict[str, Any]) -> bool:
         if child.get("soon"):
