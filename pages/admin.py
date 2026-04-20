@@ -44,6 +44,7 @@ class PlantGalleryImageInline(admin.TabularInline):
 class PlantCharacteristicInline(admin.TabularInline):
     model = PlantCharacteristic
     extra = 1
+    fields = ("label", "value")
     ordering = ("sort_order", "pk")
 
 
@@ -149,17 +150,10 @@ class PlantAdmin(ImportExportModelAdmin):
             },
         ),
         (
-            "Краткие параметры (в карточке)",
-            {
-                "fields": ("height_hint", "frost", "light"),
-                "description": "Подпись высоты, морозостойкость и свет — короткие строки.",
-            },
-        ),
-        (
             "JSON (редко нужно вручную)",
             {
                 "fields": ("also_in_category_slugs", "legacy_paths", "specs_json"),
-                "classes": ("sg-admin-tail",),
+                "classes": ("collapse", "sg-admin-tail"),
                 "description": "Дополнительные slug категорий и старые пути. specs_json синхронизируется с таблицей характеристик ниже.",
             },
         ),
