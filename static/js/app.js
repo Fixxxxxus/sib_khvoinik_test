@@ -1953,8 +1953,38 @@ function initPackagingFormatsDialog() {
   );
 }
 
+/**
+ * Полоска дат календаря: sticky top должен совпадать с высотой #site-header.
+ * Иначе шапка (z-50) визуально/по hit-test перекрывает ряд (z-40, top=4.5rem) — клики «пропадают».
+ */
+function syncCalendarTimelineHeaderOffset() {
+  const header = document.getElementById('site-header');
+  const bars = document.querySelectorAll('[data-sg-calendar-timeline]');
+  if (!header || !bars.length) return;
+
+  const apply = () => {
+    const px = Math.max(56, Math.ceil(header.getBoundingClientRect().height));
+    bars.forEach((bar) => {
+      bar.style.top = `${px}px`;
+    });
+  };
+
+  apply();
+  let resizeT = null;
+  window.addEventListener('resize', () => {
+    window.clearTimeout(resizeT);
+    resizeT = window.setTimeout(apply, 120);
+  });
+  if (window.ResizeObserver) {
+    const ro = new ResizeObserver(() => apply());
+    ro.observe(header);
+  }
+}
+
 /* ── Calendar timeline: auto-highlight current period ── */
 function initTimeline() {
+  syncCalendarTimelineHeaderOffset();
+
   const pills = document.querySelectorAll('.timeline-pill');
   if (!pills.length) return;
 
@@ -2011,7 +2041,7 @@ function initTimeline() {
   // Period filter for button pills (main/category pages)
   const filterPills = document.querySelectorAll('.timeline-pill:not([href])');
   const plantCards = document.querySelectorAll('.plant-card');
-  if (filterPills.length && plantCards.length) {
+  if (filterPills.length) {
     filterPills.forEach(pill => {
       pill.addEventListener('click', () => {
         const period = pill.dataset.period;
