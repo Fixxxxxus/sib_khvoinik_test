@@ -12,7 +12,7 @@ from django.utils.html import format_html
 from import_export.admin import ImportExportModelAdmin
 
 from pages.catalog_io import export_catalog_workbook, import_catalog_workbook
-from pages.models import CatalogCategory, Plant, PlantCharacteristic, PlantGalleryImage, PlantVariant
+from pages.models import CatalogCategory, Plant, PlantGalleryImage, PlantVariant
 from pages.resources import CatalogCategoryResource, PlantResource
 
 
@@ -39,13 +39,6 @@ class PlantGalleryImageInline(admin.TabularInline):
         except ValueError:
             pass
         return "—"
-
-
-class PlantCharacteristicInline(admin.TabularInline):
-    model = PlantCharacteristic
-    extra = 1
-    fields = ("label", "value")
-    ordering = ("sort_order", "pk")
 
 
 class InStockFilter(admin.SimpleListFilter):
@@ -121,7 +114,7 @@ class PlantAdmin(ImportExportModelAdmin):
     search_fields = ("name", "description", "slug")
     ordering = ("category", "name")
     autocomplete_fields = ("category",)
-    inlines = (PlantVariantInline, PlantGalleryImageInline, PlantCharacteristicInline)
+    inlines = (PlantVariantInline, PlantGalleryImageInline)
     readonly_fields = ("cover_preview_block", "created_at", "updated_at")
     actions = ("export_workbook_action",)
 
@@ -154,7 +147,8 @@ class PlantAdmin(ImportExportModelAdmin):
             {
                 "fields": ("also_in_category_slugs", "legacy_paths", "specs_json"),
                 "classes": ("collapse", "sg-admin-tail"),
-                "description": "Дополнительные slug категорий и старые пути. specs_json синхронизируется с таблицей характеристик ниже.",
+                "description": "Дополнительные slug категорий и старые пути. "
+                "Характеристики для сайта — в поле «Характеристики (JSON)» (объект вида {\"Высота\": \"до 6 м\", …}).",
             },
         ),
         (
