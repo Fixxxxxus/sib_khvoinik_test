@@ -2124,6 +2124,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initPlantVariantPicker();
   initTimeline();
   initPlantGalleries();
+  initPlantCardCoverGallerySwap();
 });
 
 // ── Plant image galleries ──
@@ -2171,6 +2172,43 @@ function initPlantGalleries() {
     // Click main image → next
     mainWrap.addEventListener('click', function () {
       show((current + 1) % srcs.length);
+    });
+  });
+}
+
+/** Карточка растения: клик по миниатюре галереи меняет местами src с главным фото (только просмотр). */
+function initPlantCardCoverGallerySwap() {
+  document.querySelectorAll('[data-plant-photo-swap]').forEach(function (root) {
+    var main = root.querySelector('[data-plant-main-cover]');
+    var thumbs = root.querySelectorAll('[data-plant-gallery-thumb]');
+    if (!main || !thumbs.length) return;
+
+    thumbs.forEach(function (thumb) {
+      thumb.setAttribute('role', 'button');
+      if (!thumb.hasAttribute('tabindex')) thumb.setAttribute('tabindex', '0');
+
+      function swap() {
+        var ms = main.getAttribute('src');
+        var ts = thumb.getAttribute('src');
+        if (!ms || !ts) return;
+        main.setAttribute('src', ts);
+        thumb.setAttribute('src', ms);
+        var ma = main.getAttribute('alt') || '';
+        var ta = thumb.getAttribute('alt') || '';
+        main.setAttribute('alt', ta);
+        thumb.setAttribute('alt', ma);
+      }
+
+      thumb.addEventListener('click', function (e) {
+        e.preventDefault();
+        swap();
+      });
+      thumb.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          swap();
+        }
+      });
     });
   });
 }

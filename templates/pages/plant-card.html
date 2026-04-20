@@ -13,9 +13,11 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         <div class="lg:col-span-6">
           <div class="rounded-3xl border border-black/5 bg-white overflow-hidden" data-animate="fadeInUp">
+            <div data-plant-photo-swap>
             <div class="h-72 bg-gradient-to-br from-black/90 via-black/30 to-brand/20 overflow-hidden flex items-center justify-center">
               {% if active_plant|plant_image_url %}
                 <img
+                  data-plant-main-cover
                   src="{{ active_plant|plant_image_url }}"
                   alt="{{ active_plant.catalog_display_name|default:active_plant.name }}"
                   class="h-full w-full object-cover"
@@ -30,12 +32,21 @@
               {% endif %}
             </div>
             {% if active_plant.gallery_media_urls %}
-            <div class="grid grid-cols-4 gap-2 border-t border-black/5 bg-white px-6 py-4">
+            <div class="grid grid-cols-4 gap-2 border-t border-black/5 bg-white px-6 py-4" role="group" aria-label="Галерея: нажмите миниатюру, чтобы поменять с главным фото">
               {% for gu in active_plant.gallery_media_urls %}
-                <img src="{{ gu }}" alt="" class="h-16 w-full rounded-xl object-cover ring-1 ring-black/5" loading="lazy" decoding="async" />
+                <img
+                  src="{{ gu }}"
+                  alt=""
+                  data-plant-gallery-thumb
+                  title="Нажмите, чтобы поменять с главным фото"
+                  class="h-16 w-full cursor-pointer rounded-xl object-cover ring-1 ring-black/5 transition hover:ring-2 hover:ring-brand/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+                  loading="lazy"
+                  decoding="async"
+                />
               {% endfor %}
             </div>
             {% endif %}
+            </div>
             <div class="p-6">
               {% include 'partials/plant_catalog_title.html' with item=active_plant size="lg" %}
               {% if not active_plant.title_latin and active_plant.latin %}
