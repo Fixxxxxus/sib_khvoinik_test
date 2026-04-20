@@ -1,0 +1,31 @@
+{% extends "admin/base.html" %}
+{% load static %}
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
+{% block branding %}
+<h1 id="site-name"><a href="{% url 'admin:index' %}">{{ site_header|default:_('Django administration') }}</a></h1>
+{% endblock %}
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    :root {
+      --sg-brand: #2d6a4f;
+      --sg-brand2: #40916c;
+    }
+    #header { background: linear-gradient(90deg, var(--sg-brand), var(--sg-brand2)); color: #fff; }
+    #header a:link, #header a:visited { color: #fff; }
+    .module h2, .module caption, .inline-group h2 {
+      background: var(--sg-brand);
+      color: #fff;
+    }
+    a:link, a:visited { color: var(--sg-brand); }
+    .button, input[type="submit"], input[type="button"], .submit-row input, a.button {
+      background: var(--sg-brand);
+    }
+    .button:hover, input[type="submit"]:hover, input[type="button"]:hover {
+      background: var(--sg-brand2);
+    }
+    #content-related .module h2 { background: var(--sg-brand2); }
+    body.login { background: #f4f7f5; }
+    body.login #header { height: auto; padding: 1rem 1.5rem; }
+  </style>
+{% endblock %}

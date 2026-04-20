@@ -1,3 +1,298 @@
-from django.db import models
+from __future__ import annotations
 
-# Create your models here.
+from typing import Any
+
+from django.core.exceptions import ValidationError
+from django.core.validators import MaxLengthValidator, MinLengthValidator
+from django.db import models
+from django.db.models import Exists, OuterRef
+from django.db.models.signals import post_delete, post_save
+from django.dispatch import receiver
+
+from pages.utils_slug import ascii_slugify, unique_slug_for_model
+
+
+class CatalogCategory(models.Model):
+    """Раздел каталога (деревья, кустарники, …)."""
+
+    label = models.CharField(
+        "Название раздела",
+        max_length=200,
+        help_text="Как на сайте в заголовке раздела. Например: «Хвойные деревья».",
+    )
+    slug = models.SlugField(
+        "URL-метка (slug)",
+        max_length=120,
+        unique=True,
+        help_text="Латиница в адресе: /catalog/&lt;slug&gt;/. Заполняется автоматически из названия, при необходимости отредактируйте.",
+    )
+    card_label = models.CharField(
+        "Краткое имя на карточке",
+        max_length=120,
+        blank=True,
+        help_text="Короткая подпись в сетке разделов. Если пусто — берётся полное название.",
+    )
+    description = models.TextField(
+        "Краткое описание",
+        blank=True,
+        help_text="Подзаголовок на карточке раздела. Рекомендуется 30–160 символов, без перегруза техническими деталями.",
+    )
+    sort_order = models.PositiveIntegerField(
+        "Порядок в списке",
+        default=0,
+        help_text="Меньше число — выше в списке категорий в админке и на сайте.",
+    )
+    cover_path = models.CharField(
+        "Путь к обложке (файл в static)",
+        max_length=500,
+        blank=True,
+        help_text="Относительно папки static/, например: media/images/pitomnik-product-hvoynye.jpg. "
+        "Предпочтительно WebP/JPEG, ширина не менее 1200 px для чёткости на ретина-экранах.",
+    )
+    image_alt = models.CharField("Описание для alt у обложки", max_length=255, blank=True)
+    hub_links = models.JSONField(
+        "Ссылки хаба",
+        default=list,
+        blank=True,
+        help_text='JSON-массив вида [{"label": "…", "slug": "…"}] для разделов-«хабов». Обычно оставьте []',
+    )
+    legacy_paths = models.JSONField("Старые пути (редиректы)", default=list, blank=True)
+
+    class Meta:
+        ordering = ["sort_order", "label"]
+        verbose_name = "категория каталога"
+        verbose_name_plural = "категории каталога"
+
+    def __str__(self) -> str:
+        return self.label
+
+    def save(self, *args: Any, **kwargs: Any) -> None:
+        if not (self.slug or "").strip():
+            base = ascii_slugify(self.label) or "category"
+            self.slug = unique_slug_for_model(
+                CatalogCategory, base, instance_pk=self.pk, slug_field="slug"
+            )
+        super().save(*args, **kwargs)
+
+    def clean(self) -> None:
+        super().clean()
+        if self.hub_links is None:
+            self.hub_links = []
+        if not isinstance(self.hub_links, list):
+            raise ValidationError({"hub_links": "Ожидается JSON-массив объектов с полями label и slug."})
+
+
+class Plant(models.Model):
+    """Карточка растения в каталоге."""
+
+    name = models.CharField(
+        "Полное название",
+        max_length=500,
+        help_text="Как на карточке товара: русское название и при необходимости латынь. "
+        "Без лишних технических хвостов в конце — форматы задаются в блоке «Варианты».",
+    )
+    slug = models.SlugField(
+        "URL-метка",
+        max_length=200,
+        unique=True,
+        blank=True,
+        help_text="Генерируется из названия. Латиница, дефисы. Можно скорректировать вручную.",
+    )
+    category = models.ForeignKey(
+        CatalogCategory,
+        verbose_name="Категория",
+        related_name="plants",
+        on_delete=models.PROTECT,
+    )
+    description = models.TextField(
+        "Описание",
+        validators=[MinLengthValidator(20), MaxLengthValidator(50_000)],
+        help_text="Текст для страницы товара. Рекомендуется 200–4000 знаков: факты, уход, зимостойкость. "
+        "Минимум 20 символов (техническое ограничение), максимум 50 000.",
+    )
+    cover_path = models.CharField(
+        "Главное фото (путь в static)",
+        max_length=500,
+        blank=True,
+        help_text="Если фото уже лежит в репозитории: путь относительно static/, напр. media/images/catalog/....webp. "
+        "Формат: JPEG/WebP, соотношение сторон около 4:3 или 3:2, по длинной стороне 1400–2400 px.",
+    )
+    cover_upload = models.ImageField(
+        "Или загрузить главное фото",
+        upload_to="catalog/covers/%Y/%m/",
+        blank=True,
+        null=True,
+        help_text="Файл попадёт в MEDIA и будет отдан как /media/… Статические пути из поля выше имеют приоритет, если заполнены оба — используется путь в static.",
+    )
+    image_alt = models.CharField(
+        "Alt для главного фото",
+        max_length=255,
+        blank=True,
+        help_text="Кратко опишите растение на фото — для доступности и SEO.",
+    )
+    height_hint = models.CharField(
+        "Подпись «Высота» в карточке",
+        max_length=200,
+        blank=True,
+        help_text="Например: «выберите формат ниже» или фиксированная высота, если без вариантов.",
+    )
+    frost = models.CharField("Морозостойкость", max_length=120, blank=True, help_text="Например: -35°C")
+    light = models.CharField("Освещённость", max_length=120, blank=True, help_text="Например: солнце / полутень")
+    catalog_teaser_override = models.CharField(
+        "Тизер цены (вручную)",
+        max_length=300,
+        blank=True,
+        help_text="Если пусто — сайт сам соберёт строку из вариантов и цен.",
+    )
+    is_new = models.BooleanField("Новинка", default=False, help_text="Для фильтра в админке и бейджа на сайте.")
+    is_published = models.BooleanField(
+        "Показывать на сайте",
+        default=True,
+        help_text="Снимите галочку, чтобы скрыть позицию без удаления.",
+    )
+    also_in_category_slugs = models.JSONField(
+        "Дополнительные категории (slug)",
+        default=list,
+        blank=True,
+        help_text='Список строк-slug, например ["kustarniki-gortenziya"]. Для подразделов каталога.',
+    )
+    legacy_paths = models.JSONField("Старые URL (редиректы)", default=list, blank=True)
+    specs_json = models.JSONField(
+        "Характеристики (JSON)",
+        default=dict,
+        blank=True,
+        help_text="Плоский объект {\"Высота\": \"до 6 м\", \"Семейство\": \"…\"}. Дублирует удобство экспорта; "
+        "в админке удобнее заполнять строки в блоке «Характеристики» ниже — они синхронизируются при сохранении.",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["name"]
+        verbose_name = "растение"
+        verbose_name_plural = "растения"
+
+    def __str__(self) -> str:
+        return self.name
+
+    def save(self, *args: Any, **kwargs: Any) -> None:
+        if not (self.slug or "").strip():
+            base = ascii_slugify(self.name) or "plant"
+            self.slug = unique_slug_for_model(Plant, base, instance_pk=self.pk, slug_field="slug")
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def queryset_published(cls) -> models.QuerySet[Plant]:
+        return cls.objects.filter(is_published=True).select_related("category")
+
+    @classmethod
+    def with_stock_annotation(cls, qs: models.QuerySet[Plant]) -> models.QuerySet[Plant]:
+        v = PlantVariant.objects.filter(plant_id=OuterRef("pk"), in_stock=True)
+        return qs.annotate(_has_stock=Exists(v))
+
+    def clean(self) -> None:
+        super().clean()
+        if not (self.cover_path or "").strip() and not self.cover_upload:
+            raise ValidationError(
+                "Укажите либо путь к главному фото в static, либо загрузите файл — иначе на сайте будет пустая область."
+            )
+
+
+class PlantVariant(models.Model):
+    """Вариант формата (высота, контейнер, цена)."""
+
+    plant = models.ForeignKey(Plant, verbose_name="Растение", related_name="variants", on_delete=models.CASCADE)
+    height = models.CharField("Высота / размер", max_length=120, blank=True, help_text="Например: h 60-90")
+    container = models.CharField(
+        "Контейнер / формат",
+        max_length=200,
+        blank=True,
+        help_text="Например: С3, Р9, Ком+Сетка",
+    )
+    price = models.CharField(
+        "Цена",
+        max_length=80,
+        blank=True,
+        help_text="Как на сайте, с «₽», напр. «1 590 ₽» или «от 18 000 ₽».",
+    )
+    in_stock = models.BooleanField("В наличии", default=True)
+    sort_order = models.PositiveIntegerField("Порядок", default=0)
+
+    class Meta:
+        ordering = ["sort_order", "pk"]
+        verbose_name = "вариант (цена/формат)"
+        verbose_name_plural = "варианты (цены/форматы)"
+
+    def __str__(self) -> str:
+        return f"{self.plant_id}: {self.height} {self.container} {self.price}"
+
+
+class PlantGalleryImage(models.Model):
+    """Дополнительные фото в карточке."""
+
+    plant = models.ForeignKey(Plant, verbose_name="Растение", related_name="gallery_images", on_delete=models.CASCADE)
+    image = models.ImageField("Файл", upload_to="catalog/gallery/%Y/%m/")
+    alt_text = models.CharField("Подпись (alt)", max_length=255, blank=True)
+    sort_order = models.PositiveIntegerField("Порядок", default=0)
+
+    class Meta:
+        ordering = ["sort_order", "pk"]
+        verbose_name = "фото галереи"
+        verbose_name_plural = "галерея изображений"
+
+    def __str__(self) -> str:
+        return f"Фото #{self.sort_order} — {self.plant}"
+
+
+class PlantCharacteristic(models.Model):
+    """Строка характеристик (удобнее, чем сырой JSON)."""
+
+    plant = models.ForeignKey(Plant, verbose_name="Растение", related_name="characteristics", on_delete=models.CASCADE)
+    label = models.CharField("Название", max_length=120, help_text="Например: «Зимостойкость», «Скорость роста».")
+    value = models.CharField("Значение", max_length=500)
+    sort_order = models.PositiveIntegerField("Порядок", default=0)
+
+    class Meta:
+        ordering = ["sort_order", "pk"]
+        verbose_name = "характеристика"
+        verbose_name_plural = "характеристики (таблица)"
+
+    def __str__(self) -> str:
+        return f"{self.label}: {self.value}"
+
+
+def plant_specs_as_rows(plant: Plant) -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    for ch in plant.characteristics.order_by("sort_order", "pk"):
+        if ch.label.strip():
+            rows.append({"label": ch.label.strip(), "value": (ch.value or "").strip()})
+    if not rows and isinstance(plant.specs_json, dict):
+        for k, v in plant.specs_json.items():
+            rows.append({"label": str(k), "value": str(v)})
+    return rows
+
+
+def plant_specs_as_kv_json(plant: Plant) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for row in plant_specs_as_rows(plant):
+        out[row["label"]] = row["value"]
+    return out
+
+
+def refresh_plant_specs_json(plant_id: int) -> None:
+    if not Plant.objects.filter(pk=plant_id).exists():
+        return
+    rows = list(
+        PlantCharacteristic.objects.filter(plant_id=plant_id)
+        .order_by("sort_order", "pk")
+        .values("label", "value")
+    )
+    data = {r["label"]: (r["value"] or "").strip() for r in rows if (r.get("label") or "").strip()}
+    Plant.objects.filter(pk=plant_id).update(specs_json=data)
+
+
+@receiver(post_save, sender=PlantCharacteristic)
+@receiver(post_delete, sender=PlantCharacteristic)
+def _on_plant_characteristic_changed(sender, instance: PlantCharacteristic, **kwargs: Any) -> None:
+    if instance.plant_id:
+        refresh_plant_specs_json(instance.plant_id)

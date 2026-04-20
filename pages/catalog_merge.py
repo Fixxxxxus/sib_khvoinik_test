@@ -606,9 +606,9 @@ def _build_merged_plant(group: list[dict[str, Any]]) -> dict[str, Any]:
 
 def get_merged_catalog_plants() -> tuple[list[dict[str, Any]], dict[str, str]]:
     """Список растений после объединения + map алиас slug -> канонический slug."""
-    from pages.data import CATALOG_PAGE
+    from pages.catalog_sources import get_raw_catalog_plants_unmerged
 
-    unmerged: list[dict[str, Any]] = [copy.deepcopy(p) for p in (CATALOG_PAGE.get("plants") or [])]
+    unmerged: list[dict[str, Any]] = get_raw_catalog_plants_unmerged()
     by_key: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     for p in unmerged:
         by_key[_normalized_group_key(p)].append(p)

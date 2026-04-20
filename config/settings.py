@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'import_export',
     'pages',
 ]
 
@@ -129,6 +130,12 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
+
+# Каталог на сайте: False — из pages/data.py (как раньше). True — из БД через админку.
+USE_DATABASE_CATALOG = os.environ.get('USE_DATABASE_CATALOG', '').lower() in ('1', 'true', 'yes')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

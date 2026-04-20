@@ -66,22 +66,23 @@ def main() -> int:
     from pages.catalog_nav import enrich_catalog_context
     from pages.catalog_products import plant_belongs_to_category, similar_plants_for_detail
     from pages.catalog_subcategories import all_subcategory_slugs, category_heading_for_slug
-    from pages.data import CATALOG_PAGE
+    from pages.catalog_context import get_catalog_page_for_template
 
     n = 0
 
     merged_plants, _ = get_merged_catalog_plants()
+    catalog_page = get_catalog_page_for_template()
 
-    html = render_to_string("pages/catalog.html", enrich_catalog_context(dict(CATALOG_PAGE)))
+    html = render_to_string("pages/catalog.html", enrich_catalog_context(dict(catalog_page)))
     write_html(DOCS_CATALOG / "index.html", apply_site_prefix(html, PREFIX))
     n += 1
     print(f"OK docs/catalog/index.html")
 
-    categories = CATALOG_PAGE.get("categories") or []
+    categories = catalog_page.get("categories") or []
 
     for cat in categories:
         slug = cat["slug"]
-        ctx = dict(CATALOG_PAGE)
+        ctx = dict(catalog_page)
         ctx["active_category_slug"] = slug
         ctx["category_label"] = cat.get("label") or slug
         ctx["category_hub_links"] = cat.get("category_hub_links")
@@ -92,7 +93,7 @@ def main() -> int:
         print(f"OK docs/catalog/{slug}/index.html")
 
     for sub_slug in sorted(all_subcategory_slugs()):
-        ctx = dict(CATALOG_PAGE)
+        ctx = dict(catalog_page)
         ctx["active_category_slug"] = sub_slug
         ctx["category_label"] = category_heading_for_slug(sub_slug, categories)
         ctx["category_hub_links"] = None
@@ -112,7 +113,7 @@ def main() -> int:
             if sp in written_plant_paths:
                 continue
             written_plant_paths.add(sp)
-            ctx = dict(CATALOG_PAGE)
+            ctx = dict(catalog_page)
             ctx["plants"] = merged_plants
             ctx["active_plant_slug"] = resolve_catalog_plant_slug(sp)
             ctx["active_plant"] = find_merged_plant(merged_plants, sp)

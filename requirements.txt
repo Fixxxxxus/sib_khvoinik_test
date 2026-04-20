@@ -1,6 +1,9 @@
 # Django 4.2 LTS (как в проекте)
 Django>=4.2,<5
 python-dotenv>=1.0,<2
+django-import-export>=4.0,<5
+Unidecode>=1.3,<2
+openpyxl>=3.1,<4
 
 # Миграция каталога со старого Bitrix (scripts/migrate_gazony_product.py)
 beautifulsoup4>=4.12,<5

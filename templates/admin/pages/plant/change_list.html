@@ -1,0 +1,10 @@
+{% extends "admin/change_list.html" %}
+{% load i18n %}
+{% block object-tools-items %}
+  {% if import_workbook_url %}
+  <li>
+    <a href="{{ import_workbook_url }}" class="addlink" style="background-color:#40916c">Импорт Excel (полный каталог)</a>
+  </li>
+  {% endif %}
+  {{ block.super }}
+{% endblock %}

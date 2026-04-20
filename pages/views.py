@@ -2,6 +2,7 @@ from django.conf import settings
 from django.http import Http404
 from django.shortcuts import render
 
+from .catalog_context import get_catalog_page_for_template
 from .catalog_nav import enrich_catalog_context
 from .catalog_merge import find_merged_plant, get_merged_catalog_plants, resolve_catalog_plant_slug
 from .catalog_products import plant_belongs_to_category, similar_plants_for_detail
@@ -16,7 +17,6 @@ from .data import (
     SADOVYE_CENTRY_PAGE,
     SLUZHBA_ZABOTY_PAGE,
     CALENDAR_PAGE,
-    CATALOG_PAGE,
     STATI_PAGE,
     KONTAKTY_PAGE,
     PRIVACY_PAGE,
@@ -56,12 +56,12 @@ def sadovye_centry(request):
 
 
 def catalog(request):
-    return render(request, "pages/catalog.html", enrich_catalog_context(dict(CATALOG_PAGE)))
+    return render(request, "pages/catalog.html", enrich_catalog_context(get_catalog_page_for_template()))
 
 
 def catalog_item(request, slug):
     """Один URL /catalog/<slug>/: сначала категория, иначе карточка растения."""
-    ctx_base = dict(CATALOG_PAGE)
+    ctx_base = get_catalog_page_for_template()
     merged_plants, _ = get_merged_catalog_plants()
     ctx_base["plants"] = merged_plants
     categories = ctx_base.get("categories") or []

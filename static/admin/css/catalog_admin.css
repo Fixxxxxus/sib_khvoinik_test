@@ -1,0 +1,3 @@
+/* Доп. стили карточек растений в админке */
+.inline-group .tabular td.original p { margin: 0; }
+.aligned .help { max-width: 52rem; line-height: 1.45; }
