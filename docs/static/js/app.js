@@ -216,6 +216,7 @@ function initModal() {
   const templateMap = {
     'mini_brief': 'modal-template-mini_brief',
     'contact_zaboty': 'modal-template-contact_zaboty',
+    'contact_zaboty_calendar': 'modal-template-contact_zaboty_calendar',
     'zaboty_expert_visit': 'modal-template-zaboty_expert_visit',
     'contact_consult': 'modal-template-contact_consult',
     'catalog_actual_stock': 'modal-template-catalog_actual_stock',
@@ -429,6 +430,17 @@ function initModal() {
     });
   });
 
+  // Fallback binding for stubborn overlap/click issues on care page CTA.
+  const zabotyCalendarCta = document.getElementById('zabotyCalendarCta');
+  if (zabotyCalendarCta && zabotyCalendarCta.dataset.boundDirectModal !== '1') {
+    zabotyCalendarCta.dataset.boundDirectModal = '1';
+    zabotyCalendarCta.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openModal('contact_zaboty_calendar', 'Получать календарь сезонных работ');
+    });
+  }
+
   // ── Bitrix24 lead capture ──
   const B24_WEBHOOK = 'https://sgpichugi.bitrix24.ru/rest/1/6phslfom1dj09wh3';
 
@@ -437,6 +449,7 @@ function initModal() {
     'request': 'Обращение с сайта',
     'mini-brief': 'Мини-бриф',
     'sluzhba-zaboty': 'Служба заботы',
+    'sluzhba-zaboty-calendar': 'Календарь сезонных работ',
     'zaboty-expert-vyezd': 'Выезд специалиста (экспертная помощь)',
     'consultation': 'Консультация',
     'sadovye-novinki-notify': 'Уведомление о новинках',
