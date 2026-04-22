@@ -238,6 +238,7 @@ function initModal() {
     'ozelenenie_send_project': 'modal-template-ozelenenie-send_project',
     'ozelenenie_materials_scheme': 'modal-template-ozelenenie-materials_scheme',
     'pitomnik_presentation': 'modal-template-pitomnik_presentation',
+    'pitomnik_open_day_signup': 'modal-template-pitomnik_open_day_signup',
     'sadovye_digital_card': 'modal-template-sadovye_digital_card',
     'sadovye_novinki_notify': 'modal-template-sadovye_novinki_notify',
     'sadovye_novinka_1': 'modal-template-sadovye_novinka_1',
@@ -470,6 +471,7 @@ function initModal() {
     'ozelenenie-send-project': 'Проверка проекта',
     'ozelenenie-materials-scheme': 'Подбор материалов и схема',
     'pitomnik-presentation': 'Презентация питомника',
+    'pitomnik-open-day-signup': 'Запись на день открытых дверей (Питомник)',
     'digital-card': 'Цифровая карта',
   };
 
@@ -497,6 +499,8 @@ function initModal() {
     service: 'Услуга',
     address: 'Адрес',
     modalContext: 'Запрос',
+    open_day_greenhouse: '15 мая (тепличный комбинат)',
+    open_day_kirza: '10 июня (питомник "Кирза")',
   };
 
   // Readable display values for select options

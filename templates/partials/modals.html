@@ -867,6 +867,45 @@
   </form>
 </template>
 
+<template id="modal-template-pitomnik_open_day_signup">
+  <form class="space-y-5" data-ui-form data-form-tag="B2C/pitomnik-open-day-signup" data-consent-gated="1">
+    <input type="hidden" name="formTag" value="B2C/pitomnik-open-day-signup" />
+    <p class="text-sm text-slate-600">
+      Выберите удобные даты и оставьте контакт. Можно выбрать один или оба дня.
+    </p>
+    <div class="space-y-2.5">
+      <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+        <input type="checkbox" name="open_day_greenhouse" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+        <span>15 мая - день открытых дверей в тепличном комбинате</span>
+      </label>
+      <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+        <input type="checkbox" name="open_day_kirza" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+        <span>10 июня - день открытых дверей в питомнике "Кирза"</span>
+      </label>
+    </div>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
+      <input type="checkbox" name="consent" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+      <span>
+        Даю согласие на обработку персональных данных в соответствии с
+        <a href="{% url 'privacy' %}" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+      </span>
+    </label>
+    <button type="submit" data-consent-submit disabled class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60">
+      Отправить заявку
+    </button>
+  </form>
+</template>
+
 <!-- Садовые центры: заявка на цифровую карту -->
 <template id="modal-template-sadovye_digital_card">
   <form class="space-y-4" data-ui-form data-form-tag="SadovyeCentr/digital-card">
