@@ -430,6 +430,17 @@ function initModal() {
     });
   });
 
+  // Fallback binding for stubborn overlap/click issues on care page CTA.
+  const zabotyCalendarCta = document.getElementById('zabotyCalendarCta');
+  if (zabotyCalendarCta && zabotyCalendarCta.dataset.boundDirectModal !== '1') {
+    zabotyCalendarCta.dataset.boundDirectModal = '1';
+    zabotyCalendarCta.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openModal('contact_zaboty_calendar', 'Получать календарь сезонных работ');
+    });
+  }
+
   // ── Bitrix24 lead capture ──
   const B24_WEBHOOK = 'https://sgpichugi.bitrix24.ru/rest/1/6phslfom1dj09wh3';
 
