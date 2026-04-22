@@ -34,7 +34,8 @@ jobs:
             docker compose pull --ignore-pull-failures || true
             docker compose build
             docker compose up -d
-            docker compose exec -T web python manage.py migrate --noinput
-            docker compose exec -T web python manage.py collectstatic --noinput
+            # migrate/collectstatic выполняются в compose-команде web при старте,
+            # дублировать здесь небезопасно (ManifestStaticFilesStorage конфликтует
+            # с уже обработанными файлами в volume).
             docker image prune -f
             docker compose ps
