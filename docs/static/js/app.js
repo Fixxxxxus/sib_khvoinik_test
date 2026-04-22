@@ -1478,8 +1478,16 @@ function selectionDisplayNameForPodbor(name) {
   if (/[\u0400-\u04FF]/.test(s)) {
     // Не отрезать «…" Hosta (ML)» по первому латинскому слову — иначе теряется (ML) С2/3;
     // латиница сразу после закрывающей " / типографской кавычки не считаем хвостом бинома.
-    const re = /(?<![\u0022\u201c\u201d])\s+[A-Z][a-z]{2,}\b/;
-    const idx = s.search(re);
+    const re = /\s+[A-Z][a-z]{2,}\b/g;
+    let idx = -1;
+    let match = null;
+    while ((match = re.exec(s))) {
+      const prevChar = s[match.index - 1] || '';
+      if (!/[\u0022\u201c\u201d]/.test(prevChar)) {
+        idx = match.index;
+        break;
+      }
+    }
     if (idx !== -1) s = s.slice(0, idx).trim();
     // Дублирующее латинское имя рода перед скобкой: … "Frances" … Hosta (ML)
     s = s.replace(/\s+[A-Z][a-z]{2,}\b(?=\s*\()/g, ' ').replace(/\s+/g, ' ').trim();
