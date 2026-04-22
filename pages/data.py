@@ -123,10 +123,9 @@ ROLL_LAWN_PRICE_PAGE = {
     ],
     "gazon_contacts": {
         "phones": [
-            {"label": "8 (800) 222-61-54", "tel": "+78002226154"},
             {"label": "+7 (383) 201-06-00", "tel": "+73832010600"},
         ],
-        "phones_hint": "бесплатный звонок по России · линия по газонам",
+        "phones_hint": "линия по газонам",
         "email": "rulony@gazony.ru",
     },
 }
