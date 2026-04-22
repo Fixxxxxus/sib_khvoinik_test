@@ -730,6 +730,22 @@ function initCatalogCategoryMobileAutoScroll() {
       // ignore
     }
   });
+
+  // Кнопка "Подробнее" в карточках раздела: после перехода на карточку
+  // прокрутить мобильный экран ниже блока навигации к контенту карточки.
+  main.querySelectorAll('a[data-catalog-more][href]').forEach((link) => {
+    link.addEventListener('click', (e) => {
+      if (!mqMobile.matches) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      try {
+        const targetUrl = new URL(link.href, window.location.href);
+        if (targetUrl.origin !== window.location.origin) return;
+        window.sessionStorage.setItem(STORAGE_KEY, '1');
+      } catch (err) {
+        // ignore
+      }
+    });
+  });
 }
 
 function initAccordion() {
