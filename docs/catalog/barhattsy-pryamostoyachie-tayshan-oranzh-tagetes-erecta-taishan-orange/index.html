@@ -2283,9 +2283,11 @@
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         <div class="lg:col-span-6">
           <div class="rounded-3xl border border-black/5 bg-white overflow-hidden" data-animate="fadeInUp">
+            <div data-plant-photo-swap>
             <div class="h-72 bg-gradient-to-br from-black/90 via-black/30 to-brand/20 overflow-hidden flex items-center justify-center">
               
                 <img
+                  data-plant-main-cover
                   src="/sib_khvoinik_test/static/media/images/catalog/migrated/barhattsy-pryamostoyachie-tayshan-oranzh-tagetes-erecta-taishan-orange.jpg"
                   alt="Бархатцы прямостоячие «Тайшан Оранж» Tagetes erecta &quot;Taishan Orange&quot;"
                   class="h-full w-full object-cover"
@@ -2293,6 +2295,8 @@
                   decoding="async"
                 />
               
+            </div>
+            
             </div>
             <div class="p-6">
               
@@ -2337,6 +2341,8 @@
 Цветки – очень крупные, густомахровые, ярких окрасок.
 Идеально подходит для ландшафтного озеленения и посадки в вазоны и на клумбы.
           </div>
+
+          
 
           
 
@@ -2855,7 +2861,7 @@
         <a href="https://vk.com/sibirskiegazony" target="_blank" rel="noopener noreferrer" aria-label="VK" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow">VK</a>
       </div>
       <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
-        <span>© <span id="year"></span> «Сибирские газоны». Все права защищены.</span>
+        <span>© <span id="year"></span> «Сибирский хвойник». Все права защищены.</span>
         <a href="/sib_khvoinik_test/privacy/" class="hover:text-brand transition">Политика конфиденциальности</a>
         <a href="/sib_khvoinik_test/consent/" class="hover:text-brand transition">Согласие на обработку ПД</a>
         <button type="button" id="cookieSettingsBtn" class="hover:text-brand transition">Настройки cookie</button>
@@ -2868,9 +2874,9 @@
     <div id="modalOverlay" class="fixed inset-0 bg-black/40 z-[60] hidden"></div>
 
 <!-- Generic modal wrapper -->
-<div id="modalHost" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-4">
+<div id="modalHost" class="fixed inset-0 z-[70] hidden flex items-center justify-center p-3 sm:p-4">
   <div class="w-full max-w-lg">
-    <div class="relative overflow-hidden rounded-3xl border border-black/10 bg-white shadow-soft">
+    <div class="relative overflow-hidden rounded-3xl border border-black/10 bg-white shadow-soft max-h-[92dvh]">
       <button
         type="button"
         id="modalCloseTop"
@@ -2879,7 +2885,7 @@
       >
         <i data-lucide="x" class="h-5 w-5"></i>
       </button>
-      <div class="p-6">
+      <div class="p-4 sm:p-6 overflow-y-auto max-h-[calc(92dvh-1rem)] sm:max-h-[calc(92dvh-1.5rem)]">
         <h3 id="modalTitle" class="text-xl font-semibold leading-tight"></h3>
         <div id="modalBody" class="mt-4"></div>
       </div>
@@ -2937,6 +2943,101 @@
     </label>
     <button type="submit" data-consent-submit disabled class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60">
       Отправить
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-contact_zaboty_calendar">
+  <form class="space-y-5" data-ui-form data-form-tag="B2C/sluzhba-zaboty-calendar" data-consent-gated="1">
+    <input type="hidden" name="formTag" value="B2C/sluzhba-zaboty-calendar" />
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" autocomplete="name" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." autocomplete="tel" />
+      </label>
+    </div>
+
+    <div class="space-y-3">
+      <p class="text-sm font-medium leading-snug text-slate-800">
+        По каким группам растений вы хотите получать напоминания и рекомендации по уходу:
+      </p>
+      <div class="space-y-2.5">
+        <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+          <input type="checkbox" name="care_gazon" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за газоном</span>
+        </label>
+        <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+          <input type="checkbox" name="care_conifer" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за хвойными растениями</span>
+        </label>
+        <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+          <input type="checkbox" name="care_deciduous_trees" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за лиственными деревьями</span>
+        </label>
+        <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+          <input type="checkbox" name="care_deciduous_shrubs" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за лиственными кустарниками</span>
+        </label>
+        <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+          <input type="checkbox" name="promo_news" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Хочу получать информацию о новинках</span>
+        </label>
+        <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+          <input type="checkbox" name="care_hydrangea" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за гортензией</span>
+        </label>
+        <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+          <input type="checkbox" name="care_peony" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за пионами</span>
+        </label>
+        <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+          <input type="checkbox" name="care_ornamental_apple" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за яблонями декоративными</span>
+        </label>
+        <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+          <input type="checkbox" name="care_perennials" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за многолетними цветами</span>
+        </label>
+        <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+          <input type="checkbox" name="care_roses" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Календарь ухода за розами</span>
+        </label>
+        <label class="flex cursor-pointer items-center gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+          <input type="checkbox" name="promo_sales" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+          <span>Хочу получать сообщения об акциях</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="space-y-3 rounded-2xl border border-black/10 bg-slate-50/80 p-4">
+      <label class="block text-sm font-medium text-slate-700">
+        Удобный мессенджер
+        <select name="preferred_messenger" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+          <option value="email" selected>Эл. Почта</option>
+          <option value="max">MAX</option>
+          <option value="telegram">Telegram</option>
+        </select>
+      </label>
+      <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
+        <input type="checkbox" name="consent_messages" value="1" checked class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+        <span>Даю согласие на получение сообщений</span>
+      </label>
+    </div>
+
+    <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
+      <input type="checkbox" name="consent" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+      <span>
+        Даю согласие на обработку персональных данных в соответствии с
+        <a href="/sib_khvoinik_test/privacy/" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+      </span>
+    </label>
+
+    <button type="submit" data-consent-submit disabled class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60">
+      Получать календарь сезонных работ
     </button>
   </form>
 </template>
@@ -3639,6 +3740,45 @@
   </form>
 </template>
 
+<template id="modal-template-pitomnik_open_day_signup">
+  <form class="space-y-5" data-ui-form data-form-tag="B2C/pitomnik-open-day-signup" data-consent-gated="1">
+    <input type="hidden" name="formTag" value="B2C/pitomnik-open-day-signup" />
+    <p class="text-sm text-slate-600">
+      Выберите удобные даты и оставьте контакт. Можно выбрать один или оба дня.
+    </p>
+    <div class="space-y-2.5">
+      <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+        <input type="checkbox" name="open_day_greenhouse" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+        <span>15 мая - день открытых дверей в тепличном комбинате</span>
+      </label>
+      <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+        <input type="checkbox" name="open_day_kirza" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+        <span>10 июня - день открытых дверей в питомнике "Кирза"</span>
+      </label>
+    </div>
+    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
+      <input type="checkbox" name="consent" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+      <span>
+        Даю согласие на обработку персональных данных в соответствии с
+        <a href="/sib_khvoinik_test/privacy/" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+      </span>
+    </label>
+    <button type="submit" data-consent-submit disabled class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60">
+      Отправить заявку
+    </button>
+  </form>
+</template>
+
 <!-- Садовые центры: заявка на цифровую карту -->
 <template id="modal-template-sadovye_digital_card">
   <form class="space-y-4" data-ui-form data-form-tag="SadovyeCentr/digital-card">
@@ -3786,7 +3926,7 @@
 </div>
 
 
-    <script src="/sib_khvoinik_test/static/js/app.js?v=40" defer></script>
+    <script src="/sib_khvoinik_test/static/js/app.js?v=44" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {
