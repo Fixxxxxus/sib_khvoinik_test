@@ -1,0 +1,37 @@
+name: Deploy to VDS (panel.gazony.ru)
+
+on:
+  push:
+    branches:
+      - main
+      - migrate/vds
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vds
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VDS_HOST }}
+          username: ${{ secrets.VDS_USER }}
+          key: ${{ secrets.VDS_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            cd /opt/gazony
+            BRANCH="${GITHUB_REF_NAME:-main}"
+            git fetch --prune origin
+            git checkout "$BRANCH"
+            git reset --hard "origin/$BRANCH"
+            docker compose pull --ignore-pull-failures || true
+            docker compose build
+            docker compose up -d
+            docker compose exec -T web python manage.py migrate --noinput
+            docker compose exec -T web python manage.py collectstatic --noinput
+            docker image prune -f
+            docker compose ps
