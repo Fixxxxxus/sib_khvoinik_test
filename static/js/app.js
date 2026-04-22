@@ -216,6 +216,7 @@ function initModal() {
   const templateMap = {
     'mini_brief': 'modal-template-mini_brief',
     'contact_zaboty': 'modal-template-contact_zaboty',
+    'contact_zaboty_calendar': 'modal-template-contact_zaboty_calendar',
     'zaboty_expert_visit': 'modal-template-zaboty_expert_visit',
     'contact_consult': 'modal-template-contact_consult',
     'catalog_actual_stock': 'modal-template-catalog_actual_stock',
@@ -437,6 +438,7 @@ function initModal() {
     'request': 'Обращение с сайта',
     'mini-brief': 'Мини-бриф',
     'sluzhba-zaboty': 'Служба заботы',
+    'sluzhba-zaboty-calendar': 'Календарь сезонных работ',
     'zaboty-expert-vyezd': 'Выезд специалиста (экспертная помощь)',
     'consultation': 'Консультация',
     'sadovye-novinki-notify': 'Уведомление о новинках',
