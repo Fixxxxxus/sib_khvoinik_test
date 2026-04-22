@@ -28,12 +28,46 @@ except ImportError:
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+u2vf5(-*o1upj$69&-40mk7%s6s*8qw1s4u(l0yv=dl9)e^6f'
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-+u2vf5(-*o1upj$69&-40mk7%s6s*8qw1s4u(l0yv=dl9)e^6f',
+)
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.environ.get('DJANGO_DEBUG', '1').lower() in ('1', 'true', 'yes')
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = [
+    h.strip()
+    for h in os.environ.get('DJANGO_ALLOWED_HOSTS', '127.0.0.1,localhost').split(',')
+    if h.strip()
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    o.strip()
+    for o in os.environ.get('DJANGO_CSRF_TRUSTED_ORIGINS', '').split(',')
+    if o.strip()
+]
+
+# За reverse-proxy (Caddy/nginx) — корректный scheme для HTTPS-редиректов и build_absolute_uri.
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+
+# Прод-закалка: включается только когда DEBUG=0. Caddy сам держит HTTPS, Django
+# шлёт secure-куки и (при DJANGO_HSTS_SECONDS>0) заголовок Strict-Transport-Security.
+if not DEBUG:
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    # Caddy уже редиректит HTTP→HTTPS, но дублируем в Django — safety net,
+    # если кто-то поставит второй reverse-proxy перед ним без редиректа.
+    SECURE_SSL_REDIRECT = os.environ.get(
+        'DJANGO_SSL_REDIRECT', '1'
+    ).lower() in ('1', 'true', 'yes')
+    SECURE_HSTS_SECONDS = int(os.environ.get('DJANGO_HSTS_SECONDS', '0'))
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get(
+        'DJANGO_HSTS_INCLUDE_SUBDOMAINS', '0'
+    ).lower() in ('1', 'true', 'yes')
+    SECURE_HSTS_PRELOAD = os.environ.get(
+        'DJANGO_HSTS_PRELOAD', '0'
+    ).lower() in ('1', 'true', 'yes')
 
 
 # Application definition
@@ -51,6 +85,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -86,7 +121,7 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': os.environ.get('DJANGO_DB_PATH', str(BASE_DIR / 'db.sqlite3')),
     }
 }
 
@@ -133,6 +168,12 @@ STATIC_URL = '/static/'
 
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# WhiteNoise: сжатие + хэши в именах для долгого кеша.
+STORAGES = {
+    'default': {'BACKEND': 'django.core.files.storage.FileSystemStorage'},
+    'staticfiles': {'BACKEND': 'whitenoise.storage.CompressedManifestStaticFilesStorage'},
+}
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'

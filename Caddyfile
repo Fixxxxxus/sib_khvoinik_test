@@ -1,0 +1,35 @@
+{
+	email admin@gazony.ru
+}
+
+# На Этапе 3 тут живёт только panel.gazony.ru. Когда DNS gazony.ru/www
+# переключится на VDS — добавь их сюда и перезагрузи Caddy
+# (`docker compose exec caddy caddy reload --config /etc/caddy/Caddyfile`).
+
+panel.gazony.ru {
+	encode zstd gzip
+
+	handle_path /static/* {
+		root * /srv/static
+		file_server
+		header Cache-Control "public, max-age=31536000, immutable"
+	}
+
+	handle_path /media/* {
+		root * /srv/media
+		file_server
+		header Cache-Control "public, max-age=604800"
+	}
+
+	handle {
+		reverse_proxy web:8000 {
+			header_up X-Forwarded-Proto {scheme}
+			header_up Host {host}
+		}
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}
