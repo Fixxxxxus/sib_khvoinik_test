@@ -664,157 +664,70 @@ function initModal() {
 }
 
 /**
- * Страницы раздела каталога (шаблон с #catalog-category-main): на узком экране
- * длинная навигация «Каталог» занимает весь вид — подсказка прокрутить к контенту.
- * Блок вставляется внизу карточки разделов (aside), а не fixed поверх списка.
- * Только max-width 1023px; на десктопе не создаём элемент.
+ * Страницы раздела каталога (шаблон с #catalog-category-main): на мобильных
+ * после выбора раздела/подраздела плавно прокручиваем к карточкам.
+ * На десктопе не вмешиваемся.
  */
-function initCatalogCategoryMobileScrollHint() {
+function initCatalogCategoryMobileAutoScroll() {
   const main = document.getElementById('catalog-category-main');
   if (!main) return;
 
   const mqMobile = window.matchMedia('(max-width: 1023px)');
   const mqReduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const STORAGE_KEY = 'sg_catalog_mobile_scroll_to_main_v1';
 
-  let nudgeRoot = null;
-  let io = null;
-  let dismissed = false;
-
-  const getNavCard = () => {
-    const prev = main.previousElementSibling;
-    if (!(prev instanceof HTMLElement)) return null;
-    const byAttr = prev.querySelector('[data-catalog-nav-card]');
-    if (byAttr instanceof HTMLElement) return byAttr;
-    const card = prev.firstElementChild;
-    return card instanceof HTMLElement ? card : null;
-  };
-
-  const cleanup = () => {
-    if (nudgeRoot && nudgeRoot.parentNode) nudgeRoot.parentNode.removeChild(nudgeRoot);
-    nudgeRoot = null;
-    if (io) {
-      io.disconnect();
-      io = null;
-    }
-  };
-
-  const isMainBelowFold = () => {
-    const r = main.getBoundingClientRect();
-    return r.top > Math.min(window.innerHeight * 0.4, 520);
-  };
+  const aside = main.previousElementSibling;
+  if (!(aside instanceof HTMLElement)) return;
+  const navCard = aside.querySelector('[data-catalog-nav-card]');
+  if (!(navCard instanceof HTMLElement)) return;
 
   const scrollMainIntoView = () => {
+    if (!mqMobile.matches) return;
     main.scrollIntoView({
       behavior: mqReduce.matches ? 'auto' : 'smooth',
       block: 'start',
     });
   };
 
-  const tryShow = () => {
-    if (dismissed) return;
-    if (!mqMobile.matches) {
-      cleanup();
-      return;
+  const normalize = (url) => `${url.pathname.replace(/\/+$/, '') || '/'}?${url.searchParams.toString()}`;
+  const currentUrl = new URL(window.location.href);
+
+  try {
+    if (mqMobile.matches && window.sessionStorage.getItem(STORAGE_KEY) === '1') {
+      window.sessionStorage.removeItem(STORAGE_KEY);
+      window.requestAnimationFrame(() => {
+        window.setTimeout(scrollMainIntoView, 120);
+      });
     }
-    if (!isMainBelowFold()) {
-      cleanup();
-      return;
-    }
-    if (nudgeRoot) return;
-
-    const navCard = getNavCard();
-    if (!navCard) return;
-
-    const wrap = document.createElement('div');
-    wrap.className =
-      'pointer-events-none shrink-0 border-t border-black/[0.06] bg-white px-3 py-3 lg:hidden';
-    wrap.setAttribute('data-catalog-mobile-nudge', '1');
-
-    const btn = document.createElement('button');
-    btn.type = 'button';
-    btn.className =
-      'pointer-events-auto flex w-full items-center justify-center gap-2 rounded-2xl border border-brand/30 bg-white/95 px-4 py-2.5 text-sm font-semibold text-brand shadow-sm backdrop-blur-md transition-transform active:scale-[0.98]';
-    btn.setAttribute('aria-label', 'Прокрутить к списку позиций раздела');
-
-    const label = document.createElement('span');
-    label.className = 'text-center leading-snug';
-    label.textContent = 'Ниже — позиции раздела';
-
-    const icon = document.createElement('i');
-    icon.setAttribute('data-lucide', 'chevron-down');
-    icon.className = 'h-5 w-5 shrink-0 text-brand';
-    icon.setAttribute('aria-hidden', 'true');
-    if (!mqReduce.matches) icon.classList.add('animate-bounce');
-
-    btn.appendChild(label);
-    btn.appendChild(icon);
-
-    btn.addEventListener('click', () => {
-      dismissed = true;
-      cleanup();
-      scrollMainIntoView();
-    });
-
-    wrap.appendChild(btn);
-    navCard.appendChild(wrap);
-    nudgeRoot = wrap;
-
-    try {
-      if (window.lucide && typeof window.lucide.createIcons === 'function') window.lucide.createIcons();
-    } catch (e) {
-      // ignore
-    }
-
-    io = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          if (entry.intersectionRatio < 0.1) return;
-          dismissed = true;
-          cleanup();
-        });
-      },
-      { threshold: [0, 0.1, 0.2] }
-    );
-    io.observe(main);
-  };
-
-  const schedule = () => {
-    window.requestAnimationFrame(() => {
-      tryShow();
-      window.setTimeout(tryShow, 200);
-    });
-  };
-
-  schedule();
-
-  const aside = main.previousElementSibling;
-  if (aside) {
-    aside.addEventListener('click', (e) => {
-      if (e.target.closest('[data-accordion-toggle]')) window.setTimeout(schedule, 380);
-    });
+  } catch (e) {
+    // ignore
   }
 
-  let resizeT = null;
-  window.addEventListener('resize', () => {
-    window.clearTimeout(resizeT);
-    resizeT = window.setTimeout(() => {
-      if (!mqMobile.matches) {
-        dismissed = true;
-        cleanup();
-      } else {
-        schedule();
-      }
-    }, 160);
-  });
+  navCard.addEventListener('click', (e) => {
+    const link = e.target.closest('a[href]');
+    if (!(link instanceof HTMLAnchorElement)) return;
+    if (!mqMobile.matches) return;
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
 
-  mqMobile.addEventListener('change', () => {
-    if (!mqMobile.matches) {
-      dismissed = true;
-      cleanup();
-    } else {
-      dismissed = false;
-      schedule();
+    let targetUrl = null;
+    try {
+      targetUrl = new URL(link.href, window.location.href);
+    } catch (err) {
+      return;
+    }
+    if (targetUrl.origin !== window.location.origin) return;
+
+    const isSamePage = normalize(targetUrl) === normalize(currentUrl);
+    if (isSamePage) {
+      e.preventDefault();
+      scrollMainIntoView();
+      return;
+    }
+
+    try {
+      window.sessionStorage.setItem(STORAGE_KEY, '1');
+    } catch (err) {
+      // ignore
     }
   });
 }
@@ -2133,7 +2046,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // ignore
   }
   initAccordion();
-  initCatalogCategoryMobileScrollHint();
+  initCatalogCategoryMobileAutoScroll();
   initAnimations();
   initCounters();
   initBeforeAfterSliders();
