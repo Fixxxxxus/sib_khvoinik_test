@@ -443,7 +443,7 @@ function initModal() {
   }
 
   // ── Bitrix24 lead capture ──
-  const B24_WEBHOOK = 'https://sgpichugi.bitrix24.ru/rest/1/6phslfom1dj09wh3';
+  const B24_WEBHOOK = 'https://sgpichugi.bitrix24.ru/rest/1339/6y8mhtwuvyc4du94';
 
   // Human-readable form titles for Bitrix24 TITLE field
   const FORM_TITLES = {
