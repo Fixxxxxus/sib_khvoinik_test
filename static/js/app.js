@@ -230,6 +230,7 @@ function initModal() {
     'b2b_price_stock': 'modal-template-b2b_price_stock',
     'b2b_care_reglement': 'modal-template-b2b_care_reglement',
     'gazon_price_list': 'modal-template-gazon_price_list',
+    'gazon_factory_open_day': 'modal-template-pitomnik_open_day_signup',
     'gazon_cpo': 'modal-template-gazon_cpo',
     'gazon_checklist': 'modal-template-gazon_checklist',
     'gazon_open_day': 'modal-template-gazon_open_day',
@@ -341,6 +342,8 @@ function initModal() {
       const wide =
         targetKey === 'ozelenenie_mini_project' ||
         targetKey === 'gazon_calc' ||
+        targetKey === 'pitomnik_open_day_signup' ||
+        targetKey === 'gazon_factory_open_day' ||
         targetKey === 'sadovye_novinka_1' ||
         targetKey === 'sadovye_novinka_2' ||
         targetKey === 'sadovye_novinka_3' ||

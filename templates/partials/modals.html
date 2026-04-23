@@ -1,3 +1,4 @@
+{% load static %}
 <div id="modalOverlay" class="fixed inset-0 bg-black/40 z-[60] hidden"></div>
 
 <!-- Generic modal wrapper -->
@@ -386,9 +387,9 @@
         Регион
         <input name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Город/регион" />
       </label>
-      <label class="text-sm font-medium text-slate-700">
-        Тип объекта
-        <input name="objectType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="ЖК / УК / подряд" />
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Название ЖК
+        <input name="residentialComplex" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Например: ЖК Солнечный" />
       </label>
       <label class="text-sm font-medium text-slate-700">
         Площадь, м²
@@ -418,6 +419,10 @@
       <label class="text-sm font-medium text-slate-700 sm:col-span-2">
         Пожелания
         <input name="notes" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="График, ограничения, комментарии" />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Прикрепить проект (при наличии)
+        <input type="file" name="projectFile" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" />
       </label>
     </div>
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
