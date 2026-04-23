@@ -1,0 +1,195 @@
+{% load static %}
+<div id="promoPopup" class="sg-promo-popup" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="promoPopupTitle">
+  <div class="sg-promo-popup__overlay" data-promo-close></div>
+  <div class="sg-promo-popup__card" role="document">
+    <button type="button" class="sg-promo-popup__close" aria-label="Закрыть" data-promo-close>
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+    <h2 id="promoPopupTitle" class="sr-only">Открытие садового центра 28 апреля</h2>
+    <div class="sg-promo-popup__media">
+      <img src="{% static 'media/images/sadovyy-centr-28-apr-poster.jpg' %}"
+           alt="Открытие садового центра «Сибирские газоны» 28 апреля на парковке МЕГИ, скидка 20% первым 100 клиентам по промокоду ВЕСНА"
+           loading="eager"
+           decoding="async" />
+    </div>
+    <div class="sg-promo-popup__actions">
+      <a href="https://2gis.ru/novosibirsk/search/%D0%92%D0%B0%D1%82%D1%83%D1%82%D0%B8%D0%BD%D0%B0%20107"
+         target="_blank" rel="noopener"
+         class="sg-promo-popup__btn sg-promo-popup__btn--primary"
+         data-promo-action="2gis">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 10c0 7-8 12-8 12s-8-5-8-12a8 8 0 0 1 16 0Z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        Открыть в 2ГИС
+      </a>
+      <a href="https://yandex.ru/maps/?text=%D0%9D%D0%BE%D0%B2%D0%BE%D1%81%D0%B8%D0%B1%D0%B8%D1%80%D1%81%D0%BA%2C%20%D1%83%D0%BB.%20%D0%92%D0%B0%D1%82%D1%83%D1%82%D0%B8%D0%BD%D0%B0%2C%20107"
+         target="_blank" rel="noopener"
+         class="sg-promo-popup__btn sg-promo-popup__btn--secondary"
+         data-promo-action="yandex">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M20 10c0 7-8 12-8 12s-8-5-8-12a8 8 0 0 1 16 0Z"/>
+          <circle cx="12" cy="10" r="3"/>
+        </svg>
+        Яндекс.Карты
+      </a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .sg-promo-popup {
+    position: fixed;
+    inset: 0;
+    z-index: 80;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 320ms ease;
+  }
+  .sg-promo-popup.is-open {
+    pointer-events: auto;
+    opacity: 1;
+  }
+  .sg-promo-popup__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+  }
+  .sg-promo-popup__card {
+    position: relative;
+    width: 100%;
+    max-width: 440px;
+    max-height: calc(100vh - 32px);
+    max-height: calc(100dvh - 32px);
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 20px;
+    box-shadow: 0 25px 60px rgba(15, 23, 42, 0.28);
+    transform: translateY(14px) scale(0.98);
+    transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+    -webkit-overflow-scrolling: touch;
+  }
+  .sg-promo-popup.is-open .sg-promo-popup__card {
+    transform: translateY(0) scale(1);
+  }
+  .sg-promo-popup__close {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 36px;
+    height: 36px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.92);
+    color: #0f172a;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.18);
+    transition: background 160ms ease, transform 160ms ease;
+    z-index: 2;
+  }
+  .sg-promo-popup__close:hover,
+  .sg-promo-popup__close:focus-visible {
+    background: #fff;
+    transform: scale(1.05);
+    outline: none;
+  }
+  .sg-promo-popup__close:focus-visible {
+    box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.5);
+  }
+  .sg-promo-popup__media {
+    display: block;
+    line-height: 0;
+  }
+  .sg-promo-popup__media img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+  }
+  .sg-promo-popup__actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    padding: 12px;
+    background: #fff;
+  }
+  .sg-promo-popup__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 10px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.1;
+    text-decoration: none;
+    text-align: center;
+    transition: background 160ms ease, transform 120ms ease, box-shadow 160ms ease;
+    min-height: 48px;
+  }
+  .sg-promo-popup__btn:active {
+    transform: translateY(1px);
+  }
+  .sg-promo-popup__btn--primary {
+    background: #2D6A4F;
+    color: #fff;
+  }
+  .sg-promo-popup__btn--primary:hover,
+  .sg-promo-popup__btn--primary:focus-visible {
+    background: #245A41;
+    outline: none;
+    box-shadow: 0 6px 18px rgba(45, 106, 79, 0.35);
+  }
+  .sg-promo-popup__btn--secondary {
+    background: #F1F5F2;
+    color: #0f172a;
+    border: 1px solid rgba(15, 23, 42, 0.08);
+  }
+  .sg-promo-popup__btn--secondary:hover,
+  .sg-promo-popup__btn--secondary:focus-visible {
+    background: #E5EEE7;
+    outline: none;
+  }
+
+  @media (max-width: 380px) {
+    .sg-promo-popup__actions {
+      grid-template-columns: 1fr;
+    }
+    .sg-promo-popup__btn {
+      min-height: 46px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sg-promo-popup,
+    .sg-promo-popup__card {
+      transition: none;
+    }
+  }
+
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+</style>

@@ -2226,3 +2226,72 @@ function initPlantCardCoverGallerySwap() {
   });
 }
 
+(function initPromoPopup() {
+  var STORAGE_KEY = 'sg_promo_popup_28apr_closed';
+  var SHOW_DELAY_MS = 2000;
+
+  function ready(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn, { once: true });
+    } else {
+      fn();
+    }
+  }
+
+  ready(function () {
+    var popup = document.getElementById('promoPopup');
+    if (!popup) return;
+
+    try {
+      if (localStorage.getItem(STORAGE_KEY) === '1') return;
+    } catch (e) { /* приватный режим — всё равно показываем */ }
+
+    var closers = popup.querySelectorAll('[data-promo-close]');
+    var mapLinks = popup.querySelectorAll('[data-promo-action]');
+    var prevBodyOverflow = '';
+    var isOpen = false;
+
+    function open() {
+      if (isOpen) return;
+      isOpen = true;
+      popup.classList.add('is-open');
+      popup.setAttribute('aria-hidden', 'false');
+      prevBodyOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', onKeydown);
+    }
+
+    function close(persist) {
+      if (!isOpen) return;
+      isOpen = false;
+      popup.classList.remove('is-open');
+      popup.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = prevBodyOverflow;
+      document.removeEventListener('keydown', onKeydown);
+      if (persist !== false) {
+        try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) { /* noop */ }
+      }
+    }
+
+    function onKeydown(e) {
+      if (e.key === 'Escape' || e.key === 'Esc') close(true);
+    }
+
+    closers.forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        close(true);
+      });
+    });
+
+    // Клик по карте — закрываем и сохраняем, ссылка откроется в новой вкладке
+    mapLinks.forEach(function (link) {
+      link.addEventListener('click', function () {
+        close(true);
+      });
+    });
+
+    setTimeout(open, SHOW_DELAY_MS);
+  });
+})();
+
