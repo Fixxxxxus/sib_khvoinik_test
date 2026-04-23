@@ -296,6 +296,10 @@
         <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
       </label>
     </div>
+    <label class="text-sm font-medium text-slate-700">
+      Тема консультации или Ваш вопрос
+      <textarea name="topic" rows="3" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Например: подбор растений для участка 12 соток"></textarea>
+    </label>
     <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
       Отправить
     </button>
@@ -599,6 +603,40 @@
     </div>
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
       Записаться на день открытых дверей
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-home_gazon_excursion">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/home-gazon-excursion">
+    <input type="hidden" name="formTag" value="Gas/home-gazon-excursion" />
+    <div class="rounded-2xl border border-brand/20 bg-brand/5 px-4 py-3 text-sm text-slate-700">
+      10 июня 2026 - Рулонный газон (Новопичугово)
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Тип клиента
+      <select name="clientType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+        <option value="private_person">Частное лицо</option>
+        <option value="landscape_designer">Ландшафтный дизайнер</option>
+        <option value="developer_company">Застройщик / компания</option>
+      </select>
+    </label>
+    <label class="text-sm font-medium text-slate-700">
+      Сколько вас будет
+      <input name="guestsCount" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Например: 2" />
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Записаться на экскурсию
     </button>
   </form>
 </template>
@@ -1080,19 +1118,13 @@
 <template id="modal-template-pitomnik_open_day_signup">
   <form class="space-y-5" data-ui-form data-form-tag="B2C/pitomnik-open-day-signup" data-consent-gated="1">
     <input type="hidden" name="formTag" value="B2C/pitomnik-open-day-signup" />
-    <p class="text-sm text-slate-600">
-      Выберите удобные даты и оставьте контакт. Можно выбрать один или оба дня.
-    </p>
-    <div class="space-y-2.5">
-      <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
-        <input type="checkbox" name="open_day_greenhouse" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-        <span>15 мая - день открытых дверей в тепличном комбинате</span>
-      </label>
-      <label class="flex cursor-pointer items-start gap-3 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
-        <input type="checkbox" name="open_day_kirza" value="1" class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-        <span>10 июня - день открытых дверей в питомнике "Кирза"</span>
-      </label>
-    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Выберите дату посещения
+      <select name="openDayVisitDate" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+        <option value="15_may_2026_greenhouse">15 мая 2026 - Тепличный комбинат (Новопичугово)</option>
+        <option value="10_june_2026_gazon_kirza">10 июня 2026 - Рулонный газон (Новопичугово) + Питомник (Кирза)</option>
+      </select>
+    </label>
     <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
       <label class="text-sm font-medium text-slate-700">
         Имя
@@ -1103,6 +1135,18 @@
         <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
       </label>
     </div>
+    <label class="text-sm font-medium text-slate-700">
+      Тип клиента
+      <select name="clientType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+        <option value="private_person">Частное лицо</option>
+        <option value="landscape_designer">Ландшафтный дизайнер</option>
+        <option value="developer_company">Застройщик / компания</option>
+      </select>
+    </label>
+    <label class="text-sm font-medium text-slate-700">
+      Сколько вас будет
+      <input name="guestsCount" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Например: 3" />
+    </label>
     <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
       <input type="checkbox" name="consent" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
       <span>

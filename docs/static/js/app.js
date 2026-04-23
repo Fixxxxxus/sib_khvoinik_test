@@ -233,6 +233,7 @@ function initModal() {
     'gazon_cpo': 'modal-template-gazon_cpo',
     'gazon_checklist': 'modal-template-gazon_checklist',
     'gazon_open_day': 'modal-template-gazon_open_day',
+    'home_gazon_excursion': 'modal-template-home_gazon_excursion',
     'gazon_logistics': 'modal-template-gazon_logistics',
     'gazon_presentation': 'modal-template-gazon_presentation',
     'gazon_calc': 'modal-template-gazon_calc',
@@ -489,6 +490,7 @@ function initModal() {
     'gazon-logistics': 'Логистика газон',
     'gazon-presentation': 'Презентация газон',
     'gazon-calc': 'Калькулятор газона',
+    'home-gazon-excursion': 'Экскурсия на рулонный газон',
     'home-private-buy': 'Покупка продукции (частные лица)',
     'home-b2b-buy': 'Покупка продукции (B2B)',
     'home-project-calc': 'Просчет проекта (B2B)',
@@ -509,6 +511,8 @@ function initModal() {
     area: 'Площадь, м²',
     region: 'Регион',
     topic: 'Тема',
+    openDayVisitDate: 'Дата посещения',
+    guestsCount: 'Количество участников',
     message: 'Сообщение',
     city: 'Город',
     budget: 'Бюджет',
@@ -546,6 +550,11 @@ function initModal() {
     partner: 'Партнёрство с ландшафтными компаниями',
     uk: 'Сопровождение для УК',
     max: 'MAX', telegram: 'Telegram', email: 'Эл. почта',
+    private_person: 'Частное лицо',
+    landscape_designer: 'Ландшафтный дизайнер',
+    developer_company: 'Застройщик / компания',
+    '15_may_2026_greenhouse': '15 мая 2026 - Тепличный комбинат (Новопичугово)',
+    '10_june_2026_gazon_kirza': '10 июня 2026 - Рулонный газон (Новопичугово) + Питомник (Кирза)',
   };
 
   // care_*/promo_* checkbox labels
