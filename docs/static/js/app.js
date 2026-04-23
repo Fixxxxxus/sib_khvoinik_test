@@ -215,6 +215,11 @@ function initModal() {
 
   const templateMap = {
     'mini_brief': 'modal-template-mini_brief',
+    'home_private_choice': 'modal-template-home_private_choice',
+    'home_b2b_choice': 'modal-template-home_b2b_choice',
+    'home_private_buy': 'modal-template-home_private_buy',
+    'home_b2b_buy': 'modal-template-home_b2b_buy',
+    'home_b2b_project': 'modal-template-home_b2b_project',
     'contact_zaboty': 'modal-template-contact_zaboty',
     'contact_zaboty_calendar': 'modal-template-contact_zaboty_calendar',
     'zaboty_expert_visit': 'modal-template-zaboty_expert_visit',
@@ -355,6 +360,7 @@ function initModal() {
     setModalTitle(title || '');
     modalBody.innerHTML = '';
     modalBody.appendChild(tpl.content.cloneNode(true));
+    bindOpenModalButtons(modalBody);
     renderSelectionModalPreview(modalBody, opts.selectionNames);
     if (window.lucide) window.lucide.createIcons();
 
@@ -412,23 +418,42 @@ function initModal() {
     if (closeBtn) closeModal();
   });
 
-  // Open by UI buttons
-  document.querySelectorAll('[data-open-modal]').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      const key = btn.getAttribute('data-open-modal');
-      const title = btn.getAttribute('data-modal-title') || '';
-      const noOverlay = btn.getAttribute('data-modal-no-overlay') === '1';
-      const contextTitle = btn.getAttribute('data-modal-context') || title;
-      let selectionNames = [];
-      try {
-        const rawNames = btn.getAttribute('data-modal-selection-names');
-        const parsed = rawNames ? JSON.parse(rawNames) : [];
-        selectionNames = Array.isArray(parsed) ? parsed.map((x) => String(x || '').trim()).filter(Boolean) : [];
-      } catch (e) {
-        selectionNames = [];
-      }
-      openModal(key, title, { noOverlay, contextTitle, selectionNames });
+  const handleOpenModalButton = (btn, e) => {
+    const key = btn.getAttribute('data-open-modal');
+    if (!key) return;
+    if (e) e.preventDefault();
+    const title = btn.getAttribute('data-modal-title') || '';
+    const noOverlay = btn.getAttribute('data-modal-no-overlay') === '1';
+    const contextTitle = btn.getAttribute('data-modal-context') || title;
+    let selectionNames = [];
+    try {
+      const rawNames = btn.getAttribute('data-modal-selection-names');
+      const parsed = rawNames ? JSON.parse(rawNames) : [];
+      selectionNames = Array.isArray(parsed) ? parsed.map((x) => String(x || '').trim()).filter(Boolean) : [];
+    } catch (err) {
+      selectionNames = [];
+    }
+    openModal(key, title, { noOverlay, contextTitle, selectionNames });
+  };
+
+  const bindOpenModalButtons = (root) => {
+    const scope = root || document;
+    scope.querySelectorAll('[data-open-modal]').forEach((btn) => {
+      if (btn.dataset.modalBound === '1') return;
+      btn.dataset.modalBound = '1';
+      btn.addEventListener('click', (e) => {
+        handleOpenModalButton(btn, e);
+      });
     });
+  };
+
+  bindOpenModalButtons(document);
+
+  // Fallback delegation for any late-inserted elements.
+  document.addEventListener('click', (e) => {
+    const btn = e.target && e.target.closest('[data-open-modal]');
+    if (!btn) return;
+    handleOpenModalButton(btn, e);
   });
 
   // Fallback binding for stubborn overlap/click issues on care page CTA.
@@ -464,6 +489,9 @@ function initModal() {
     'gazon-logistics': 'Логистика газон',
     'gazon-presentation': 'Презентация газон',
     'gazon-calc': 'Калькулятор газона',
+    'home-private-buy': 'Покупка продукции (частные лица)',
+    'home-b2b-buy': 'Покупка продукции (B2B)',
+    'home-project-calc': 'Просчет проекта (B2B)',
     'ozelenenie-ready-project': 'Готовый проект озеленения',
     'mini-project': 'Мини-проект озеленения',
     'ozelenenie-audit-plan': 'Аудит участка',
@@ -497,7 +525,10 @@ function initModal() {
     preferred_messenger: 'Мессенджер',
     link: 'Ссылка',
     service: 'Услуга',
+    productType: 'Выбор продукции',
     address: 'Адрес',
+    residentialComplex: 'Название ЖК',
+    projectFile: 'Файл проекта',
     modalContext: 'Запрос',
     open_day_greenhouse: '15 мая (тепличный комбинат)',
     open_day_kirza: '10 июня (питомник "Кирза")',
@@ -607,6 +638,11 @@ function initModal() {
     const formData = new FormData(form);
     const payload = {};
     for (const [k, v] of formData.entries()) {
+      if (v instanceof File) {
+        if (!v.name) continue;
+        payload[k] = v.name;
+        continue;
+      }
       if (Object.prototype.hasOwnProperty.call(payload, k)) {
         const cur = payload[k];
         payload[k] = Array.isArray(cur) ? [...cur, v] : [cur, v];
