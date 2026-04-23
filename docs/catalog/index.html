@@ -308,8 +308,8 @@
           <a href="/sib_khvoinik_test/sadovye-centry/" class="inline-flex items-center justify-center rounded-2xl border border-black/10 bg-white px-6 py-3 font-semibold hover:bg-black/5 transition">
             Посмотреть в садовых центрах
           </a>
-          <button type="button" data-open-modal="catalog_actual_stock" data-modal-title="Выслать актуальные остатки" class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-            Выслать актуальные остатки
+          <button type="button" data-open-modal="catalog_actual_stock" data-modal-title="Посмотреть ассортимент" class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+            Посмотреть ассортимент
           </button>
         </div>
       </div>
@@ -2659,8 +2659,9 @@
 </template>
 
 <template id="modal-template-catalog_actual_stock">
-  <form class="space-y-4" data-ui-form data-form-tag="Catalog/actual-stock">
-    <input type="hidden" name="formTag" value="Catalog/actual-stock" />
+  <form class="space-y-4" data-ui-form data-form-tag="Catalog/assortment-interest">
+    <input type="hidden" name="formTag" value="Catalog/assortment-interest" />
+    <p class="text-sm leading-relaxed text-slate-600">Отметьте интересующие категории — пришлём актуальную информацию по ассортименту.</p>
     <div class="grid grid-cols-1 gap-3">
       <label class="text-sm font-medium text-slate-700">
         Имя
@@ -2671,8 +2672,31 @@
         <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
       </label>
     </div>
+    <fieldset class="space-y-2 rounded-2xl border border-black/10 bg-slate-50/80 p-4">
+      <legend class="text-sm font-medium text-slate-800">Интерес к категориям</legend>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" name="interest_vegetable_seedlings" value="да" class="h-4 w-4 rounded border-black/20 text-brand" />
+        Овощная рассада
+      </label>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" name="interest_annual_seedlings" value="да" class="h-4 w-4 rounded border-black/20 text-brand" />
+        Однолетняя рассада
+      </label>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" name="interest_perennials" value="да" class="h-4 w-4 rounded border-black/20 text-brand" />
+        Многолетние цветы
+      </label>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" name="interest_shrubs" value="да" class="h-4 w-4 rounded border-black/20 text-brand" />
+        Кустарники
+      </label>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" name="interest_trees" value="да" class="h-4 w-4 rounded border-black/20 text-brand" />
+        Деревья
+      </label>
+    </fieldset>
     <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-      Выслать актуальные остатки
+      Отправить запрос
     </button>
   </form>
 </template>
@@ -3490,7 +3514,7 @@
 </div>
 
 
-    <script src="/sib_khvoinik_test/static/js/app.js?v=47" defer></script>
+    <script src="/sib_khvoinik_test/static/js/app.js?v=48" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {

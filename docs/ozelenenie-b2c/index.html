@@ -201,7 +201,7 @@
             Озеленение частных участков под ключ
           </div>
           <h1 class="mt-5 text-white text-4xl font-semibold leading-[1.05] md:text-5xl lg:text-6xl" data-animate="fadeInUp">
-            Создаём готовое озеленение за 7-10 дней
+            Создаём готовое озеленение за 1–2 дня
           </h1>
           <p class="mt-5 max-w-2xl text-white/75 text-base md:text-lg lg:text-xl" data-animate="fadeInUp">
             Работаем на стадии завершения строительства или берём в работу уже готовый участок. Растения адаптированы к сибирскому климату.
@@ -211,10 +211,10 @@
             <button
               type="button"
               data-open-modal="ozelenenie_ready_project"
-              data-modal-title="Рассчитать готовый проект"
+              data-modal-title="Рассчитать услугу"
               class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
             >
-              Рассчитать готовый проект
+              Рассчитать услугу
             </button>
             <button
               type="button"
@@ -425,9 +425,6 @@
               </div>
               </div>
             </div>
-            <button type="button" data-open-modal="ozelenenie_assess_upload" data-modal-title="Отправить участок на оценку" class="mt-6 w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-              Отправить участок на оценку
-            </button>
         </div>
       </div>
     </div>
@@ -470,8 +467,14 @@
             <source src="/sib_khvoinik_test/static/media/videos/ozelenenie-sobstvennoe-proizvodstvo.mp4?v=1" type="video/mp4" />
           </video>
         </div>
-        <button type="button" data-open-modal="gazon_open_day" data-modal-title="Как выращиваются растения" class="mt-6 w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-          Посмотреть, как выращиваются растения
+        <button
+          type="button"
+          data-open-modal="home_gazon_excursion"
+          data-modal-title="Записаться на экскурсию"
+          data-modal-context="Озеленение B2C — Собственное производство"
+          class="mt-6 w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+        >
+          Записаться на экскурсию
         </button>
       </div>
     </div>
@@ -922,6 +925,40 @@
   </form>
 </template>
 
+<template id="modal-template-home_gazon_excursion">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/home-gazon-excursion">
+    <input type="hidden" name="formTag" value="Gas/home-gazon-excursion" />
+    <div class="rounded-2xl border border-brand/20 bg-brand/5 px-4 py-3 text-sm text-slate-700">
+      10 июня 2026 - Рулонный газон (Новопичугово)
+    </div>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <label class="text-sm font-medium text-slate-700">
+      Тип клиента
+      <select name="clientType" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+        <option value="private_person">Частное лицо</option>
+        <option value="landscape_designer">Ландшафтный дизайнер</option>
+        <option value="developer_company">Застройщик / компания</option>
+      </select>
+    </label>
+    <label class="text-sm font-medium text-slate-700">
+      Сколько вас будет
+      <input name="guestsCount" type="number" min="1" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Например: 2" />
+    </label>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Записаться на экскурсию
+    </button>
+  </form>
+</template>
+
 <template id="modal-template-gazon_open_day">
   <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-open-day">
     <input type="hidden" name="formTag" value="Gas/gazon-open-day" />
@@ -1098,7 +1135,7 @@
       </label>
     </div>
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
-      Рассчитать готовый проект
+      Рассчитать услугу
     </button>
   </form>
 </template>
@@ -1341,7 +1378,7 @@
   </div>
 </div>
 
-    <script src="/sib_khvoinik_test/static/js/app.js?v=40" defer></script>
+    <script src="/sib_khvoinik_test/static/js/app.js?v=48" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {

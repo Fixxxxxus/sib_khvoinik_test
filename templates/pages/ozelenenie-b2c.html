@@ -35,7 +35,7 @@
             Озеленение частных участков под ключ
           </div>
           <h1 class="mt-5 text-white text-4xl font-semibold leading-[1.05] md:text-5xl lg:text-6xl" data-animate="fadeInUp">
-            Создаём готовое озеленение за 7-10 дней
+            Создаём готовое озеленение за 1–2 дня
           </h1>
           <p class="mt-5 max-w-2xl text-white/75 text-base md:text-lg lg:text-xl" data-animate="fadeInUp">
             Работаем на стадии завершения строительства или берём в работу уже готовый участок. Растения адаптированы к сибирскому климату.
@@ -45,10 +45,10 @@
             <button
               type="button"
               data-open-modal="ozelenenie_ready_project"
-              data-modal-title="Рассчитать готовый проект"
+              data-modal-title="Рассчитать услугу"
               class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
             >
-              Рассчитать готовый проект
+              Рассчитать услугу
             </button>
             <button
               type="button"
@@ -259,9 +259,6 @@
               </div>
             </div>
           </div>
-          <button type="button" data-open-modal="ozelenenie_assess_upload" data-modal-title="Отправить участок на оценку" class="mt-6 w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-            Отправить участок на оценку
-          </button>
         </div>
       </div>
     </div>
@@ -304,8 +301,14 @@
             <source src="{% static 'media/videos/ozelenenie-sobstvennoe-proizvodstvo.mp4' %}?v=1" type="video/mp4" />
           </video>
         </div>
-        <button type="button" data-open-modal="gazon_open_day" data-modal-title="Как выращиваются растения" class="mt-6 w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-          Посмотреть, как выращиваются растения
+        <button
+          type="button"
+          data-open-modal="home_gazon_excursion"
+          data-modal-title="Записаться на экскурсию"
+          data-modal-context="Озеленение B2C — Собственное производство"
+          class="mt-6 w-full sm:w-auto inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+        >
+          Записаться на экскурсию
         </button>
       </div>
     </div>

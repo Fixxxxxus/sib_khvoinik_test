@@ -308,8 +308,9 @@
 </template>
 
 <template id="modal-template-catalog_actual_stock">
-  <form class="space-y-4" data-ui-form data-form-tag="Catalog/actual-stock">
-    <input type="hidden" name="formTag" value="Catalog/actual-stock" />
+  <form class="space-y-4" data-ui-form data-form-tag="Catalog/assortment-interest">
+    <input type="hidden" name="formTag" value="Catalog/assortment-interest" />
+    <p class="text-sm leading-relaxed text-slate-600">Отметьте интересующие категории — пришлём актуальную информацию по ассортименту.</p>
     <div class="grid grid-cols-1 gap-3">
       <label class="text-sm font-medium text-slate-700">
         Имя
@@ -320,8 +321,31 @@
         <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
       </label>
     </div>
+    <fieldset class="space-y-2 rounded-2xl border border-black/10 bg-slate-50/80 p-4">
+      <legend class="text-sm font-medium text-slate-800">Интерес к категориям</legend>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" name="interest_vegetable_seedlings" value="да" class="h-4 w-4 rounded border-black/20 text-brand" />
+        Овощная рассада
+      </label>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" name="interest_annual_seedlings" value="да" class="h-4 w-4 rounded border-black/20 text-brand" />
+        Однолетняя рассада
+      </label>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" name="interest_perennials" value="да" class="h-4 w-4 rounded border-black/20 text-brand" />
+        Многолетние цветы
+      </label>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" name="interest_shrubs" value="да" class="h-4 w-4 rounded border-black/20 text-brand" />
+        Кустарники
+      </label>
+      <label class="flex cursor-pointer items-center gap-2 text-sm text-slate-700">
+        <input type="checkbox" name="interest_trees" value="да" class="h-4 w-4 rounded border-black/20 text-brand" />
+        Деревья
+      </label>
+    </fieldset>
     <button type="submit" class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
-      Выслать актуальные остатки
+      Отправить запрос
     </button>
   </form>
 </template>
@@ -475,6 +499,41 @@
     </div>
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
       Получить полную презентацию
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-b2b_project_calc">
+  <form class="space-y-4" data-ui-form data-form-tag="B2B/project-calc">
+    <input type="hidden" name="formTag" value="B2B/project-calc" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Компания
+        <input name="company" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название компании" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Регион / город объекта
+        <input name="region" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Город/регион" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Контактное лицо
+        <input name="contactPerson" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Имя и должность" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон / e-mail
+        <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ... или name@example.com" />
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Комментарий к проекту (опционально)
+        <textarea name="notes" rows="3" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Сроки, площадь, особенности объекта"></textarea>
+      </label>
+      <label class="text-sm font-medium text-slate-700 sm:col-span-2">
+        Прикрепить проект (при наличии)
+        <input type="file" name="projectFile" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Отправить на расчёт
     </button>
   </form>
 </template>
@@ -913,7 +972,7 @@
       </label>
     </div>
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
-      Рассчитать готовый проект
+      Рассчитать услугу
     </button>
   </form>
 </template>
@@ -1168,16 +1227,25 @@
 <!-- Садовые центры: заявка на цифровую карту -->
 <template id="modal-template-sadovye_digital_card">
   <form class="space-y-4" data-ui-form data-form-tag="SadovyeCentr/digital-card">
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+    <div class="grid grid-cols-1 gap-3">
       <label class="text-sm font-medium text-slate-700">
-        Имя
-        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+        ФИО
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Фамилия Имя Отчество" autocomplete="name" />
       </label>
       <label class="text-sm font-medium text-slate-700">
         Телефон
-        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+        <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." autocomplete="tel" />
       </label>
     </div>
+    <label class="block text-sm font-medium text-slate-700">
+      Куда отправить условия программы
+      <select name="preferred_messenger" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+        <option value="" disabled selected>Выберите вариант</option>
+        <option value="max">MAX</option>
+        <option value="telegram">Telegram</option>
+        <option value="email">Эл. почта</option>
+      </select>
+    </label>
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
       Получить цифровую карту
     </button>

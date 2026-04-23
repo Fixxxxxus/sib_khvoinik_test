@@ -311,7 +311,7 @@
             <img
               src="/sib_khvoinik_test/static/media/images/pitomnik-product-hvoynye.jpg"
               alt="Композиция хвойных в ландшафте: голубая ель, сосна и туя на декоративной щебёнке"
-              class="h-full w-full object-contain object-center"
+              class="h-full w-full object-cover object-center"
               width="720"
               height="960"
               loading="lazy"
@@ -330,7 +330,7 @@
             <img
               src="/sib_khvoinik_test/static/media/images/pitomnik-product-listvennye.jpg"
               alt="Осенняя листва деревьев — жёлтая, зелёная и красная — с отражением в спокойной воде"
-              class="h-full w-full object-contain object-center"
+              class="h-full w-full object-cover object-center"
               width="720"
               height="960"
               loading="lazy"
@@ -351,7 +351,7 @@
             <img
               src="/sib_khvoinik_test/static/media/images/pitomnik-product-kustarniki-v2.png"
               alt="Цветущие гортензии в питомнике на фоне закатного неба"
-              class="h-full w-full object-contain object-center"
+              class="h-full w-full object-cover object-center"
               width="720"
               height="960"
               loading="lazy"
@@ -363,18 +363,13 @@
         </article>
       </div>
       <div class="mt-10 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center" data-animate="fadeInUp">
-        <button
-          type="button"
-          data-open-modal="pitomnik_presentation"
-          data-modal-title="Посмотреть, как выращиваются растения"
+        <a
+          href="/sib_khvoinik_test/catalog/"
           class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
         >
-          <i data-lucide="play-circle" class="h-5 w-5" aria-hidden="true"></i>
-          Посмотреть, как выращиваются растения
-          </button>
-        <a href="/sib_khvoinik_test/catalog/" class="inline-flex items-center justify-center rounded-2xl border border-black/10 px-6 py-3 font-semibold text-slate-900 hover:bg-black/5 transition">
           Перейти в каталог
-          </a>
+          <i data-lucide="arrow-right" class="h-5 w-5" aria-hidden="true"></i>
+        </a>
       </div>
     </div>
   </section>
@@ -1553,7 +1548,7 @@
   </div>
 </div>
 
-    <script src="/sib_khvoinik_test/static/js/app.js?v=45" defer></script>
+    <script src="/sib_khvoinik_test/static/js/app.js?v=48" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {

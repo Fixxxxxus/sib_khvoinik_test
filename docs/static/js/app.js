@@ -228,6 +228,7 @@ function initModal() {
     'catalog_electronic_catalog': 'modal-template-catalog_electronic_catalog',
     'b2b_cpo': 'modal-template-b2b_cpo',
     'b2b_price_stock': 'modal-template-b2b_price_stock',
+    'b2b_project_calc': 'modal-template-b2b_project_calc',
     'b2b_care_reglement': 'modal-template-b2b_care_reglement',
     'gazon_price_list': 'modal-template-gazon_price_list',
     'gazon_factory_open_day': 'modal-template-pitomnik_open_day_signup',
@@ -342,6 +343,8 @@ function initModal() {
       const wide =
         targetKey === 'ozelenenie_mini_project' ||
         targetKey === 'gazon_calc' ||
+        targetKey === 'b2b_project_calc' ||
+        targetKey === 'catalog_actual_stock' ||
         targetKey === 'pitomnik_open_day_signup' ||
         targetKey === 'gazon_factory_open_day' ||
         targetKey === 'sadovye_novinka_1' ||
@@ -484,6 +487,7 @@ function initModal() {
     'consultation': 'Консультация',
     'sadovye-novinki-notify': 'Уведомление о новинках',
     'contract-request': 'Запрос КП (B2B)',
+    'project-calc': 'Расчёт проекта (B2B)',
     'price-stock': 'Прайс и наличие (B2B)',
     'reglement-uhoda': 'Регламент ухода (B2B)',
     'gazon-price-list': 'Прайс-лист газон',
@@ -506,6 +510,7 @@ function initModal() {
     'pitomnik-presentation': 'Презентация питомника',
     'pitomnik-open-day-signup': 'Запись на день открытых дверей (Питомник)',
     'digital-card': 'Цифровая карта',
+    'assortment-interest': 'Запрос по ассортименту (каталог)',
   };
 
   // Labels for COMMENTS fields
@@ -536,6 +541,11 @@ function initModal() {
     address: 'Адрес',
     residentialComplex: 'Название ЖК',
     projectFile: 'Файл проекта',
+    interest_vegetable_seedlings: 'Овощная рассада',
+    interest_annual_seedlings: 'Однолетняя рассада',
+    interest_perennials: 'Многолетние цветы',
+    interest_shrubs: 'Кустарники',
+    interest_trees: 'Деревья',
     modalContext: 'Запрос',
     open_day_greenhouse: '15 мая (тепличный комбинат)',
     open_day_kirza: '10 июня (питомник "Кирза")',
