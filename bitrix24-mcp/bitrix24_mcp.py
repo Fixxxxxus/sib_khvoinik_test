@@ -261,13 +261,78 @@ async def b24_task_update(task_id: int, fields: dict[str, Any]) -> Any:
 @mcp.tool
 async def b24_task_comment_list(task_id: int) -> Any:
     """List comments on a task."""
-    return await _call_b24("tasks.task.comment.getList", {"taskId": task_id})
+    return await _call_b24("task.commentitem.getlist", {"TASKID": task_id})
 
 
 @mcp.tool
 async def b24_task_comment_add(task_id: int, text: str) -> Any:
     """Add a comment to a task."""
-    return await _call_b24("tasks.task.comment.add", {"taskId": task_id, "fields": {"POST_MESSAGE": text}})
+    return await _call_b24("task.commentitem.add", {"TASKID": task_id, "FIELDS": {"POST_MESSAGE": text}})
+
+
+# ── IM: Task chats and messages ──────────────────────────────
+
+
+@mcp.tool
+async def b24_im_recent(limit: int = 50) -> Any:
+    """List recent IM chats for the webhook user. Returns chat_id, title and entity binding (e.g. TASKS_TASK/1177)."""
+    result = await _call_b24("im.recent.get", {"LIMIT": limit})
+    items = result.get("items", result) if isinstance(result, dict) else result
+    if not isinstance(items, list):
+        return result
+    return [
+        {
+            "id": it.get("id"),
+            "title": (it.get("chat") or {}).get("name") or it.get("title"),
+            "entity_type": (it.get("chat") or {}).get("entity_type"),
+            "entity_id": (it.get("chat") or {}).get("entity_id"),
+        }
+        for it in items
+    ]
+
+
+@mcp.tool
+async def b24_task_chat_messages(task_id: int, limit: int = 100) -> Any:
+    """Fetch messages from the IM chat attached to a task. Finds the chat via im.recent.get by ENTITY_TYPE=TASKS_TASK."""
+    recent = await _call_b24("im.recent.get", {"LIMIT": 200})
+    items = recent.get("items", recent) if isinstance(recent, dict) else recent
+    chat_id = None
+    if isinstance(items, list):
+        for it in items:
+            ch = it.get("chat") or {}
+            if ch.get("entity_type") == "TASKS_TASK" and str(ch.get("entity_id")) == str(task_id):
+                chat_id = it.get("id")
+                break
+    if not chat_id:
+        return {"error": "chat_not_found", "task_id": task_id}
+    msgs = await _call_b24("im.dialog.messages.get", {"DIALOG_ID": chat_id, "LIMIT": limit})
+    messages = msgs.get("messages", []) if isinstance(msgs, dict) else []
+    users_raw = msgs.get("users", []) if isinstance(msgs, dict) else []
+    users = (
+        {int(k): (v.get("name") if isinstance(v, dict) else v) for k, v in users_raw.items()}
+        if isinstance(users_raw, dict)
+        else {u["id"]: u.get("name", "?") for u in users_raw}
+    )
+    return {
+        "chat_id": chat_id,
+        "count": len(messages),
+        "messages": [
+            {
+                "id": m.get("id"),
+                "date": m.get("date"),
+                "author_id": m.get("author_id"),
+                "author": users.get(m.get("author_id"), "СИСТЕМА" if m.get("author_id") == 0 else None),
+                "text": m.get("text"),
+            }
+            for m in messages
+        ],
+    }
+
+
+@mcp.tool
+async def b24_im_dialog_messages(dialog_id: str, limit: int = 100) -> Any:
+    """Fetch messages from any IM dialog by DIALOG_ID (e.g. 'chat3005' or user id as string)."""
+    return await _call_b24("im.dialog.messages.get", {"DIALOG_ID": dialog_id, "LIMIT": limit})
 
 
 # ── CRM Forms ────────────────────────────────────────────────

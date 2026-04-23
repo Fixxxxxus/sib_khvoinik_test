@@ -1,0 +1,41 @@
+name: Deploy to VDS (panel.gazony.ru)
+
+on:
+  push:
+    branches:
+      - main
+      - migrate/vds
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-vds
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy over SSH
+        uses: appleboy/ssh-action@v1.2.0
+        env:
+          BRANCH: ${{ github.ref_name }}
+        with:
+          host: ${{ secrets.VDS_HOST }}
+          username: ${{ secrets.VDS_USER }}
+          key: ${{ secrets.VDS_SSH_KEY }}
+          envs: BRANCH
+          script: |
+            set -euo pipefail
+            cd /opt/gazony
+            echo "Deploying branch: $BRANCH"
+            git fetch --prune origin
+            git checkout "$BRANCH"
+            git reset --hard "origin/$BRANCH"
+            docker compose pull --ignore-pull-failures || true
+            docker compose build
+            docker compose up -d
+            # migrate/collectstatic выполняются в compose-команде web при старте,
+            # дублировать здесь небезопасно (ManifestStaticFilesStorage конфликтует
+            # с уже обработанными файлами в volume).
+            docker image prune -f
+            docker compose ps

@@ -1,0 +1,55 @@
+{
+	email admin@gazony.ru
+}
+
+# Полная конфигурация: panel + публичные хосты. Активируется в момент
+# переключения DNS gazony.ru/www.gazony.ru на 72.56.8.107
+# (`cp Caddyfile.full Caddyfile && docker compose exec caddy caddy reload
+#   --config /etc/caddy/Caddyfile`).
+
+# Общий сниппет — сайт на Django за gunicorn.
+(site_backend) {
+	encode zstd gzip
+
+	handle_path /static/* {
+		root * /srv/static
+		file_server
+		header Cache-Control "public, max-age=31536000, immutable"
+	}
+
+	handle_path /media/* {
+		root * /srv/media
+		file_server
+		header Cache-Control "public, max-age=604800"
+	}
+
+	handle {
+		reverse_proxy web:8000 {
+			header_up Host {host}
+		}
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}
+
+# Админка — отдельный хост, туда можно /admin/.
+panel.gazony.ru {
+	import site_backend
+}
+
+# Публичный канонический хост.
+gazony.ru {
+	# /admin/ недоступна на публичном домене — заходить строго через panel.gazony.ru.
+	handle /admin* {
+		respond "Not Found" 404
+	}
+	import site_backend
+}
+
+# www → 301 на apex (единый канонический URL для SEO).
+www.gazony.ru {
+	redir https://gazony.ru{uri} permanent
+}

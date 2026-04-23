@@ -1,0 +1,41 @@
+services:
+  web:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+    volumes:
+      - ./data/db:/app/db
+      - ./data/media:/app/media
+      - static_files:/app/staticfiles
+    command:
+      - sh
+      - -c
+      - |
+        python manage.py migrate --noinput &&
+        python manage.py collectstatic --noinput &&
+        exec gunicorn config.wsgi:application --bind 0.0.0.0:8000 --workers 3 --timeout 60 --access-logfile - --error-logfile -
+    expose:
+      - "8000"
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+      - static_files:/srv/static:ro
+      - ./data/media:/srv/media:ro
+    depends_on:
+      - web
+
+volumes:
+  static_files:
+  caddy_data:
+  caddy_config:
