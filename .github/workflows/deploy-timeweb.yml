@@ -1,9 +1,11 @@
-name: Deploy to Timeweb (gazony.ru)
+name: Deploy to Timeweb (legacy shared — DISABLED)
 
+# ОТКЛЮЧЕН 2026-04-22 после переключения DNS gazony.ru на VDS (72.56.8.107).
+# Оставлен только ручной запуск через workflow_dispatch — как аварийный откат
+# на shared-хостинг если VDS ляжет. Для этого нужно будет временно вернуть
+# DNS A gazony.ru → 92.53.96.141 в панели Timeweb.
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 jobs:
   deploy:
