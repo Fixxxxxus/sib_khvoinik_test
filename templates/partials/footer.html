@@ -1,8 +1,8 @@
 {% load static %}
 <footer class="mt-20 border-t border-black/5 bg-white">
   <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-    <div class="grid grid-cols-1 gap-10 md:grid-cols-5">
-      <div class="md:col-span-2">
+    <div class="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:gap-8">
+      <div class="lg:col-span-5">
         <div class="flex items-center">
           <img
             src="{% static 'media/branding/logo-main.webp' %}"
@@ -19,27 +19,27 @@
         </div>
       </div>
 
-      <div class="grid grid-cols-2 gap-8 md:col-span-3">
+      <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-7 lg:grid-cols-3">
         <div>
           <div class="text-sm font-semibold mb-3">О компании</div>
-          <a class="block text-sm text-slate-700 hover:text-brand transition" href="{% url 'pitomnik' %}">Питомник</a>
-          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'gazon' %}">Рулонный газон</a>
-          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'b2b' %}">B2B</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="{% url 'home' %}#about-company">Блок о компании</a>
+        </div>
+        <div>
+          <div class="text-sm font-semibold mb-3">Покупателям</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition" href="{% url 'b2b' %}">B2B</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'pitomnik' %}">Питомник</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'gazon' %}">Газон</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'ozelenenie_b2c' %}">Озеленение под ключ</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'sadovye_centry' %}">Садовые центры</a>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'sluzhba_zaboty' %}">Служба заботы</a>
         </div>
         <div>
           <div class="text-sm font-semibold mb-3">Каталог</div>
           <a class="block text-sm text-slate-700 hover:text-brand transition" href="{% url 'catalog' %}">Каталог растений</a>
-          <a class="block text-sm text-slate-700 hover:text-brand transition" href="{% url 'sadovye_centry' %}">Садовые центры</a>
-          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'stati_list' %}">Статьи</a>
-        </div>
-        <div>
-          <div class="text-sm font-semibold mb-3">Покупателям</div>
-          <a class="block text-sm text-slate-700 hover:text-brand transition" href="{% url 'ozelenenie_b2c' %}">Озеленение под ключ</a>
-          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'sluzhba_zaboty' %}">Служба заботы</a>
-          <a class="block text-sm text-slate-700 hover:text-brand transition mt-2" href="{% url 'kontakty' %}">Контакты</a>
         </div>
         <div>
           <div class="text-sm font-semibold mb-3">Контакты</div>
+          <a class="block text-sm text-slate-700 hover:text-brand transition mb-2" href="{% url 'kontakty' %}">Контакты</a>
           <div class="text-sm text-slate-700">Тел: +7 (383) 201-06-00</div>
           <div class="text-sm text-slate-700 mt-2">Email: price@gazony.ru</div>
           <div class="text-sm text-slate-700 mt-2">Адрес: г. Новосибирск, ул. Железнодорожная, 12/1, оф.501</div>
