@@ -4,7 +4,8 @@ __pycache__/
 *.pyc
 db.sqlite3
 staticfiles/
-media/
+# Только корневой каталог загрузок Django, не static/media/
+/media/
 .DS_Store
 
 # Секреты и локальные настройки
@@ -31,5 +32,8 @@ migration.md
 # Playwright MCP snapshots
 .playwright-mcp/
 
-# Debug screenshots
+# Debug screenshots (кроме закреплённых ассетов в static)
 *.png
+!static/media/images/cases/ozelenenie-b2c-case-01.png
+!static/media/images/cases/ozelenenie-b2c-case-02.png
+!static/media/images/cases/ozelenenie-b2c-case-03.png
