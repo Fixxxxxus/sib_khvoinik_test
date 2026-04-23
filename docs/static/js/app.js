@@ -536,7 +536,8 @@ function initModal() {
 
     const fields = {
       TITLE: `Сайт: ${leadTitle}`,
-      SOURCE_ID: 'WEB',
+      SOURCE_ID: '9',
+      ASSIGNED_BY_ID: 1317,
       UTM_SOURCE: 'website',
       UTM_MEDIUM: section,
       UTM_CONTENT: formName,
