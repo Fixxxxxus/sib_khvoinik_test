@@ -353,3 +353,228 @@ def refresh_plant_specs_json(plant_id: int) -> None:
 def _on_plant_characteristic_changed(sender, instance: PlantCharacteristic, **kwargs: Any) -> None:
     if instance.plant_id:
         refresh_plant_specs_json(instance.plant_id)
+
+
+# --- Календарь ухода (страница «Статьи» / sluzhba-zaboty/calendar/) — отдельно от каталога товаров ---
+
+
+class CareCalendarCategory(models.Model):
+    """Категория в календаре ухода (деревья, кустарники, …)."""
+
+    label = models.CharField("Название", max_length=200)
+    slug = models.SlugField("Slug (URL)", max_length=120, unique=True)
+    sort_order = models.PositiveIntegerField("Порядок в списке", default=0)
+
+    class Meta:
+        ordering = ["sort_order", "label"]
+        verbose_name = "календарь: категория растений"
+        verbose_name_plural = "календарь: категории растений"
+
+    def __str__(self) -> str:
+        return self.label
+
+    def save(self, *args: Any, **kwargs: Any) -> None:
+        if not (self.slug or "").strip():
+            base = ascii_slugify(self.label) or "calendar-category"
+            self.slug = unique_slug_for_model(
+                CareCalendarCategory, base, instance_pk=self.pk, slug_field="slug"
+            )
+        super().save(*args, **kwargs)
+
+
+class CareCalendarPlant(models.Model):
+    """Карточка растения в календаре сезонных работ."""
+
+    name = models.CharField("Название (рус.)", max_length=500)
+    latin = models.CharField("Название (лат.)", max_length=500, blank=True)
+    slug = models.SlugField("Slug (URL)", max_length=200, unique=True, blank=True)
+    varieties_json = models.JSONField(
+        "Сорта / формы (JSON-массив строк)",
+        default=list,
+        blank=True,
+        help_text='Например: ["French Bolero", "Snow White"]. Пустой список [] — если не нужно.',
+    )
+    description = models.TextField(
+        "Краткое описание",
+        blank=True,
+        help_text="Текст под заголовком на карточке (необязательно).",
+    )
+    primary_category = models.ForeignKey(
+        CareCalendarCategory,
+        verbose_name="Основная категория (для URL)",
+        related_name="plants_by_primary",
+        on_delete=models.PROTECT,
+        help_text="Используется в адресе страницы: …/calendar/&lt;категория&gt;/&lt;растение&gt;/",
+    )
+    categories = models.ManyToManyField(
+        CareCalendarCategory,
+        verbose_name="Все категории",
+        related_name="calendar_plants",
+        blank=True,
+        help_text="Отметьте одну или несколько. Основная категория добавится автоматически при сохранении.",
+    )
+    sort_order = models.PositiveIntegerField(
+        "Порядок в списках",
+        default=0,
+        help_text="Меньше — выше внутри категории.",
+    )
+    is_published = models.BooleanField("Показывать на сайте", default=True)
+    show_paid_service_cta = models.BooleanField(
+        "Блок «Платная услуга» и форма выезда",
+        default=False,
+        help_text="Показывать на странице растения кнопку заказа выезда специалиста (модальное окно).",
+    )
+    yonote_id = models.CharField("ID Yonote (архив)", max_length=80, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ["sort_order", "name"]
+        verbose_name = "календарь: растение"
+        verbose_name_plural = "календарь: растения"
+
+    def __str__(self) -> str:
+        return self.name
+
+    def save(self, *args: Any, **kwargs: Any) -> None:
+        if not (self.slug or "").strip():
+            base = ascii_slugify(self.name) or "calendar-plant"
+            self.slug = unique_slug_for_model(
+                CareCalendarPlant, base, instance_pk=self.pk, slug_field="slug"
+            )
+        super().save(*args, **kwargs)
+
+
+class CareCalendarPlantGalleryImage(models.Model):
+    """Галерея изображений карточки календаря (не привязана к конкретной дате)."""
+
+    plant = models.ForeignKey(
+        CareCalendarPlant,
+        verbose_name="Растение",
+        related_name="gallery_images",
+        on_delete=models.CASCADE,
+    )
+    image = models.ImageField("Файл", upload_to="care_calendar/gallery/%Y/%m/")
+    alt_text = models.CharField("Подпись (alt)", max_length=255, blank=True)
+    sort_order = models.PositiveIntegerField("Порядок", default=0)
+
+    class Meta:
+        ordering = ["sort_order", "pk"]
+        verbose_name = "календарь: фото галереи"
+        verbose_name_plural = "календарь: галерея"
+
+    def __str__(self) -> str:
+        return f"Фото #{self.sort_order} — {self.plant}"
+
+
+class CareCalendarSeasonRecommendation(models.Model):
+    """Персональные рекомендации по уходу по сезону."""
+
+    SEASON_SPRING = "spring"
+    SEASON_SUMMER = "summer"
+    SEASON_AUTUMN = "autumn"
+    SEASON_WINTER = "winter"
+    SEASON_CHOICES = [
+        (SEASON_SPRING, "Весна"),
+        (SEASON_SUMMER, "Лето"),
+        (SEASON_AUTUMN, "Осень"),
+        (SEASON_WINTER, "Зима"),
+    ]
+
+    plant = models.ForeignKey(
+        CareCalendarPlant,
+        verbose_name="Растение",
+        related_name="season_recommendations",
+        on_delete=models.CASCADE,
+    )
+    season = models.CharField("Сезон", max_length=16, choices=SEASON_CHOICES)
+    body = models.TextField("Текст рекомендаций")
+    sort_order = models.PositiveIntegerField("Порядок внутри сезона", default=0)
+
+    class Meta:
+        ordering = ["season", "sort_order", "pk"]
+        verbose_name = "календарь: рекомендация по сезону"
+        verbose_name_plural = "календарь: рекомендации по сезонам"
+
+    def __str__(self) -> str:
+        return f"{self.get_season_display()} — {self.plant}"
+
+
+class CareCalendarPeriod(models.Model):
+    """Одна точка графика ухода (дата + материалы)."""
+
+    plant = models.ForeignKey(
+        CareCalendarPlant,
+        verbose_name="Растение",
+        related_name="periods",
+        on_delete=models.CASCADE,
+    )
+    sort_order = models.PositiveIntegerField("Порядок в графике", default=0)
+    date_label = models.CharField(
+        "Дата / период (подпись)",
+        max_length=240,
+        help_text="Как на сайте: «20 апреля», «15 – 25 мая» и т.п.",
+    )
+    theme = models.CharField("Тема работ", max_length=300, blank=True)
+    content_text = models.TextField("Текст (plain)", blank=True)
+    content_html = models.TextField("HTML (если заполнен — приоритетнее текста)", blank=True)
+    period_image_1 = models.ImageField(
+        "Фото 1 (файл)",
+        upload_to="care_calendar/periods/%Y/%m/",
+        blank=True,
+        null=True,
+    )
+    period_image_2 = models.ImageField(
+        "Фото 2 (файл)",
+        upload_to="care_calendar/periods/%Y/%m/",
+        blank=True,
+        null=True,
+    )
+    period_image_3 = models.ImageField(
+        "Фото 3 (файл)",
+        upload_to="care_calendar/periods/%Y/%m/",
+        blank=True,
+        null=True,
+    )
+    period_image_4 = models.ImageField(
+        "Фото 4 (файл)",
+        upload_to="care_calendar/periods/%Y/%m/",
+        blank=True,
+        null=True,
+    )
+    period_image_5 = models.ImageField(
+        "Фото 5 (файл)",
+        upload_to="care_calendar/periods/%Y/%m/",
+        blank=True,
+        null=True,
+    )
+    period_image_6 = models.ImageField(
+        "Фото 6 (файл)",
+        upload_to="care_calendar/periods/%Y/%m/",
+        blank=True,
+        null=True,
+    )
+    images_json = models.JSONField(
+        "Доп. ссылки на изображения (JSON-массив URL)",
+        default=list,
+        blank=True,
+        help_text='Опционально: внешние URL, напр. ["https://…/a.jpg"]. На сайте показываются после загруженных файлов.',
+    )
+    products_json = models.JSONField(
+        "Рекомендуемые препараты (JSON-массив строк)",
+        default=list,
+        blank=True,
+    )
+    videos_json = models.JSONField(
+        'Видео (JSON-массив объектов {"label":"…","url":"…"})',
+        default=list,
+        blank=True,
+    )
+
+    class Meta:
+        ordering = ["sort_order", "pk"]
+        verbose_name = "календарь: срок в графике"
+        verbose_name_plural = "календарь: график ухода (сроки)"
+
+    def __str__(self) -> str:
+        return f"{self.date_label} — {self.plant}"

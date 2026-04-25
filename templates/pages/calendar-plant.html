@@ -30,9 +30,50 @@
         {% if active_plant.varieties %}
           <div class="mt-3 text-slate-600">{{ active_plant.varieties }}</div>
         {% endif %}
+        {% if active_plant.description %}
+          <p class="mt-4 text-slate-600 leading-relaxed">{{ active_plant.description }}</p>
+        {% endif %}
       </div>
     </div>
   </section>
+
+  {% if active_plant.gallery_image_urls %}
+    <section class="mt-6">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-4" data-animate="fadeInUp">
+          {% for url in active_plant.gallery_image_urls %}
+            <div class="aspect-[4/3] overflow-hidden rounded-2xl bg-slate-100">
+              <img src="{{ url }}" alt="{{ active_plant.name }}" class="h-full w-full object-cover" loading="lazy" decoding="async">
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
+
+  {% if active_plant.season_recommendations %}
+    <section class="mt-10">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <h2 class="text-2xl font-semibold" data-animate="fadeInUp">Рекомендации по сезонам</h2>
+        <div class="mt-5 grid grid-cols-1 md:grid-cols-2 gap-4">
+          {% regroup active_plant.season_recommendations by season as seasons_grouped %}
+          {% for group in seasons_grouped %}
+            <div
+              class="rounded-3xl border border-black/5 bg-white p-6 md:p-7"
+              data-animate="fadeInUp"
+            >
+              <div class="text-xs font-semibold uppercase tracking-wider text-brand">{{ group.list.0.season_label }}</div>
+              <div class="mt-3 space-y-4 text-slate-700 leading-relaxed">
+                {% for item in group.list %}
+                  <div class="whitespace-pre-line">{{ item.body }}</div>
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+  {% endif %}
 
   <!-- Plant timeline -->
   {% if active_plant.periods %}
@@ -179,6 +220,34 @@
       {% if not active_plant.periods %}
         <div class="rounded-3xl border border-black/5 bg-white p-8 text-center text-slate-500">
           Для этого растения пока нет рекомендаций по срокам.
+        </div>
+      {% endif %}
+
+      {% if active_plant.show_paid_service_cta %}
+        <div
+          class="mt-8 rounded-3xl border border-amber-200/90 bg-gradient-to-br from-amber-50 via-white to-orange-50/50 p-6 md:p-8 shadow-sm"
+          data-animate="fadeInUp"
+        >
+          <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+            <div class="flex items-start gap-3 min-w-0">
+              <i data-lucide="banknote" class="h-6 w-6 shrink-0 text-amber-800" aria-hidden="true"></i>
+              <div>
+                <div class="font-semibold text-amber-950">Платная услуга</div>
+                <p class="mt-1 text-sm text-amber-950/90 leading-snug">
+                  Стоимость выезда и диагностики согласуем с вами до визита специалиста.
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              data-open-modal="zaboty_expert_visit"
+              data-modal-title="Запросить экспертную помощь"
+              data-modal-context="{{ active_plant.name }} — календарь ухода"
+              class="shrink-0 inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+            >
+              Заказать выезд специалиста
+            </button>
+          </div>
         </div>
       {% endif %}
 

@@ -7,6 +7,7 @@ from .catalog_nav import enrich_catalog_context
 from .catalog_merge import find_merged_plant, get_merged_catalog_plants, resolve_catalog_plant_slug
 from .catalog_products import plant_belongs_to_category, similar_plants_for_detail
 from .catalog_subcategories import all_catalog_category_slugs, category_heading_for_slug
+from .calendar_live import merge_calendar_base
 from .data import (
     HOME_PAGE,
     GAZON_PAGE,
@@ -90,26 +91,33 @@ def sluzhba_zaboty(request):
 
 
 def calendar(request):
-    return render(request, "pages/calendar.html", CALENDAR_PAGE)
+    return render(request, "pages/calendar.html", merge_calendar_base(dict(CALENDAR_PAGE)))
+
+
+def _calendar_plant_in_category(plant: dict, category_slug: str) -> bool:
+    extra = plant.get("category_slugs_all")
+    if isinstance(extra, list) and category_slug in extra:
+        return True
+    return (plant.get("category_slug") or "") == category_slug
 
 
 def calendar_category(request, category):
-    ctx = dict(CALENDAR_PAGE)
+    ctx = merge_calendar_base(dict(CALENDAR_PAGE))
     cat = next((c for c in ctx["categories"] if c["slug"] == category), None)
     if not cat:
         raise Http404("Категория не найдена")
     ctx["active_category"] = cat
-    ctx["category_plants"] = [
-        p for p in ctx["plants"] if p["category_slug"] == category
-    ]
+    ctx["category_plants"] = [p for p in ctx["plants"] if _calendar_plant_in_category(p, category)]
     return render(request, "pages/calendar-category.html", ctx)
 
 
 def calendar_plant(request, category, plant):
-    ctx = dict(CALENDAR_PAGE)
-    p = next((p for p in ctx["plants"] if p["slug"] == plant), None)
+    ctx = merge_calendar_base(dict(CALENDAR_PAGE))
+    p = next((x for x in ctx["plants"] if x["slug"] == plant), None)
     if not p:
         raise Http404("Растение не найдено")
+    if not _calendar_plant_in_category(p, category):
+        raise Http404("Растение не найдено в этой категории")
     cat = next((c for c in ctx["categories"] if c["slug"] == category), None)
     ctx["active_category"] = cat
     ctx["active_plant"] = p
@@ -117,7 +125,7 @@ def calendar_plant(request, category, plant):
 
 
 def stati_list(request):
-    return render(request, "pages/calendar.html", CALENDAR_PAGE)
+    return render(request, "pages/calendar.html", merge_calendar_base(dict(CALENDAR_PAGE)))
 
 
 def stati_detail(request, article_slug):

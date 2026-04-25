@@ -178,8 +178,27 @@ STORAGES = {
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-# Каталог на сайте: False — из pages/data.py (как раньше). True — из БД через админку.
-USE_DATABASE_CATALOG = os.environ.get('USE_DATABASE_CATALOG', '').lower() in ('1', 'true', 'yes')
+def _env_database_source_flag(name: str) -> bool:
+    """
+    Читать каталог/календарь из БД (админка) или из статических модулей.
+
+    - В .env: 1 / true / yes / on — только БД; 0 / false / no / off — только статика.
+    - Если переменная не задана: при DEBUG (локальный runserver) по умолчанию БД,
+      на проде (DEBUG=0) — статика, пока явно не включите флаг.
+    """
+    raw = os.environ.get(name, "").strip().lower()
+    if raw in ("1", "true", "yes", "on"):
+        return True
+    if raw in ("0", "false", "no", "off"):
+        return False
+    return DEBUG
+
+
+# Каталог: БД — через админку; иначе pages/data.py.
+USE_DATABASE_CATALOG = _env_database_source_flag("USE_DATABASE_CATALOG")
+
+# Календарь (/stati/, /sluzhba-zaboty/calendar/): БД; иначе calendar_data.py.
+USE_DATABASE_CALENDAR = _env_database_source_flag("USE_DATABASE_CALENDAR")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

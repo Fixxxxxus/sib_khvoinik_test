@@ -4,7 +4,7 @@ from io import BytesIO
 from typing import Any
 
 from django.contrib import admin, messages
-from django.db.models import QuerySet
+from django.db.models import Q, QuerySet
 from django.http import FileResponse, HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
@@ -12,7 +12,18 @@ from django.utils.html import format_html
 
 from pages.catalog_io import export_catalog_workbook, import_catalog_workbook
 from pages.forms_catalog import PlantAdminForm
-from pages.models import CatalogCategory, CatalogSubcategory, Plant, PlantGalleryImage, PlantVariant
+from pages.models import (
+    CareCalendarCategory,
+    CareCalendarPeriod,
+    CareCalendarPlant,
+    CareCalendarPlantGalleryImage,
+    CareCalendarSeasonRecommendation,
+    CatalogCategory,
+    CatalogSubcategory,
+    Plant,
+    PlantGalleryImage,
+    PlantVariant,
+)
 
 
 class CatalogSubcategoryInline(admin.TabularInline):
@@ -97,7 +108,7 @@ class CatalogCategoryAdmin(admin.ModelAdmin):
 
     @admin.display(description="Растений")
     def plant_count(self, obj: CatalogCategory) -> int:
-        return obj.plants.count(    )
+        return obj.plants.count()
 
     class Media:
         css = {"all": ("admin/css/catalog_admin.css",)}
@@ -244,6 +255,201 @@ class PlantAdmin(admin.ModelAdmin):
             filename="catalog_export.xlsx",
             content_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         )
+
+
+class CareCalendarPlantGalleryImageInline(admin.TabularInline):
+    model = CareCalendarPlantGalleryImage
+    extra = 1
+    fields = ("sort_order", "image", "alt_text", "preview")
+    readonly_fields = ("preview",)
+
+    @admin.display(description="Предпросмотр")
+    def preview(self, obj: CareCalendarPlantGalleryImage) -> str:
+        try:
+            if obj.image:
+                return format_html(
+                    '<img src="{}" style="max-height:56px;border-radius:8px;object-fit:cover" alt="" />',
+                    obj.image.url,
+                )
+        except ValueError:
+            pass
+        return "—"
+
+
+class CareCalendarSeasonRecommendationInline(admin.TabularInline):
+    model = CareCalendarSeasonRecommendation
+    extra = 0
+    fields = ("season", "sort_order", "body")
+
+
+class CareCalendarPeriodInline(admin.StackedInline):
+    model = CareCalendarPeriod
+    extra = 0
+    ordering = ("sort_order", "pk")
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": ("sort_order", "date_label", "theme"),
+                "description": "Подпись даты — как на сайте в шкале сезона. Порядок задаёт последовательность карточек.",
+            },
+        ),
+        (
+            "Текст",
+            {
+                "fields": ("content_text", "content_html"),
+                "description": "Если заполнен HTML, на сайте он главнее обычного текста.",
+            },
+        ),
+        (
+            "Фото к этому сроку",
+            {
+                "fields": (
+                    "period_image_1",
+                    "period_image_2",
+                    "period_image_3",
+                    "period_image_4",
+                    "period_image_5",
+                    "period_image_6",
+                ),
+                "description": "Загрузка файлов с компьютера (до 6 штук). На странице срока они показываются первыми, затем — картинки по ссылкам из JSON ниже.",
+            },
+        ),
+        (
+            "Медиа и списки (JSON)",
+            {
+                "fields": ("images_json", "products_json", "videos_json"),
+                "description": "Дополнительные URL картинок; videos_json — массив объектов {\"label\":\"…\",\"url\":\"https://…\"}.",
+            },
+        ),
+    )
+
+
+class CareCalendarPrimaryCategoryFilter(admin.SimpleListFilter):
+    title = "Основная категория"
+    parameter_name = "primary_cat"
+
+    def lookups(self, request: HttpRequest, model_admin: admin.ModelAdmin) -> list[tuple[str, str]]:
+        return [(c.slug, c.label) for c in CareCalendarCategory.objects.order_by("sort_order", "label")]
+
+    def queryset(self, request: HttpRequest, queryset: QuerySet[CareCalendarPlant]) -> QuerySet[CareCalendarPlant]:
+        v = self.value()
+        if v:
+            return queryset.filter(primary_category__slug=v)
+        return queryset
+
+
+class CareCalendarExtraCategoryFilter(admin.SimpleListFilter):
+    title = "Доп. категория (M2M)"
+    parameter_name = "extra_cat"
+
+    def lookups(self, request: HttpRequest, model_admin: admin.ModelAdmin) -> list[tuple[str, str]]:
+        return [(c.slug, c.label) for c in CareCalendarCategory.objects.order_by("sort_order", "label")]
+
+    def queryset(self, request: HttpRequest, queryset: QuerySet[CareCalendarPlant]) -> QuerySet[CareCalendarPlant]:
+        v = self.value()
+        if v:
+            return queryset.filter(categories__slug=v).distinct()
+        return queryset
+
+
+@admin.register(CareCalendarCategory)
+class CareCalendarCategoryAdmin(admin.ModelAdmin):
+    list_display = ("sort_order", "label", "slug", "published_plant_count")
+    list_display_links = ("label",)
+    list_editable = ("sort_order",)
+    search_fields = ("label", "slug")
+    ordering = ("sort_order", "label")
+    prepopulated_fields = {"slug": ("label",)}
+
+    @admin.display(description="Растений (опубл.)")
+    def published_plant_count(self, obj: CareCalendarCategory) -> int:
+        return (
+            CareCalendarPlant.objects.filter(is_published=True)
+            .filter(Q(primary_category=obj) | Q(categories=obj))
+            .distinct()
+            .count()
+        )
+
+
+@admin.register(CareCalendarPlant)
+class CareCalendarPlantAdmin(admin.ModelAdmin):
+    save_on_top = True
+    list_display = (
+        "sort_order",
+        "name",
+        "latin_short",
+        "primary_category",
+        "is_published",
+        "show_paid_service_cta",
+        "period_count",
+        "updated_at",
+    )
+    list_display_links = ("name",)
+    list_editable = ("sort_order", "is_published", "show_paid_service_cta")
+    list_filter = (
+        CareCalendarPrimaryCategoryFilter,
+        CareCalendarExtraCategoryFilter,
+        "is_published",
+        "show_paid_service_cta",
+    )
+    search_fields = ("name", "latin", "slug", "description")
+    ordering = ("primary_category__sort_order", "sort_order", "name")
+    filter_horizontal = ("categories",)
+    autocomplete_fields = ("primary_category",)
+    prepopulated_fields = {"slug": ("name",)}
+    inlines = (
+        CareCalendarPeriodInline,
+        CareCalendarPlantGalleryImageInline,
+        CareCalendarSeasonRecommendationInline,
+    )
+    readonly_fields = ("created_at", "updated_at")
+
+    fieldsets = (
+        (
+            None,
+            {
+                "fields": (
+                    "name",
+                    "latin",
+                    "slug",
+                    "primary_category",
+                    "categories",
+                    "sort_order",
+                    "is_published",
+                    "show_paid_service_cta",
+                ),
+                "description": "Основная категория — часть URL. Дополнительные категории: растение покажется в нескольких разделах. "
+                "После сохранения основная категория автоматически добавляется в «Все категории».",
+            },
+        ),
+        (
+            "Контент",
+            {
+                "fields": ("description", "varieties_json", "yonote_id"),
+                "description": "Сорта — JSON-массив строк, например [\"Сорт А\", \"Сорт Б\"].",
+            },
+        ),
+        (
+            "Служебное",
+            {"fields": ("created_at", "updated_at"), "classes": ("collapse",)},
+        ),
+    )
+
+    @admin.display(description="Лат.")
+    def latin_short(self, obj: CareCalendarPlant) -> str:
+        t = (obj.latin or "").strip()
+        return (t[:48] + "…") if len(t) > 48 else t
+
+    @admin.display(description="Сроков в графике")
+    def period_count(self, obj: CareCalendarPlant) -> int:
+        return obj.periods.count()
+
+    def save_related(self, request: HttpRequest, form: Any, formsets: Any, change: bool) -> None:
+        super().save_related(request, form, formsets, change)
+        obj = form.instance
+        if obj.pk and obj.primary_category_id:
+            obj.categories.add(obj.primary_category_id)
 
 
 admin.site.site_header = "Сибирские газоны — администрирование"
