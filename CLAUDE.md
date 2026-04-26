@@ -16,7 +16,9 @@ pip install -r requirements.txt
 python manage.py runserver
 
 # Export pages to docs/ for GitHub Pages deployment
-python scripts/export_home_to_docs.py
+python scripts/export_home_to_docs.py          # полный docs/index.html (включая модалки)
+python scripts/export_pitomnik_to_docs.py
+python scripts/export_b2b_to_docs.py
 python scripts/export_gazon_page_to_docs.py
 python scripts/export_catalog_to_docs.py
 ```

@@ -1,12 +1,9 @@
 #!/usr/bin/env python3
 """
-Полностью пересобирает docs/index.html из templates (как на localhost):
-главная + navbar + footer + все модалки из partials/modals.html.
+Рендерит pages/pitomnik.html и сохраняет docs/pitomnik/index.html (модалки и base в актуальном виде).
 
-Запуск из корня проекта (нужен venv с Django):
-  python3 scripts/export_home_to_docs.py
-
-Префикс GitHub Pages: SITE_PREFIX=/sib_khvoinik_test
+Запуск из корня проекта:
+  python3 scripts/export_pitomnik_to_docs.py
 """
 from __future__ import annotations
 
@@ -16,7 +13,7 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-DOCS_INDEX = ROOT / "docs/index.html"
+OUT = ROOT / "docs/pitomnik/index.html"
 PREFIX = os.environ.get("SITE_PREFIX", "/sib_khvoinik_test")
 
 
@@ -57,12 +54,13 @@ def main() -> None:
     django.setup()
 
     from django.template.loader import render_to_string
-    from pages.data import HOME_PAGE
+    from pages.data import PITOMNIK_PAGE
 
-    html = render_to_string("pages/home.html", HOME_PAGE)
+    html = render_to_string("pages/pitomnik.html", PITOMNIK_PAGE)
     html = apply_site_prefix(html, PREFIX)
-    DOCS_INDEX.write_text(html, encoding="utf-8")
-    print(f"OK: полностью перезаписан {DOCS_INDEX.relative_to(ROOT)} ({len(html)} символов)")
+    OUT.parent.mkdir(parents=True, exist_ok=True)
+    OUT.write_text(html, encoding="utf-8")
+    print(f"OK: {OUT.relative_to(ROOT)} ({len(html)} символов)")
 
 
 if __name__ == "__main__":
