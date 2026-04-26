@@ -597,8 +597,15 @@ function initModal() {
 
     var leadTitle = FORM_TITLES[formName] || formName;
 
+    // Контекст «откуда» (название кнопки/раздела). Не клеим, если совпадает с названием формы.
+    var ctx = (payload.modalContext || '').trim();
+    var titleMain = leadTitle;
+    if (ctx && ctx.toLowerCase() !== leadTitle.toLowerCase()) {
+      titleMain = leadTitle + ' · ' + ctx;
+    }
+
     const fields = {
-      TITLE: `Сайт: ${leadTitle}`,
+      TITLE: `Сайт: ${titleMain}`,
       SOURCE_ID: '9',
       ASSIGNED_BY_ID: 1317,
       UTM_SOURCE: payload.utm_source || 'website',
@@ -632,11 +639,20 @@ function initModal() {
     var skipKeys = [
       'name', 'phone', 'email', 'company', 'formTag', 'consent',
       'contactPerson', 'contact', 'consent_messages',
-      'modalContext', 'selectedPlants',
+      'modalContext', 'selectedPlants', 'pageTitle', 'pagePath',
       'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
     ];
 
     var lines = [];
+
+    // Страница-источник: человеческое название + url
+    if (payload.pageTitle || payload.pagePath) {
+      var pageLine = payload.pageTitle || '';
+      if (payload.pagePath) {
+        pageLine += pageLine ? ' (' + payload.pagePath + ')' : payload.pagePath;
+      }
+      lines.push('<b>Страница:</b> ' + pageLine);
+    }
 
     // Контекст обращения (заголовок раздела/кнопки, откуда открыта модалка)
     if (payload.modalContext) lines.push('<b>Запрос:</b> ' + payload.modalContext);
@@ -719,6 +735,16 @@ function initModal() {
         payload[k] = v;
       }
     }
+
+    // Источник: человеческое название страницы (тот, что в табе) и URL без префикса GitHub Pages.
+    try {
+      const cleanTitle = (document.title || '')
+        .replace(/\s*[—\-]\s*Сибирские газоны\s*$/i, '')
+        .trim();
+      if (cleanTitle) payload.pageTitle = cleanTitle;
+      const path = (window.location.pathname || '').replace(/^\/sib_khvoinik_test/, '') || '/';
+      payload.pagePath = path;
+    } catch (e) { /* noop */ }
 
     const entry = { tag, payload, ts: new Date().toISOString() };
     const key = 'sg_leads';
