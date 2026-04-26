@@ -373,15 +373,23 @@ function initModal() {
 
     // Inject modal title as hidden field so it reaches B24 lead COMMENTS
     const modalContext = opts.contextTitle || title;
-    if (modalContext) {
-      const mForm = modalBody.querySelector('form[data-ui-form]');
-      if (mForm) {
-        const h = document.createElement('input');
-        h.type = 'hidden';
-        h.name = 'modalContext';
-        h.value = modalContext;
-        mForm.appendChild(h);
-      }
+    const mForm = modalBody.querySelector('form[data-ui-form]');
+    if (modalContext && mForm) {
+      const h = document.createElement('input');
+      h.type = 'hidden';
+      h.name = 'modalContext';
+      h.value = modalContext;
+      mForm.appendChild(h);
+    }
+
+    // Полный список выбранных позиций каталога — отдельным скрытым полем,
+    // чтобы попасть в COMMENTS, а не в TITLE лида.
+    if (mForm && Array.isArray(opts.selectionNames) && opts.selectionNames.length) {
+      const plants = document.createElement('input');
+      plants.type = 'hidden';
+      plants.name = 'selectedPlants';
+      plants.value = opts.selectionNames.join(' | ');
+      mForm.appendChild(plants);
     }
 
     initConsentGate(modalBody);
@@ -511,6 +519,8 @@ function initModal() {
     'pitomnik-open-day-signup': 'Запись на день открытых дверей (Питомник)',
     'digital-card': 'Цифровая карта',
     'assortment-interest': 'Запрос по ассортименту (каталог)',
+    'discount-direct': 'Скидка на рассаду (Директ)',
+    'zayavka-direct': 'Заявка с лендинга Директа',
   };
 
   // Labels for COMMENTS fields
@@ -541,6 +551,7 @@ function initModal() {
     address: 'Адрес',
     residentialComplex: 'Название ЖК',
     projectFile: 'Файл проекта',
+    interest: 'Что интересует',
     interest_vegetable_seedlings: 'Овощная рассада',
     interest_annual_seedlings: 'Однолетняя рассада',
     interest_perennials: 'Многолетние цветы',
@@ -585,16 +596,16 @@ function initModal() {
     const [section, formName] = tag.includes('/') ? tag.split('/', 2) : ['other', tag];
 
     var leadTitle = FORM_TITLES[formName] || formName;
-    if (payload.modalContext) leadTitle += ' — ' + payload.modalContext;
 
     const fields = {
       TITLE: `Сайт: ${leadTitle}`,
       SOURCE_ID: '9',
       ASSIGNED_BY_ID: 1317,
-      UTM_SOURCE: 'website',
-      UTM_MEDIUM: section,
-      UTM_CONTENT: formName,
-      UTM_TERM: window.location.pathname,
+      UTM_SOURCE: payload.utm_source || 'website',
+      UTM_MEDIUM: payload.utm_medium || section,
+      UTM_CAMPAIGN: payload.utm_campaign || '',
+      UTM_CONTENT: payload.utm_content || formName,
+      UTM_TERM: payload.utm_term || window.location.pathname,
     };
 
     // ── Map contact info to CRM fields ──
@@ -621,9 +632,25 @@ function initModal() {
     var skipKeys = [
       'name', 'phone', 'email', 'company', 'formTag', 'consent',
       'contactPerson', 'contact', 'consent_messages',
+      'modalContext', 'selectedPlants',
+      'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
     ];
 
     var lines = [];
+
+    // Контекст обращения (заголовок раздела/кнопки, откуда открыта модалка)
+    if (payload.modalContext) lines.push('<b>Запрос:</b> ' + payload.modalContext);
+
+    // Список выбранных позиций каталога (если форму открыли из подбора)
+    if (payload.selectedPlants) {
+      var plantsList = String(payload.selectedPlants)
+        .split('|')
+        .map(function (s) { return s.trim(); })
+        .filter(Boolean);
+      if (plantsList.length) {
+        lines.push('<b>Выбранные позиции (' + plantsList.length + '):</b><br>• ' + plantsList.join('<br>• '));
+      }
+    }
 
     // Group care_*/promo_* checkboxes into one line
     var subs = Object.keys(payload)
@@ -657,6 +684,26 @@ function initModal() {
   const handleUiSubmit = async (form) => {
     const tag = form.getAttribute('data-form-tag') || 'unknown';
     const uiAction = form.getAttribute('data-ui-action') || '';
+
+    // Native HTML5 validation (required, type=*, pattern) — браузер покажет тултип на первом невалидном поле
+    if (typeof form.reportValidity === 'function' && !form.reportValidity()) {
+      return;
+    }
+
+    // Кастомная проверка телефона: минимум 10 цифр после очистки от пробелов/скобок/дефисов
+    const phoneInput = form.querySelector('input[name="phone"]');
+    if (phoneInput) {
+      const digits = (phoneInput.value || '').replace(/\D/g, '');
+      if (digits.length < 10) {
+        phoneInput.setCustomValidity('Введите номер телефона целиком — не менее 10 цифр.');
+        phoneInput.reportValidity();
+        const clearOnce = () => phoneInput.setCustomValidity('');
+        phoneInput.addEventListener('input', clearOnce, { once: true });
+        return;
+      }
+      phoneInput.setCustomValidity('');
+    }
+
     const formData = new FormData(form);
     const payload = {};
     for (const [k, v] of formData.entries()) {
@@ -680,6 +727,16 @@ function initModal() {
     localStorage.setItem(key, JSON.stringify(existing));
 
     sendLeadToB24(tag, payload);
+
+    if (window.ym) {
+      var goalName = 'form_submit_site';
+      if (tag === 'discount-direct' || tag.endsWith('/discount-direct')) {
+        goalName = 'form_submit_discount';
+      } else if (tag === 'zayavka-direct' || tag.endsWith('/zayavka-direct')) {
+        goalName = 'form_submit_direct';
+      }
+      try { ym(108722541, 'reachGoal', goalName); } catch (e) { /* noop */ }
+    }
 
     // Swap to success template
     const successTpl = document.getElementById('modal-template-success');
@@ -1743,9 +1800,11 @@ function initCatalogSelection() {
         const base = item.variant ? `${n} (${item.variant})` : n;
         return q ? `${base} ×${q}` : base;
       });
-      const preview = namesForModal.slice(0, 6).join('; ');
-      const more = namesForModal.length > 6 ? `; + ещё ${namesForModal.length - 6}` : '';
-      submitBtn.setAttribute('data-modal-context', namesForModal.length ? `Подбор: ${preview}${more}` : 'Уточнить наличие');
+      // Короткий контекст для TITLE/UI; полный список летит в COMMENTS через data-modal-selection-names.
+      submitBtn.setAttribute(
+        'data-modal-context',
+        namesForModal.length ? `Подбор из каталога (${namesForModal.length})` : 'Уточнить наличие'
+      );
       submitBtn.setAttribute('data-modal-selection-names', JSON.stringify(namesForModal.slice(0, 24)));
       if (emptyEl) emptyEl.classList.toggle('hidden', selection.length > 0);
 
@@ -2225,4 +2284,204 @@ function initPlantCardCoverGallerySwap() {
     });
   });
 }
+
+(function initPromoPopup() {
+  var STORAGE_KEY = 'sg_promo_popup_2_centers_2026';
+  var SHOW_DELAY_MS = 2000;
+  var EXCLUDED_PATHS = ['/sadovye-centry/', '/discount/', '/zayavka-direct/'];
+
+  function ready(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn, { once: true });
+    } else {
+      fn();
+    }
+  }
+
+  ready(function () {
+    var popup = document.getElementById('promoPopup');
+    if (!popup) return;
+
+    var path = location.pathname;
+    if (EXCLUDED_PATHS.some(function (p) { return path.indexOf(p) === 0; })) return;
+
+    try {
+      if (localStorage.getItem(STORAGE_KEY) === '1') return;
+    } catch (e) { /* приватный режим — всё равно показываем */ }
+
+    var closers = popup.querySelectorAll('[data-promo-close]');
+    var ctaLinks = popup.querySelectorAll('[data-promo-action]');
+    var prevBodyOverflow = '';
+    var isOpen = false;
+
+    function open() {
+      if (isOpen) return;
+      isOpen = true;
+      popup.classList.add('is-open');
+      popup.setAttribute('aria-hidden', 'false');
+      prevBodyOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', onKeydown);
+    }
+
+    function close(persist) {
+      if (!isOpen) return;
+      isOpen = false;
+      popup.classList.remove('is-open');
+      popup.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = prevBodyOverflow;
+      document.removeEventListener('keydown', onKeydown);
+      if (persist !== false) {
+        try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) { /* noop */ }
+      }
+    }
+
+    function onKeydown(e) {
+      if (e.key === 'Escape' || e.key === 'Esc') close(true);
+    }
+
+    closers.forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        close(true);
+      });
+    });
+
+    // Клик по CTA — закрываем и сохраняем, переход выполняется штатно
+    ctaLinks.forEach(function (link) {
+      link.addEventListener('click', function () {
+        close(true);
+      });
+    });
+
+    setTimeout(open, SHOW_DELAY_MS);
+  });
+})();
+
+(function initCentersWidget() {
+  var STORAGE_KEY = 'sg_centers_widget_closed';
+  var SHOW_DELAY_MS = 800;
+  var EXCLUDED_PATHS = ['/sadovye-centry/', '/discount/', '/zayavka-direct/'];
+
+  function ready(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn, { once: true });
+    } else {
+      fn();
+    }
+  }
+
+  ready(function () {
+    var widget = document.getElementById('centersWidget');
+    if (!widget) return;
+
+    var path = location.pathname;
+    if (EXCLUDED_PATHS.some(function (p) { return path.indexOf(p) === 0; })) return;
+
+    try {
+      if (localStorage.getItem(STORAGE_KEY) === '1') return;
+    } catch (e) { /* noop */ }
+
+    var closers = widget.querySelectorAll('[data-centers-widget-close]');
+    var fab = widget.querySelector('[data-centers-widget-fab]');
+
+    function show() {
+      widget.classList.add('is-open');
+      widget.setAttribute('aria-hidden', 'false');
+    }
+
+    function hide() {
+      widget.classList.remove('is-open');
+      widget.classList.remove('is-expanded');
+      widget.setAttribute('aria-hidden', 'true');
+      try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) { /* noop */ }
+    }
+
+    function expand() {
+      widget.classList.add('is-expanded');
+    }
+
+    closers.forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        hide();
+      });
+    });
+
+    if (fab) {
+      fab.addEventListener('click', function (e) {
+        e.preventDefault();
+        expand();
+      });
+    }
+
+    setTimeout(show, SHOW_DELAY_MS);
+  });
+})();
+
+(function initCentersModal() {
+  function ready(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn, { once: true });
+    } else {
+      fn();
+    }
+  }
+
+  ready(function () {
+    if (location.pathname.indexOf('/sadovye-centry/') !== 0) return;
+
+    var params;
+    try {
+      params = new URLSearchParams(location.search);
+    } catch (e) { return; }
+    if (params.get('show') !== 'centers') return;
+
+    var modal = document.getElementById('centersModal');
+    if (!modal) return;
+
+    var closers = modal.querySelectorAll('[data-centers-modal-close]');
+    var prevBodyOverflow = '';
+    var isOpen = false;
+
+    function open() {
+      if (isOpen) return;
+      isOpen = true;
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      prevBodyOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', onKeydown);
+      if (window.lucide) {
+        try { window.lucide.createIcons(); } catch (e) { /* noop */ }
+      }
+    }
+
+    function close() {
+      if (!isOpen) return;
+      isOpen = false;
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = prevBodyOverflow;
+      document.removeEventListener('keydown', onKeydown);
+    }
+
+    function onKeydown(e) {
+      if (e.key === 'Escape' || e.key === 'Esc') close();
+    }
+
+    closers.forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        close();
+      });
+    });
+
+    open();
+
+    try {
+      history.replaceState({}, '', location.pathname + location.hash);
+    } catch (e) { /* noop */ }
+  });
+})();
 

@@ -373,15 +373,23 @@ function initModal() {
 
     // Inject modal title as hidden field so it reaches B24 lead COMMENTS
     const modalContext = opts.contextTitle || title;
-    if (modalContext) {
-      const mForm = modalBody.querySelector('form[data-ui-form]');
-      if (mForm) {
-        const h = document.createElement('input');
-        h.type = 'hidden';
-        h.name = 'modalContext';
-        h.value = modalContext;
-        mForm.appendChild(h);
-      }
+    const mForm = modalBody.querySelector('form[data-ui-form]');
+    if (modalContext && mForm) {
+      const h = document.createElement('input');
+      h.type = 'hidden';
+      h.name = 'modalContext';
+      h.value = modalContext;
+      mForm.appendChild(h);
+    }
+
+    // Полный список выбранных позиций каталога — отдельным скрытым полем,
+    // чтобы попасть в COMMENTS, а не в TITLE лида.
+    if (mForm && Array.isArray(opts.selectionNames) && opts.selectionNames.length) {
+      const plants = document.createElement('input');
+      plants.type = 'hidden';
+      plants.name = 'selectedPlants';
+      plants.value = opts.selectionNames.join(' | ');
+      mForm.appendChild(plants);
     }
 
     initConsentGate(modalBody);
@@ -588,7 +596,6 @@ function initModal() {
     const [section, formName] = tag.includes('/') ? tag.split('/', 2) : ['other', tag];
 
     var leadTitle = FORM_TITLES[formName] || formName;
-    if (payload.modalContext) leadTitle += ' — ' + payload.modalContext;
 
     const fields = {
       TITLE: `Сайт: ${leadTitle}`,
@@ -625,10 +632,25 @@ function initModal() {
     var skipKeys = [
       'name', 'phone', 'email', 'company', 'formTag', 'consent',
       'contactPerson', 'contact', 'consent_messages',
+      'modalContext', 'selectedPlants',
       'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
     ];
 
     var lines = [];
+
+    // Контекст обращения (заголовок раздела/кнопки, откуда открыта модалка)
+    if (payload.modalContext) lines.push('<b>Запрос:</b> ' + payload.modalContext);
+
+    // Список выбранных позиций каталога (если форму открыли из подбора)
+    if (payload.selectedPlants) {
+      var plantsList = String(payload.selectedPlants)
+        .split('|')
+        .map(function (s) { return s.trim(); })
+        .filter(Boolean);
+      if (plantsList.length) {
+        lines.push('<b>Выбранные позиции (' + plantsList.length + '):</b><br>• ' + plantsList.join('<br>• '));
+      }
+    }
 
     // Group care_*/promo_* checkboxes into one line
     var subs = Object.keys(payload)
@@ -1778,9 +1800,11 @@ function initCatalogSelection() {
         const base = item.variant ? `${n} (${item.variant})` : n;
         return q ? `${base} ×${q}` : base;
       });
-      const preview = namesForModal.slice(0, 6).join('; ');
-      const more = namesForModal.length > 6 ? `; + ещё ${namesForModal.length - 6}` : '';
-      submitBtn.setAttribute('data-modal-context', namesForModal.length ? `Подбор: ${preview}${more}` : 'Уточнить наличие');
+      // Короткий контекст для TITLE/UI; полный список летит в COMMENTS через data-modal-selection-names.
+      submitBtn.setAttribute(
+        'data-modal-context',
+        namesForModal.length ? `Подбор из каталога (${namesForModal.length})` : 'Уточнить наличие'
+      );
       submitBtn.setAttribute('data-modal-selection-names', JSON.stringify(namesForModal.slice(0, 24)));
       if (emptyEl) emptyEl.classList.toggle('hidden', selection.length > 0);
 
