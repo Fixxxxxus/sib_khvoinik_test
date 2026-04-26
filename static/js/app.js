@@ -662,6 +662,26 @@ function initModal() {
   const handleUiSubmit = async (form) => {
     const tag = form.getAttribute('data-form-tag') || 'unknown';
     const uiAction = form.getAttribute('data-ui-action') || '';
+
+    // Native HTML5 validation (required, type=*, pattern) — браузер покажет тултип на первом невалидном поле
+    if (typeof form.reportValidity === 'function' && !form.reportValidity()) {
+      return;
+    }
+
+    // Кастомная проверка телефона: минимум 10 цифр после очистки от пробелов/скобок/дефисов
+    const phoneInput = form.querySelector('input[name="phone"]');
+    if (phoneInput) {
+      const digits = (phoneInput.value || '').replace(/\D/g, '');
+      if (digits.length < 10) {
+        phoneInput.setCustomValidity('Введите номер телефона целиком — не менее 10 цифр.');
+        phoneInput.reportValidity();
+        const clearOnce = () => phoneInput.setCustomValidity('');
+        phoneInput.addEventListener('input', clearOnce, { once: true });
+        return;
+      }
+      phoneInput.setCustomValidity('');
+    }
+
     const formData = new FormData(form);
     const payload = {};
     for (const [k, v] of formData.entries()) {
