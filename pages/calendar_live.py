@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from django.conf import settings
@@ -48,6 +49,19 @@ def _period_uploaded_image_urls(per: CareCalendarPeriod) -> list[str]:
     return urls
 
 
+_MD_LINK_RE = re.compile(r"^\[(?P<text>.+?)\]\((?P<href>[^)]*)\)$", re.DOTALL)
+
+
+def _strip_md_link(label: str, url: str) -> tuple[str, str]:
+    """Артефакт выгрузки из Yonote: label вида `[Текст](href)`. Раскладываем в чистый текст и URL."""
+    m = _MD_LINK_RE.match(label.strip())
+    if not m:
+        return label.strip(), url
+    text = m.group("text").strip()
+    href = m.group("href").strip()
+    return text, url or href
+
+
 def _videos_as_list(raw: Any) -> list[dict[str, str]]:
     out: list[dict[str, str]] = []
     if not isinstance(raw, list):
@@ -56,10 +70,13 @@ def _videos_as_list(raw: Any) -> list[dict[str, str]]:
         if isinstance(item, dict):
             label = str(item.get("label") or "").strip()
             url = str(item.get("url") or "").strip()
+            label, url = _strip_md_link(label, url)
             if label or url:
                 out.append({"label": label or url, "url": url})
         elif isinstance(item, str) and item.strip():
-            out.append({"label": item.strip(), "url": ""})
+            label, url = _strip_md_link(item.strip(), "")
+            if label or url:
+                out.append({"label": label or url, "url": url})
     return out
 
 
@@ -183,11 +200,31 @@ def get_calendar_page_from_database() -> dict[str, Any] | None:
     }
 
 
+def _normalize_static_plants(plants: Any) -> list[Any]:
+    """Чистит видео-label у статических растений: `[Текст](href)` → `Текст`."""
+    if not isinstance(plants, list):
+        return plants
+    out: list[Any] = []
+    for plant in plants:
+        if not isinstance(plant, dict):
+            out.append(plant)
+            continue
+        new_periods: list[Any] = []
+        for per in plant.get("periods") or []:
+            if isinstance(per, dict) and isinstance(per.get("videos"), list):
+                per = {**per, "videos": _videos_as_list(per["videos"])}
+            new_periods.append(per)
+        out.append({**plant, "periods": new_periods})
+    return out
+
+
 def merge_calendar_base(base: dict[str, Any]) -> dict[str, Any]:
     """Подменяет categories / periods / plants из БД, если включён флаг и есть данные."""
     live = get_calendar_page_from_database()
     if not live:
-        return dict(base)
+        out = dict(base)
+        out["plants"] = _normalize_static_plants(out.get("plants"))
+        return out
     out = dict(base)
     out.update(live)
     return out

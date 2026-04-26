@@ -8,34 +8,40 @@
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
-    <h2 id="promoPopupTitle" class="sr-only">Открытие садового центра 28 апреля</h2>
-    <div class="sg-promo-popup__media">
-      <img src="{% static 'media/images/sadovyy-centr-28-apr-poster.jpg' %}"
-           alt="Открытие садового центра «Сибирские газоны» 28 апреля на парковке МЕГИ, скидка 20% первым 100 клиентам по промокоду ВЕСНА"
-           loading="eager"
-           decoding="async" />
-    </div>
-    <div class="sg-promo-popup__actions">
-      <a href="https://2gis.ru/novosibirsk/search/%D0%92%D0%B0%D1%82%D1%83%D1%82%D0%B8%D0%BD%D0%B0%20107"
-         target="_blank" rel="noopener"
-         class="sg-promo-popup__btn sg-promo-popup__btn--primary"
-         data-promo-action="2gis">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M20 10c0 7-8 12-8 12s-8-5-8-12a8 8 0 0 1 16 0Z"/>
-          <circle cx="12" cy="10" r="3"/>
-        </svg>
-        Открыть в 2ГИС
-      </a>
-      <a href="https://yandex.ru/maps/?text=%D0%9D%D0%BE%D0%B2%D0%BE%D1%81%D0%B8%D0%B1%D0%B8%D1%80%D1%81%D0%BA%2C%20%D1%83%D0%BB.%20%D0%92%D0%B0%D1%82%D1%83%D1%82%D0%B8%D0%BD%D0%B0%2C%20107"
-         target="_blank" rel="noopener"
-         class="sg-promo-popup__btn sg-promo-popup__btn--secondary"
-         data-promo-action="yandex">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M20 10c0 7-8 12-8 12s-8-5-8-12a8 8 0 0 1 16 0Z"/>
-          <circle cx="12" cy="10" r="3"/>
-        </svg>
-        Яндекс.Карты
-      </a>
+
+    <div class="sg-promo-popup__body">
+      <h2 id="promoPopupTitle" class="sg-promo-popup__title">
+        <span class="sg-promo-popup__title-icon" aria-hidden="true">🌿</span>
+        <span>Открываем садовые центры в Новосибирске</span>
+      </h2>
+
+      <ul class="sg-promo-popup__list" role="list">
+        <li class="sg-promo-popup__item">
+          <span class="sg-promo-popup__chip">25 апр</span>
+          <div class="sg-promo-popup__item-text">
+            <p class="sg-promo-popup__item-title">Новопичугово · уже работает</p>
+            <p class="sg-promo-popup__item-meta">село Новопичугово, ориентир ул. Сосновая</p>
+          </div>
+        </li>
+        <li class="sg-promo-popup__item">
+          <span class="sg-promo-popup__chip">28 апр</span>
+          <div class="sg-promo-popup__item-text">
+            <p class="sg-promo-popup__item-title">МЕГА · открытие на этой неделе</p>
+            <p class="sg-promo-popup__item-meta">ул. Ватутина, 107</p>
+          </div>
+        </li>
+      </ul>
+
+      <p class="sg-promo-popup__subtitle">Рассада · цветы · газон · плодовые</p>
+
+      <div class="sg-promo-popup__actions">
+        <a href="/sadovye-centry/?show=centers" class="sg-promo-popup__btn sg-promo-popup__btn--primary" data-promo-action="centers-cta">
+          Адреса и контакты →
+        </a>
+        <button type="button" class="sg-promo-popup__btn sg-promo-popup__btn--ghost" data-promo-close>
+          Закрыть
+        </button>
+      </div>
     </div>
   </div>
 </div>
@@ -51,7 +57,7 @@
     padding: 16px;
     pointer-events: none;
     opacity: 0;
-    transition: opacity 320ms ease;
+    transition: opacity 320ms cubic-bezier(0.22, 1, 0.36, 1);
   }
   .sg-promo-popup.is-open {
     pointer-events: auto;
@@ -67,7 +73,7 @@
   .sg-promo-popup__card {
     position: relative;
     width: 100%;
-    max-width: 440px;
+    max-width: 460px;
     max-height: calc(100vh - 32px);
     max-height: calc(100dvh - 32px);
     overflow-y: auto;
@@ -108,88 +114,135 @@
   .sg-promo-popup__close:focus-visible {
     box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.5);
   }
-  .sg-promo-popup__media {
-    display: block;
-    line-height: 0;
+  .sg-promo-popup__body {
+    padding: 28px 24px 22px;
   }
-  .sg-promo-popup__media img {
-    display: block;
-    width: 100%;
-    height: auto;
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
+  .sg-promo-popup__title {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin: 0 0 18px;
+    color: #2D6A4F;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: -0.01em;
+    padding-right: 28px;
+  }
+  .sg-promo-popup__title-icon {
+    font-size: 24px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: -1px;
+  }
+  .sg-promo-popup__list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 0 0 16px;
+    padding: 0;
+    list-style: none;
+  }
+  .sg-promo-popup__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .sg-promo-popup__chip {
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 64px;
+    padding: 6px 10px;
+    border-radius: 999px;
+    background: #E9C46A;
+    color: #2D6A4F;
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1;
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .sg-promo-popup__item-text {
+    flex: 1;
+    min-width: 0;
+  }
+  .sg-promo-popup__item-title {
+    margin: 0;
+    color: #0f172a;
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  .sg-promo-popup__item-meta {
+    margin: 2px 0 0;
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.4;
+  }
+  .sg-promo-popup__subtitle {
+    margin: 0 0 18px;
+    padding-top: 14px;
+    border-top: 1px solid rgba(15, 23, 42, 0.08);
+    color: #475569;
+    font-size: 13px;
+    line-height: 1.5;
+    text-align: center;
+    letter-spacing: 0.01em;
   }
   .sg-promo-popup__actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
-    padding: 12px;
-    background: #fff;
   }
   .sg-promo-popup__btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
     gap: 6px;
-    padding: 12px 10px;
+    padding: 13px 16px;
+    border: none;
     border-radius: 12px;
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 600;
     line-height: 1.1;
     text-decoration: none;
     text-align: center;
-    transition: background 160ms ease, transform 120ms ease, box-shadow 160ms ease;
+    cursor: pointer;
+    transition: background 180ms cubic-bezier(0.22, 1, 0.36, 1), transform 120ms ease, box-shadow 180ms ease;
     min-height: 48px;
   }
   .sg-promo-popup__btn:active {
     transform: translateY(1px);
   }
   .sg-promo-popup__btn--primary {
-    background: #2D6A4F;
+    background: linear-gradient(135deg, #2D6A4F 0%, #40916C 100%);
     color: #fff;
+    box-shadow: 0 10px 24px rgba(45, 106, 79, 0.28);
   }
   .sg-promo-popup__btn--primary:hover,
   .sg-promo-popup__btn--primary:focus-visible {
-    background: #245A41;
+    background: linear-gradient(135deg, #245A41 0%, #357C5A 100%);
     outline: none;
-    box-shadow: 0 6px 18px rgba(45, 106, 79, 0.35);
+    box-shadow: 0 14px 30px rgba(45, 106, 79, 0.36);
   }
-  .sg-promo-popup__btn--secondary {
-    background: #F1F5F2;
+  .sg-promo-popup__btn--ghost {
+    background: transparent;
+    color: #475569;
+  }
+  .sg-promo-popup__btn--ghost:hover,
+  .sg-promo-popup__btn--ghost:focus-visible {
+    background: rgba(15, 23, 42, 0.05);
     color: #0f172a;
-    border: 1px solid rgba(15, 23, 42, 0.08);
-  }
-  .sg-promo-popup__btn--secondary:hover,
-  .sg-promo-popup__btn--secondary:focus-visible {
-    background: #E5EEE7;
     outline: none;
-  }
-
-  @media (max-width: 380px) {
-    .sg-promo-popup__actions {
-      grid-template-columns: 1fr;
-    }
-    .sg-promo-popup__btn {
-      min-height: 46px;
-    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .sg-promo-popup,
-    .sg-promo-popup__card {
+    .sg-promo-popup__card,
+    .sg-promo-popup__btn {
       transition: none;
     }
-  }
-
-  .sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
   }
 </style>

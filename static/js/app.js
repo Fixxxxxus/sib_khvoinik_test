@@ -511,6 +511,8 @@ function initModal() {
     'pitomnik-open-day-signup': 'Запись на день открытых дверей (Питомник)',
     'digital-card': 'Цифровая карта',
     'assortment-interest': 'Запрос по ассортименту (каталог)',
+    'discount-direct': 'Скидка на рассаду (Директ)',
+    'zayavka-direct': 'Заявка с лендинга Директа',
   };
 
   // Labels for COMMENTS fields
@@ -541,6 +543,7 @@ function initModal() {
     address: 'Адрес',
     residentialComplex: 'Название ЖК',
     projectFile: 'Файл проекта',
+    interest: 'Что интересует',
     interest_vegetable_seedlings: 'Овощная рассада',
     interest_annual_seedlings: 'Однолетняя рассада',
     interest_perennials: 'Многолетние цветы',
@@ -591,10 +594,11 @@ function initModal() {
       TITLE: `Сайт: ${leadTitle}`,
       SOURCE_ID: '9',
       ASSIGNED_BY_ID: 1317,
-      UTM_SOURCE: 'website',
-      UTM_MEDIUM: section,
-      UTM_CONTENT: formName,
-      UTM_TERM: window.location.pathname,
+      UTM_SOURCE: payload.utm_source || 'website',
+      UTM_MEDIUM: payload.utm_medium || section,
+      UTM_CAMPAIGN: payload.utm_campaign || '',
+      UTM_CONTENT: payload.utm_content || formName,
+      UTM_TERM: payload.utm_term || window.location.pathname,
     };
 
     // ── Map contact info to CRM fields ──
@@ -621,6 +625,7 @@ function initModal() {
     var skipKeys = [
       'name', 'phone', 'email', 'company', 'formTag', 'consent',
       'contactPerson', 'contact', 'consent_messages',
+      'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
     ];
 
     var lines = [];
@@ -680,6 +685,16 @@ function initModal() {
     localStorage.setItem(key, JSON.stringify(existing));
 
     sendLeadToB24(tag, payload);
+
+    if (window.ym) {
+      var goalName = 'form_submit_site';
+      if (tag === 'discount-direct' || tag.endsWith('/discount-direct')) {
+        goalName = 'form_submit_discount';
+      } else if (tag === 'zayavka-direct' || tag.endsWith('/zayavka-direct')) {
+        goalName = 'form_submit_direct';
+      }
+      try { ym(108722541, 'reachGoal', goalName); } catch (e) { /* noop */ }
+    }
 
     // Swap to success template
     const successTpl = document.getElementById('modal-template-success');
@@ -2227,8 +2242,9 @@ function initPlantCardCoverGallerySwap() {
 }
 
 (function initPromoPopup() {
-  var STORAGE_KEY = 'sg_promo_popup_28apr_closed';
+  var STORAGE_KEY = 'sg_promo_popup_2_centers_2026';
   var SHOW_DELAY_MS = 2000;
+  var EXCLUDED_PATHS = ['/sadovye-centry/', '/discount/', '/zayavka-direct/'];
 
   function ready(fn) {
     if (document.readyState === 'loading') {
@@ -2242,12 +2258,15 @@ function initPlantCardCoverGallerySwap() {
     var popup = document.getElementById('promoPopup');
     if (!popup) return;
 
+    var path = location.pathname;
+    if (EXCLUDED_PATHS.some(function (p) { return path.indexOf(p) === 0; })) return;
+
     try {
       if (localStorage.getItem(STORAGE_KEY) === '1') return;
     } catch (e) { /* приватный режим — всё равно показываем */ }
 
     var closers = popup.querySelectorAll('[data-promo-close]');
-    var mapLinks = popup.querySelectorAll('[data-promo-action]');
+    var ctaLinks = popup.querySelectorAll('[data-promo-action]');
     var prevBodyOverflow = '';
     var isOpen = false;
 
@@ -2284,14 +2303,141 @@ function initPlantCardCoverGallerySwap() {
       });
     });
 
-    // Клик по карте — закрываем и сохраняем, ссылка откроется в новой вкладке
-    mapLinks.forEach(function (link) {
+    // Клик по CTA — закрываем и сохраняем, переход выполняется штатно
+    ctaLinks.forEach(function (link) {
       link.addEventListener('click', function () {
         close(true);
       });
     });
 
     setTimeout(open, SHOW_DELAY_MS);
+  });
+})();
+
+(function initCentersWidget() {
+  var STORAGE_KEY = 'sg_centers_widget_closed';
+  var SHOW_DELAY_MS = 800;
+  var EXCLUDED_PATHS = ['/sadovye-centry/', '/discount/', '/zayavka-direct/'];
+
+  function ready(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn, { once: true });
+    } else {
+      fn();
+    }
+  }
+
+  ready(function () {
+    var widget = document.getElementById('centersWidget');
+    if (!widget) return;
+
+    var path = location.pathname;
+    if (EXCLUDED_PATHS.some(function (p) { return path.indexOf(p) === 0; })) return;
+
+    try {
+      if (localStorage.getItem(STORAGE_KEY) === '1') return;
+    } catch (e) { /* noop */ }
+
+    var closers = widget.querySelectorAll('[data-centers-widget-close]');
+    var fab = widget.querySelector('[data-centers-widget-fab]');
+
+    function show() {
+      widget.classList.add('is-open');
+      widget.setAttribute('aria-hidden', 'false');
+    }
+
+    function hide() {
+      widget.classList.remove('is-open');
+      widget.classList.remove('is-expanded');
+      widget.setAttribute('aria-hidden', 'true');
+      try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) { /* noop */ }
+    }
+
+    function expand() {
+      widget.classList.add('is-expanded');
+    }
+
+    closers.forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        hide();
+      });
+    });
+
+    if (fab) {
+      fab.addEventListener('click', function (e) {
+        e.preventDefault();
+        expand();
+      });
+    }
+
+    setTimeout(show, SHOW_DELAY_MS);
+  });
+})();
+
+(function initCentersModal() {
+  function ready(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn, { once: true });
+    } else {
+      fn();
+    }
+  }
+
+  ready(function () {
+    if (location.pathname.indexOf('/sadovye-centry/') !== 0) return;
+
+    var params;
+    try {
+      params = new URLSearchParams(location.search);
+    } catch (e) { return; }
+    if (params.get('show') !== 'centers') return;
+
+    var modal = document.getElementById('centersModal');
+    if (!modal) return;
+
+    var closers = modal.querySelectorAll('[data-centers-modal-close]');
+    var prevBodyOverflow = '';
+    var isOpen = false;
+
+    function open() {
+      if (isOpen) return;
+      isOpen = true;
+      modal.classList.add('is-open');
+      modal.setAttribute('aria-hidden', 'false');
+      prevBodyOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      document.addEventListener('keydown', onKeydown);
+      if (window.lucide) {
+        try { window.lucide.createIcons(); } catch (e) { /* noop */ }
+      }
+    }
+
+    function close() {
+      if (!isOpen) return;
+      isOpen = false;
+      modal.classList.remove('is-open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = prevBodyOverflow;
+      document.removeEventListener('keydown', onKeydown);
+    }
+
+    function onKeydown(e) {
+      if (e.key === 'Escape' || e.key === 'Esc') close();
+    }
+
+    closers.forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        close();
+      });
+    });
+
+    open();
+
+    try {
+      history.replaceState({}, '', location.pathname + location.hash);
+    } catch (e) { /* noop */ }
   });
 })();
 

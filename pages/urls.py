@@ -21,4 +21,6 @@ urlpatterns = [
     path("kontakty/", views.kontakty, name="kontakty"),
     path("privacy/", views.privacy, name="privacy"),
     path("consent/", views.consent, name="consent"),
+    path("discount/", views.discount, name="discount"),
+    path("zayavka-direct/", views.zayavka_direct, name="zayavka_direct"),
 ]

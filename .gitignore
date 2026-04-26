@@ -32,6 +32,9 @@ migration.md
 # Playwright MCP snapshots
 .playwright-mcp/
 
+# Superpowers brainstorming companion artefacts
+.superpowers/
+
 # Debug screenshots (кроме закреплённых ассетов в static)
 *.png
 !static/media/images/cases/ozelenenie-b2c-case-01.png

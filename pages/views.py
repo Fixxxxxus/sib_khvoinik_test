@@ -22,6 +22,8 @@ from .data import (
     KONTAKTY_PAGE,
     PRIVACY_PAGE,
     CONSENT_PAGE,
+    DISCOUNT_LANDING_PAGE,
+    DIRECT_LANDING_PAGE,
 )
 
 
@@ -148,3 +150,11 @@ def privacy(request):
 
 def consent(request):
     return render(request, "pages/consent.html", CONSENT_PAGE)
+
+
+def discount(request):
+    return render(request, "pages/discount.html", DISCOUNT_LANDING_PAGE)
+
+
+def zayavka_direct(request):
+    return render(request, "pages/zayavka_direct.html", DIRECT_LANDING_PAGE)

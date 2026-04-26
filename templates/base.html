@@ -90,13 +90,22 @@
     {% include 'partials/modals.html' %}
     {% include 'partials/cookie_banner.html' %}
     {% include 'partials/promo_popup.html' %}
+    {% include 'partials/centers_widget.html' %}
+    {% include 'partials/centers_modal.html' %}
 
-    <script src="{% static 'js/app.js' %}?v=48" defer></script>
+    <script src="{% static 'js/app.js' %}?v=50" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {
         if (window.lucide) window.lucide.createIcons();
       });
+    </script>
+
+    <script>
+      (function(w,d,u){
+        var s=d.createElement('script');s.async=true;s.src=u+'?'+(Date.now()/60000|0);
+        var h=d.getElementsByTagName('script')[0];h.parentNode.insertBefore(s,h);
+      })(window,document,'https://cdn-ru.bitrix24.ru/b32582882/crm/site_button/loader_3_nrfj41.js');
     </script>
   </body>
 </html>
