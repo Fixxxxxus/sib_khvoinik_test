@@ -970,7 +970,7 @@ function initCounters() {
   counters.forEach((el) => obs.observe(el));
 }
 
-/** Слайдер фото тепличного комбината на странице «Питомник». */
+/** Слайдер фото тепличного комбината на странице «Питомник» + полноэкранный просмотр по тапу на фото (только viewport ≤767px). */
 function initPitomnikGreenhouseSlider() {
   const root = document.querySelector('[data-pitomnik-greenhouse-slider]');
   if (!root) return;
@@ -978,6 +978,14 @@ function initPitomnikGreenhouseSlider() {
   if (!track) return;
   const n = track.children.length;
   if (n === 0) return;
+
+  const slides = Array.from(track.children);
+  const imgData = slides.map((cell) => {
+    const img = cell.querySelector('img[data-pitomnik-greenhouse-slide-img], img');
+    if (!img || !img.getAttribute('src')) return null;
+    return { src: img.src, alt: img.getAttribute('alt') || '' };
+  });
+  const hasLightbox = imgData.some(Boolean);
 
   let i = 0;
   const dots = Array.from(root.querySelectorAll('[data-pitomnik-greenhouse-dot]'));
@@ -1009,6 +1017,187 @@ function initPitomnikGreenhouseSlider() {
   });
 
   apply();
+
+  if (!hasLightbox) return;
+
+  const mqGreenhouseLb = window.matchMedia('(max-width: 767px)');
+  const greenhouseLbAllowed = () => mqGreenhouseLb.matches;
+
+  const nextImgIndex = (from) => {
+    for (let s = 1; s <= n; s += 1) {
+      const j = (from + s) % n;
+      if (imgData[j]) return j;
+    }
+    return from;
+  };
+  const prevImgIndex = (from) => {
+    for (let s = 1; s <= n; s += 1) {
+      const j = (from - s + n) % n;
+      if (imgData[j]) return j;
+    }
+    return from;
+  };
+
+  const lb = document.createElement('div');
+  lb.className = 'pitomnik-greenhouse-lightbox';
+  lb.setAttribute('role', 'dialog');
+  lb.setAttribute('aria-modal', 'false');
+  lb.setAttribute('aria-hidden', 'true');
+  lb.setAttribute('aria-label', 'Просмотр фото тепличного комбината');
+  const svgChevL =
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>';
+  const svgChevR =
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
+  lb.innerHTML = [
+    '<div class="pitomnik-greenhouse-lightbox__backdrop" data-pgh-lb-backdrop></div>',
+    '<div class="pitomnik-greenhouse-lightbox__surface">',
+    '<div class="pitomnik-greenhouse-lightbox__img-wrap">',
+    '<img class="pitomnik-greenhouse-lightbox__img" data-pgh-lb-img alt="" />',
+    '</div>',
+    '<button type="button" class="pitomnik-greenhouse-lightbox__close" data-pgh-lb-close aria-label="Закрыть">&times;</button>',
+    '<button type="button" class="pitomnik-greenhouse-lightbox__nav pitomnik-greenhouse-lightbox__nav--prev" data-pgh-lb-prev aria-label="Предыдущее фото">',
+    svgChevL,
+    '</button>',
+    '<button type="button" class="pitomnik-greenhouse-lightbox__nav pitomnik-greenhouse-lightbox__nav--next" data-pgh-lb-next aria-label="Следующее фото">',
+    svgChevR,
+    '</button>',
+    '</div>',
+  ].join('');
+  document.body.appendChild(lb);
+
+  const backdrop = lb.querySelector('[data-pgh-lb-backdrop]');
+  const lbImg = lb.querySelector('[data-pgh-lb-img]');
+  const btnClose = lb.querySelector('[data-pgh-lb-close]');
+  const btnPrev = lb.querySelector('[data-pgh-lb-prev]');
+  const btnNext = lb.querySelector('[data-pgh-lb-next]');
+
+  let lbIndex = 0;
+  let lbOpen = false;
+  let bodyOverflowPrev = '';
+  let touchStartX = null;
+
+  const paintLb = () => {
+    const d = imgData[lbIndex];
+    if (!d || !lbImg) return;
+    lbImg.src = d.src;
+    lbImg.alt = d.alt;
+  };
+
+  const closeLb = () => {
+    if (!lbOpen) return;
+    lbOpen = false;
+    lb.classList.remove('is-open');
+    lb.setAttribute('aria-hidden', 'true');
+    lb.setAttribute('aria-modal', 'false');
+    document.body.style.overflow = bodyOverflowPrev;
+    document.removeEventListener('keydown', onLbKeydown);
+  };
+
+  const openLb = (startIndex) => {
+    if (!imgData[startIndex]) return;
+    lbIndex = startIndex;
+    paintLb();
+    lbOpen = true;
+    lb.classList.add('is-open');
+    lb.setAttribute('aria-hidden', 'false');
+    lb.setAttribute('aria-modal', 'true');
+    bodyOverflowPrev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onLbKeydown);
+    i = lbIndex;
+    apply();
+  };
+
+  function onLbKeydown(e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      e.preventDefault();
+      closeLb();
+      return;
+    }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      lbIndex = prevImgIndex(lbIndex);
+      paintLb();
+      i = lbIndex;
+      apply();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      lbIndex = nextImgIndex(lbIndex);
+      paintLb();
+      i = lbIndex;
+      apply();
+    }
+  }
+
+  track.addEventListener('click', (e) => {
+    if (!greenhouseLbAllowed()) return;
+    const t = e.target;
+    if (!t || t.tagName !== 'IMG') return;
+    if (!track.contains(t)) return;
+    const cell = t.parentElement;
+    const idx = slides.indexOf(cell);
+    if (idx === -1 || !imgData[idx]) return;
+    openLb(idx);
+  });
+
+  mqGreenhouseLb.addEventListener('change', () => {
+    if (!greenhouseLbAllowed() && lbOpen) closeLb();
+  });
+
+  backdrop?.addEventListener('click', () => closeLb());
+  btnClose?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    closeLb();
+  });
+  btnPrev?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    lbIndex = prevImgIndex(lbIndex);
+    paintLb();
+    i = lbIndex;
+    apply();
+  });
+  btnNext?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    lbIndex = nextImgIndex(lbIndex);
+    paintLb();
+    i = lbIndex;
+    apply();
+  });
+
+  lb.addEventListener(
+    'touchstart',
+    (e) => {
+      if (!lbOpen) return;
+      if (e.changedTouches && e.changedTouches[0]) {
+        touchStartX = e.changedTouches[0].screenX;
+      }
+    },
+    { passive: true }
+  );
+  lb.addEventListener(
+    'touchend',
+    (e) => {
+      if (!lbOpen || touchStartX == null) return;
+      const tch = e.changedTouches && e.changedTouches[0];
+      if (!tch) {
+        touchStartX = null;
+        return;
+      }
+      const x0 = touchStartX;
+      touchStartX = null;
+      const dx = tch.screenX - x0;
+      if (Math.abs(dx) < 48) return;
+      if (dx > 0) {
+        lbIndex = prevImgIndex(lbIndex);
+      } else {
+        lbIndex = nextImgIndex(lbIndex);
+      }
+      paintLb();
+      i = lbIndex;
+      apply();
+    },
+    { passive: true }
+  );
 }
 
 /** Мини-слайдеры в карточках ассортимента на странице «Садовые центры». */

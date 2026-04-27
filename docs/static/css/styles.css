@@ -235,3 +235,120 @@ a.shadow-glow:hover {
   }
 }
 
+/* Питомник: полноэкранный просмотр фото тепличного комбината (JS вешает на body — вне transform у карточки) */
+.pitomnik-greenhouse-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: none;
+  box-sizing: border-box;
+}
+.pitomnik-greenhouse-lightbox.is-open {
+  display: block;
+}
+.pitomnik-greenhouse-lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  cursor: pointer;
+}
+.pitomnik-greenhouse-lightbox__surface {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right))
+    max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+}
+.pitomnik-greenhouse-lightbox__img-wrap {
+  pointer-events: auto;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  padding: 0 2.75rem;
+}
+@media (min-width: 640px) {
+  .pitomnik-greenhouse-lightbox__img-wrap {
+    padding: 0 3.25rem;
+  }
+}
+.pitomnik-greenhouse-lightbox__img {
+  max-width: 100%;
+  max-height: min(88dvh, 100%);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: pan-y pinch-zoom;
+}
+.pitomnik-greenhouse-lightbox__close {
+  pointer-events: auto;
+  position: absolute;
+  top: max(0.5rem, env(safe-area-inset-top));
+  right: max(0.5rem, env(safe-area-inset-right));
+  z-index: 2;
+  display: inline-flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.pitomnik-greenhouse-lightbox__close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: none;
+}
+.pitomnik-greenhouse-lightbox__close:active {
+  transform: scale(0.94);
+}
+.pitomnik-greenhouse-lightbox__nav {
+  pointer-events: auto;
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: inline-flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+  cursor: pointer;
+  transform: translateY(-50%);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  transition: background 0.15s ease;
+}
+.pitomnik-greenhouse-lightbox__nav:hover {
+  background: #fff;
+  transform: translateY(-50%);
+}
+.pitomnik-greenhouse-lightbox__nav:active {
+  transform: translateY(-50%) scale(0.96);
+}
+.pitomnik-greenhouse-lightbox__nav--prev {
+  left: max(0.35rem, env(safe-area-inset-left));
+}
+.pitomnik-greenhouse-lightbox__nav--next {
+  right: max(0.35rem, env(safe-area-inset-right));
+}
+.pitomnik-greenhouse-lightbox__nav svg {
+  display: block;
+}
+

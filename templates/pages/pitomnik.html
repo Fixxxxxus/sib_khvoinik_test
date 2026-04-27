@@ -194,11 +194,12 @@
                               <img
                                 src="{% static s.image %}"
                                 alt="{{ s.image_alt }}"
-                                class="h-full w-full object-cover object-center"
+                                class="h-full w-full object-cover object-center max-md:cursor-pointer max-md:touch-manipulation max-md:active:opacity-[0.98]"
                                 width="1080"
                                 height="675"
                                 loading="lazy"
                                 decoding="async"
+                                data-pitomnik-greenhouse-slide-img
                               />
                             {% else %}
                               <div class="flex h-full min-h-[12rem] w-full items-center justify-center bg-gradient-to-br from-slate-200/90 via-slate-100 to-slate-200/80 px-4 text-center">
