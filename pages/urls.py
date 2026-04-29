@@ -23,9 +23,4 @@ urlpatterns = [
     path("consent/", views.consent, name="consent"),
     path("discount/", views.discount, name="discount"),
     path("zayavka-direct/", views.zayavka_direct, name="zayavka_direct"),
-    path(
-        "zen_jDi0ZH49k0vmHeorZ1xcU5gIWQNlXwyyxsQUHxOSy1nVFiG9WoWTbkJ9i53sk1KV.html",
-        views.zen_verification,
-        name="zen_verification",
-    ),
 ]

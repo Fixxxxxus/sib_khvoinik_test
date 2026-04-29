@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.http import Http404, HttpResponse
+from django.http import Http404
 from django.shortcuts import render
 
 from .catalog_context import get_catalog_page_for_template
@@ -158,10 +158,3 @@ def discount(request):
 
 def zayavka_direct(request):
     return render(request, "pages/zayavka_direct.html", DIRECT_LANDING_PAGE)
-
-
-def zen_verification(request):
-    return HttpResponse(
-        '<meta name="zen-verification" content="jDi0ZH49k0vmHeorZ1xcU5gIWQNlXwyyxsQUHxOSy1nVFiG9WoWTbkJ9i53sk1KV" />\n',
-        content_type="text/html; charset=utf-8",
-    )
