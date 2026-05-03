@@ -4,7 +4,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-Marketing website for «Сибирский Хвойник» — Siberian landscaping/nursery company. Django is used **only for local template rendering**, not as a full web app. The site is deployed as **static HTML on GitHub Pages** from the `docs/` folder.
+Marketing website for «Сибирский Хвойник» / «Сибирские газоны» (Siberian landscaping/nursery company).
+
+**Production lives on `https://gazony.ru/` (and `panel.gazony.ru/` for admin).** It is served by Django + gunicorn behind Caddy in Docker on a VDS at `72.56.8.107:/opt/gazony`. Auto-deploy from `main` via `.github/workflows/deploy-vds.yml`. The VDS uses `Caddyfile.full` (apex + panel + www → apex redirect); `Caddyfile` is the older panel-only config.
+
+GitHub Pages from `docs/` is a **secondary mirror** at `https://fixxxxxus.github.io/sib_khvoinik_test/`, kept for fallback/preview only. Do **not** assume Pages is prod, do **not** rely on `docs/` paths when serving anything to gazony.ru — the VDS serves Django templates live, not `docs/`. SEO/site-verification files (Yandex, Дзен, Google) MUST be wired through Django (template `<meta>` in `base.html` or a `path()` in `pages/urls.py`), not just dropped into `docs/`.
 
 ## Commands
 
@@ -39,6 +43,11 @@ pip install -r bitrix24-mcp/requirements.txt
 Portal: `sgpichugi.bitrix24.ru`. Webhook scopes: `crm`, `task`. Events work without a dedicated scope.
 
 Note: `sender.*` (email marketing) module is not available on this portal — mailing tools intentionally excluded.
+
+## Deploy
+
+- **VDS (prod, gazony.ru)**: push to `main` → `deploy-vds.yml` → SSH to `/opt/gazony` → `git reset --hard origin/main` → `docker compose build && up -d`. Migrations + collectstatic run inside the web container at startup. Caddy reverse-proxies to `web:8000`, serves `/static/*` and `/media/*` directly.
+- **GitHub Pages (mirror)**: `deploy-pages.yml` publishes `docs/`. Re-run the relevant `scripts/export_*_to_docs.py` after template edits and commit the regenerated HTML.
 
 ## Architecture
 
