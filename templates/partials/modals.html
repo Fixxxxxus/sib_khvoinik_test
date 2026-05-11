@@ -565,6 +565,32 @@
   </form>
 </template>
 
+<template id="modal-template-b2b_payment_question">
+  <form class="space-y-4" data-ui-form data-form-tag="B2B/payment-question">
+    <input type="hidden" name="formTag" value="B2B/payment-question" />
+    <p class="text-sm text-slate-600">
+      Короткий вопрос менеджеру по оплате, документам или ЭДО. Ответим в рабочее время и пришлём шаблон договора по форме нашей или вашей.
+    </p>
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Компания (необязательно)
+        <input name="company" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название юрлица" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон / e-mail
+        <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ... или name@example.com" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Вопрос по оплате
+        <textarea name="message" required rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр.: работаете ли с нашим ЭДО, можно ли по нашей форме договора, какие закрывающие даёте"></textarea>
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Отправить вопрос менеджеру
+    </button>
+  </form>
+</template>
+
 <template id="modal-template-gazon_price_list">
   <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-price-list">
     <input type="hidden" name="formTag" value="Gas/gazon-price-list" />
