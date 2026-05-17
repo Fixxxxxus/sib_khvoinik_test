@@ -7,6 +7,7 @@
     <title>Главная — Сибирские газоны</title>
     <meta name="description" content="Сибирские газоны — технологичное озеленение, питомник и рулонный газон" />
     <meta name="base-path" content="/sib_khvoinik_test" />
+    <meta name="zen-verification" content="Bu3VGfUe3AezccVAB29rXmp71iMefM5W1YLRtK7TI67SbqekTN80Hija2r4Napmw" />
 
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
@@ -1150,8 +1151,8 @@
         <div>
           <div class="text-sm font-semibold mb-3">Контакты</div>
           <a class="block text-sm text-slate-700 hover:text-brand transition mb-2" href="/sib_khvoinik_test/kontakty/">Контакты</a>
-          <div class="text-sm text-slate-700">Тел: <span class="whitespace-nowrap">+7&nbsp;(383)&nbsp;201-06-00</span></div>
-          <div class="text-sm text-slate-700 mt-2">Email: price@gazony.ru</div>
+          <div class="text-sm text-slate-700">Тел: <a href="tel:+73832010600" class="whitespace-nowrap hover:text-brand transition">+7&nbsp;(383)&nbsp;201-06-00</a></div>
+          <div class="text-sm text-slate-700 mt-2">Email: <a href="mailto:price@gazony.ru" class="whitespace-nowrap hover:text-brand transition">price@gazony.ru</a></div>
           <div class="text-sm text-slate-700 mt-2">Адрес: г. Новосибирск, ул. Железнодорожная, 12/1, оф.501</div>
         </div>
       </div>
@@ -1737,6 +1738,32 @@
     </div>
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
       Запросить регламент ухода
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-b2b_payment_question">
+  <form class="space-y-4" data-ui-form data-form-tag="B2B/payment-question">
+    <input type="hidden" name="formTag" value="B2B/payment-question" />
+    <p class="text-sm text-slate-600">
+      Короткий вопрос менеджеру по оплате, документам или ЭДО. Ответим в рабочее время и пришлём шаблон договора по форме нашей или вашей.
+    </p>
+    <div class="grid grid-cols-1 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Компания (необязательно)
+        <input name="company" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Название юрлица" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон / e-mail
+        <input name="contact" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ... или name@example.com" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Вопрос по оплате
+        <textarea name="message" required rows="4" class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Напр.: работаете ли с нашим ЭДО, можно ли по нашей форме договора, какие закрывающие даёте"></textarea>
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Отправить вопрос менеджеру
     </button>
   </form>
 </template>
@@ -2361,7 +2388,6 @@
     <label class="text-sm font-medium text-slate-700">
       Выберите дату посещения
       <select name="openDayVisitDate" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
-        <option value="15_may_2026_greenhouse">15 мая 2026 - Тепличный комбинат (Новопичугово)</option>
         <option value="10_june_2026_gazon_kirza">10 июня 2026 - Рулонный газон (Новопичугово) + Питомник (Кирза)</option>
       </select>
     </label>

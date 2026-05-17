@@ -560,7 +560,6 @@ function initModal() {
     interest_shrubs: 'Кустарники',
     interest_trees: 'Деревья',
     modalContext: 'Запрос',
-    open_day_greenhouse: '15 мая (тепличный комбинат)',
     open_day_kirza: '10 июня (питомник "Кирза")',
   };
 
@@ -579,7 +578,6 @@ function initModal() {
     private_person: 'Частное лицо',
     landscape_designer: 'Ландшафтный дизайнер',
     developer_company: 'Застройщик / компания',
-    '15_may_2026_greenhouse': '15 мая 2026 - Тепличный комбинат (Новопичугово)',
     '10_june_2026_gazon_kirza': '10 июня 2026 - Рулонный газон (Новопичугово) + Питомник (Кирза)',
   };
 
