@@ -98,6 +98,33 @@ function initYandexMetrika() {
   });
 }
 
+// ── Аналитика: клики по телефону, почте, копирование почты ──
+function initAnalyticsClicks() {
+  var METRIKA_ID = 108722541;
+  var lastFired = {};
+  function fire(goal) {
+    if (!window.ym) return;
+    var now = Date.now();
+    if (lastFired[goal] && now - lastFired[goal] < 1500) return;
+    lastFired[goal] = now;
+    try { ym(METRIKA_ID, 'reachGoal', goal); } catch (e) { /* noop */ }
+  }
+
+  document.addEventListener('click', function (e) {
+    var link = e.target && e.target.closest ? e.target.closest('a[href^="tel:"]') : null;
+    if (link) { fire('phone_click'); return; }
+    var mail = e.target && e.target.closest ? e.target.closest('a[href^="mailto:"]') : null;
+    if (mail) { fire('email_copy'); }
+  }, true);
+
+  document.addEventListener('copy', function () {
+    try {
+      var sel = (window.getSelection && window.getSelection().toString()) || '';
+      if (/@gazony\.ru/i.test(sel)) fire('email_copy');
+    } catch (e) { /* noop */ }
+  }, true);
+}
+
 // UI-only placeholder PDF generators
 window.SGDownloadGazonChecklist = function () {
   const text =
@@ -755,13 +782,16 @@ function initModal() {
     sendLeadToB24(tag, payload);
 
     if (window.ym) {
-      var goalName = 'form_submit_site';
+      try { ym(108722541, 'reachGoal', 'form_submit_any'); } catch (e) { /* noop */ }
+      var specificGoal = null;
       if (tag === 'discount-direct' || tag.endsWith('/discount-direct')) {
-        goalName = 'form_submit_discount';
+        specificGoal = 'form_submit_discount';
       } else if (tag === 'zayavka-direct' || tag.endsWith('/zayavka-direct')) {
-        goalName = 'form_submit_direct';
+        specificGoal = 'form_submit_direct';
+      } else {
+        specificGoal = 'form_submit_site';
       }
-      try { ym(108722541, 'reachGoal', goalName); } catch (e) { /* noop */ }
+      try { ym(108722541, 'reachGoal', specificGoal); } catch (e) { /* noop */ }
     }
 
     // Swap to success template
@@ -2406,6 +2436,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactsYandexMap();
   initConsentCheckboxes();
   initCookieBanner();
+  initAnalyticsClicks();
   initPackagingFormatsDialog();
   initCatalogSelection();
   initPlantVariantPicker();
