@@ -1,0 +1,28 @@
+name: Telegram Bot Polling
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'   # каждые 5 минут (GitHub Actions min interval)
+  workflow_dispatch:          # ручной запуск для теста
+
+jobs:
+  poll:
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install requests
+
+      - name: Poll Telegram updates
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TG_API_SECRET: ${{ secrets.TG_API_SECRET }}
+          CARE_API_BASE_URL: https://gazony.ru
+        run: python .github/scripts/telegram_poll.py

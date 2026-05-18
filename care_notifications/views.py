@@ -9,8 +9,10 @@
 
 from __future__ import annotations
 
+import hmac as _hmac
 import json
 import logging
+import os
 from typing import Any
 
 from django.conf import settings
@@ -18,7 +20,9 @@ from django.http import HttpRequest, HttpResponse, HttpResponseBadRequest, JsonR
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_http_methods, require_POST
+from django.views.decorators.http import require_GET, require_http_methods, require_POST
+
+_TG_API_SECRET = os.environ.get("TG_API_SECRET", "")
 
 from pages.data import (
     B24_CARE_SUBSCRIPTIONS_LEAD_FIELD,
@@ -212,3 +216,134 @@ def unsubscribe(request: HttpRequest) -> HttpResponse:
         "care_notifications/unsubscribed.html",
         {"subscription": sub},
     )
+
+
+# ---------------------------------------------------------------------------
+# Telegram API (для GitHub Actions скриптов)
+# Авторизация: заголовок X-Api-Secret должен совпадать с env TG_API_SECRET.
+# ---------------------------------------------------------------------------
+
+def _tg_auth(request: HttpRequest) -> bool:
+    if not _TG_API_SECRET:
+        return False
+    secret = request.META.get("HTTP_X_API_SECRET", "")
+    return _hmac.compare_digest(secret, _TG_API_SECRET)
+
+
+@csrf_exempt
+@require_POST
+def tg_optin(request: HttpRequest) -> HttpResponse:
+    """GitHub Actions сообщает: пользователь нажал /start <token> в боте."""
+    if not _tg_auth(request):
+        return HttpResponse("forbidden", status=403)
+    try:
+        data = json.loads(request.body)
+    except (ValueError, UnicodeDecodeError):
+        return HttpResponseBadRequest("invalid JSON")
+    token = str(data.get("token") or "").strip()
+    chat_id = data.get("telegram_chat_id")
+    username = str(data.get("telegram_username") or "").strip()[:64]
+    if not token or not chat_id:
+        return HttpResponseBadRequest("token and telegram_chat_id required")
+    try:
+        sub = CareSubscription.objects.get(token=token)
+    except CareSubscription.DoesNotExist:
+        return JsonResponse({"ok": False, "error": "subscription not found"}, status=404)
+    sub.telegram_chat_id = chat_id
+    sub.telegram_opted_in_at = timezone.now()
+    if not sub.active:
+        sub.active = True
+        sub.unsubscribed_at = None
+    sub.save(update_fields=["telegram_chat_id", "telegram_opted_in_at", "active", "unsubscribed_at", "updated_at"])
+    return JsonResponse({"ok": True, "subscription_id": sub.id, "name": sub.name})
+
+
+@csrf_exempt
+@require_POST
+def tg_unsubscribe(request: HttpRequest) -> HttpResponse:
+    """GitHub Actions сообщает: пользователь отписался через бота."""
+    if not _tg_auth(request):
+        return HttpResponse("forbidden", status=403)
+    try:
+        data = json.loads(request.body)
+    except (ValueError, UnicodeDecodeError):
+        return HttpResponseBadRequest("invalid JSON")
+    chat_id = data.get("telegram_chat_id")
+    token = str(data.get("token") or "").strip()
+    if chat_id:
+        sub = CareSubscription.objects.filter(telegram_chat_id=chat_id).first()
+    elif token:
+        sub = CareSubscription.objects.filter(token=token).first()
+    else:
+        return HttpResponseBadRequest("telegram_chat_id or token required")
+    if not sub:
+        return JsonResponse({"ok": False, "error": "not found"}, status=404)
+    sub.active = False
+    sub.unsubscribed_at = timezone.now()
+    sub.save(update_fields=["active", "unsubscribed_at", "updated_at"])
+    return JsonResponse({"ok": True, "subscription_id": sub.id})
+
+
+@require_GET
+def tg_pending_digest(request: HttpRequest) -> HttpResponse:
+    """GitHub Actions запрашивает список: кому отправить TG-дайджест на этой неделе."""
+    if not _tg_auth(request):
+        return HttpResponse("forbidden", status=403)
+    from .digest import build_payload, get_current_week_key, render_telegram
+    from .models import DigestDelivery
+    week_key = request.GET.get("week") or get_current_week_key()
+    sent_ids = set(
+        DigestDelivery.objects.filter(
+            channel="telegram", week_key=week_key, status=DigestDelivery.STATUS_SENT
+        ).values_list("subscription_id", flat=True)
+    )
+    subs = CareSubscription.objects.filter(
+        active=True, preferred_channel="telegram"
+    ).exclude(telegram_chat_id=None).exclude(pk__in=sent_ids)
+    items: list[dict] = []
+    for sub in subs:
+        payload = build_payload(sub, week_key=week_key)
+        items.append({
+            "subscription_id": sub.id,
+            "telegram_chat_id": sub.telegram_chat_id,
+            "token": sub.token,
+            "week_key": week_key,
+            "tg_text": render_telegram(payload),
+            "manage_url": payload.footer.manage_url,
+            "unsub_url": payload.footer.unsubscribe_url,
+            "site_url": payload.footer.site_url,
+        })
+    return JsonResponse({"ok": True, "week_key": week_key, "count": len(items), "items": items})
+
+
+@csrf_exempt
+@require_POST
+def tg_mark_digest_sent(request: HttpRequest) -> HttpResponse:
+    """GitHub Actions сообщает результаты отправки TG-дайджеста."""
+    if not _tg_auth(request):
+        return HttpResponse("forbidden", status=403)
+    try:
+        data = json.loads(request.body)
+    except (ValueError, UnicodeDecodeError):
+        return HttpResponseBadRequest("invalid JSON")
+    from .models import DigestDelivery
+    from django.db import transaction
+    results = data.get("results", [])
+    created = 0
+    for r in results:
+        sub_id = r.get("subscription_id")
+        week_key = r.get("week_key", "")
+        status = r.get("status", DigestDelivery.STATUS_FAILED)
+        external_id = str(r.get("external_id") or "")[:128]
+        error = str(r.get("error") or "")[:500]
+        if not sub_id or not week_key:
+            continue
+        with transaction.atomic():
+            DigestDelivery.objects.update_or_create(
+                subscription_id=sub_id, channel="telegram", week_key=week_key,
+                defaults={"status": status, "external_id": external_id, "error": error},
+            )
+        if status == DigestDelivery.STATUS_SENT:
+            CareSubscription.objects.filter(pk=sub_id).update(last_digest_sent_at=timezone.now())
+        created += 1
+    return JsonResponse({"ok": True, "processed": created})
