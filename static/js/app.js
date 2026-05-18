@@ -581,15 +581,15 @@ function initModal() {
     '10_june_2026_gazon_kirza': '10 июня 2026 - Рулонный газон (Новопичугово) + Питомник (Кирза)',
   };
 
-  // care_*/promo_* checkbox labels
+  // care_*/promo_* checkbox labels (синхронно с CARE_SUBSCRIPTION_GROUPS в pages/data.py)
   const CARE_LABELS = {
-    care_gazon: 'Газон', care_conifer: 'Хвойные',
-    care_deciduous_trees: 'Лиственные деревья',
-    care_deciduous_shrubs: 'Лиственные кустарники',
-    care_hydrangea: 'Гортензия', care_peony: 'Пионы',
-    care_ornamental_apple: 'Яблони декоративные',
-    care_perennials: 'Многолетние цветы', care_roses: 'Розы',
-    promo_news: 'Новинки', promo_sales: 'Акции',
+    care_seasonal: 'Сезонный календарь работ',
+    care_trees: 'Деревья',
+    care_shrubs: 'Кустарники',
+    care_perennials: 'Многолетники',
+    care_roses: 'Розы',
+    care_lawn: 'Газон',
+    promo: 'Новинки и акции',
   };
 
   const sendLeadToB24 = (tag, payload) => {
