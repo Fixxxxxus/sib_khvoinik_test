@@ -10,6 +10,6 @@ _Дайджест Службы заботы · {{ week_key }}_
 [Подробно на сайте]({{ b.url }})
 {% endfor %}{% endif %}
 ─────
-Сибирский Хвойник · [сайт]({{ footer.site_url }}) · [MAX]({{ footer.max_url }})
+Сибирский Хвойник · [сайт]({{ footer.site_url }}){% if footer.max_url %} · [MAX]({{ footer.max_url }}){% endif %}
 [Управление подпиской]({{ footer.manage_url }}) · [Отписаться]({{ footer.unsubscribe_url }})
 {% endautoescape %}

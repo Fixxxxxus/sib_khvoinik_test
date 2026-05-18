@@ -22,6 +22,7 @@
 from __future__ import annotations
 
 import datetime as dt
+import os
 from dataclasses import dataclass, field
 from typing import Any
 
@@ -35,9 +36,9 @@ from pages.data import CARE_SUBSCRIPTION_GROUPS
 from .models import CareSubscription
 
 
-SITE_URL = "https://gazony.ru"
-TELEGRAM_BOT_URL = "https://t.me/sg_care_bot"
-MAX_BOT_URL = "https://max.ru/sg_care_bot"
+SITE_URL = os.environ.get("CARE_SITE_URL", "https://gazony.ru")
+TELEGRAM_BOT_URL = os.environ.get("CARE_TELEGRAM_BOT_URL", "https://t.me/sg_customer_care_bot")
+MAX_BOT_URL = os.environ.get("CARE_MAX_BOT_URL", "")  # пока MAX-бот не подключён
 
 
 @dataclass
