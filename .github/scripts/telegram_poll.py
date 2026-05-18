@@ -112,9 +112,9 @@ def handle_callback(cb):
 
 
 def main():
-    deadline = time.monotonic() + 210  # 3.5 minutes, job timeout = 4
+    deadline = time.monotonic() + 360  # 6 minutes, job timeout = 10
     offset = 0
-    print(f"[poll] start, deadline in 210s")
+    print(f"[poll] start, deadline in 360s")
     while time.monotonic() < deadline:
         remaining = max(5, int(deadline - time.monotonic()))
         timeout = min(30, remaining - 2)
