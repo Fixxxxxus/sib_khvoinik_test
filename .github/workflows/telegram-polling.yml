@@ -25,4 +25,5 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TG_API_SECRET: ${{ secrets.TG_API_SECRET }}
           CARE_API_BASE_URL: https://gazony.ru
+          PYTHONUNBUFFERED: "1"
         run: python .github/scripts/telegram_poll.py
