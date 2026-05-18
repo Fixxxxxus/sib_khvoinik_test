@@ -81,6 +81,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'import_export',
     'pages',
+    'care_notifications',
 ]
 
 MIDDLEWARE = [

@@ -12,3 +12,6 @@ whitenoise>=6.6,<7
 
 # Миграция каталога со старого Bitrix (scripts/migrate_gazony_product.py)
 beautifulsoup4>=4.12,<5
+
+# Клиент Битрикс24 REST (care_notifications/bitrix24.py)
+requests>=2.32,<3
