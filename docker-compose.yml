@@ -20,6 +20,23 @@ services:
     expose:
       - "8000"
 
+  bot:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+    volumes:
+      - ./data/db:/app/db
+      - ./data/media:/app/media
+    command:
+      - python
+      - manage.py
+      - run_telegram_bot
+    depends_on:
+      - web
+
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped

@@ -1,0 +1,18 @@
+{% autoescape off %}**{{ hero_title }}**
+*Дайджест Службы заботы · {{ week_key }}*
+
+{{ hero_text }}
+{% if blocks %}
+**Ваши задачи по группам:**
+{% for b in blocks %}
+{{ b.emoji }} **{{ b.title }}**
+{{ b.body }}
+Подробно: {{ b.url }}
+{% endfor %}{% endif %}
+─────
+Сибирский Хвойник
+Сайт: {{ footer.site_url }}
+Telegram: {{ footer.telegram_url }}
+Управление: {{ footer.manage_url }}
+Отписаться: {{ footer.unsubscribe_url }}
+{% endautoescape %}
