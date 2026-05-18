@@ -437,6 +437,81 @@ SLUZHBA_ZABOTY_PAGE = {
     ],
 }
 
+# Маппинг тем подписки на «Календарь ухода» в категории/растения БД.
+# form_field      имя чекбокса в форме contact_zaboty_calendar.
+# label           отображаемая подпись на сайте (с уточнениями в скобках).
+# b24_label       точный текст значения в Б24 в поле «Служба заботы» (multi-select без XML_ID, маппинг по тексту).
+# category_slugs  категории из CareCalendarCategory, из которых тянуть периоды.
+# extra_plant_slugs  отдельные растения (на будущее, для «гортензия/пион» как подгруппы в дайджесте).
+# is_hero         сезонный сборный контент, не привязан к растениям; дефолт ON.
+CARE_SUBSCRIPTION_GROUPS = [
+    {
+        "slug": "seasonal",
+        "form_field": "care_seasonal",
+        "label": "Сезонный календарь работ в саду",
+        "b24_label": "Сезонный календарь работ",
+        "is_hero": True,
+        "default_checked": True,
+        "category_slugs": [],
+        "extra_plant_slugs": [],
+    },
+    {
+        "slug": "trees",
+        "form_field": "care_trees",
+        "label": "Деревья (хвойные и лиственные)",
+        "b24_label": "Деревья",
+        "is_hero": False,
+        "default_checked": False,
+        "category_slugs": ["derevya"],
+        "extra_plant_slugs": [],
+    },
+    {
+        "slug": "shrubs",
+        "form_field": "care_shrubs",
+        "label": "Кустарники (в т.ч. гортензия, яблоня декоративная)",
+        "b24_label": "Кустарники",
+        "is_hero": False,
+        "default_checked": False,
+        "category_slugs": ["kustarniki"],
+        "extra_plant_slugs": [],
+    },
+    {
+        "slug": "perennials",
+        "form_field": "care_perennials",
+        "label": "Многолетники (в т.ч. пионы)",
+        "b24_label": "Многолетники",
+        "is_hero": False,
+        "default_checked": False,
+        "category_slugs": ["mnogoletniki"],
+        "extra_plant_slugs": [],
+    },
+    {
+        "slug": "roses",
+        "form_field": "care_roses",
+        "label": "Розы",
+        "b24_label": "Розы",
+        "is_hero": False,
+        "default_checked": False,
+        "category_slugs": ["rozy"],
+        "extra_plant_slugs": [],
+    },
+    {
+        "slug": "lawn",
+        "form_field": "care_lawn",
+        "label": "Газон",
+        "b24_label": "Газон",
+        "is_hero": False,
+        "default_checked": False,
+        "category_slugs": ["gazon"],
+        "extra_plant_slugs": [],
+    },
+]
+
+# Коды пользовательских полей в Битрикс24 для хранения подписок.
+# Поле «Служба заботы», multi-select, значения совпадают с CARE_SUBSCRIPTION_GROUPS[*].b24_label.
+B24_CARE_SUBSCRIPTIONS_LEAD_FIELD = "UF_CRM_1779072919"
+B24_CARE_SUBSCRIPTIONS_CONTACT_FIELD = "UF_CRM_1779072937"
+
 CATALOG_PAGE = {
     **BASE,
     "title": "Каталог растений",
