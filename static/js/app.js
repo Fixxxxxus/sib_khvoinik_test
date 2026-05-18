@@ -619,6 +619,27 @@ function initModal() {
     promo: 'Новинки и акции',
   };
 
+  // Маршрутизация лидов по верхнему уровню заголовка (значение FORM_TITLES).
+  // Ключ — то же, что и leadTitle ниже. Всё, чего нет в этой таблице,
+  // падает на 1317 (Игорь Прошин, РОП) — это явное решение Стаса.
+  // ozelenenie-ready-project в Б24 переназначается роботом «по очереди»
+  // между Кашаповой и Жарковой, поэтому здесь дефолтный 1317.
+  const LEAD_ROUTING = {
+    'Запрос по ассортименту (каталог)': 1361,
+    'Скидка на рассаду (Директ)': 1361,
+    'Покупка продукции (частные лица)': 1361,
+    'Обращение с сайта': 1361,
+    'Запись на день открытых дверей (Питомник)': 1361,
+    'Консультация': 1361,
+    'Заявка с лендинга Директа': 1361,
+    'Покупка продукции (B2B)': 1347,
+    'Прайс и наличие (B2B)': 1347,
+    'Калькулятор газона': 17,
+    'Прайс-лист газон': 17,
+    'Логистика газон': 17,
+  };
+  const LEAD_ROUTING_DEFAULT = 1317;
+
   const sendLeadToB24 = (tag, payload) => {
     const [section, formName] = tag.includes('/') ? tag.split('/', 2) : ['other', tag];
 
@@ -634,7 +655,7 @@ function initModal() {
     const fields = {
       TITLE: `Сайт: ${titleMain}`,
       SOURCE_ID: '9',
-      ASSIGNED_BY_ID: 1317,
+      ASSIGNED_BY_ID: LEAD_ROUTING[leadTitle] || LEAD_ROUTING_DEFAULT,
       UTM_SOURCE: payload.utm_source || 'website',
       UTM_MEDIUM: payload.utm_medium || section,
       UTM_CAMPAIGN: payload.utm_campaign || '',
