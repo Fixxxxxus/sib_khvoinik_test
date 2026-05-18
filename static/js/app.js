@@ -723,6 +723,58 @@ function initModal() {
     }).catch((err) => console.warn('[B24] lead send failed:', err));
   };
 
+  // Подписочная форма Службы заботы летит через наш Django-бэк (нужно для токена
+  // управления подпиской и записи в UF-поле «Служба заботы» multiselect).
+  // Любой сбой -> fallback в прямой Б24 ниже по коду (как для остальных форм).
+  const SUBSCRIBE_FORM_TAG = 'B2C/sluzhba-zaboty-calendar';
+  const CARE_SUBSCRIBE_ENDPOINT = '/api/care/subscribe/';
+  const CARE_BACKEND_TIMEOUT_MS = 6000;
+
+  const parseUtmParams = () => {
+    const utm = {};
+    try {
+      const sp = new URLSearchParams(window.location.search || '');
+      sp.forEach((v, k) => { if (k.toLowerCase().startsWith('utm_')) utm[k.toLowerCase()] = v; });
+    } catch (e) { /* noop */ }
+    return utm;
+  };
+
+  const trySubscribeViaCareBackend = async (payload) => {
+    const utm = parseUtmParams();
+    const body = Object.assign({}, payload, {
+      utm,
+      source: utm.utm_source ? 'ads' : 'web',
+    });
+    const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => ctrl.abort(), CARE_BACKEND_TIMEOUT_MS) : null;
+    try {
+      const resp = await fetch(CARE_SUBSCRIBE_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(body),
+        credentials: 'same-origin',
+        signal: ctrl ? ctrl.signal : undefined,
+      });
+      if (timer) clearTimeout(timer);
+      if (!resp.ok) {
+        console.warn('[care] backend response not ok:', resp.status);
+        return false;
+      }
+      const data = await resp.json();
+      if (!data || !data.ok) return false;
+      try {
+        localStorage.setItem('sg_care_token', JSON.stringify({
+          id: data.id, t: data.token, s: data.signature, b24: data.b24_lead_id || null, ts: Date.now(),
+        }));
+      } catch (e) { /* noop */ }
+      return true;
+    } catch (e) {
+      if (timer) clearTimeout(timer);
+      console.warn('[care] backend send failed:', e && e.message || e);
+      return false;
+    }
+  };
+
   // Submit UI-only forms (save to localStorage)
   const handleUiSubmit = async (form) => {
     const tag = form.getAttribute('data-form-tag') || 'unknown';
@@ -779,7 +831,15 @@ function initModal() {
     existing.push(entry);
     localStorage.setItem(key, JSON.stringify(existing));
 
-    sendLeadToB24(tag, payload);
+    // Подписочная форма Службы заботы: через наш бэк (токен управления, UF-поле).
+    // Если бэк недоступен / 5xx / таймаут - падаем на прямой Б24 ниже.
+    let sentViaCareBackend = false;
+    if (tag === SUBSCRIBE_FORM_TAG) {
+      sentViaCareBackend = await trySubscribeViaCareBackend(payload);
+    }
+    if (!sentViaCareBackend) {
+      sendLeadToB24(tag, payload);
+    }
 
     if (window.ym) {
       try { ym(108722541, 'reachGoal', 'form_submit_any'); } catch (e) { /* noop */ }
