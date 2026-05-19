@@ -41,8 +41,13 @@ class UnisenderClient:
     (для миграций, тестов, отрисовки превью). Падение - только на send_*.
     """
 
-    def __init__(self, api_key: str | None = None):
+    def __init__(self, api_key: str | None = None, default_list_id: str | int | None = None):
         self.api_key = api_key if api_key is not None else os.environ.get("UNISENDER_API_KEY", "")
+        if default_list_id is not None:
+            self.default_list_id: str | int | None = default_list_id
+        else:
+            env_list_id = os.environ.get("UNISENDER_LIST_ID", "").strip()
+            self.default_list_id = env_list_id or None
 
     def _api_call(self, method: str, params: dict[str, Any]) -> dict[str, Any]:
         """POST на /<method>?format=json. Возвращает поле result, иначе кидает UnisenderError."""
@@ -105,13 +110,11 @@ class UnisenderClient:
             "sender_email": from_email,
             "subject": subject,
             "body": html_body,
-            "list_id": list_id,
+            "list_id": list_id if list_id is not None else self.default_list_id,
             "lang": "ru",
         }
 
-        if list_unsubscribe_url:
-            # Unisender принимает несколько заголовков одной строкой, разделённой \n.
-            # Это формат принят и описан в support-документации провайдера.
+        if list_unsubscribe_url and os.environ.get("UNISENDER_SEND_LIST_UNSUBSCRIBE", "").strip() == "1":
             params["headers"] = (
                 f"List-Unsubscribe: <{list_unsubscribe_url}>\n"
                 "List-Unsubscribe-Post: List-Unsubscribe=One-Click"
