@@ -206,15 +206,25 @@
       </div>
     </div>
 
-    <div class="space-y-3 rounded-2xl border border-black/10 bg-slate-50/80 p-4">
+    <div class="space-y-3 rounded-2xl border border-black/10 bg-slate-50/80 p-4" data-care-channel-block>
       <label class="block text-sm font-medium text-slate-700">
-        Удобный мессенджер
-        <select name="preferred_messenger" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
+        Удобный канал связи
+        <select name="preferred_messenger" required data-care-channel-select class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
           <option value="email" selected>Эл. Почта</option>
           <option value="max">MAX</option>
           <option value="telegram">Telegram</option>
         </select>
       </label>
+      <label class="block text-sm font-medium text-slate-700" data-care-email-wrap>
+        Адрес для писем
+        <input name="email" type="email" data-care-email-input class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="name@example.com" autocomplete="email" />
+      </label>
+      <p class="text-xs text-slate-500" data-care-tg-hint hidden>
+        После отправки формы появится ссылка «Открыть бота в Telegram» - нажмите её, чтобы получать дайджест.
+      </p>
+      <p class="text-xs text-amber-700" data-care-max-hint hidden>
+        Канал MAX в стадии подключения. Сейчас вы получите подтверждение, а сам дайджест придёт после запуска бота.
+      </p>
       <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
         <input type="checkbox" name="consent_messages" value="1" checked class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
         <span>Даю согласие на получение сообщений</span>

@@ -428,6 +428,8 @@ function initModal() {
       initConsentCheckboxes();
     }
 
+    initCareChannelToggle(modalBody);
+
     activeNoOverlay = Boolean(opts.noOverlay);
     if (activeNoOverlay) {
       overlay.classList.add('hidden');
@@ -758,6 +760,35 @@ function initModal() {
     care_perennials: 'Многолетники',
     care_roses: 'Розы',
     care_lawn: 'Газон',
+  };
+
+  // Динамическое поле email: показывается только при канале «email»; для
+  // telegram/max скрывается и не required (чтобы форма прошла валидацию).
+  const initCareChannelToggle = (root) => {
+    if (!root) return;
+    const select = root.querySelector('[data-care-channel-select]');
+    if (!select) return;
+    const emailWrap = root.querySelector('[data-care-email-wrap]');
+    const emailInput = root.querySelector('[data-care-email-input]');
+    const tgHint = root.querySelector('[data-care-tg-hint]');
+    const maxHint = root.querySelector('[data-care-max-hint]');
+    if (!emailWrap || !emailInput) return;
+
+    const apply = () => {
+      const ch = (select.value || 'email').toLowerCase();
+      const isEmail = ch === 'email';
+      emailWrap.hidden = !isEmail;
+      if (isEmail) {
+        emailInput.setAttribute('required', 'required');
+      } else {
+        emailInput.removeAttribute('required');
+        emailInput.value = '';
+      }
+      if (tgHint) tgHint.hidden = ch !== 'telegram';
+      if (maxHint) maxHint.hidden = ch !== 'max';
+    };
+    select.addEventListener('change', apply);
+    apply();
   };
 
   const parseUtmParams = () => {
