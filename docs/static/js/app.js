@@ -619,6 +619,27 @@ function initModal() {
     promo: 'Новинки и акции',
   };
 
+  // Маршрутизация лидов по верхнему уровню заголовка (значение FORM_TITLES).
+  // Ключ — то же, что и leadTitle ниже. Всё, чего нет в этой таблице,
+  // падает на 1317 (Игорь Прошин, РОП) — это явное решение Стаса.
+  // ozelenenie-ready-project в Б24 переназначается роботом «по очереди»
+  // между Кашаповой и Жарковой, поэтому здесь дефолтный 1317.
+  const LEAD_ROUTING = {
+    'Запрос по ассортименту (каталог)': 1361,
+    'Скидка на рассаду (Директ)': 1361,
+    'Покупка продукции (частные лица)': 1361,
+    'Обращение с сайта': 1361,
+    'Запись на день открытых дверей (Питомник)': 1361,
+    'Консультация': 1361,
+    'Заявка с лендинга Директа': 1361,
+    'Покупка продукции (B2B)': 1347,
+    'Прайс и наличие (B2B)': 1347,
+    'Калькулятор газона': 17,
+    'Прайс-лист газон': 17,
+    'Логистика газон': 17,
+  };
+  const LEAD_ROUTING_DEFAULT = 1317;
+
   const sendLeadToB24 = (tag, payload) => {
     const [section, formName] = tag.includes('/') ? tag.split('/', 2) : ['other', tag];
 
@@ -634,7 +655,7 @@ function initModal() {
     const fields = {
       TITLE: `Сайт: ${titleMain}`,
       SOURCE_ID: '9',
-      ASSIGNED_BY_ID: 1317,
+      ASSIGNED_BY_ID: LEAD_ROUTING[leadTitle] || LEAD_ROUTING_DEFAULT,
       UTM_SOURCE: payload.utm_source || 'website',
       UTM_MEDIUM: payload.utm_medium || section,
       UTM_CAMPAIGN: payload.utm_campaign || '',
@@ -729,6 +750,15 @@ function initModal() {
   const SUBSCRIBE_FORM_TAG = 'B2C/sluzhba-zaboty-calendar';
   const CARE_SUBSCRIBE_ENDPOINT = '/api/care/subscribe/';
   const CARE_BACKEND_TIMEOUT_MS = 6000;
+  const CARE_TG_BOT_USERNAME = 'sg_customer_care_bot';
+  const CARE_GROUP_FIELD_LABELS = {
+    care_seasonal: 'Сезонный календарь',
+    care_trees: 'Деревья',
+    care_shrubs: 'Кустарники',
+    care_perennials: 'Многолетники',
+    care_roses: 'Розы',
+    care_lawn: 'Газон',
+  };
 
   const parseUtmParams = () => {
     const utm = {};
@@ -758,21 +788,59 @@ function initModal() {
       if (timer) clearTimeout(timer);
       if (!resp.ok) {
         console.warn('[care] backend response not ok:', resp.status);
-        return false;
+        return null;
       }
       const data = await resp.json();
-      if (!data || !data.ok) return false;
+      if (!data || !data.ok) return null;
       try {
         localStorage.setItem('sg_care_token', JSON.stringify({
           id: data.id, t: data.token, s: data.signature, b24: data.b24_lead_id || null, ts: Date.now(),
         }));
       } catch (e) { /* noop */ }
-      return true;
+      return data;
     } catch (e) {
       if (timer) clearTimeout(timer);
       console.warn('[care] backend send failed:', e && e.message || e);
-      return false;
+      return null;
     }
+  };
+
+  const buildCareSuccessContext = (payload, careResp) => {
+    const channel = (payload.preferred_messenger || 'email').toLowerCase();
+    const groupNames = Object.keys(CARE_GROUP_FIELD_LABELS)
+      .filter(k => String(payload[k] || '') === '1')
+      .map(k => CARE_GROUP_FIELD_LABELS[k]);
+    return {
+      channel,
+      groupsLabel: groupNames.length ? groupNames.join(', ') : 'Сезонный календарь',
+      email: payload.email || '',
+      tgDeepLink: `https://t.me/${CARE_TG_BOT_USERNAME}?start=${careResp.token}`,
+    };
+  };
+
+  const renderCareSuccess = (modalBody, ctx) => {
+    const tpl = document.getElementById('modal-template-success-care');
+    if (!tpl) return false;
+    modalBody.innerHTML = '';
+    modalBody.appendChild(tpl.content.cloneNode(true));
+    const groupsEl = modalBody.querySelector('[data-care-success-groups]');
+    if (groupsEl) groupsEl.textContent = ctx.groupsLabel;
+    const tgBlock = modalBody.querySelector('[data-care-success-channel="telegram"]');
+    const maxBlock = modalBody.querySelector('[data-care-success-channel="max"]');
+    const emailBlock = modalBody.querySelector('[data-care-success-channel="email"]');
+    if (tgBlock) tgBlock.classList.toggle('hidden', ctx.channel !== 'telegram');
+    if (maxBlock) maxBlock.classList.toggle('hidden', ctx.channel !== 'max');
+    if (emailBlock) emailBlock.classList.toggle('hidden', ctx.channel !== 'email');
+    if (ctx.channel === 'telegram') {
+      const a = modalBody.querySelector('[data-care-success-tg-link]');
+      if (a) a.setAttribute('href', ctx.tgDeepLink);
+    }
+    if (ctx.channel === 'email' && ctx.email) {
+      const el = modalBody.querySelector('[data-care-success-email]');
+      if (el) el.textContent = ctx.email;
+    }
+    if (window.lucide) window.lucide.createIcons();
+    return true;
   };
 
   // Submit UI-only forms (save to localStorage)
@@ -833,11 +901,11 @@ function initModal() {
 
     // Подписочная форма Службы заботы: через наш бэк (токен управления, UF-поле).
     // Если бэк недоступен / 5xx / таймаут - падаем на прямой Б24 ниже.
-    let sentViaCareBackend = false;
+    let careResp = null;
     if (tag === SUBSCRIBE_FORM_TAG) {
-      sentViaCareBackend = await trySubscribeViaCareBackend(payload);
+      careResp = await trySubscribeViaCareBackend(payload);
     }
-    if (!sentViaCareBackend) {
+    if (!careResp) {
       sendLeadToB24(tag, payload);
     }
 
@@ -854,13 +922,21 @@ function initModal() {
       try { ym(108722541, 'reachGoal', specificGoal); } catch (e) { /* noop */ }
     }
 
-    // Swap to success template
-    const successTpl = document.getElementById('modal-template-success');
-    if (successTpl) {
-      modalTitle.textContent = '';
-      modalBody.innerHTML = '';
-      modalBody.appendChild(successTpl.content.cloneNode(true));
-      if (window.lucide) window.lucide.createIcons();
+    // Swap to success template. Для подписочной формы - специальный шаблон с
+    // ссылкой на TG-бота / подсказкой про email.
+    modalTitle.textContent = '';
+    let careSuccessRendered = false;
+    if (careResp && tag === SUBSCRIBE_FORM_TAG) {
+      const ctx = buildCareSuccessContext(payload, careResp);
+      careSuccessRendered = renderCareSuccess(modalBody, ctx);
+    }
+    if (!careSuccessRendered) {
+      const successTpl = document.getElementById('modal-template-success');
+      if (successTpl) {
+        modalBody.innerHTML = '';
+        modalBody.appendChild(successTpl.content.cloneNode(true));
+        if (window.lucide) window.lucide.createIcons();
+      }
     }
 
     // Optional UI-only side effects

@@ -2545,6 +2545,58 @@
   </div>
 </template>
 
+<template id="modal-template-success-care">
+  <div class="space-y-4">
+    <div class="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-brand/5 px-4 py-3 text-sm">
+      <i data-lucide="check-circle-2" class="h-5 w-5 text-brand"></i>
+      <span class="font-semibold">Подписка оформлена</span>
+    </div>
+    <p class="text-sm text-slate-700">
+      Вы подписаны на: <span class="font-medium text-slate-900" data-care-success-groups>—</span>
+    </p>
+
+    <div data-care-success-channel="telegram" class="hidden space-y-3 rounded-2xl border border-black/10 bg-slate-50/80 p-4">
+      <p class="text-sm leading-snug text-slate-700">
+        Чтобы получать дайджесты в Telegram, откройте бота и нажмите <span class="font-medium">Start</span>.
+        Без этого шага мы не сможем вам написать.
+      </p>
+      <a data-care-success-tg-link
+         href="#"
+         target="_blank"
+         rel="noopener"
+         class="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+        <i data-lucide="send" class="h-4 w-4"></i>
+        Открыть бота в Telegram
+      </a>
+      <p class="text-xs text-slate-500">
+        После нажатия Start привязка занимает до 5 минут.
+      </p>
+    </div>
+
+    <div data-care-success-channel="max" class="hidden space-y-2 rounded-2xl border border-amber-200 bg-amber-50/70 p-4">
+      <p class="text-sm leading-snug text-amber-950">
+        Канал MAX в стадии подключения. Мы добавим вас в рассылку сразу после запуска бота.
+        А пока вы можете получать дайджест на email — напишите нам, если нужно.
+      </p>
+    </div>
+
+    <div data-care-success-channel="email" class="hidden space-y-2 rounded-2xl border border-black/10 bg-slate-50/80 p-4">
+      <p class="text-sm leading-snug text-slate-700">
+        Первое письмо со вступлением и подсказками придёт в ближайшие минуты на
+        <span class="font-medium text-slate-900" data-care-success-email>вашу почту</span>.
+        Каждый четверг будем присылать дайджест с задачами недели.
+      </p>
+      <p class="text-xs text-slate-500">
+        Если письма нет — проверьте папку «Спам». В подвале каждого письма есть ссылки на управление подпиской и отписку.
+      </p>
+    </div>
+
+    <button type="button" data-close-modal class="w-full rounded-2xl border border-black/10 bg-white px-6 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
+      Понятно, спасибо
+    </button>
+  </div>
+</template>
+
 
     <div id="cookieBanner" class="fixed bottom-0 inset-x-0 z-50 hidden">
   <div class="mx-auto max-w-5xl px-4 pb-4">
