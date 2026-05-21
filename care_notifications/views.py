@@ -23,6 +23,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_http_methods, require_POST
 
 _TG_API_SECRET = os.environ.get("TG_API_SECRET", "")
+_MAX_WEBHOOK_SECRET = os.environ.get("MAX_WEBHOOK_SECRET", "")
 
 from pages.data import (
     B24_CARE_SUBSCRIPTIONS_LEAD_FIELD,
@@ -454,3 +455,211 @@ def tg_mark_digest_sent(request: HttpRequest) -> HttpResponse:
             CareSubscription.objects.filter(pk=sub_id).update(last_digest_sent_at=timezone.now())
         created += 1
     return JsonResponse({"ok": True, "processed": created})
+
+
+# ---------------------------------------------------------------------------
+# MAX Bot webhook (платформа dev.max.ru, прод-аналог Telegram-канала)
+#
+# В отличие от TG (там polling-скрипт на Contabo гоняет getUpdates), MAX
+# сам шлёт нам POST на этот URL. Авторизация - через секретный сегмент в
+# самом URL (`/api/care/max/webhook/<SECRET>/`), сверяется с env
+# MAX_WEBHOOK_SECRET. Это рекомендованный паттерн MAX (как и Telegram
+# secret_token, только в path, потому что у MAX свой формат заголовков).
+#
+# Поведение:
+#   /start <token>          -> opt-in: пишем max_chat_id+max_opted_in_at,
+#                              шлём welcome-дайджест если на эту неделю
+#                              ещё не было успешной MAX-доставки.
+#   /unsubscribe            -> отписка (active=False) + подтверждение.
+#   callback `unsub:<tok>`  -> то же, что /unsubscribe.
+#   всё остальное           -> вежливая отбивка со ссылкой на сайт.
+# ---------------------------------------------------------------------------
+
+
+def _max_send_welcome_digest(sub: CareSubscription) -> None:
+    """Если на этой неделе ещё не было успешной MAX-доставки, шлём дайджест.
+
+    По аналогии с _send_welcome_email и tg_optin.welcome - чтобы пользователь
+    сразу после /start получил первый выпуск, а не ждал четверга.
+    """
+    from django.db import IntegrityError, transaction
+    from .digest import build_payload, get_current_week_key
+    from .max_bot import MaxBotClient
+    from .models import DigestDelivery
+
+    week_key = get_current_week_key()
+    if DigestDelivery.objects.filter(
+        subscription=sub, channel="max", week_key=week_key,
+        status=DigestDelivery.STATUS_SENT,
+    ).exists():
+        return
+    payload = build_payload(sub, week_key=week_key)
+    if payload is None:
+        logger.info("max welcome skipped sub=%s: no content for this week", sub.id)
+        return
+    try:
+        res = MaxBotClient().send_digest(sub, payload)
+    except Exception as e:  # noqa: BLE001
+        logger.warning("max welcome failed sub=%s: %s", sub.id, e)
+        res = {"ok": False, "error": str(e)}
+    status = DigestDelivery.STATUS_SENT if res.get("ok") else DigestDelivery.STATUS_FAILED
+    try:
+        with transaction.atomic():
+            DigestDelivery.objects.update_or_create(
+                subscription=sub, channel="max", week_key=week_key,
+                defaults={
+                    "status": status,
+                    "external_id": str(res.get("message_id") or "")[:128],
+                    "error": str(res.get("error") or "")[:500],
+                },
+            )
+    except IntegrityError:
+        logger.warning("max welcome: DigestDelivery integrity sub=%s wk=%s", sub.id, week_key)
+    if status == DigestDelivery.STATUS_SENT:
+        CareSubscription.objects.filter(pk=sub.id).update(last_digest_sent_at=timezone.now())
+
+
+def _max_handle_start(text: str, chat_id: int | str) -> tuple[CareSubscription | None, str]:
+    """Парсит `/start <token>`, делает opt-in. Возвращает (subscription, reply_text)."""
+    parts = (text or "").split(maxsplit=1)
+    token = parts[1].strip() if len(parts) > 1 else ""
+    if not token:
+        return None, (
+            "Привет! Чтобы подписаться на дайджест Сибирских Газонов, "
+            "вернитесь на сайт и нажмите «Открыть бот в MAX» после оформления подписки."
+        )
+    try:
+        sub = CareSubscription.objects.get(token=token)
+    except CareSubscription.DoesNotExist:
+        return None, (
+            "Не удалось найти вашу подписку по этой ссылке. "
+            "Попробуйте оформить её заново на сайте gazony.ru."
+        )
+    sub.max_chat_id = int(chat_id) if str(chat_id).lstrip("-").isdigit() else None
+    if sub.max_chat_id is None:
+        # MAX может присылать строковые chat_id (UUID-подобные): храним в отдельной
+        # колонке нельзя - схема BigInt. Если не парсится - сохранять смысла нет.
+        logger.warning("max optin: chat_id=%r не приводится к int, sub=%s", chat_id, sub.id)
+        return sub, (
+            "Подписка найдена, но MAX вернул нестандартный идентификатор чата. "
+            "Мы уже разбираемся, скоро напишем."
+        )
+    sub.max_opted_in_at = timezone.now()
+    if not sub.active:
+        sub.active = True
+        sub.unsubscribed_at = None
+    sub.save(update_fields=[
+        "max_chat_id", "max_opted_in_at", "active", "unsubscribed_at", "updated_at",
+    ])
+    return sub, (
+        f"Привет, {sub.name or 'друг'}! Подписка на дайджест Службы заботы подключена. "
+        "Каждый четверг здесь будут краткие задачи сезона. Чтобы отписаться - "
+        "команда /unsubscribe."
+    )
+
+
+def _max_deactivate(sub: CareSubscription) -> str:
+    if sub.active:
+        sub.active = False
+        sub.unsubscribed_at = timezone.now()
+        sub.save(update_fields=["active", "unsubscribed_at", "updated_at"])
+    return (
+        "Подписка отключена. Если передумаете - оформите её заново на gazony.ru "
+        "в разделе «Служба заботы»."
+    )
+
+
+@csrf_exempt
+@require_POST
+def max_webhook(request: HttpRequest, secret: str) -> HttpResponse:
+    """Webhook MAX Bot API. URL: /api/care/max/webhook/<MAX_WEBHOOK_SECRET>/."""
+    if not _MAX_WEBHOOK_SECRET or not _hmac.compare_digest(secret, _MAX_WEBHOOK_SECRET):
+        return HttpResponse("forbidden", status=403)
+    try:
+        update = json.loads(request.body.decode("utf-8") or "{}")
+    except (UnicodeDecodeError, json.JSONDecodeError):
+        return HttpResponseBadRequest("invalid JSON")
+    if not isinstance(update, dict):
+        return HttpResponseBadRequest("update must be object")
+
+    # MAX-обновление приходит с полем update_type. Поддерживаем три типа:
+    # - message_created / bot_started (текст /start, /unsubscribe, прочее)
+    # - message_callback (нажатие inline-кнопки)
+    # В документации формат немного плавающий, поэтому достаём поля защитно.
+    from .max_bot import MaxBotClient
+
+    update_type = update.get("update_type") or update.get("type") or ""
+    bot = MaxBotClient()
+
+    if update_type == "message_callback" or "callback" in update:
+        cb = update.get("callback") or {}
+        callback_id = cb.get("callback_id") or cb.get("id") or ""
+        payload_str = cb.get("payload") or ""
+        user = cb.get("user") or {}
+        chat_id = (
+            cb.get("chat_id")
+            or (update.get("message") or {}).get("recipient", {}).get("chat_id")
+            or user.get("user_id")
+        )
+        if payload_str.startswith("unsub:"):
+            token = payload_str.split(":", 1)[1].strip()
+            sub = CareSubscription.objects.filter(token=token).first()
+            if sub:
+                reply = _max_deactivate(sub)
+            else:
+                reply = "Не нашли подписку по этой ссылке."
+            if chat_id:
+                bot.send_message(chat_id=chat_id, text=reply)
+            if callback_id:
+                bot.answer_callback(callback_id=callback_id, text="Готово")
+        else:
+            if callback_id:
+                bot.answer_callback(callback_id=callback_id)
+        return JsonResponse({"ok": True})
+
+    # message_created / bot_started: текст из message.body.text
+    msg = update.get("message") or {}
+    body = msg.get("body") or {}
+    text = (body.get("text") or msg.get("text") or "").strip()
+    sender = msg.get("sender") or update.get("user") or {}
+    recipient = msg.get("recipient") or {}
+    chat_id = (
+        recipient.get("chat_id")
+        or msg.get("chat_id")
+        or sender.get("user_id")
+        or update.get("chat_id")
+    )
+
+    if not chat_id:
+        # MAX иногда шлёт служебные апдейты без чата - подтверждаем приём, но
+        # ничего не делаем.
+        return JsonResponse({"ok": True, "skipped": "no chat_id"})
+
+    low = text.lower()
+    if low.startswith("/start"):
+        sub, reply = _max_handle_start(text, chat_id)
+        bot.send_message(chat_id=chat_id, text=reply)
+        if sub and sub.max_chat_id and sub.active:
+            _max_send_welcome_digest(sub)
+        return JsonResponse({"ok": True})
+    if low.startswith("/unsubscribe"):
+        sub = CareSubscription.objects.filter(max_chat_id=chat_id).first()
+        if sub:
+            reply = _max_deactivate(sub)
+        else:
+            reply = (
+                "Не нашли активной подписки на этот чат. Если оформляли подписку, "
+                "сначала нажмите /start с вашей персональной ссылкой с сайта."
+            )
+        bot.send_message(chat_id=chat_id, text=reply)
+        return JsonResponse({"ok": True})
+
+    # Любой другой ввод - подсказка вернуться на сайт.
+    bot.send_message(
+        chat_id=chat_id,
+        text=(
+            "Чтобы подписаться или изменить настройки, перейдите на сайт gazony.ru "
+            "и оформите подписку в разделе «Служба заботы»."
+        ),
+    )
+    return JsonResponse({"ok": True})

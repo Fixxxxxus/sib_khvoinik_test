@@ -14,4 +14,6 @@ urlpatterns = [
     path("api/care/tg/unsubscribe/", views.tg_unsubscribe, name="tg_unsubscribe"),
     path("api/care/tg/pending-digest/", views.tg_pending_digest, name="tg_pending_digest"),
     path("api/care/tg/mark-digest-sent/", views.tg_mark_digest_sent, name="tg_mark_digest_sent"),
+    # MAX-бот: единый webhook-эндпоинт, авторизация через секретный сегмент URL.
+    path("api/care/max/webhook/<str:secret>/", views.max_webhook, name="max_webhook"),
 ]

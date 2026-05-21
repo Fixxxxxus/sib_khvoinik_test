@@ -751,6 +751,9 @@ function initModal() {
   const CARE_SUBSCRIBE_ENDPOINT = '/api/care/subscribe/';
   const CARE_BACKEND_TIMEOUT_MS = 6000;
   const CARE_TG_BOT_USERNAME = 'sg_customer_care_bot';
+  // Имя MAX-бота на платформе dev.max.ru. Пустая строка = бот ещё не запущен,
+  // в этом случае MAX-блок на success-экране остаётся скрытым.
+  const CARE_MAX_BOT_USERNAME = '';
   const CARE_GROUP_FIELD_LABELS = {
     care_seasonal: 'Сезонный календарь',
     care_trees: 'Деревья',
@@ -813,13 +816,17 @@ function initModal() {
       groupsLabel: groupNames.length ? groupNames.join(', ') : 'Сезонный календарь',
       email: payload.email || '',
       tgDeepLink: `https://t.me/${CARE_TG_BOT_USERNAME}?start=${careResp.token}`,
+      maxDeepLink: CARE_MAX_BOT_USERNAME
+        ? `https://max.ru/${CARE_MAX_BOT_USERNAME}?start=${careResp.token}`
+        : '',
     };
   };
 
   // Канал подписки теперь всегда email (обязательное поле формы); TG/MAX
   // подключаются позже через opt-in, поэтому показываем email-блок всегда,
   // а блок с deep-link на Telegram-бот - как опциональный второй шаг.
-  // MAX-блок скрыт до запуска канала.
+  // MAX-блок показывается только если выставлен CARE_MAX_BOT_USERNAME
+  // (то есть бот реально создан на dev.max.ru).
   const renderCareSuccess = (modalBody, ctx) => {
     const tpl = document.getElementById('modal-template-success-care');
     if (!tpl) return false;
@@ -832,7 +839,15 @@ function initModal() {
     const emailBlock = modalBody.querySelector('[data-care-success-channel="email"]');
     if (emailBlock) emailBlock.classList.remove('hidden');
     if (tgBlock) tgBlock.classList.remove('hidden');
-    if (maxBlock) maxBlock.classList.add('hidden');
+    if (maxBlock) {
+      if (ctx.maxDeepLink) {
+        maxBlock.classList.remove('hidden');
+        const maxLink = maxBlock.querySelector('[data-care-success-max-link]');
+        if (maxLink) maxLink.setAttribute('href', ctx.maxDeepLink);
+      } else {
+        maxBlock.classList.add('hidden');
+      }
+    }
     const a = modalBody.querySelector('[data-care-success-tg-link]');
     if (a) a.setAttribute('href', ctx.tgDeepLink);
     if (ctx.email) {

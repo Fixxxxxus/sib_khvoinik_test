@@ -74,6 +74,7 @@ class Command(BaseCommand):
         # Ленивая инициализация клиентов, чтобы при dry_run не падать из-за пустых env-ключей.
         tg_client = None
         un_client = None
+        max_client = None
 
         sent = failed = skipped = 0
         for sub in qs.iterator(chunk_size=200):
@@ -123,9 +124,21 @@ class Command(BaseCommand):
                         continue
                     res = tg_client.send_digest(sub, payload)
                 elif ch == "max":
-                    self._record(sub, ch, week_key, DigestDelivery.STATUS_SKIPPED, "MAX-канал ещё не подключён", dry_run)
-                    skipped += 1
-                    continue
+                    # Пока в env нет токена MAX_BOT_TOKEN (бот не создан на платформе),
+                    # помечаем как SKIPPED со старым текстом и едем дальше. Когда токен
+                    # появится - тот же блок начнёт реально слать через MaxBotClient.
+                    if not os.environ.get("MAX_BOT_TOKEN", "").strip():
+                        self._record(sub, ch, week_key, DigestDelivery.STATUS_SKIPPED, "MAX-канал ещё не подключён", dry_run)
+                        skipped += 1
+                        continue
+                    if max_client is None:
+                        from care_notifications.max_bot import MaxBotClient
+                        max_client = MaxBotClient()
+                    if not sub.max_chat_id:
+                        self._record(sub, ch, week_key, DigestDelivery.STATUS_SKIPPED, "no max_chat_id (opt-in не пройден)", dry_run)
+                        skipped += 1
+                        continue
+                    res = max_client.send_digest(sub, payload)
                 else:
                     self._record(sub, ch, week_key, DigestDelivery.STATUS_SKIPPED, f"unknown channel {ch}", dry_run)
                     skipped += 1
