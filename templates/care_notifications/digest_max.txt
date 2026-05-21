@@ -8,7 +8,8 @@
 {{ b.emoji }} **{{ b.title }}**
 {% for p in b.plants %}- **{{ p.name }}**{% if p.is_upcoming %} (с {{ p.date_label }}){% endif %}{% if p.summary %} - {{ p.summary }}{% endif %}
   {{ p.url }}
-{% endfor %}{% endfor %}{% endif %}
+{% endfor %}{% if b.extra_count %}и ещё {{ b.extra_count }} растений с работами на этой неделе: {{ b.category_url }}
+{% endif %}{% endfor %}{% endif %}
 ─────
 Сибирские Газоны
 Сайт: {{ footer.site_url }}

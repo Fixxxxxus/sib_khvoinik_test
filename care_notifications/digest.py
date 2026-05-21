@@ -48,12 +48,23 @@ class DigestBlock:
 
     Каждое растение - одна строка `PlantEntry`. Полный текст работ остаётся
     на сайте, в дайджесте только тизер + ссылка `подробнее`.
+
+    `category_url` - ссылка на весь раздел календаря, нужна для «ещё N
+    растений на сайте» при ограничении количества строк в коротких каналах.
     """
     emoji: str
     title: str
     plants: list[PlantEntry]
+    category_slug: str = ""
+    category_url: str = ""
     hero_image_url: str | None = None
     hero_image_path: str | None = None
+
+
+# Максимум строк-растений на одну категорию в коротких каналах (TG/MAX).
+# Telegram sendMessage лимит = 4096 символов; при 6 группах подписки и ~150
+# символов на строку безопасный потолок ~5 растений на группу.
+_PLANTS_PER_CATEGORY_TG = 5
 
 
 @dataclass
@@ -235,10 +246,41 @@ def _blocks_from_db(slugs: list[str], week_key: str) -> list[DigestBlock]:
             emoji=cat.emoji,
             title=cat.category_label,
             plants=cat.plants,
+            category_slug=cat.category_slug,
+            category_url=f"{SITE_URL}/sluzhba-zaboty/calendar/{cat.category_slug}/",
             hero_image_url=cat.hero_image_url,
             hero_image_path=cat.hero_image_path,
         ))
     return blocks
+
+
+def _trim_blocks_for_short_channel(blocks: list[DigestBlock], limit: int) -> list[DigestBlock]:
+    """Возвращает копию blocks с ограничением списка растений на категорию.
+
+    Email пусть видит весь список (там лимита нет), а TG/MAX отдают первые
+    `limit` штук плюс маркер `extra_count`, который шаблон превращает в
+    строку «и ещё N растений с работами на этой неделе → раздел календаря».
+    """
+    trimmed: list[DigestBlock] = []
+    for b in blocks:
+        if len(b.plants) <= limit:
+            extra = 0
+            plants = b.plants
+        else:
+            extra = len(b.plants) - limit
+            plants = b.plants[:limit]
+        nb = DigestBlock(
+            emoji=b.emoji,
+            title=b.title,
+            plants=plants,
+            category_slug=b.category_slug,
+            category_url=b.category_url,
+            hero_image_url=b.hero_image_url,
+            hero_image_path=b.hero_image_path,
+        )
+        nb.extra_count = extra  # type: ignore[attr-defined]
+        trimmed.append(nb)
+    return trimmed
 
 
 def _blocks_legacy(slugs: list[str], season: str) -> list[DigestBlock]:
@@ -367,14 +409,16 @@ def render_email(payload: DigestPayload) -> str:
 def render_telegram(payload: DigestPayload) -> str:
     """Markdown-V1 текст для Telegram Bot API (parse_mode=Markdown).
 
-    Длина: ~1000-1500 символов, влезает в caption (1024) при необходимости.
+    Лимит Telegram sendMessage = 4096 символов, поэтому каждую категорию
+    ужимаем до _PLANTS_PER_CATEGORY_TG записей с «и ещё N на сайте».
     """
-    return render_to_string("care_notifications/digest_telegram.txt", _ctx(payload))
+    ctx = _ctx(payload)
+    ctx["blocks"] = _trim_blocks_for_short_channel(payload.blocks, _PLANTS_PER_CATEGORY_TG)
+    return render_to_string("care_notifications/digest_telegram.txt", ctx)
 
 
 def render_max(payload: DigestPayload) -> str:
-    """Markdown для MAX Bot API. Не используем H-теги, blockquote, underline.
-
-    Длина: до 4000 символов с картинкой включительно.
-    """
-    return render_to_string("care_notifications/digest_max.txt", _ctx(payload))
+    """Markdown для MAX Bot API. Тот же лимит длины, что у TG."""
+    ctx = _ctx(payload)
+    ctx["blocks"] = _trim_blocks_for_short_channel(payload.blocks, _PLANTS_PER_CATEGORY_TG)
+    return render_to_string("care_notifications/digest_max.txt", ctx)
