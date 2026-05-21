@@ -1,0 +1,8 @@
+# Telegram digest: каждый четверг 05:00 UTC = 12:00 Asia/Krasnoyarsk.
+# Контейнер запускается с TZ=UTC для cron (см. cron-entrypoint.sh),
+# поэтому здесь время в UTC.
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+0 5 * * 4 root /app/run_digest.sh >> /var/log/sg-care-digest.log 2>&1
+# Пустая строка в конце обязательна для cron

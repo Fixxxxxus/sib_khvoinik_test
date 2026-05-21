@@ -176,15 +176,12 @@ class TelegramBotClient:
                     photo_res["error"],
                 )
 
-        # 2. Текст + inline-клавиатура. MAX-кнопка показывается только если URL задан.
+        # 2. Текст + inline-клавиатура: только Сайт / Управление / Отписаться.
         text = render_telegram(payload)
         footer = payload.footer
-        top_row = [{"text": "Сайт", "url": footer.site_url}]
-        if footer.max_url:
-            top_row.append({"text": "MAX", "url": footer.max_url})
         keyboard = {
             "inline_keyboard": [
-                top_row,
+                [{"text": "Сайт", "url": footer.site_url}],
                 [
                     {"text": "Управление", "url": footer.manage_url},
                     {"text": "Отписаться", "callback_data": f"unsub:{subscription.token}"},

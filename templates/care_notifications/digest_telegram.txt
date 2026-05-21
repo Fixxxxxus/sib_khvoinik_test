@@ -1,5 +1,5 @@
 {% autoescape off %}*{{ hero_title }}*
-_Дайджест Службы заботы · {{ week_key }}_
+_Дайджест Службы заботы · {{ week_display }}_
 
 {{ hero_text }}
 {% if blocks %}
@@ -10,6 +10,6 @@ _Дайджест Службы заботы · {{ week_key }}_
 [Подробно на сайте]({{ b.url }})
 {% endfor %}{% endif %}
 ─────
-Сибирский Хвойник · [сайт]({{ footer.site_url }}){% if footer.max_url %} · [MAX]({{ footer.max_url }}){% endif %}
+Сибирский Хвойник · [сайт]({{ footer.site_url }})
 [Управление подпиской]({{ footer.manage_url }}) · [Отписаться]({{ footer.unsubscribe_url }})
 {% endautoescape %}

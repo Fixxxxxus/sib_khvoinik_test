@@ -42,6 +42,52 @@ _GROUP_SLUGS = {g["slug"] for g in CARE_SUBSCRIPTION_GROUPS}
 _FORM_FIELD_TO_SLUG = {g["form_field"]: g["slug"] for g in CARE_SUBSCRIPTION_GROUPS}
 _SLUG_TO_B24_LABEL = {g["slug"]: g["b24_label"] for g in CARE_SUBSCRIPTION_GROUPS}
 
+# SOURCE_ID лидов в Б24 для каждой подписки на Службу заботы. Значение из справочника
+# crm.status.list?filter[ENTITY_ID]=SOURCE на портале sgpichugi.bitrix24.ru.
+CARE_LEAD_SOURCE_ID = "UC_OCZ1RE"  # «Подписка Служба заботы»
+
+
+def _send_welcome_email(sub: CareSubscription) -> None:
+    """Сразу после создания подписки шлём первый дайджест по email и пишем DigestDelivery.
+
+    Идемпотентность: если запись уже есть (например, при двойном POST за секунду),
+    update_or_create предохранит от дубля. Дальше четверговая рассылка пропустит
+    эту подписку для этой недели по unique (subscription, channel, week_key).
+    """
+    if not sub.email:
+        return
+    from django.db import IntegrityError, transaction
+    from .digest import build_payload, get_current_week_key
+    from .models import DigestDelivery
+    from .unisender import UnisenderClient
+    week_key = get_current_week_key()
+    if DigestDelivery.objects.filter(
+        subscription=sub, channel="email", week_key=week_key,
+        status=DigestDelivery.STATUS_SENT,
+    ).exists():
+        return
+    payload = build_payload(sub, week_key=week_key)
+    try:
+        res = UnisenderClient().send_digest_email(sub, payload)
+    except Exception as e:  # noqa: BLE001
+        logger.warning("welcome email failed sub=%s: %s", sub.id, e)
+        res = {"ok": False, "error": str(e)}
+    status = DigestDelivery.STATUS_SENT if res.get("ok") else DigestDelivery.STATUS_FAILED
+    try:
+        with transaction.atomic():
+            DigestDelivery.objects.update_or_create(
+                subscription=sub, channel="email", week_key=week_key,
+                defaults={
+                    "status": status,
+                    "external_id": str(res.get("email_id") or "")[:128],
+                    "error": str(res.get("error") or "")[:500],
+                },
+            )
+    except IntegrityError:
+        logger.warning("welcome email: DigestDelivery integrity sub=%s wk=%s", sub.id, week_key)
+    if status == DigestDelivery.STATUS_SENT:
+        CareSubscription.objects.filter(pk=sub.id).update(last_digest_sent_at=timezone.now())
+
 
 def _origin_allowed(request: HttpRequest) -> bool:
     """Простая защита от CSRF без токенов: принимаем только same-origin POST.
@@ -138,12 +184,19 @@ def subscribe(request: HttpRequest) -> HttpResponse:
             email=email,
             comments=comments,
             extra_fields=extra_fields,
+            source_id=CARE_LEAD_SOURCE_ID,
         )
         sub.b24_lead_id = lead_id
         sub.save(update_fields=["b24_lead_id", "updated_at"])
     except Bitrix24Error as e:
         # Подписка сохранена локально, лида в Б24 нет: фоновый ретрай-скрипт подберёт.
         logger.warning("subscribe: лид в Б24 не создан, подписка id=%s: %s", sub.id, e)
+
+    # Первое сообщение - сразу: для email-канала шлём через Unisender и пишем DigestDelivery,
+    # чтобы четверговая рассылка не дублировала. Для tg/max письмо уйдёт после opt-in
+    # (см. tg_optin / max_optin), потому что api.telegram.org с прод-VDS недоступен.
+    if channel == "email":
+        _send_welcome_email(sub)
 
     return JsonResponse(
         {
@@ -233,7 +286,13 @@ def _tg_auth(request: HttpRequest) -> bool:
 @csrf_exempt
 @require_POST
 def tg_optin(request: HttpRequest) -> HttpResponse:
-    """GitHub Actions сообщает: пользователь нажал /start <token> в боте."""
+    """Polling-скрипт на Contabo сообщает: пользователь нажал /start <token> в боте.
+
+    Дополнительно: если на этой неделе подписке ещё не отправляли TG-дайджест,
+    в ответе возвращаем welcome-payload (text + клавиатура) - бот сразу его пошлёт,
+    а через `tg_mark_digest_sent` запишем DigestDelivery.
+    Также пишем @username в IM-поле лида в Б24.
+    """
     if not _tg_auth(request):
         return HttpResponse("forbidden", status=403)
     try:
@@ -255,7 +314,39 @@ def tg_optin(request: HttpRequest) -> HttpResponse:
         sub.active = True
         sub.unsubscribed_at = None
     sub.save(update_fields=["telegram_chat_id", "telegram_opted_in_at", "active", "unsubscribed_at", "updated_at"])
-    return JsonResponse({"ok": True, "subscription_id": sub.id, "name": sub.name})
+
+    # IM-поле лида в Б24: пишем @username, если он у пользователя задан.
+    if username and sub.b24_lead_id:
+        try:
+            Bitrix24Client().update_lead_messengers(sub.b24_lead_id, telegram=username)
+        except Bitrix24Error as e:
+            logger.warning("tg_optin: не записал IM в лид %s: %s", sub.b24_lead_id, e)
+
+    # Welcome digest: если на этой неделе ещё не было успешной TG-доставки - собираем payload.
+    welcome = None
+    from .digest import build_payload, get_current_week_key, render_telegram
+    from .models import DigestDelivery
+    week_key = get_current_week_key()
+    already_sent = DigestDelivery.objects.filter(
+        subscription=sub, channel="telegram", week_key=week_key,
+        status=DigestDelivery.STATUS_SENT,
+    ).exists()
+    if not already_sent:
+        payload = build_payload(sub, week_key=week_key)
+        welcome = {
+            "tg_text": render_telegram(payload),
+            "manage_url": payload.footer.manage_url,
+            "unsub_url": payload.footer.unsubscribe_url,
+            "site_url": payload.footer.site_url,
+            "week_key": week_key,
+        }
+
+    return JsonResponse({
+        "ok": True,
+        "subscription_id": sub.id,
+        "name": sub.name,
+        "welcome": welcome,
+    })
 
 
 @csrf_exempt

@@ -19,7 +19,7 @@
           {% endif %}
           <tr>
             <td style="padding: 28px 32px 8px 32px;">
-              <p style="margin:0; font-size:13px; color:#6b7280; letter-spacing: 0.04em; text-transform:uppercase;">Дайджест Службы заботы &middot; {{ week_key }}</p>
+              <p style="margin:0; font-size:13px; color:#6b7280; letter-spacing: 0.04em; text-transform:uppercase;">Дайджест Службы заботы &middot; {{ week_display }}</p>
               <h1 style="margin: 8px 0 0 0; font-size:24px; line-height:1.25; color:#2D6A4F;">{{ hero_title }}</h1>
             </td>
           </tr>
@@ -59,9 +59,7 @@
             <td style="padding: 16px 32px 28px 32px; border-top:1px solid #e5e7eb;">
               <p style="margin:0; font-size:12px; color:#6b7280; line-height:1.6;">
                 Сибирский Хвойник, Новосибирск &middot;
-                <a href="{{ footer.site_url }}" style="color:#6b7280; text-decoration:underline;">сайт</a> &middot;
-                <a href="{{ footer.telegram_url }}" style="color:#6b7280; text-decoration:underline;">Telegram</a>{% if footer.max_url %} &middot;
-                <a href="{{ footer.max_url }}" style="color:#6b7280; text-decoration:underline;">MAX</a>{% endif %}
+                <a href="{{ footer.site_url }}" style="color:#6b7280; text-decoration:underline;">сайт</a>
               </p>
               <p style="margin:8px 0 0 0; font-size:12px; color:#6b7280;">
                 <a href="{{ footer.manage_url }}" style="color:#6b7280; text-decoration:underline;">Управление подпиской</a> &middot;

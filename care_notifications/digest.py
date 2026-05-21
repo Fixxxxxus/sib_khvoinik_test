@@ -82,6 +82,21 @@ def get_current_week_key(when: dt.datetime | None = None) -> str:
     return f"{iso.year}-W{iso.week:02d}"
 
 
+def format_week_display(week_key: str) -> str:
+    """Человекочитаемое представление недели для шаблонов: '2026-неделя 21'.
+
+    Принимает week_key вида '2026-W21' (формат хранения в БД). Если строка
+    не подходит под шаблон, возвращает её как есть (защита от мусора в legacy
+    записях DigestDelivery).
+    """
+    if not week_key or "-W" not in week_key:
+        return week_key
+    year, _, num = week_key.partition("-W")
+    if not (year.isdigit() and num.isdigit()):
+        return week_key
+    return f"{year}-неделя {int(num)}"
+
+
 def _season_label(now: dt.datetime) -> str:
     """Активный сезон апрель-октябрь, межсезонье ноябрь-март."""
     m = now.month
@@ -253,7 +268,7 @@ def build_payload(subscription: CareSubscription, week_key: str | None = None) -
         unsubscribe_url=unsub_url,
     )
 
-    subject = f"{hero_title} - {week}" if blocks else hero_title
+    subject = f"{hero_title} - {format_week_display(week)}" if blocks else hero_title
     return DigestPayload(
         week_key=week,
         subject=subject,
@@ -271,6 +286,7 @@ def build_payload(subscription: CareSubscription, week_key: str | None = None) -
 def _ctx(payload: DigestPayload) -> dict[str, Any]:
     return {
         "week_key": payload.week_key,
+        "week_display": format_week_display(payload.week_key),
         "subject": payload.subject,
         "hero_image_url": payload.hero_image_url,
         "hero_title": payload.hero_title,

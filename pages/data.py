@@ -448,7 +448,7 @@ CARE_SUBSCRIPTION_GROUPS = [
     {
         "slug": "seasonal",
         "form_field": "care_seasonal",
-        "label": "Сезонный календарь работ в саду",
+        "label": "Сезонный календарь работ",
         "b24_label": "Сезонный календарь работ",
         "is_hero": True,
         "default_checked": True,
@@ -458,7 +458,7 @@ CARE_SUBSCRIPTION_GROUPS = [
     {
         "slug": "trees",
         "form_field": "care_trees",
-        "label": "Деревья (хвойные и лиственные)",
+        "label": "Деревья",
         "b24_label": "Деревья",
         "is_hero": False,
         "default_checked": False,
@@ -468,7 +468,7 @@ CARE_SUBSCRIPTION_GROUPS = [
     {
         "slug": "shrubs",
         "form_field": "care_shrubs",
-        "label": "Кустарники (в т.ч. гортензия, яблоня декоративная)",
+        "label": "Кустарники",
         "b24_label": "Кустарники",
         "is_hero": False,
         "default_checked": False,
@@ -478,7 +478,7 @@ CARE_SUBSCRIPTION_GROUPS = [
     {
         "slug": "perennials",
         "form_field": "care_perennials",
-        "label": "Многолетники (в т.ч. пионы)",
+        "label": "Многолетники",
         "b24_label": "Многолетники",
         "is_hero": False,
         "default_checked": False,

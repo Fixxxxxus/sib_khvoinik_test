@@ -1,0 +1,44 @@
+services:
+  polling:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: sg-care-tg:latest
+    container_name: sg-care-tg-polling
+    restart: unless-stopped
+    env_file: .env
+    command: ["python", "/app/telegram_poll.py"]
+    networks:
+      - default
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+  digest-cron:
+    # переиспользуем тот же образ что и polling
+    image: sg-care-tg:latest
+    container_name: sg-care-tg-digest-cron
+    restart: unless-stopped
+    depends_on:
+      - polling
+    env_file: .env
+    # cron-задача в crontab настроена на UTC (5:00 UTC четверг)
+    environment:
+      - TZ=UTC
+    entrypoint: ["/usr/bin/tini", "--"]
+    command: ["/app/cron-entrypoint.sh"]
+    volumes:
+      - ./cron-entrypoint.sh:/app/cron-entrypoint.sh:ro
+    networks:
+      - default
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "5"
+
+networks:
+  default:
+    name: sg-care-tg_default

@@ -103,8 +103,14 @@ class Bitrix24Client:
         comments: str = "",
         extra_fields: dict[str, Any] | None = None,
         source_id: str = "WEB",
+        im_telegram: str = "",
+        im_max: str = "",
     ) -> int:
-        """Создаёт лид в Б24, возвращает его ID."""
+        """Создаёт лид в Б24, возвращает его ID.
+
+        im_telegram / im_max - значения для стандартного multi-field IM (мессенджеры).
+        Для Telegram используется TYPE_ID=TELEGRAM, для MAX - OTHER с префиксом 'MAX:'.
+        """
         fields: dict[str, Any] = {
             "TITLE": title,
             "SOURCE_ID": source_id,
@@ -117,6 +123,9 @@ class Bitrix24Client:
             fields["EMAIL"] = [{"VALUE": email, "VALUE_TYPE": "WORK"}]
         if comments:
             fields["COMMENTS"] = comments
+        im_entries = _build_im_entries(telegram=im_telegram, max_=im_max)
+        if im_entries:
+            fields["IM"] = im_entries
         if extra_fields:
             fields.update(extra_fields)
         result = self._call("crm.lead.add", {"fields": fields})
@@ -127,3 +136,45 @@ class Bitrix24Client:
     def update_lead(self, lead_id: int, fields: dict[str, Any]) -> bool:
         result = self._call("crm.lead.update", {"id": lead_id, "fields": fields})
         return bool(result)
+
+    def update_lead_messengers(
+        self,
+        lead_id: int,
+        *,
+        telegram: str = "",
+        max_: str = "",
+    ) -> bool:
+        """Дописывает IM-поле лида значениями TG/MAX, не затирая ранее заведённые.
+
+        Б24 при update полностью замещает значение multi-field IM. Поэтому сначала
+        читаем текущее, добавляем новые TYPE_ID если их там ещё нет, и записываем
+        результат.
+        """
+        new_entries = _build_im_entries(telegram=telegram, max_=max_)
+        if not new_entries:
+            return False
+        try:
+            lead = self._call("crm.lead.get", {"id": lead_id}) or {}
+        except Bitrix24Error:
+            lead = {}
+        current = lead.get("IM") or []
+        # Удаляем существующие записи с теми же TYPE_ID/VALUE - они будут переписаны.
+        keep = []
+        new_keys = {(e.get("TYPE_ID"), e.get("VALUE")) for e in new_entries}
+        for entry in current:
+            key = (entry.get("TYPE_ID"), entry.get("VALUE"))
+            if key in new_keys:
+                continue
+            keep.append({k: entry[k] for k in ("ID", "VALUE_TYPE", "VALUE", "TYPE_ID") if k in entry})
+        merged = keep + new_entries
+        return self.update_lead(lead_id, {"IM": merged})
+
+
+def _build_im_entries(*, telegram: str = "", max_: str = "") -> list[dict[str, str]]:
+    out: list[dict[str, str]] = []
+    if telegram:
+        tg_value = telegram if telegram.startswith("@") or telegram.startswith("https://") else f"@{telegram}"
+        out.append({"VALUE": tg_value, "VALUE_TYPE": "WORK", "TYPE_ID": "TELEGRAM"})
+    if max_:
+        out.append({"VALUE": f"MAX: {max_}", "VALUE_TYPE": "WORK", "TYPE_ID": "OTHER"})
+    return out
