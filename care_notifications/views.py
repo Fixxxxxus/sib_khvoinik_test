@@ -246,12 +246,19 @@ def manage(request: HttpRequest) -> HttpResponse:
             ]
         )
 
+    # Deep-link на TG-бота для подключения, если opt-in ещё не пройден.
+    care_tg_bot = os.environ.get("CARE_TELEGRAM_BOT_URL", "https://t.me/sg_customer_care_bot").rstrip("/")
+    tg_deep_link = f"{care_tg_bot}?start={sub.token}"
+
     context = {
         "subscription": sub,
         "groups_meta": CARE_SUBSCRIPTION_GROUPS,
         "channels": CHANNEL_CHOICES,
         "selected_groups": set(sub.groups or []),
         "signature": sub.signed_token(),
+        "tg_connected": bool(sub.telegram_chat_id),
+        "max_connected": bool(sub.max_chat_id),
+        "tg_deep_link": tg_deep_link,
     }
     return render(request, "care_notifications/manage.html", context)
 

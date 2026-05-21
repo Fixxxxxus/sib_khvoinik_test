@@ -55,6 +55,23 @@
               {% endfor %}
             </select>
           </label>
+
+          <div class="space-y-1.5 text-xs leading-snug">
+            {% if tg_connected %}
+              <p class="text-emerald-700">Telegram подключён, бот привязан к этому аккаунту.</p>
+            {% else %}
+              <p class="text-slate-500">
+                Чтобы получать дайджест в Telegram, подключите бота:
+                <a href="{{ tg_deep_link }}" target="_blank" rel="noopener" class="text-brand underline underline-offset-2 hover:text-brand2">открыть бот в Telegram</a>.
+                После нажатия «Старт» канал «Telegram» начнёт работать.
+              </p>
+            {% endif %}
+            {% if max_connected %}
+              <p class="text-emerald-700">MAX подключён.</p>
+            {% else %}
+              <p class="text-amber-700">MAX в стадии подключения - выбор сохранится, дайджест начнёт приходить после запуска канала.</p>
+            {% endif %}
+          </div>
         </div>
 
         <div class="flex flex-col gap-3 sm:flex-row">
