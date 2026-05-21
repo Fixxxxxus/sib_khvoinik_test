@@ -79,10 +79,10 @@ class Command(BaseCommand):
         for sub in qs.iterator(chunk_size=200):
             payload = build_payload(sub, week_key=week_key)
             ch = sub.preferred_channel
-            if not payload.blocks and not payload.hero_text:
-                self.stdout.write(self.style.WARNING(f"  sub={sub.id} ch={ch} пустой payload, skip"))
+            if payload is None:
+                self.stdout.write(self.style.WARNING(f"  sub={sub.id} ch={ch} нет контента на эту неделю, skip"))
                 skipped += 1
-                self._record(sub, ch, week_key, DigestDelivery.STATUS_SKIPPED, "empty payload", dry_run)
+                self._record(sub, ch, week_key, DigestDelivery.STATUS_SKIPPED, "no_content", dry_run)
                 continue
 
             if dry_run:

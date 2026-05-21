@@ -57,6 +57,11 @@ class Command(BaseCommand):
             self.stdout.write(self.style.NOTICE(f"created temp subscription id={sub.id}"))
 
         payload = build_payload(sub, week_key=opts["week"])
+        if payload is None:
+            self.stdout.write(self.style.WARNING("[skip] нет контента на эту неделю для выбранных групп"))
+            if not opts["subscription_id"]:
+                sub.delete()
+            return
         ch = opts["channel"]
         if ch in ("email", "all"):
             self.stdout.write(self.style.MIGRATE_HEADING("\n========= EMAIL HTML =========\n"))

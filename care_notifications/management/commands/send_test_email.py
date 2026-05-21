@@ -59,6 +59,9 @@ class Command(BaseCommand):
 
         try:
             payload = build_payload(sub, week_key=opts["week"])
+            if payload is None:
+                self.stdout.write(self.style.WARNING("[skip] нет контента на эту неделю"))
+                return
 
             if dry_run:
                 self.stdout.write(self.style.MIGRATE_HEADING("\n===== DRY RUN: HTML письма =====\n"))

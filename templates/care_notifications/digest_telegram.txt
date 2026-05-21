@@ -6,9 +6,8 @@ _Дайджест Службы заботы · {{ week_display }}_
 *Ваши задачи по группам:*
 {% for b in blocks %}
 {{ b.emoji }} *{{ b.title }}*
-{{ b.body }}
-[Подробно на сайте]({{ b.url }})
-{% endfor %}{% endif %}
+{% for p in b.plants %}• *{{ p.name }}*{% if p.is_upcoming %} (с {{ p.date_label }}){% endif %}{% if p.summary %} - {{ p.summary }}{% endif %} [подробно]({{ p.url }})
+{% endfor %}{% endfor %}{% endif %}
 ─────
 Сибирские Газоны · [сайт]({{ footer.site_url }})
 [Управление подпиской]({{ footer.manage_url }}) · [Отписаться]({{ footer.unsubscribe_url }})

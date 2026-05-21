@@ -33,6 +33,7 @@ from django.utils import timezone
 
 from pages.data import CARE_SUBSCRIPTION_GROUPS
 
+from .content import CategoryEntries, PlantEntry, select_entries_for_week
 from .models import CareSubscription
 
 
@@ -43,10 +44,16 @@ MAX_BOT_URL = os.environ.get("CARE_MAX_BOT_URL", "")  # пока MAX-бот не
 
 @dataclass
 class DigestBlock:
+    """Блок одной категории в дайджесте: список растений с тизерами.
+
+    Каждое растение - одна строка `PlantEntry`. Полный текст работ остаётся
+    на сайте, в дайджесте только тизер + ссылка `подробнее`.
+    """
     emoji: str
     title: str
-    body: str
-    url: str
+    plants: list[PlantEntry]
+    hero_image_url: str | None = None
+    hero_image_path: str | None = None
 
 
 @dataclass
@@ -128,8 +135,8 @@ def _hero_for_season(season: str) -> tuple[str, str]:
     return _OFF_HERO_TITLE, _OFF_HERO_TEXT
 
 
-def _hero_image_paths(week_key: str) -> tuple[str | None, str | None]:
-    """Ищем static/media/digest/<week_key>.jpg, иначе сезонный фолбэк, иначе None."""
+def _hero_image_paths_legacy(week_key: str) -> tuple[str | None, str | None]:
+    """Старый путь поиска hero-картинки. Сохранён для fallback-режима legacy."""
     static_root = getattr(settings, "BASE_DIR", None)
     if not static_root:
         return None, None
@@ -145,10 +152,10 @@ def _hero_image_paths(week_key: str) -> tuple[str | None, str | None]:
     return None, None
 
 
-# Контентные подсказки по группе для блока в дайджесте.
-# На MVP это короткая статика "что актуально весной/летом/осенью" с ссылкой на
-# /stati/<category>/. Полный матчинг с БД календаря по date_label - в 1F.
-_GROUP_HINTS_ACTIVE = {
+# Legacy: статичные сезонные подсказки. Используются только если feature-flag
+# CARE_USE_DB_CONTENT=0 (аварийный откат) - на случай если БД на проде не
+# засеяна или ORM сломался. В нормальной работе блоки приходят из content.py.
+_LEGACY_GROUP_HINTS_ACTIVE = {
     "trees": (
         "🌳",
         "Деревья",
@@ -185,7 +192,7 @@ _GROUP_HINTS_ACTIVE = {
     ),
 }
 
-_GROUP_HINTS_OFF = {
+_LEGACY_GROUP_HINTS_OFF = {
     "trees": (
         "🌳",
         "Деревья",
@@ -219,9 +226,28 @@ _GROUP_HINTS_OFF = {
 }
 
 
-def _blocks_for(slugs: list[str], season: str) -> list[DigestBlock]:
-    """Карта slug → блок. Hero-группу seasonal не делаем отдельным блоком."""
-    table = _GROUP_HINTS_ACTIVE if season == "active" else _GROUP_HINTS_OFF
+def _blocks_from_db(slugs: list[str], week_key: str) -> list[DigestBlock]:
+    """Блоки на основе CareCalendarPeriod в БД (основной путь)."""
+    entries = select_entries_for_week(slugs, week_key, site_url=SITE_URL)
+    blocks: list[DigestBlock] = []
+    for cat in entries:
+        blocks.append(DigestBlock(
+            emoji=cat.emoji,
+            title=cat.category_label,
+            plants=cat.plants,
+            hero_image_url=cat.hero_image_url,
+            hero_image_path=cat.hero_image_path,
+        ))
+    return blocks
+
+
+def _blocks_legacy(slugs: list[str], season: str) -> list[DigestBlock]:
+    """Аварийный путь: статичные подсказки одного предложения на категорию.
+
+    Используется только если CARE_USE_DB_CONTENT=0 или БД недоступна. Каждый
+    блок имеет ровно одну псевдо-запись растения без даты.
+    """
+    table = _LEGACY_GROUP_HINTS_ACTIVE if season == "active" else _LEGACY_GROUP_HINTS_OFF
     out: list[DigestBlock] = []
     for slug in slugs:
         if slug == "seasonal":
@@ -230,7 +256,19 @@ def _blocks_for(slugs: list[str], season: str) -> list[DigestBlock]:
         if not hint:
             continue
         emoji, title, body, url = hint
-        out.append(DigestBlock(emoji=emoji, title=title, body=body, url=url))
+        out.append(DigestBlock(
+            emoji=emoji,
+            title=title,
+            plants=[PlantEntry(
+                name=title,
+                summary=body,
+                url=url,
+                date_label="",
+                is_upcoming=False,
+                plant_slug="",
+                category_slug="",
+            )],
+        ))
     return out
 
 
@@ -249,15 +287,39 @@ def _manage_links(sub: CareSubscription) -> tuple[str, str]:
     return manage, unsub
 
 
-def build_payload(subscription: CareSubscription, week_key: str | None = None) -> DigestPayload:
+def build_payload(subscription: CareSubscription, week_key: str | None = None) -> DigestPayload | None:
+    """Сборка полезной нагрузки дайджеста для подписки.
+
+    Возвращает None, если у подписки нет ни одной группы с актуальным
+    контентом - оркестратор интерпретирует это как «пропустить отправку
+    на этой неделе». Это бывает зимой по группам без работ в межсезонье.
+    """
     now = timezone.now()
     week = week_key or get_current_week_key(now)
     season = _season_label(now)
     hero_title, hero_text = _hero_for_season(season)
-    hero_url, hero_local = _hero_image_paths(week)
 
     slugs = list(subscription.groups or [])
-    blocks = _blocks_for(slugs, season)
+
+    if os.environ.get("CARE_USE_DB_CONTENT", "1").strip() == "1":
+        blocks = _blocks_from_db(slugs, week)
+    else:
+        blocks = _blocks_legacy(slugs, season)
+
+    # Если подписка только на seasonal-группу - блоки пусты, но письмо всё
+    # равно отправляем (там hero-текст со сводкой по сезону).
+    has_seasonal = "seasonal" in slugs
+    if not blocks and not has_seasonal:
+        return None
+
+    # Hero-картинка: первое непустое фото первого блока (если у пользователя
+    # есть блоки). Если только seasonal - hero-картинки нет.
+    hero_url: str | None = None
+    hero_local: str | None = None
+    for b in blocks:
+        if b.hero_image_url:
+            hero_url, hero_local = b.hero_image_url, b.hero_image_path
+            break
 
     manage_url, unsub_url = _manage_links(subscription)
     footer = DigestFooter(

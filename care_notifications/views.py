@@ -67,6 +67,9 @@ def _send_welcome_email(sub: CareSubscription) -> None:
     ).exists():
         return
     payload = build_payload(sub, week_key=week_key)
+    if payload is None:
+        logger.info("welcome email skipped sub=%s: no content for this week", sub.id)
+        return
     try:
         res = UnisenderClient().send_digest_email(sub, payload)
     except Exception as e:  # noqa: BLE001
@@ -333,13 +336,14 @@ def tg_optin(request: HttpRequest) -> HttpResponse:
     ).exists()
     if not already_sent:
         payload = build_payload(sub, week_key=week_key)
-        welcome = {
-            "tg_text": render_telegram(payload),
-            "manage_url": payload.footer.manage_url,
-            "unsub_url": payload.footer.unsubscribe_url,
-            "site_url": payload.footer.site_url,
-            "week_key": week_key,
-        }
+        if payload is not None:
+            welcome = {
+                "tg_text": render_telegram(payload),
+                "manage_url": payload.footer.manage_url,
+                "unsub_url": payload.footer.unsubscribe_url,
+                "site_url": payload.footer.site_url,
+                "week_key": week_key,
+            }
 
     return JsonResponse({
         "ok": True,
@@ -394,6 +398,11 @@ def tg_pending_digest(request: HttpRequest) -> HttpResponse:
     items: list[dict] = []
     for sub in subs:
         payload = build_payload(sub, week_key=week_key)
+        if payload is None:
+            # Нет контента на эту неделю - подписку пропускаем. Запись об
+            # этом пишет уже send_weekly_digest. Здесь просто исключаем
+            # из списка polling-скрипту.
+            continue
         items.append({
             "subscription_id": sub.id,
             "telegram_chat_id": sub.telegram_chat_id,

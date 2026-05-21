@@ -40,9 +40,17 @@
                   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f9fafb; border-radius:12px;">
                     <tr>
                       <td style="padding: 14px 16px;">
-                        <p style="margin:0; font-size:15px; font-weight:600; color:#111827;">{{ b.emoji }} {{ b.title }}</p>
-                        <p style="margin:6px 0 8px 0; font-size:14px; line-height:1.5; color:#374151;">{{ b.body }}</p>
-                        <a href="{{ b.url }}" style="font-size:14px; color:#2D6A4F; text-decoration:underline;">Подробно на сайте &rarr;</a>
+                        <p style="margin:0 0 10px 0; font-size:16px; font-weight:600; color:#111827;">{{ b.emoji }} {{ b.title }}</p>
+                        {% if b.hero_image_url %}
+                          <p style="margin:0 0 12px 0;"><img src="{{ b.hero_image_url }}" alt="" style="display:block; width:100%; height:auto; max-width:560px; border-radius:8px;" /></p>
+                        {% endif %}
+                        {% for p in b.plants %}
+                          <p style="margin:0 0 10px 0; font-size:14px; line-height:1.55; color:#374151;">
+                            <strong>{{ p.name }}</strong>{% if p.is_upcoming %} <em style="color:#6b7280;">(с {{ p.date_label }})</em>{% endif %}{% if p.summary %} - {{ p.summary }}{% endif %}
+                            <br>
+                            <a href="{{ p.url }}" style="font-size:13px; color:#2D6A4F; text-decoration:underline;">подробнее &rarr;</a>
+                          </p>
+                        {% endfor %}
                       </td>
                     </tr>
                   </table>
