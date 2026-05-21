@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 UNISENDER_API_BASE = "https://api.unisender.com/ru/api"
 DEFAULT_TIMEOUT = 12
 DEFAULT_FROM_EMAIL = "noreply@gazony.ru"
-DEFAULT_FROM_NAME = "Сибирский Хвойник"
+DEFAULT_FROM_NAME = "Сибирские Газоны"
 
 
 class UnisenderError(Exception):

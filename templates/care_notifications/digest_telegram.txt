@@ -10,6 +10,6 @@ _Дайджест Службы заботы · {{ week_display }}_
 [Подробно на сайте]({{ b.url }})
 {% endfor %}{% endif %}
 ─────
-Сибирский Хвойник · [сайт]({{ footer.site_url }})
+Сибирские Газоны · [сайт]({{ footer.site_url }})
 [Управление подпиской]({{ footer.manage_url }}) · [Отписаться]({{ footer.unsubscribe_url }})
 {% endautoescape %}

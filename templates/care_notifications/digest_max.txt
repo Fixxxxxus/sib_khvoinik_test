@@ -10,7 +10,7 @@
 Подробно: {{ b.url }}
 {% endfor %}{% endif %}
 ─────
-Сибирский Хвойник
+Сибирские Газоны
 Сайт: {{ footer.site_url }}
 Управление: {{ footer.manage_url }}
 Отписаться: {{ footer.unsubscribe_url }}
