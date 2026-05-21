@@ -208,23 +208,9 @@
 
     <div class="space-y-3 rounded-2xl border border-black/10 bg-slate-50/80 p-4" data-care-channel-block>
       <label class="block text-sm font-medium text-slate-700">
-        Удобный канал связи
-        <select name="preferred_messenger" required data-care-channel-select class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
-          <option value="email" selected>Эл. Почта</option>
-          <option value="max">MAX</option>
-          <option value="telegram">Telegram</option>
-        </select>
+        Адрес электронной почты
+        <input name="email" type="email" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="name@example.com" autocomplete="email" />
       </label>
-      <label class="block text-sm font-medium text-slate-700" data-care-email-wrap>
-        Адрес для писем
-        <input name="email" type="email" data-care-email-input class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="name@example.com" autocomplete="email" />
-      </label>
-      <p class="text-xs text-slate-500" data-care-tg-hint hidden>
-        После отправки формы появится ссылка «Открыть бота в Telegram» - нажмите её, чтобы получать дайджест.
-      </p>
-      <p class="text-xs text-amber-700" data-care-max-hint hidden>
-        Канал MAX в стадии подключения. Сейчас вы получите подтверждение, а сам дайджест придёт после запуска бота.
-      </p>
       <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
         <input type="checkbox" name="consent_messages" value="1" checked class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
         <span>Даю согласие на получение сообщений</span>
@@ -1245,7 +1231,10 @@
 
 <!-- Садовые центры: заявка на цифровую карту -->
 <template id="modal-template-sadovye_digital_card">
-  <form class="space-y-4" data-ui-form data-form-tag="SadovyeCentr/digital-card">
+  <form class="space-y-4" data-ui-form data-form-tag="SadovyeCentr/digital-card" data-consent-gated="1">
+    <p class="text-sm leading-snug text-slate-600">
+      Оставьте ФИО и номер телефона. По нему мы узнаем вас на кассе садового центра и применим скидку.
+    </p>
     <div class="grid grid-cols-1 gap-3">
       <label class="text-sm font-medium text-slate-700">
         ФИО
@@ -1256,16 +1245,19 @@
         <input name="phone" type="tel" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." autocomplete="tel" />
       </label>
     </div>
-    <label class="block text-sm font-medium text-slate-700">
-      Куда отправить условия программы
-      <select name="preferred_messenger" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20">
-        <option value="" disabled selected>Выберите вариант</option>
-        <option value="max">MAX</option>
-        <option value="telegram">Telegram</option>
-        <option value="email">Эл. почта</option>
-      </select>
+    <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
+      <input type="checkbox" name="consent" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+      <span>
+        Даю согласие на обработку персональных данных в соответствии с
+        <a href="{% url 'privacy' %}" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+      </span>
     </label>
-    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+    <button
+      type="submit"
+      data-consent-submit
+      disabled
+      class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition disabled:cursor-not-allowed disabled:opacity-60"
+    >
       Получить цифровую карту
     </button>
   </form>
@@ -1426,6 +1418,46 @@
 
     <button type="button" data-close-modal class="w-full rounded-2xl border border-black/10 bg-white px-6 py-3 text-sm font-medium text-slate-700 hover:bg-slate-50 transition">
       Понятно, спасибо
+    </button>
+  </div>
+</template>
+
+<template id="modal-template-success-digital-card">
+  <div class="space-y-4">
+    <div class="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-brand/5 px-4 py-3 text-sm">
+      <i data-lucide="check-circle-2" class="h-5 w-5 text-brand"></i>
+      <span class="font-semibold">Карта оформлена</span>
+    </div>
+    <div class="space-y-3 text-sm leading-relaxed text-slate-700">
+      <p>
+        Уважаемый клиент! Поздравляем, вы стали обладателем скидочной карты садовых центров «Сибирские газоны» 🌿
+      </p>
+      <p>
+        При первом посещении садового центра вам автоматически доступна начальная скидка <strong>5% на растения</strong>.
+        Чем активнее вы совершаете покупки, тем выше становится ваш персональный процент скидки.
+      </p>
+      <p>
+        Для получения скидки просто назовите номер телефона на кассе при расчёте.
+      </p>
+    </div>
+    <div class="rounded-2xl border border-black/10 bg-slate-50/80 p-4 text-sm leading-snug text-slate-700">
+      <p class="font-medium text-slate-900">Ждём вас в наших садовых центрах:</p>
+      <ul class="mt-2 space-y-1.5">
+        <li>
+          <span class="font-medium">Садовый центр МЕГА</span><br>
+          г. Новосибирск, ул. Ватутина, 107
+        </li>
+        <li>
+          <span class="font-medium">Садовый центр Новопичугово</span><br>
+          с. Новопичугово, ул. Сосновая
+        </li>
+      </ul>
+    </div>
+    <p class="text-sm leading-snug text-slate-600">
+      Спасибо, что выбираете «Сибирские газоны» 💚
+    </p>
+    <button type="button" data-close-modal class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      До встречи в садовом центре
     </button>
   </div>
 </template>

@@ -428,8 +428,6 @@ function initModal() {
       initConsentCheckboxes();
     }
 
-    initCareChannelToggle(modalBody);
-
     activeNoOverlay = Boolean(opts.noOverlay);
     if (activeNoOverlay) {
       overlay.classList.add('hidden');
@@ -762,35 +760,6 @@ function initModal() {
     care_lawn: 'Газон',
   };
 
-  // Динамическое поле email: показывается только при канале «email»; для
-  // telegram/max скрывается и не required (чтобы форма прошла валидацию).
-  const initCareChannelToggle = (root) => {
-    if (!root) return;
-    const select = root.querySelector('[data-care-channel-select]');
-    if (!select) return;
-    const emailWrap = root.querySelector('[data-care-email-wrap]');
-    const emailInput = root.querySelector('[data-care-email-input]');
-    const tgHint = root.querySelector('[data-care-tg-hint]');
-    const maxHint = root.querySelector('[data-care-max-hint]');
-    if (!emailWrap || !emailInput) return;
-
-    const apply = () => {
-      const ch = (select.value || 'email').toLowerCase();
-      const isEmail = ch === 'email';
-      emailWrap.hidden = !isEmail;
-      if (isEmail) {
-        emailInput.setAttribute('required', 'required');
-      } else {
-        emailInput.removeAttribute('required');
-        emailInput.value = '';
-      }
-      if (tgHint) tgHint.hidden = ch !== 'telegram';
-      if (maxHint) maxHint.hidden = ch !== 'max';
-    };
-    select.addEventListener('change', apply);
-    apply();
-  };
-
   const parseUtmParams = () => {
     const utm = {};
     try {
@@ -837,18 +806,20 @@ function initModal() {
   };
 
   const buildCareSuccessContext = (payload, careResp) => {
-    const channel = (payload.preferred_messenger || 'email').toLowerCase();
     const groupNames = Object.keys(CARE_GROUP_FIELD_LABELS)
       .filter(k => String(payload[k] || '') === '1')
       .map(k => CARE_GROUP_FIELD_LABELS[k]);
     return {
-      channel,
       groupsLabel: groupNames.length ? groupNames.join(', ') : 'Сезонный календарь',
       email: payload.email || '',
       tgDeepLink: `https://t.me/${CARE_TG_BOT_USERNAME}?start=${careResp.token}`,
     };
   };
 
+  // Канал подписки теперь всегда email (обязательное поле формы); TG/MAX
+  // подключаются позже через opt-in, поэтому показываем email-блок всегда,
+  // а блок с deep-link на Telegram-бот - как опциональный второй шаг.
+  // MAX-блок скрыт до запуска канала.
   const renderCareSuccess = (modalBody, ctx) => {
     const tpl = document.getElementById('modal-template-success-care');
     if (!tpl) return false;
@@ -859,14 +830,12 @@ function initModal() {
     const tgBlock = modalBody.querySelector('[data-care-success-channel="telegram"]');
     const maxBlock = modalBody.querySelector('[data-care-success-channel="max"]');
     const emailBlock = modalBody.querySelector('[data-care-success-channel="email"]');
-    if (tgBlock) tgBlock.classList.toggle('hidden', ctx.channel !== 'telegram');
-    if (maxBlock) maxBlock.classList.toggle('hidden', ctx.channel !== 'max');
-    if (emailBlock) emailBlock.classList.toggle('hidden', ctx.channel !== 'email');
-    if (ctx.channel === 'telegram') {
-      const a = modalBody.querySelector('[data-care-success-tg-link]');
-      if (a) a.setAttribute('href', ctx.tgDeepLink);
-    }
-    if (ctx.channel === 'email' && ctx.email) {
+    if (emailBlock) emailBlock.classList.remove('hidden');
+    if (tgBlock) tgBlock.classList.remove('hidden');
+    if (maxBlock) maxBlock.classList.add('hidden');
+    const a = modalBody.querySelector('[data-care-success-tg-link]');
+    if (a) a.setAttribute('href', ctx.tgDeepLink);
+    if (ctx.email) {
       const el = modalBody.querySelector('[data-care-success-email]');
       if (el) el.textContent = ctx.email;
     }
@@ -962,7 +931,12 @@ function initModal() {
       careSuccessRendered = renderCareSuccess(modalBody, ctx);
     }
     if (!careSuccessRendered) {
-      const successTpl = document.getElementById('modal-template-success');
+      const isDigitalCard = tag === 'digital-card' || tag.endsWith('/digital-card');
+      const successTplId = isDigitalCard
+        ? 'modal-template-success-digital-card'
+        : 'modal-template-success';
+      const successTpl = document.getElementById(successTplId)
+        || document.getElementById('modal-template-success');
       if (successTpl) {
         modalBody.innerHTML = '';
         modalBody.appendChild(successTpl.content.cloneNode(true));
