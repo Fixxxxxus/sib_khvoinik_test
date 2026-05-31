@@ -1,8 +1,9 @@
 from django.urls import path
 
-from . import views
+from . import loyalty, views
 
 urlpatterns = [
+    path("api/loyalty/card/", loyalty.loyalty_card, name="loyalty_card"),
     path("", views.home, name="home"),
     path("gazon/", views.gazon, name="gazon"),
     path("prais-rulonnyy-gazon/", views.roll_lawn_price, name="roll_lawn_price"),

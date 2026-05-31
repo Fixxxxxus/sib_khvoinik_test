@@ -43,3 +43,8 @@ migration.md
 !docs/static/media/images/cases/ozelenenie-b2c-case-01.png
 !docs/static/media/images/cases/ozelenenie-b2c-case-02.png
 !docs/static/media/images/cases/ozelenenie-b2c-case-03.png
+
+# Локальные выгрузки и дампы (отчёты за месяц, экспорт звонков) - не для гита
+report_may/
+report_may.zip
+calls_*_report.html

@@ -749,6 +749,9 @@ function initModal() {
   // Любой сбой -> fallback в прямой Б24 ниже по коду (как для остальных форм).
   const SUBSCRIBE_FORM_TAG = 'B2C/sluzhba-zaboty-calendar';
   const CARE_SUBSCRIBE_ENDPOINT = '/api/care/subscribe/';
+  // Цифровая карта лояльности СЦ: данные летят на КОНТАКТ в Б24 через наш бэк
+  // (дедуп по телефону + поля карты). Любой сбой -> fallback в прямой Б24-лид ниже.
+  const LOYALTY_CARD_ENDPOINT = '/api/loyalty/card/';
   const CARE_BACKEND_TIMEOUT_MS = 6000;
   const CARE_TG_BOT_USERNAME = 'sg_customer_care_bot';
   // Имя MAX-бота на платформе dev.max.ru. Пустая строка = бот ещё не запущен,
@@ -805,6 +808,35 @@ function initModal() {
       if (timer) clearTimeout(timer);
       console.warn('[care] backend send failed:', e && e.message || e);
       return null;
+    }
+  };
+
+  const tryRegisterLoyaltyCard = async (payload) => {
+    const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => ctrl.abort(), CARE_BACKEND_TIMEOUT_MS) : null;
+    try {
+      const resp = await fetch(LOYALTY_CARD_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: payload.name || '',
+          phone: payload.phone || '',
+          consent: payload.consent || '',
+        }),
+        credentials: 'same-origin',
+        signal: ctrl ? ctrl.signal : undefined,
+      });
+      if (timer) clearTimeout(timer);
+      if (!resp.ok) {
+        console.warn('[loyalty] backend response not ok:', resp.status);
+        return false;
+      }
+      const data = await resp.json();
+      return !!(data && data.ok);
+    } catch (e) {
+      if (timer) clearTimeout(timer);
+      console.warn('[loyalty] backend send failed:', e && e.message || e);
+      return false;
     }
   };
 
@@ -920,7 +952,13 @@ function initModal() {
     if (tag === SUBSCRIBE_FORM_TAG) {
       careResp = await trySubscribeViaCareBackend(payload);
     }
-    if (!careResp) {
+    // Цифровая карта лояльности: контакт + поля карты через наш бэк (дедуп по телефону).
+    let loyaltyOk = false;
+    const isDigitalCardTag = tag === 'digital-card' || tag.endsWith('/digital-card');
+    if (!careResp && isDigitalCardTag) {
+      loyaltyOk = await tryRegisterLoyaltyCard(payload);
+    }
+    if (!careResp && !loyaltyOk) {
       sendLeadToB24(tag, payload);
     }
 

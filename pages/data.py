@@ -512,6 +512,24 @@ CARE_SUBSCRIPTION_GROUPS = [
 B24_CARE_SUBSCRIPTIONS_LEAD_FIELD = "UF_CRM_1779072919"
 B24_CARE_SUBSCRIPTIONS_CONTACT_FIELD = "UF_CRM_1779072937"
 
+# ── Цифровая карта лояльности (садовые центры), задача Б24 #1231 ──
+# Данные с формы кладём на КОНТАКТ (лояльность - про человека) с дедупом по телефону.
+# Дальше штатный коннектор 1С-Битрикс24 синхронит контакт в 1С:УНФ 3.0, где живёт
+# карта лояльности; на кассе скидка применяется по телефону. Источник истины по
+# НОМЕРУ карты и проценту - УНФ: сайт пишет только стартовые значения при оформлении,
+# УНФ через коннектор возвращает фактический номер и актуальный процент обратно.
+B24_LOYALTY_SOURCE_ID = "UC_DIGICARD"  # источник «Цифровая карта СЦ» (crm.status ENTITY_ID=SOURCE)
+B24_LOYALTY_CARD_NO_FIELD = "UF_CRM_LOYALTY_CARD_NO"    # номер карты (string), УНФ пишет обратно
+B24_LOYALTY_DISCOUNT_FIELD = "UF_CRM_LOYALTY_DISCOUNT"  # текущая скидка, % (double)
+B24_LOYALTY_DATE_FIELD = "UF_CRM_LOYALTY_DATE"          # дата оформления (date)
+B24_LOYALTY_STATUS_FIELD = "UF_CRM_LOYALTY_STATUS"      # статус (enumeration)
+B24_LOYALTY_STATUS_NEW_ID = 633                         # значение «Заявка с сайта»
+B24_LOYALTY_START_DISCOUNT = 5                          # стартовая скидка на растения, %
+# Мультисписок «Товарное направление» на контакте + значение «Скидочная карта»:
+# помечаем участника программы, не затирая остальные выбранные направления.
+B24_CONTACT_PRODUCT_DIR_FIELD = "UF_CRM_69116C6802EFA"
+B24_PRODUCT_DIR_LOYALTY_CARD_ID = 513                  # «Скидочная карта»
+
 CATALOG_PAGE = {
     **BASE,
     "title": "Каталог растений",

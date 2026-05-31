@@ -137,6 +137,36 @@ class Bitrix24Client:
         result = self._call("crm.lead.update", {"id": lead_id, "fields": fields})
         return bool(result)
 
+    # ── Контакты (для цифровой карты лояльности) ──
+
+    def find_contact_id_by_phone(self, phone: str) -> int | None:
+        """Возвращает ID контакта с таким телефоном или None.
+
+        Дедуп карты лояльности: один телефон = один контакт = одна карта. Б24
+        нормализует номер сам, поэтому передаём строку как есть.
+        """
+        if not phone:
+            return None
+        result = self._call(
+            "crm.duplicate.findbycomm",
+            {"type": "PHONE", "values": [phone], "entity_type": "CONTACT"},
+        )
+        ids = (result or {}).get("CONTACT") or []
+        return int(ids[0]) if ids else None
+
+    def get_contact(self, contact_id: int) -> dict[str, Any]:
+        return self._call("crm.contact.get", {"id": contact_id}) or {}
+
+    def create_contact(self, fields: dict[str, Any]) -> int:
+        result = self._call("crm.contact.add", {"fields": fields})
+        if not isinstance(result, int):
+            raise Bitrix24Error(f"crm.contact.add: unexpected result {result!r}")
+        return result
+
+    def update_contact(self, contact_id: int, fields: dict[str, Any]) -> bool:
+        result = self._call("crm.contact.update", {"id": contact_id, "fields": fields})
+        return bool(result)
+
     def update_lead_messengers(
         self,
         lead_id: int,
