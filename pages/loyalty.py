@@ -2,11 +2,17 @@
 
 Форма на странице СЦ шлёт сюда ФИО + телефон. Мы кладём данные на КОНТАКТ в
 Битрикс24 (а не лид): лояльность - про человека, и штатный коннектор 1С-Битрикс24
-синхронит именно контакты в 1С:УНФ 3.0. На кассе СЦ скидка применяется по телефону.
+типовым обменом синхронит именно контакты в 1С:УНФ 3.0.
 
-Дедуп по телефону: один телефон = один контакт = одна карта. Повторная заявка не
-плодит дубль, а лишь дозаполняет поля карты, если они ещё пустые, и НЕ затирает
-номер/процент, которые УНФ мог уже записать обратно (УНФ - источник истины).
+Модель (согласована с 1С-ником 2026-06-01): клиент и дисконтная карта - разные
+справочники УНФ. Контакт заводит типовой обмен; карту - допобмен УНФ при первом
+приходе. Идентификатор карты = телефон (отдельного номера нет). Скидку считает УНФ
+на кассе, обратной записи в Б24 нет. Поэтому из полей карты мы пишем только надёжный
+булев флаг «участник программы» + источник + дату; процент/номер/статус НЕ пишем,
+чтобы не зафиксировать в CRM устаревшее число, которое введёт менеджера в заблуждение.
+
+Дедуп по телефону: один телефон = один контакт. Повторная заявка не плодит дубль,
+а лишь проставляет флаг участника, если его ещё нет.
 
 Любой сбой Б24 не глушим тихо для пользователя: вьюха возвращает ok=false, а фронт
 падает на старый прямой crm.lead.add (как у Службы заботы), чтобы заявка не потерялась.
@@ -26,13 +32,9 @@ from care_notifications.bitrix24 import Bitrix24Client, Bitrix24Error
 
 from .data import (
     B24_CONTACT_PRODUCT_DIR_FIELD,
-    B24_LOYALTY_CARD_NO_FIELD,
     B24_LOYALTY_DATE_FIELD,
-    B24_LOYALTY_DISCOUNT_FIELD,
+    B24_LOYALTY_FLAG_FIELD,
     B24_LOYALTY_SOURCE_ID,
-    B24_LOYALTY_START_DISCOUNT,
-    B24_LOYALTY_STATUS_FIELD,
-    B24_LOYALTY_STATUS_NEW_ID,
     B24_PRODUCT_DIR_LOYALTY_CARD_ID,
 )
 
@@ -73,7 +75,7 @@ def _merge_product_dir(existing: object) -> list:
 
 
 def register_loyalty_card(*, name: str, phone: str) -> tuple[int, bool]:
-    """Создаёт или обновляет контакт под карту лояльности. Возвращает (contact_id, created)."""
+    """Создаёт или помечает контакт как участника программы. Возвращает (contact_id, created)."""
     client = Bitrix24Client()
     today = timezone.localdate().isoformat()
     contact_id = client.find_contact_id_by_phone(phone)
@@ -81,12 +83,9 @@ def register_loyalty_card(*, name: str, phone: str) -> tuple[int, bool]:
     if contact_id:
         existing = client.get_contact(contact_id)
         fields: dict[str, object] = {}
-        # Стартовые поля карты - только если контакт ещё не в программе. Номер и
-        # процент, записанные УНФ, не трогаем.
-        if not existing.get(B24_LOYALTY_STATUS_FIELD):
-            fields[B24_LOYALTY_STATUS_FIELD] = B24_LOYALTY_STATUS_NEW_ID
-        if not existing.get(B24_LOYALTY_DISCOUNT_FIELD):
-            fields[B24_LOYALTY_DISCOUNT_FIELD] = B24_LOYALTY_START_DISCOUNT
+        # Флаг участника - надёжный маркер; ставим, если ещё не стоит.
+        if str(existing.get(B24_LOYALTY_FLAG_FIELD) or "") not in ("1", "Y", "True"):
+            fields[B24_LOYALTY_FLAG_FIELD] = 1
         if not existing.get(B24_LOYALTY_DATE_FIELD):
             fields[B24_LOYALTY_DATE_FIELD] = today
         fields[B24_CONTACT_PRODUCT_DIR_FIELD] = _merge_product_dir(
@@ -102,8 +101,7 @@ def register_loyalty_card(*, name: str, phone: str) -> tuple[int, bool]:
     fields = {
         "SOURCE_ID": B24_LOYALTY_SOURCE_ID,
         "PHONE": [{"VALUE": phone, "VALUE_TYPE": "WORK"}],
-        B24_LOYALTY_STATUS_FIELD: B24_LOYALTY_STATUS_NEW_ID,
-        B24_LOYALTY_DISCOUNT_FIELD: B24_LOYALTY_START_DISCOUNT,
+        B24_LOYALTY_FLAG_FIELD: 1,
         B24_LOYALTY_DATE_FIELD: today,
         B24_CONTACT_PRODUCT_DIR_FIELD: [str(B24_PRODUCT_DIR_LOYALTY_CARD_ID)],
     }
