@@ -524,7 +524,7 @@ B24_LOYALTY_DISCOUNT_FIELD = "UF_CRM_LOYALTY_DISCOUNT"  # текущая ски�
 B24_LOYALTY_DATE_FIELD = "UF_CRM_LOYALTY_DATE"          # дата оформления (date)
 B24_LOYALTY_STATUS_FIELD = "UF_CRM_LOYALTY_STATUS"      # статус (enumeration)
 B24_LOYALTY_STATUS_NEW_ID = 633                         # значение «Заявка с сайта»
-B24_LOYALTY_START_DISCOUNT = 5                          # стартовая скидка на растения, %
+B24_LOYALTY_START_DISCOUNT = 3                          # стартовая скидка на растения, %
 # Мультисписок «Товарное направление» на контакте + значение «Скидочная карта»:
 # помечаем участника программы, не затирая остальные выбранные направления.
 B24_CONTACT_PRODUCT_DIR_FIELD = "UF_CRM_69116C6802EFA"
