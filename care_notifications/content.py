@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import datetime as dt
 import logging
+import re
 from dataclasses import dataclass, field
 from typing import Iterable
 
@@ -78,18 +79,25 @@ def _make_summary(theme: str, content_text: str, content_html: str) -> str:
     if not src:
         src = (content_text or "").strip()
     if not src and content_html:
-        import re
         src = re.sub(r"<[^>]+>", " ", content_html)
         src = re.sub(r"\s+", " ", src).strip()
     if not src:
         return ""
-    # Первое предложение: до первой точки, восклицания или вопроса, либо до
-    # переноса строки.
+    # Берём первый смысловой кусок (обычно это «тема» периода). Режем по самой
+    # ранней из границ: перенос строки, конец предложения или стык
+    # «строчнаяЗаглавная». Последнее ловит записи, где при стрипе HTML потерялся
+    # разделитель между заголовком и телом ("Первая стрижкаГазон начал...") -
+    # без этого в тизер уезжает кусок тела с лишним текстом.
+    candidates: list[int] = []
     for sep in ("\n", ". ", "! ", "? "):
         idx = src.find(sep)
         if idx > 0:
-            src = src[:idx].rstrip(".!?")
-            break
+            candidates.append(idx)
+    glue = re.search(r"[а-яё][А-ЯЁ]", src)
+    if glue:
+        candidates.append(glue.start() + 1)
+    if candidates:
+        src = src[: min(candidates)].rstrip(".!?")
     src = src.strip(" .;:-")
     if len(src) <= _SUMMARY_MAX_CHARS:
         return src
