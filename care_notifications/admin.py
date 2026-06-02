@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CareSubscription, DigestDelivery
+from .models import CareSubscription, DigestDelivery, OneCCardSync
 
 
 @admin.register(CareSubscription)
@@ -36,3 +36,11 @@ class DigestDeliveryAdmin(admin.ModelAdmin):
     list_filter = ("status", "channel", "week_key")
     search_fields = ("subscription__email", "subscription__phone", "external_id")
     readonly_fields = ("created_at", "updated_at")
+
+
+@admin.register(OneCCardSync)
+class OneCCardSyncAdmin(admin.ModelAdmin):
+    list_display = ("id", "phone", "last_name", "first_name", "status", "attempts", "b24_contact_id", "created_at", "sent_at")
+    list_filter = ("status",)
+    search_fields = ("phone", "last_name", "first_name", "b24_contact_id")
+    readonly_fields = ("created_at", "updated_at", "sent_at")

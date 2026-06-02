@@ -160,3 +160,57 @@ class DigestDelivery(models.Model):
 
     def __str__(self) -> str:
         return f"{self.week_key} · {self.subscription_id} · {self.channel} · {self.status}"
+
+
+class OneCCardSync(models.Model):
+    """Журнал отправки цифровой карты в 1С:УНФ (best-effort + ретрай, задача #1231).
+
+    На каждое оформление карты создаём строку - это и очередь на отправку, и аудит.
+    Сразу пробуем отправить синхронно; при сбое запись остаётся pending, команда
+    `sync_onec_cards` добивает её по крону. 1С делает upsert по телефону (телефон =
+    идентификатор карты), поэтому повторная отправка дубля не плодит - ретраи безопасны.
+
+    Источник для менеджеров - по-прежнему Б24; эта таблица только про доставку в 1С.
+    """
+
+    STATUS_PENDING = "pending"
+    STATUS_SENT = "sent"
+    STATUS_FAILED = "failed"
+    STATUS_CHOICES = [
+        (STATUS_PENDING, "В очереди"),
+        (STATUS_SENT, "Отправлено"),
+        (STATUS_FAILED, "Ошибка (исчерпаны попытки)"),
+    ]
+
+    phone = models.CharField(
+        max_length=20,
+        db_index=True,
+        help_text="Канонический +7XXXXXXXXXX - идентификатор карты в 1С.",
+    )
+    first_name = models.CharField(max_length=100, blank=True)
+    last_name = models.CharField(max_length=100, blank=True)
+    middle_name = models.CharField(max_length=100, blank=True)
+
+    b24_contact_id = models.PositiveIntegerField(
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text="ID контакта в Б24 для сверки (карта пишется и туда, и в 1С).",
+    )
+
+    status = models.CharField(max_length=16, choices=STATUS_CHOICES, default=STATUS_PENDING, db_index=True)
+    attempts = models.PositiveIntegerField(default=0)
+    last_error = models.TextField(blank=True)
+
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    sent_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Отправка карты в 1С"
+        verbose_name_plural = "Отправки карт в 1С"
+        ordering = ["-created_at"]
+
+    def __str__(self) -> str:
+        who = " ".join(p for p in (self.last_name, self.first_name) if p) or "(без имени)"
+        return f"{self.phone} · {who} · {self.status}"
