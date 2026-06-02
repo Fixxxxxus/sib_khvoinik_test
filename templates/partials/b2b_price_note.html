@@ -3,7 +3,7 @@
   Ведёт мягкой ссылкой на B2B-лендинг, без баннеров и кнопок.
   Параметр class позволяет подстроить отступ под место вставки.
 {% endcomment %}
-<a href="{% url 'b2b' %}" class="group inline-flex items-center gap-1 text-xs text-slate-500 hover:text-brand transition-colors {{ class|default:'mt-2' }}">
-  <span class="border-b border-dashed border-slate-300 group-hover:border-brand/50">Оптовым и проектным закупкам - спецусловия</span>
+<a href="{% url 'b2b' %}" class="group inline-flex items-center gap-1 text-sm font-semibold text-brand hover:text-brand2 transition-colors {{ class|default:'mt-2' }}">
+  <span class="border-b border-brand/40 group-hover:border-brand2/70">Оптовым и проектным закупкам - спецусловия</span>
   <span aria-hidden="true" class="transition-transform group-hover:translate-x-0.5">→</span>
 </a>

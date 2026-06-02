@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static catalog_media %}
-{% block title %}{{ active_plant.catalog_display_name|default:active_plant.name|default:'Карточка растения' }} — {{ brand }}{% endblock %}
+{% block title %}{{ active_plant.catalog_display_name|default:active_plant.name|default:'Карточка растения' }} - {{ brand }}{% endblock %}
 
 {% block content %}
   <section class="mt-10">
@@ -135,15 +135,15 @@
               </div>
               <div class="rounded-2xl border border-brand/20 bg-gradient-to-br from-brand/[0.07] to-brand2/[0.05] p-5">
                 <div class="text-xs font-medium text-slate-600">Цена</div>
-                <div data-pv-price class="mt-1 text-2xl font-semibold text-brand tracking-tight">—</div>
+                <div data-pv-price class="mt-1 text-2xl font-semibold text-brand tracking-tight">…</div>
                 <p data-pv-stock-hint class="mt-2 text-sm text-slate-600"></p>
               </div>
             </div>
             <p class="mt-4 text-xs text-slate-500">
               {% if active_plant.merged_format_group %}
-                Выберите формат посадки — цена пересчитается. Старые ссылки на отдельные контейнеры открывают эту же карточку.
+                Выберите формат посадки - цена пересчитается автоматически.
               {% else %}
-                Одна карточка вместо нескольких дублей на старом сайте: выберите высоту и формат — цена обновится.
+                Выберите высоту и формат посадки - цена обновится автоматически.
               {% endif %}
             </p>
             {% elif active_plant.formats %}
@@ -172,7 +172,7 @@
               type="button"
               data-selection-add
               data-selection-id="{{ active_plant.slug|default:'' }}"
-              data-selection-name="{{ active_plant.catalog_display_name|default:active_plant.name|default:'—'|escape }}"
+              data-selection-name="{{ active_plant.catalog_display_name|default:active_plant.name|default:'…'|escape }}"
               data-selection-category="{% include 'partials/plant_card_category.html' with category_slug=active_plant.category_slug %}"
               data-selection-description="{{ active_plant.description|default:''|escape }}"
               data-selection-price="{% if active_plant.catalog_price_line %}{{ active_plant.catalog_price_line|escape }}{% elif active_plant.catalog_teaser %}{{ active_plant.catalog_teaser|escape }}{% endif %}"
