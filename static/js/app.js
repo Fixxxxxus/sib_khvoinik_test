@@ -1798,7 +1798,7 @@ function initPlantVariantPicker() {
     const stock = Boolean(v.in_stock);
     if (hintEl) {
       hintEl.textContent = stock
-        ? 'В продаже (точное наличие — по запросу).'
+        ? 'В продаже (точное наличие - по запросу).'
         : 'Этого формата сейчас нет в наличии; спросите о поступлении.';
       hintEl.className = stock ? 'mt-2 text-sm text-slate-600' : 'mt-2 text-sm font-medium text-slate-500';
     }

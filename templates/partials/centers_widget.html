@@ -1,6 +1,6 @@
 {% load static %}
 <div id="centersWidget" class="sg-centers-widget" aria-hidden="true" role="complementary" aria-label="Открыли два садовых центра">
-  <button type="button" class="sg-centers-widget__fab" aria-label="Открыли два садовых центра — посмотреть адреса" data-centers-widget-fab>
+  <button type="button" class="sg-centers-widget__fab" aria-label="Открыли два садовых центра - посмотреть адреса" data-centers-widget-fab>
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
       <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 1 1 18 0z"/>
       <circle cx="12" cy="10" r="3"/>
@@ -16,7 +16,6 @@
   </button>
   <div class="sg-centers-widget__body">
     <p class="sg-centers-widget__title">Открыли два садовых центра</p>
-    <p class="sg-centers-widget__meta">Новопичугово · МЕГА · уже работают</p>
     <a href="/sadovye-centry/?show=centers" class="sg-centers-widget__cta" data-centers-widget-cta>
       Адреса и контакты →
     </a>
@@ -115,13 +114,13 @@
     transform: translateY(1px);
   }
 
-  /* FAB (компактная пилюля для мобилки) — на десктопе скрыта */
+  /* FAB (компактная пилюля для мобилки) - на десктопе скрыта */
   .sg-centers-widget__fab {
     display: none;
   }
 
   @media (max-width: 640px) {
-    /* На мобилке по умолчанию виджет — это просто FAB, без фона/тени контейнера */
+    /* На мобилке по умолчанию виджет - это просто FAB, без фона/тени контейнера */
     .sg-centers-widget {
       width: auto;
       left: 16px;
@@ -173,7 +172,7 @@
       border: 2px solid #fff;
     }
 
-    /* Раскрытое состояние на мобилке — полная карточка, FAB скрыт */
+    /* Раскрытое состояние на мобилке - полная карточка, FAB скрыт */
     .sg-centers-widget.is-expanded {
       left: 16px;
       right: 16px;

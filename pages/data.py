@@ -14601,7 +14601,7 @@ CATALOG_PAGE = {
   'frost': '-35°C',
   'light': 'солнце / полутень',
   'catalog_teaser': 'уточняйте · 2 вариант(-а) (высота и формат)',
-  'variants': [{'height': 'уточняйте', 'container': 'Позиция 1 — цена по запросу', 'price': 'уточняйте', 'in_stock': True},
+  'variants': [{'height': 'уточняйте', 'container': 'Позиция 1 - цена по запросу', 'price': 'уточняйте', 'in_stock': True},
                {'height': 'уточняйте', 'container': 'Позиция 2 — 750 ₽', 'price': '750 ₽', 'in_stock': True}],
   'legacy_paths': ['/product/rozy/shraby/roza_shrab_belvedere_belveder_p_e1_5/']},
  {'slug': 'roza-shrab-belvedere-belveder-s3',
