@@ -48,3 +48,9 @@ migration.md
 report_may/
 report_may.zip
 calls_*_report.html
+
+# Локальные рабочие файлы - не пушим
+AGENTS.md
+AUDIT_REPORT.md
+page-care.yml
+docs/_gazon_main_fragment.html
