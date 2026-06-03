@@ -59,14 +59,16 @@ def main():
         sub_id = item["subscription_id"]
         tg_text = item["tg_text"]
         manage_url = item["manage_url"]
-        unsub_url = item.get("unsub_url", "")
         site_url = item.get("site_url", "https://gazony.ru")
 
-        top_row = [{"text": "Сайт", "url": site_url}]
-        bottom_row = [{"text": "Управление", "url": manage_url}]
-        if unsub_url:
-            bottom_row.append({"text": "Отписаться", "url": unsub_url})
-        keyboard = {"inline_keyboard": [top_row, bottom_row]}
+        # Две кнопки: Сайт и Управление подпиской. Отписку убрали - она живёт
+        # на странице управления подпиской.
+        keyboard = {
+            "inline_keyboard": [
+                [{"text": "Сайт", "url": site_url}],
+                [{"text": "Управление подпиской", "url": manage_url}],
+            ]
+        }
 
         res = tg_call(
             "sendMessage",

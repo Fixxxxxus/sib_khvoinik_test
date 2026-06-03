@@ -176,16 +176,14 @@ class TelegramBotClient:
                     photo_res["error"],
                 )
 
-        # 2. Текст + inline-клавиатура: только Сайт / Управление / Отписаться.
+        # 2. Текст + inline-клавиатура: Сайт / Управление подпиской.
+        # Отписку убрали - она доступна на странице управления подпиской.
         text = render_telegram(payload)
         footer = payload.footer
         keyboard = {
             "inline_keyboard": [
                 [{"text": "Сайт", "url": footer.site_url}],
-                [
-                    {"text": "Управление", "url": footer.manage_url},
-                    {"text": "Отписаться", "callback_data": f"unsub:{subscription.token}"},
-                ],
+                [{"text": "Управление подпиской", "url": footer.manage_url}],
             ]
         }
         return self.send_message(
