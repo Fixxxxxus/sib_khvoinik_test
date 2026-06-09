@@ -428,8 +428,6 @@ function initModal() {
       initConsentCheckboxes();
     }
 
-    initCareChannelToggle(modalBody);
-
     activeNoOverlay = Boolean(opts.noOverlay);
     if (activeNoOverlay) {
       overlay.classList.add('hidden');
@@ -751,8 +749,14 @@ function initModal() {
   // Любой сбой -> fallback в прямой Б24 ниже по коду (как для остальных форм).
   const SUBSCRIBE_FORM_TAG = 'B2C/sluzhba-zaboty-calendar';
   const CARE_SUBSCRIBE_ENDPOINT = '/api/care/subscribe/';
+  // Цифровая карта лояльности СЦ: данные летят на КОНТАКТ в Б24 через наш бэк
+  // (дедуп по телефону + поля карты). Любой сбой -> fallback в прямой Б24-лид ниже.
+  const LOYALTY_CARD_ENDPOINT = '/api/loyalty/card/';
   const CARE_BACKEND_TIMEOUT_MS = 6000;
   const CARE_TG_BOT_USERNAME = 'sg_customer_care_bot';
+  // Имя MAX-бота на платформе dev.max.ru. Пустая строка = бот ещё не запущен,
+  // в этом случае MAX-блок на success-экране остаётся скрытым.
+  const CARE_MAX_BOT_USERNAME = '';
   const CARE_GROUP_FIELD_LABELS = {
     care_seasonal: 'Сезонный календарь',
     care_trees: 'Деревья',
@@ -760,35 +764,6 @@ function initModal() {
     care_perennials: 'Многолетники',
     care_roses: 'Розы',
     care_lawn: 'Газон',
-  };
-
-  // Динамическое поле email: показывается только при канале «email»; для
-  // telegram/max скрывается и не required (чтобы форма прошла валидацию).
-  const initCareChannelToggle = (root) => {
-    if (!root) return;
-    const select = root.querySelector('[data-care-channel-select]');
-    if (!select) return;
-    const emailWrap = root.querySelector('[data-care-email-wrap]');
-    const emailInput = root.querySelector('[data-care-email-input]');
-    const tgHint = root.querySelector('[data-care-tg-hint]');
-    const maxHint = root.querySelector('[data-care-max-hint]');
-    if (!emailWrap || !emailInput) return;
-
-    const apply = () => {
-      const ch = (select.value || 'email').toLowerCase();
-      const isEmail = ch === 'email';
-      emailWrap.hidden = !isEmail;
-      if (isEmail) {
-        emailInput.setAttribute('required', 'required');
-      } else {
-        emailInput.removeAttribute('required');
-        emailInput.value = '';
-      }
-      if (tgHint) tgHint.hidden = ch !== 'telegram';
-      if (maxHint) maxHint.hidden = ch !== 'max';
-    };
-    select.addEventListener('change', apply);
-    apply();
   };
 
   const parseUtmParams = () => {
@@ -836,19 +811,54 @@ function initModal() {
     }
   };
 
+  const tryRegisterLoyaltyCard = async (payload) => {
+    const ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+    const timer = ctrl ? setTimeout(() => ctrl.abort(), CARE_BACKEND_TIMEOUT_MS) : null;
+    try {
+      const resp = await fetch(LOYALTY_CARD_ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: payload.name || '',
+          phone: payload.phone || '',
+          consent: payload.consent || '',
+        }),
+        credentials: 'same-origin',
+        signal: ctrl ? ctrl.signal : undefined,
+      });
+      if (timer) clearTimeout(timer);
+      if (!resp.ok) {
+        console.warn('[loyalty] backend response not ok:', resp.status);
+        return false;
+      }
+      const data = await resp.json();
+      return !!(data && data.ok);
+    } catch (e) {
+      if (timer) clearTimeout(timer);
+      console.warn('[loyalty] backend send failed:', e && e.message || e);
+      return false;
+    }
+  };
+
   const buildCareSuccessContext = (payload, careResp) => {
-    const channel = (payload.preferred_messenger || 'email').toLowerCase();
     const groupNames = Object.keys(CARE_GROUP_FIELD_LABELS)
       .filter(k => String(payload[k] || '') === '1')
       .map(k => CARE_GROUP_FIELD_LABELS[k]);
     return {
-      channel,
       groupsLabel: groupNames.length ? groupNames.join(', ') : 'Сезонный календарь',
       email: payload.email || '',
       tgDeepLink: `https://t.me/${CARE_TG_BOT_USERNAME}?start=${careResp.token}`,
+      maxDeepLink: CARE_MAX_BOT_USERNAME
+        ? `https://max.ru/${CARE_MAX_BOT_USERNAME}?start=${careResp.token}`
+        : '',
     };
   };
 
+  // Человек выбирает основной канал (Telegram / email) переключателем в форме,
+  // но email остаётся обязательным как подстраховка - письмо уходит всегда.
+  // Поэтому на success-экране показываем email-блок всегда, а блок с deep-link
+  // на Telegram-бот - как шаг opt-in (нажать Start). MAX-блок показывается
+  // только если выставлен CARE_MAX_BOT_USERNAME (бот реально создан на dev.max.ru).
   const renderCareSuccess = (modalBody, ctx) => {
     const tpl = document.getElementById('modal-template-success-care');
     if (!tpl) return false;
@@ -859,14 +869,20 @@ function initModal() {
     const tgBlock = modalBody.querySelector('[data-care-success-channel="telegram"]');
     const maxBlock = modalBody.querySelector('[data-care-success-channel="max"]');
     const emailBlock = modalBody.querySelector('[data-care-success-channel="email"]');
-    if (tgBlock) tgBlock.classList.toggle('hidden', ctx.channel !== 'telegram');
-    if (maxBlock) maxBlock.classList.toggle('hidden', ctx.channel !== 'max');
-    if (emailBlock) emailBlock.classList.toggle('hidden', ctx.channel !== 'email');
-    if (ctx.channel === 'telegram') {
-      const a = modalBody.querySelector('[data-care-success-tg-link]');
-      if (a) a.setAttribute('href', ctx.tgDeepLink);
+    if (emailBlock) emailBlock.classList.remove('hidden');
+    if (tgBlock) tgBlock.classList.remove('hidden');
+    if (maxBlock) {
+      if (ctx.maxDeepLink) {
+        maxBlock.classList.remove('hidden');
+        const maxLink = maxBlock.querySelector('[data-care-success-max-link]');
+        if (maxLink) maxLink.setAttribute('href', ctx.maxDeepLink);
+      } else {
+        maxBlock.classList.add('hidden');
+      }
     }
-    if (ctx.channel === 'email' && ctx.email) {
+    const a = modalBody.querySelector('[data-care-success-tg-link]');
+    if (a) a.setAttribute('href', ctx.tgDeepLink);
+    if (ctx.email) {
       const el = modalBody.querySelector('[data-care-success-email]');
       if (el) el.textContent = ctx.email;
     }
@@ -936,7 +952,13 @@ function initModal() {
     if (tag === SUBSCRIBE_FORM_TAG) {
       careResp = await trySubscribeViaCareBackend(payload);
     }
-    if (!careResp) {
+    // Цифровая карта лояльности: контакт + поля карты через наш бэк (дедуп по телефону).
+    let loyaltyOk = false;
+    const isDigitalCardTag = tag === 'digital-card' || tag.endsWith('/digital-card');
+    if (!careResp && isDigitalCardTag) {
+      loyaltyOk = await tryRegisterLoyaltyCard(payload);
+    }
+    if (!careResp && !loyaltyOk) {
       sendLeadToB24(tag, payload);
     }
 
@@ -962,7 +984,12 @@ function initModal() {
       careSuccessRendered = renderCareSuccess(modalBody, ctx);
     }
     if (!careSuccessRendered) {
-      const successTpl = document.getElementById('modal-template-success');
+      const isDigitalCard = tag === 'digital-card' || tag.endsWith('/digital-card');
+      const successTplId = isDigitalCard
+        ? 'modal-template-success-digital-card'
+        : 'modal-template-success';
+      const successTpl = document.getElementById(successTplId)
+        || document.getElementById('modal-template-success');
       if (successTpl) {
         modalBody.innerHTML = '';
         modalBody.appendChild(successTpl.content.cloneNode(true));
@@ -1771,7 +1798,7 @@ function initPlantVariantPicker() {
     const stock = Boolean(v.in_stock);
     if (hintEl) {
       hintEl.textContent = stock
-        ? 'В продаже (точное наличие — по запросу).'
+        ? 'В продаже (точное наличие - по запросу).'
         : 'Этого формата сейчас нет в наличии; спросите о поступлении.';
       hintEl.className = stock ? 'mt-2 text-sm text-slate-600' : 'mt-2 text-sm font-medium text-slate-500';
     }

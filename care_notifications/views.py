@@ -196,11 +196,11 @@ def subscribe(request: HttpRequest) -> HttpResponse:
         # Подписка сохранена локально, лида в Б24 нет: фоновый ретрай-скрипт подберёт.
         logger.warning("subscribe: лид в Б24 не создан, подписка id=%s: %s", sub.id, e)
 
-    # Первое сообщение - сразу: для email-канала шлём через Unisender и пишем DigestDelivery,
-    # чтобы четверговая рассылка не дублировала. Для tg/max письмо уйдёт после opt-in
-    # (см. tg_optin / max_optin), потому что api.telegram.org с прод-VDS недоступен.
-    if channel == "email":
-        _send_welcome_email(sub)
+    # Первое сообщение - сразу письмом через Unisender (подстраховка), даже если основной
+    # канал tg/max: api.telegram.org с прод-VDS недоступен, а email доходит всегда. Внутри
+    # стоит guard на пустой email, и пишется DigestDelivery, чтобы четверговая рассылка
+    # не дублировала. В Telegram/MAX дайджест дойдёт после opt-in (см. tg_optin / max_optin).
+    _send_welcome_email(sub)
 
     return JsonResponse(
         {

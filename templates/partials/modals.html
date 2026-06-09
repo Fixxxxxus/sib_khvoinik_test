@@ -207,9 +207,25 @@
     </div>
 
     <div class="space-y-3 rounded-2xl border border-black/10 bg-slate-50/80 p-4" data-care-channel-block>
+      <div>
+        <p class="text-sm font-medium text-slate-800">Куда удобнее получать напоминания</p>
+        <div class="mt-2 flex flex-col gap-2 sm:flex-row">
+          <label class="flex flex-1 cursor-pointer items-center gap-2.5 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+            <input type="radio" name="preferred_messenger" value="telegram" checked class="h-4 w-4 border-black/20 text-brand focus:ring-brand/30" />
+            <i data-lucide="send" class="h-4 w-4 text-brand"></i>
+            <span>Telegram</span>
+          </label>
+          <label class="flex flex-1 cursor-pointer items-center gap-2.5 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+            <input type="radio" name="preferred_messenger" value="email" class="h-4 w-4 border-black/20 text-brand focus:ring-brand/30" />
+            <i data-lucide="mail" class="h-4 w-4 text-brand"></i>
+            <span>Эл. почта</span>
+          </label>
+        </div>
+      </div>
       <label class="block text-sm font-medium text-slate-700">
         Адрес электронной почты
         <input name="email" type="email" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="name@example.com" autocomplete="email" />
+        <span class="mt-1 block text-xs font-normal text-slate-500">Нужна в любом случае: продублируем напоминания письмом, даже если выбрали Telegram.</span>
       </label>
       <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
         <input type="checkbox" name="consent_messages" value="1" checked class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
@@ -1393,9 +1409,6 @@
         <i data-lucide="send" class="h-4 w-4"></i>
         Открыть бота в Telegram
       </a>
-      <p class="text-xs text-slate-500">
-        После нажатия Start привязка занимает до 5 минут.
-      </p>
     </div>
 
     <div data-care-success-channel="max" class="hidden space-y-3 rounded-2xl border border-indigo-200 bg-indigo-50/60 p-4">
@@ -1411,9 +1424,6 @@
         <i data-lucide="message-square" class="h-4 w-4"></i>
         Открыть бот в MAX
       </a>
-      <p class="text-xs text-indigo-700/80">
-        После нажатия Start привязка занимает до 5 минут.
-      </p>
     </div>
 
     <div data-care-success-channel="email" class="hidden space-y-2 rounded-2xl border border-black/10 bg-slate-50/80 p-4">

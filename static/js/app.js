@@ -854,11 +854,11 @@ function initModal() {
     };
   };
 
-  // Канал подписки теперь всегда email (обязательное поле формы); TG/MAX
-  // подключаются позже через opt-in, поэтому показываем email-блок всегда,
-  // а блок с deep-link на Telegram-бот - как опциональный второй шаг.
-  // MAX-блок показывается только если выставлен CARE_MAX_BOT_USERNAME
-  // (то есть бот реально создан на dev.max.ru).
+  // Человек выбирает основной канал (Telegram / email) переключателем в форме,
+  // но email остаётся обязательным как подстраховка - письмо уходит всегда.
+  // Поэтому на success-экране показываем email-блок всегда, а блок с deep-link
+  // на Telegram-бот - как шаг opt-in (нажать Start). MAX-блок показывается
+  // только если выставлен CARE_MAX_BOT_USERNAME (бот реально создан на dev.max.ru).
   const renderCareSuccess = (modalBody, ctx) => {
     const tpl = document.getElementById('modal-template-success-care');
     if (!tpl) return false;
