@@ -20,6 +20,7 @@ docs/superpowers/
 docs/research/
 docs/sib_khvoinik_test
 bitrix24-mcp/
+.mcp.json
 
 # Логи
 *.log
@@ -46,8 +47,10 @@ migration.md
 
 # Локальные выгрузки и дампы (отчёты за месяц, экспорт звонков) - не для гита
 report_may/
+report_may_public/
 report_may.zip
 calls_*_report.html
+scripts/redact_report.py
 
 # Локальные рабочие файлы - не пушим
 AGENTS.md
