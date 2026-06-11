@@ -791,7 +791,7 @@ function initModal() {
   const CARE_TG_BOT_USERNAME = 'sg_customer_care_bot';
   // Имя MAX-бота на платформе dev.max.ru. Пустая строка = бот ещё не запущен,
   // в этом случае MAX-блок на success-экране остаётся скрытым.
-  const CARE_MAX_BOT_USERNAME = '';
+  const CARE_MAX_BOT_USERNAME = 'id5406820645_bot';
   const CARE_GROUP_FIELD_LABELS = {
     care_seasonal: 'Сезонный календарь',
     care_trees: 'Деревья',
