@@ -144,3 +144,17 @@ def test_unparseable_date_label_skipped(rozy_category):
     assert len(result) == 1
     assert len(result[0].plants) == 1
     assert result[0].plants[0].summary == "Нормальная тема"
+
+
+def test_week_key_uses_local_monday_boundary():
+    """Граница недели - по локальному времени UTC+7 (Новосибирск/Красноярск),
+    а не по UTC. Момент, который в UTC ещё воскресенье, но по Новосибирску уже
+    понедельник, должен попадать в НОВУЮ ISO-неделю."""
+    from care_notifications.digest import get_current_week_key
+
+    # Вс 2026-05-24 20:00 UTC = Пн 2026-05-25 03:00 по UTC+7
+    utc_instant = dt.datetime(2026, 5, 24, 20, 0, tzinfo=dt.timezone.utc)
+    local_monday = dt.date(2026, 5, 25).isocalendar()  # понедельник по локали
+    utc_sunday = dt.date(2026, 5, 24).isocalendar()     # воскресенье по UTC
+    assert utc_sunday.week != local_monday.week         # разные ISO-недели
+    assert get_current_week_key(utc_instant) == f"{local_monday.year}-W{local_monday.week:02d}"
