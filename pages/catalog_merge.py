@@ -604,8 +604,8 @@ def _build_merged_plant(group: list[dict[str, Any]]) -> dict[str, Any]:
     return merged
 
 
-def get_merged_catalog_plants() -> tuple[list[dict[str, Any]], dict[str, str]]:
-    """Список растений после объединения + map алиас slug -> канонический slug."""
+def _build_merged_catalog_plants() -> tuple[list[dict[str, Any]], dict[str, str]]:
+    """Полная сборка каталога (БД или data.py + merge). Дорогая, зовётся через кэш."""
     from pages.catalog_sources import get_raw_catalog_plants_unmerged
 
     unmerged: list[dict[str, Any]] = get_raw_catalog_plants_unmerged()
@@ -629,6 +629,20 @@ def get_merged_catalog_plants() -> tuple[list[dict[str, Any]], dict[str, str]]:
                 redirects[p["slug"]] = str(merged.get("slug") or p["slug"])
 
     return result, redirects
+
+
+def get_merged_catalog_plants() -> tuple[list[dict[str, Any]], dict[str, str]]:
+    """Список растений после объединения + map алиас slug -> канонический slug.
+
+    Результат кэшируется (TTL + сигналы, см. pages/catalog_cache.py): мутации
+    плант-dict происходят только на этапе сборки (apply_catalog_display_fields),
+    в request-пути их никто не меняет. Наружу отдаём неглубокие копии
+    списка и словаря redirects, сами dict растений общие.
+    """
+    from pages.catalog_cache import get_or_build
+
+    result, redirects = get_or_build("merged_catalog_plants", _build_merged_catalog_plants)
+    return list(result), dict(redirects)
 
 
 def resolve_catalog_plant_slug(slug: str) -> str:

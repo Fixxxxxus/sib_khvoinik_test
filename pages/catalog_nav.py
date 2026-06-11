@@ -261,10 +261,25 @@ def enrich_catalog_context(ctx: dict) -> dict:
                     out.add(str(m))
         return out
 
-    if getattr(settings, "USE_DATABASE_CATALOG", False):
+    # Один общий запрос подкатегорий на весь рендер вместо N запросов в цикле
+    # по категориям: группируем по slug родителя и переиспользуем ниже.
+    subs_all: list[Any] = []
+    subs_by_parent: dict[str, list[Any]] = {}
+    try:
         from django.apps import apps
 
         Sub = apps.get_model("pages", "CatalogSubcategory")
+        # Сортировка parent_id, sort_order, label сохраняет прежний порядок
+        # внутри каждого родителя (sort_order, label).
+        subs_all = list(Sub.objects.select_related("parent").order_by("parent_id", "sort_order", "label"))
+        for sub in subs_all:
+            ps = str(sub.parent.slug or "").strip()
+            if ps:
+                subs_by_parent.setdefault(ps, []).append(sub)
+    except Exception:  # pragma: no cover
+        pass
+
+    if getattr(settings, "USE_DATABASE_CATALOG", False):
         seen_slugs = _collect_nav_slugs(sections)
         extra: list[tuple[int, dict[str, Any]]] = []
         for cat in ctx.get("categories") or []:
@@ -273,7 +288,7 @@ def enrich_catalog_context(ctx: dict) -> dict:
                 continue
             label = str((cat or {}).get("label") or (cat or {}).get("card_label") or slug).strip()
             order = int((cat or {}).get("sort_order") or 0)
-            subs = list(Sub.objects.filter(parent__slug=slug).order_by("sort_order", "label"))
+            subs = subs_by_parent.get(slug) or []
             if subs:
                 children_raw: list[dict[str, Any]] = [_link(f"Все {label}", slug)]
                 children_raw.extend(_link(s.label, str(s.slug)) for s in subs)
@@ -290,32 +305,27 @@ def enrich_catalog_context(ctx: dict) -> dict:
         for _, item in extra:
             sections.append(item)
 
-    try:
-        from django.apps import apps
-
-        Sub = apps.get_model("pages", "CatalogSubcategory")
-        for sub in Sub.objects.select_related("parent").order_by("parent_id", "sort_order", "label"):
-            ps = str(sub.parent.slug or "").strip()
-            sub_slug = str(sub.slug or "").strip()
-            if not ps or not sub_slug:
+    # Подкатегории берём из общего списка subs_all (запрос уже выполнен выше).
+    for sub in subs_all:
+        ps = str(sub.parent.slug or "").strip()
+        sub_slug = str(sub.slug or "").strip()
+        if not ps or not sub_slug:
+            continue
+        for sec in sections:
+            ch = sec.get("children")
+            if not ch:
                 continue
-            for sec in sections:
-                ch = sec.get("children")
-                if not ch:
-                    continue
-                if not any(str(c.get("nav_slug") or "") == ps for c in ch):
-                    continue
-                if any(str(c.get("nav_slug") or "") == sub_slug for c in ch):
-                    continue
-                ch.append(
-                    {
-                        "label": sub.label,
-                        "href": reverse("catalog_item", kwargs={"slug": sub_slug}),
-                        "nav_slug": sub_slug,
-                    }
-                )
-    except Exception:  # pragma: no cover
-        pass
+            if not any(str(c.get("nav_slug") or "") == ps for c in ch):
+                continue
+            if any(str(c.get("nav_slug") or "") == sub_slug for c in ch):
+                continue
+            ch.append(
+                {
+                    "label": sub.label,
+                    "href": reverse("catalog_item", kwargs={"slug": sub_slug}),
+                    "nav_slug": sub_slug,
+                }
+            )
 
     def child_is_active(child: dict[str, Any]) -> bool:
         if child.get("soon"):

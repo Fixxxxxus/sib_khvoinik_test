@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 
-from pages.models import CatalogCategory, Plant, plant_specs_as_rows
+from pages.models import CatalogCategory, Plant
 
 
 def category_to_dict(c: CatalogCategory) -> dict[str, Any]:
@@ -21,8 +21,18 @@ def category_to_dict(c: CatalogCategory) -> dict[str, Any]:
     }
 
 
-def categories_for_site() -> list[dict[str, Any]]:
+def _categories_for_site_uncached() -> list[dict[str, Any]]:
     return [category_to_dict(c) for c in CatalogCategory.objects.all()]
+
+
+def categories_for_site() -> list[dict[str, Any]]:
+    """Категории каталога с TTL-кэшем (см. pages/catalog_cache.py).
+
+    Возвращаем неглубокую копию списка: сами dict в request-пути не мутируются.
+    """
+    from pages.catalog_cache import get_or_build
+
+    return list(get_or_build("categories_for_site", _categories_for_site_uncached))
 
 
 def _cover_media_url(plant: Plant) -> str | None:
@@ -33,6 +43,24 @@ def _cover_media_url(plant: Plant) -> str | None:
 
 def _cover_static_path(plant: Plant) -> str:
     return (plant.cover_path or "").strip()
+
+
+def _plant_spec_rows_prefetched(plant: Plant) -> list[dict[str, str]]:
+    """Как models.plant_specs_as_rows, но через префетч-кэш characteristics.
+
+    Оригинал делает plant.characteristics.order_by(...), что обходит prefetch_related
+    и даёт отдельный SQL-запрос на каждое растение. Здесь берём .all() (кэш префетча)
+    и сортируем в Python теми же ключами (sort_order, pk).
+    """
+    chars = sorted(plant.characteristics.all(), key=lambda ch: (ch.sort_order, ch.pk))
+    rows: list[dict[str, str]] = [
+        {"label": ch.label.strip(), "value": (ch.value or "").strip()}
+        for ch in chars
+        if ch.label.strip()
+    ]
+    if not rows and isinstance(plant.specs_json, dict):
+        rows = [{"label": str(k), "value": str(v)} for k, v in plant.specs_json.items()]
+    return rows
 
 
 def plant_to_catalog_dict(plant: Plant) -> dict[str, Any]:
@@ -79,7 +107,7 @@ def plant_to_catalog_dict(plant: Plant) -> dict[str, Any]:
         d["image_media_url"] = media_url
     if gallery_urls:
         d["gallery_media_urls"] = gallery_urls
-    spec_rows = plant_specs_as_rows(plant)
+    spec_rows = _plant_spec_rows_prefetched(plant)
     if spec_rows:
         d["spec_rows"] = spec_rows
     return d
@@ -88,6 +116,9 @@ def plant_to_catalog_dict(plant: Plant) -> dict[str, Any]:
 def plants_raw_dicts_from_db() -> list[dict[str, Any]]:
     qs = (
         Plant.queryset_published()
+        # select_related("category"): plant_to_catalog_dict читает plant.category.slug,
+        # без join это давало N+1 (отдельный SQL-запрос на каждое растение).
+        .select_related("category")
         .order_by("category__sort_order", "category__label", "name")
         .prefetch_related("variants", "gallery_images", "characteristics")
     )

@@ -43,9 +43,9 @@
         {% for p in plants %}
           <div class="flex h-full min-h-0 flex-col rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
             <a href="{% url 'catalog_item' slug=p.slug %}" class="shrink-0">
-              <div class="h-28 rounded-2xl overflow-hidden bg-gradient-to-br from-black/90 via-black/30 to-brand/20">
-                {% if p|plant_image_url %}
-                  <img src="{{ p|plant_image_url }}" alt="{{ p.image_alt }}" class="h-full w-full object-cover" loading="lazy" decoding="async" />
+              <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-slate-50" data-img-skeleton>
+                {% if p|plant_image_thumb_url %}
+                  <img src="{{ p|plant_image_thumb_url }}" alt="{{ p.image_alt }}" class="h-full w-full object-contain" loading="lazy" decoding="async" />
                 {% endif %}
               </div>
             </a>
@@ -91,7 +91,7 @@
               </div>
 
             <div class="mt-5 flex flex-col gap-2 sm:flex-row">
-              <a href="{% url 'catalog_item' slug=p.slug %}" data-catalog-more class="flex-1 inline-flex items-center justify-center rounded-2xl border border-black/10 px-4 py-2 font-semibold hover:bg-black/5 transition">
+              <a href="{% url 'catalog_item' slug=p.slug %}" data-catalog-more class="flex-1 inline-flex items-center justify-center rounded-xl border border-black/10 px-4 py-2.5 text-sm font-semibold hover:bg-black/5 transition">
                 Подробнее
               </a>
               <button
@@ -102,12 +102,12 @@
                 data-selection-category="{% include 'partials/plant_card_category.html' with category_slug=p.category_slug %}"
                 data-selection-description="{{ p.description|default:''|escape }}"
                 data-selection-price="{{ p.catalog_price_line|default:p.catalog_teaser|default:''|escape }}"
-                data-selection-image="{{ p|plant_image_url }}"
+                data-selection-image="{{ p|plant_image_thumb_url }}"
                 data-selection-url="{% url 'catalog_item' slug=p.slug %}"
                 {% if p.selection_qty_step %}data-selection-qty-step="{{ p.selection_qty_step }}"{% endif %}
-                class="relative overflow-visible flex-1 inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-2 text-white font-semibold shadow-glow hover:brightness-105 transition"
+                class="relative overflow-visible flex-1 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand to-brand2 px-4 py-2.5 text-sm text-white font-semibold shadow-glow hover:brightness-105 transition"
               >
-                <span data-selection-label class="relative z-[1] inline-block">Добавить в подбор</span>
+                <span data-selection-label class="relative z-[1] inline-block">В подбор</span>
               </button>
             </div>
             </div>

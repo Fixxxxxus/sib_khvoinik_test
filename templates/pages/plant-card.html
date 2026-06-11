@@ -14,20 +14,24 @@
         <div class="lg:col-span-6">
           <div class="rounded-3xl border border-black/5 bg-white overflow-hidden" data-animate="fadeInUp">
             <div data-plant-photo-swap>
-            <div class="h-72 bg-gradient-to-br from-black/90 via-black/30 to-brand/20 overflow-hidden flex items-center justify-center">
+            <div class="relative aspect-[4/3] lg:max-h-[30rem] bg-slate-50 overflow-hidden flex items-center justify-center"{% if active_plant|plant_image_url %} data-img-skeleton{% endif %}>
               {% if active_plant|plant_image_url %}
                 <img
                   data-plant-main-cover
                   src="{{ active_plant|plant_image_url }}"
                   alt="{{ active_plant.catalog_display_name|default:active_plant.name }}"
-                  class="h-full w-full object-cover"
-                  loading="lazy"
+                  class="h-full w-full cursor-zoom-in object-contain"
+                  loading="eager"
+                  fetchpriority="high"
                   decoding="async"
                 />
+                <span class="pointer-events-none absolute bottom-3 right-3 z-[1] flex h-8 w-8 items-center justify-center rounded-full bg-white/85 text-slate-600 shadow-sm ring-1 ring-black/5" aria-hidden="true">
+                  <i data-lucide="maximize-2" class="h-4 w-4"></i>
+                </span>
               {% else %}
-                <div class="text-white/90 text-center px-4">
+                <div class="text-slate-500 text-center px-4">
                   <div class="font-semibold">GALLERY PLACEHOLDER</div>
-                  <div class="text-xs text-white/70 mt-2">Фото растения (заглушка)</div>
+                  <div class="text-xs text-slate-400 mt-2">Фото растения (заглушка)</div>
                 </div>
               {% endif %}
             </div>
@@ -176,7 +180,7 @@
               data-selection-category="{% include 'partials/plant_card_category.html' with category_slug=active_plant.category_slug %}"
               data-selection-description="{{ active_plant.description|default:''|escape }}"
               data-selection-price="{% if active_plant.catalog_price_line %}{{ active_plant.catalog_price_line|escape }}{% elif active_plant.catalog_teaser %}{{ active_plant.catalog_teaser|escape }}{% endif %}"
-              data-selection-image="{{ active_plant|plant_image_url }}"
+              data-selection-image="{{ active_plant|plant_image_thumb_url }}"
               data-selection-url="{{ request.path }}"
               {% if active_plant.selection_qty_step %}data-selection-qty-step="{{ active_plant.selection_qty_step }}"{% endif %}
               {% if active_plant.variants %}data-pv-sync-selection-button="1"{% endif %}
@@ -195,9 +199,9 @@
         <div class="mt-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           {% for p in similar_plants %}
             <a href="{% url 'catalog_item' slug=p.slug %}" class="rounded-3xl border border-black/5 bg-white p-5 hover:shadow-glow transition">
-              <div class="h-24 rounded-2xl overflow-hidden bg-gradient-to-br from-black/90 via-black/30 to-brand2/20">
-                {% if p|plant_image_url %}
-                  <img src="{{ p|plant_image_url }}" alt="" class="h-full w-full object-cover" loading="lazy" decoding="async" />
+              <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-slate-50" data-img-skeleton>
+                {% if p|plant_image_thumb_url %}
+                  <img src="{{ p|plant_image_thumb_url }}" alt="" class="h-full w-full object-contain" loading="lazy" decoding="async" />
                 {% endif %}
               </div>
               <div class="mt-4">{% include 'partials/plant_catalog_title.html' with item=p size="sm" %}</div>

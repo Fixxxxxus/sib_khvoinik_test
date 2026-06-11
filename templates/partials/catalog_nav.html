@@ -2,19 +2,32 @@
 <div data-catalog-nav-card class="relative overflow-hidden rounded-3xl border border-black/[0.06] bg-white shadow-soft">
   <div class="pointer-events-none absolute -right-16 top-0 h-40 w-40 rounded-full bg-brand/[0.08] blur-3xl"></div>
   <div class="pointer-events-none absolute -left-10 bottom-0 h-32 w-32 rounded-full bg-brand2/[0.1] blur-2xl"></div>
-  <div class="relative border-b border-black/[0.06] bg-gradient-to-r from-brand/[0.06] to-transparent px-5 py-4">
-    <div class="flex items-center gap-2.5">
-      <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand to-brand2 text-white shadow-glow">
-        <i data-lucide="layout-grid" class="h-5 w-5" aria-hidden="true"></i>
+  <button
+    type="button"
+    class="relative block w-full border-b border-black/[0.06] bg-gradient-to-r from-brand/[0.06] to-transparent px-5 py-4 text-left lg:pointer-events-none"
+    data-catalog-nav-toggle
+    aria-expanded="false"
+  >
+    <span class="flex items-center justify-between gap-2.5">
+      <span class="flex items-center gap-2.5">
+        <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-brand to-brand2 text-white shadow-glow">
+          <i data-lucide="layout-grid" class="h-5 w-5" aria-hidden="true"></i>
+        </span>
+        <span class="block">
+          <span class="block text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">Каталог</span>
+          <span class="block text-sm font-semibold text-slate-800">Разделы</span>
+        </span>
       </span>
-      <div>
-        <p class="text-[11px] font-semibold uppercase tracking-[0.14em] text-brand">Каталог</p>
-        <p class="text-sm font-semibold text-slate-800">Разделы</p>
-      </div>
-    </div>
-  </div>
+      <i
+        data-lucide="chevron-down"
+        class="h-5 w-5 shrink-0 text-slate-400 transition-transform duration-200 lg:hidden"
+        data-catalog-nav-chevron
+        aria-hidden="true"
+      ></i>
+    </span>
+  </button>
 
-  <nav class="relative max-h-[min(70vh,36rem)] overflow-y-auto overscroll-contain p-2 sm:p-3" aria-label="Разделы каталога" data-accordion>
+  <nav class="relative hidden max-h-[min(70vh,36rem)] overflow-y-auto overscroll-contain p-2 sm:p-3 lg:block" aria-label="Разделы каталога" data-accordion data-catalog-nav-panel>
     <ul class="space-y-0.5">
       {% for section in catalog_nav_sections %}
         <li>
