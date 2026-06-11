@@ -617,7 +617,27 @@ def max_webhook(request: HttpRequest, secret: str) -> HttpResponse:
                 bot.answer_callback(callback_id=callback_id)
         return JsonResponse({"ok": True})
 
-    # message_created / bot_started: текст из message.body.text
+    # bot_started: пользователь открыл бота по deep-link `?start=<token>`.
+    # MAX кладёт токен в update["payload"], а chat_id - на верхний уровень
+    # (объекта message здесь нет, поэтому общий разбор текста ниже его не увидит).
+    if update_type == "bot_started":
+        token = (update.get("payload") or "").strip()
+        chat_id = update.get("chat_id") or (update.get("user") or {}).get("user_id")
+        if not chat_id:
+            return JsonResponse({"ok": True, "skipped": "bot_started without chat_id"})
+        sub, reply = _max_handle_start(f"/start {token}".rstrip(), chat_id)
+        bot.send_message(chat_id=chat_id, text=reply)
+        if sub and sub.max_chat_id and sub.active:
+            _max_send_welcome_digest(sub)
+        return JsonResponse({"ok": True})
+
+    # Прочие служебные апдейты без сообщения (bot_stopped, dialog_removed и т.п.)
+    # просто подтверждаем приём: слать в них нечего, а у заблокировавших бота
+    # отправка всё равно вернёт ошибку.
+    if not update.get("message"):
+        return JsonResponse({"ok": True, "skipped": f"no message in {update_type or 'update'}"})
+
+    # message_created: текст из message.body.text
     msg = update.get("message") or {}
     body = msg.get("body") or {}
     text = (body.get("text") or msg.get("text") or "").strip()

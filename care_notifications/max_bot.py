@@ -63,6 +63,7 @@ class MaxBotClient:
         method: str,
         path: str,
         payload: dict | None = None,
+        params: dict | None = None,
     ) -> Any:
         token = self._require_token()
         url = f"{MAX_API_BASE}{path}"
@@ -74,6 +75,7 @@ class MaxBotClient:
             resp = requests.request(
                 method.upper(),
                 url,
+                params=params,
                 json=payload or {},
                 headers=headers,
                 timeout=DEFAULT_TIMEOUT,
@@ -153,17 +155,18 @@ class MaxBotClient:
         """
         if not self.token:
             return {"ok": False, "message_id": None, "error": "MAX_BOT_TOKEN не задан"}
-        payload: dict[str, Any] = {
-            "chat_id": str(chat_id),
-            "text": text,
-        }
+        # MAX ждёт получателя (chat_id/user_id) в query-параметрах URL, а не в теле:
+        # chat_id внутри JSON-тела отдаёт 400 'proto.payload: Unknown recipient'.
+        payload: dict[str, Any] = {"text": text}
         if format:
             payload["format"] = format
         attachments = self._convert_reply_markup_to_attachments(reply_markup)
         if attachments:
             payload["attachments"] = attachments
         try:
-            result = self._api_call("POST", "/messages", payload)
+            result = self._api_call(
+                "POST", "/messages", payload, params={"chat_id": str(chat_id)}
+            )
         except MaxBotError as e:
             return {"ok": False, "message_id": None, "error": str(e)}
         # MAX отдаёт `{"message": {"id": "...", ...}}` или `{"message_id": "..."}`.
@@ -184,11 +187,12 @@ class MaxBotClient:
         """
         if not self.token:
             return {"ok": False, "error": "MAX_BOT_TOKEN не задан"}
-        payload: dict[str, Any] = {"callback_id": callback_id}
+        # callback_id, как и chat_id у /messages, идёт query-параметром, не в теле.
+        payload: dict[str, Any] = {}
         if text:
             payload["notification"] = text
         try:
-            self._api_call("POST", "/answers", payload)
+            self._api_call("POST", "/answers", payload, params={"callback_id": callback_id})
         except MaxBotError as e:
             return {"ok": False, "error": str(e)}
         return {"ok": True, "error": ""}
