@@ -209,14 +209,17 @@
           </p>
 
           <div class="mt-7 flex max-w-3xl flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <a
-              href="/sib_khvoinik_test/static/media/docs/gazon-price-2026-nds.docx"
-              download="Прайс на газоны 2026 с НДС.docx"
+            <button
+              type="button"
+              data-open-modal="gazon_price_download"
+              data-modal-title="Ваш прайс уже скачивается"
+              data-download-url="/sib_khvoinik_test/static/media/docs/gazon-price-2026-nds.docx"
+              data-download-name="Прайс на газоны 2026 с НДС.docx"
               class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
             >
               <i data-lucide="file-text" class="h-5 w-5"></i>
               Узнать цену
-            </a>
+            </button>
           </div>
         </div>
       </div>
@@ -1182,6 +1185,33 @@
     </div>
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
       Получить прайс-лист
+    </button>
+  </form>
+</template>
+
+<template id="modal-template-gazon_price_download">
+  <div class="mb-4 flex items-start gap-3 rounded-2xl border border-brand/20 bg-brand/5 p-4">
+    <i data-lucide="download" class="mt-0.5 h-5 w-5 shrink-0 text-brand"></i>
+    <p class="text-sm leading-snug text-slate-700">
+      Файл начнёт скачиваться через несколько секунд. Пока прайс загружается -
+      оставьте контакты: менеджер бесплатно проконсультирует по позициям и
+      поможет подобрать газон под ваш объект.
+    </p>
+  </div>
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-price-after-download" data-ui-action="none">
+    <input type="hidden" name="formTag" value="Gas/gazon-price-after-download" />
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      <label class="text-sm font-medium text-slate-700">
+        Имя
+        <input name="name" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="Как к вам обращаться" />
+      </label>
+      <label class="text-sm font-medium text-slate-700">
+        Телефон
+        <input name="phone" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="+7 ..." />
+      </label>
+    </div>
+    <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
+      Получить консультацию
     </button>
   </form>
 </template>

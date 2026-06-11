@@ -259,6 +259,7 @@ function initModal() {
     'b2b_care_reglement': 'modal-template-b2b_care_reglement',
     'b2b_payment_question': 'modal-template-b2b_payment_question',
     'gazon_price_list': 'modal-template-gazon_price_list',
+    'gazon_price_download': 'modal-template-gazon_price_download',
     'gazon_factory_open_day': 'modal-template-pitomnik_open_day_signup',
     'gazon_cpo': 'modal-template-gazon_cpo',
     'gazon_checklist': 'modal-template-gazon_checklist',
@@ -353,6 +354,30 @@ function initModal() {
     root.insertBefore(wrap, root.firstChild);
   };
 
+  // Отложенное скачивание файла: невидимый таймер запускает загрузку через
+  // delayMs, независимо от того, заполнит ли посетитель форму. Флаг гасит
+  // повторные таймеры при дабл-клике / повторном открытии модалки.
+  let fileDownloadPending = false;
+  const scheduleFileDownload = (url, filename, delayMs) => {
+    if (!url || fileDownloadPending) return;
+    fileDownloadPending = true;
+    setTimeout(() => {
+      try {
+        const a = document.createElement('a');
+        a.href = url;
+        if (filename) a.download = filename;
+        a.rel = 'noopener';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      } catch (err) {
+        console.warn('[SG download] не удалось начать загрузку:', err);
+      } finally {
+        fileDownloadPending = false;
+      }
+    }, delayMs);
+  };
+
   const openModal = (targetKey, title, options) => {
     const opts = options || {};
     const tplId = templateMap[targetKey];
@@ -428,6 +453,12 @@ function initModal() {
       initConsentCheckboxes();
     }
 
+    // Прайс газон: форма выезжает сразу, а файл скачивается через 5 секунд -
+    // даже если посетитель закроет модалку или не заполнит форму.
+    if (targetKey === 'gazon_price_download') {
+      scheduleFileDownload(opts.downloadUrl, opts.downloadName, 5000);
+    }
+
     activeNoOverlay = Boolean(opts.noOverlay);
     if (activeNoOverlay) {
       overlay.classList.add('hidden');
@@ -468,6 +499,8 @@ function initModal() {
     const title = btn.getAttribute('data-modal-title') || '';
     const noOverlay = btn.getAttribute('data-modal-no-overlay') === '1';
     const contextTitle = btn.getAttribute('data-modal-context') || title;
+    const downloadUrl = btn.getAttribute('data-download-url') || '';
+    const downloadName = btn.getAttribute('data-download-name') || '';
     let selectionNames = [];
     try {
       const rawNames = btn.getAttribute('data-modal-selection-names');
@@ -476,7 +509,7 @@ function initModal() {
     } catch (err) {
       selectionNames = [];
     }
-    openModal(key, title, { noOverlay, contextTitle, selectionNames });
+    openModal(key, title, { noOverlay, contextTitle, selectionNames, downloadUrl, downloadName });
   };
 
   const bindOpenModalButtons = (root) => {
@@ -528,6 +561,7 @@ function initModal() {
     'reglement-uhoda': 'Регламент ухода (B2B)',
     'payment-question': 'Вопрос по оплате (B2B)',
     'gazon-price-list': 'Прайс-лист газон',
+    'gazon-price-after-download': 'Прайс газон: заявка после скачивания',
     'gazon-cpo': 'КП на газон',
     'gazon-checklist': 'Чек-лист газон',
     'gazon-open-day': 'День открытых дверей',
@@ -636,6 +670,7 @@ function initModal() {
     'Прайс и наличие (B2B)': 1347,
     'Калькулятор газона': 17,
     'Прайс-лист газон': 17,
+    'Прайс газон: заявка после скачивания': 17,
     'Логистика газон': 17,
   };
   const LEAD_ROUTING_DEFAULT = 1317;
