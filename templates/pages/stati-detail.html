@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% block title %}{{ seo_title|default:article.title }} — {{ brand }}{% endblock %}
 
 {% block content %}
@@ -26,6 +27,18 @@
 
         {% if article.lead %}
           <p class="mt-5 text-lg text-slate-700 max-w-3xl">{{ article.lead }}</p>
+        {% endif %}
+
+        {% if article.image %}
+          <figure class="mt-7 max-w-3xl overflow-hidden rounded-3xl border border-black/5 bg-slate-100">
+            <img
+              src="{% static article.image %}"
+              alt="{{ article.image_alt|default:article.title }}"
+              class="w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
         {% endif %}
 
         <div class="mt-8 max-w-3xl space-y-8">
@@ -101,8 +114,9 @@
           <div class="mt-6 flex flex-col sm:flex-row gap-3">
             <button
               type="button"
-              data-open-modal="contact_zaboty"
+              data-open-modal="contact_zaboty_calendar"
               data-modal-title="Подключиться к Службе заботы"
+              onclick="window.SGOpenModal && window.SGOpenModal('contact_zaboty_calendar','Подключиться к Службе заботы'); return false;"
               class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
             >
               Подключиться к Службе заботы

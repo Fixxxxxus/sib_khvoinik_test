@@ -109,7 +109,7 @@
 }
 </script>
 
-    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Уход за садом в Сибири: чем наш климат меняет правила", "description": "Морозы до -40, выпревание, снежная плесень и весенние ожоги хвойных: главные риски сибирского сада и как их закрывать по календарю.", "inLanguage": "ru-RU", "mainEntityOfPage": "https://gazony.ru/stati/osobennosti-klimata-sibiri/", "publisher": {"@id": "https://gazony.ru/#organization"}, "author": {"@type": "Organization", "name": "Агрономы компании «Сибирские газоны»", "url": "https://gazony.ru/o-kompanii/"}, "datePublished": "2026-06-11", "dateModified": "2026-06-11"}</script>
+    <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "Уход за садом в Сибири: чем наш климат меняет правила", "description": "Морозы до -40, выпревание, снежная плесень и весенние ожоги хвойных: главные риски сибирского сада и как их закрывать по календарю.", "inLanguage": "ru-RU", "mainEntityOfPage": "https://gazony.ru/stati/osobennosti-klimata-sibiri/", "publisher": {"@id": "https://gazony.ru/#organization"}, "author": {"@type": "Organization", "name": "Агрономы компании «Сибирские газоны»", "url": "https://gazony.ru/o-kompanii/"}, "datePublished": "2026-06-11", "dateModified": "2026-06-11", "image": "https://gazony.ru/static/media/images/stati/osobennosti-klimata-sibiri.webp"}</script>
     <script type="application/ld+json">{"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Главная", "item": "https://gazony.ru/"}, {"@type": "ListItem", "position": 2, "name": "Статьи", "item": "https://gazony.ru/stati/"}, {"@type": "ListItem", "position": 3, "name": "Уход за садом в Сибири: чем наш климат меняет правила", "item": "https://gazony.ru/stati/osobennosti-klimata-sibiri/"}]}</script>
     <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Когда снимать зимнее укрытие с роз и хвойных?", "acceptedAnswer": {"@type": "Answer", "text": "Укрытие снимают постепенно, когда снег полностью сошёл и ночные температуры стабильно выше -5 °C: в Новосибирске обычно середина - конец апреля. Сначала приоткрывают торцы для проветривания, через несколько дней снимают укрытие целиком, лучше в пасмурный день."}}, {"@type": "Question", "name": "Какие растения зимуют в Новосибирске без укрытия?", "acceptedAnswer": {"@type": "Answer", "text": "Районированные хвойные (ели, сосны, можжевельник казацкий), дерен, пузыреплодник, спирея, сирень и большинство растений 2-3 зоны морозостойкости. Розы, клематисы и молодые посадки первых двух лет требуют укрытия."}}]}</script>
     
@@ -411,6 +411,18 @@
           <p class="mt-5 text-lg text-slate-700 max-w-3xl">Советы из садовых книг, написанных для средней полосы, в Сибири работают плохо: у нас короче сезон, глубже промерзает почва и резче перепады температур. Многолетний опыт выращивания растений под Новосибирском научил нас планировать уход по календарю, а не по ощущениям.</p>
         
 
+        
+          <figure class="mt-7 max-w-3xl overflow-hidden rounded-3xl border border-black/5 bg-slate-100">
+            <img
+              src="/sib_khvoinik_test/static/media/images/stati/osobennosti-klimata-sibiri.webp"
+              alt="Питомник растений и поля компании с высоты птичьего полёта"
+              class="w-full object-cover"
+              loading="lazy"
+              decoding="async"
+            />
+          </figure>
+        
+
         <div class="mt-8 max-w-3xl space-y-8">
           
             <section>
@@ -510,8 +522,9 @@
           <div class="mt-6 flex flex-col sm:flex-row gap-3">
             <button
               type="button"
-              data-open-modal="contact_zaboty"
+              data-open-modal="contact_zaboty_calendar"
               data-modal-title="Подключиться к Службе заботы"
+              onclick="window.SGOpenModal && window.SGOpenModal('contact_zaboty_calendar','Подключиться к Службе заботы'); return false;"
               class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
             >
               Подключиться к Службе заботы

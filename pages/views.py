@@ -188,6 +188,8 @@ def stati_detail(request, article_slug):
     ctx["og_title"] = article["title"]
     ctx["meta_description"] = article["excerpt"]
     ctx["canonical_path"] = canonical_path
+    if article.get("image"):
+        ctx["og_image"] = article["image"]
     jsonld_blocks = [
         seo.article_jsonld(article, canonical_path),
         seo.breadcrumbs_jsonld([

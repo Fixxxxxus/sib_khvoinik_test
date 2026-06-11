@@ -138,6 +138,8 @@ def article_jsonld(article: dict[str, Any], canonical_path: str) -> str:
         data["datePublished"] = article["date_published"]
     if article.get("date_modified"):
         data["dateModified"] = article["date_modified"]
+    if article.get("image"):
+        data["image"] = absolute(f"/static/{article['image']}")
     return jsonld(data)
 
 
