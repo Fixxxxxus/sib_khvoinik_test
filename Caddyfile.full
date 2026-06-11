@@ -11,6 +11,9 @@
 (site_backend) {
 	encode zstd gzip
 
+	# HSTS на терминации TLS: браузер год не ходит по http.
+	header Strict-Transport-Security "max-age=31536000"
+
 	handle_path /static/* {
 		root * /srv/static
 		file_server
@@ -51,5 +54,10 @@ gazony.ru {
 
 # www → 301 на apex (единый канонический URL для SEO).
 www.gazony.ru {
+	redir https://gazony.ru{uri} permanent
+}
+
+# http://www → сразу на https-apex одним прыжком (вместо цепочки из двух 301).
+http://www.gazony.ru {
 	redir https://gazony.ru{uri} permanent
 }
