@@ -1317,6 +1317,11 @@
             <span>Telegram</span>
           </label>
           <label class="flex flex-1 cursor-pointer items-center gap-2.5 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
+            <input type="radio" name="preferred_messenger" value="max" class="h-4 w-4 border-black/20 text-brand focus:ring-brand/30" />
+            <i data-lucide="message-circle" class="h-4 w-4 text-brand"></i>
+            <span>MAX</span>
+          </label>
+          <label class="flex flex-1 cursor-pointer items-center gap-2.5 rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm text-slate-700">
             <input type="radio" name="preferred_messenger" value="email" class="h-4 w-4 border-black/20 text-brand focus:ring-brand/30" />
             <i data-lucide="mail" class="h-4 w-4 text-brand"></i>
             <span>Эл. почта</span>
@@ -1326,7 +1331,7 @@
       <label class="block text-sm font-medium text-slate-700">
         Адрес электронной почты
         <input name="email" type="email" required class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20" placeholder="name@example.com" autocomplete="email" />
-        <span class="mt-1 block text-xs font-normal text-slate-500">Нужна в любом случае: продублируем напоминания письмом, даже если выбрали Telegram.</span>
+        <span class="mt-1 block text-xs font-normal text-slate-500">Нужна в любом случае: продублируем напоминания письмом, даже если выбрали мессенджер.</span>
       </label>
       <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
         <input type="checkbox" name="consent_messages" value="1" checked class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
