@@ -352,3 +352,180 @@ a.shadow-glow:hover {
   display: block;
 }
 
+/* Каталог: shimmer-плейсхолдер на контейнере фото, пока изображение грузится (JS добавляет is-loaded) */
+[data-img-skeleton] {
+  position: relative;
+}
+[data-img-skeleton]::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(226, 232, 240, 0.65) 30%,
+    rgba(248, 250, 252, 0.95) 50%,
+    rgba(226, 232, 240, 0.65) 70%
+  );
+  background-size: 200% 100%;
+  animation: sg-img-skeleton-shimmer 1.4s ease-in-out infinite;
+  opacity: 1;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+[data-img-skeleton].is-loaded::before {
+  opacity: 0;
+  animation: none;
+}
+[data-img-skeleton] img {
+  position: relative;
+  opacity: 0;
+  transition: opacity 0.35s ease;
+}
+[data-img-skeleton].is-loaded img {
+  opacity: 1;
+}
+@keyframes sg-img-skeleton-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-img-skeleton]::before {
+    animation: none;
+  }
+  [data-img-skeleton] img {
+    transition: none;
+  }
+}
+
+/* Карточка растения: полноэкранный лайтбокс главного фото (по образцу pitomnik-greenhouse-lightbox) */
+.sg-photo-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 9998;
+  display: none;
+  box-sizing: border-box;
+}
+.sg-photo-lightbox.is-open {
+  display: block;
+}
+.sg-photo-lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  cursor: pointer;
+}
+.sg-photo-lightbox__surface {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right))
+    max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+}
+.sg-photo-lightbox__img-wrap {
+  pointer-events: auto;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 0;
+  min-height: 0;
+  max-height: 100%;
+  padding: 0 2.75rem;
+}
+@media (min-width: 640px) {
+  .sg-photo-lightbox__img-wrap {
+    padding: 0 3.25rem;
+  }
+}
+.sg-photo-lightbox__img {
+  max-width: 100%;
+  max-height: min(88dvh, 100%);
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  vertical-align: middle;
+  -webkit-user-select: none;
+  user-select: none;
+  touch-action: pan-y pinch-zoom;
+}
+.sg-photo-lightbox__close {
+  pointer-events: auto;
+  position: absolute;
+  top: max(0.5rem, env(safe-area-inset-top));
+  right: max(0.5rem, env(safe-area-inset-right));
+  z-index: 2;
+  display: inline-flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  font-size: 1.5rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.sg-photo-lightbox__close:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: none;
+}
+.sg-photo-lightbox__close:active {
+  transform: scale(0.94);
+}
+.sg-photo-lightbox__nav {
+  pointer-events: auto;
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: inline-flex;
+  height: 2.75rem;
+  width: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+  cursor: pointer;
+  transform: translateY(-50%);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12);
+  transition: background 0.15s ease;
+}
+.sg-photo-lightbox__nav:hover {
+  background: #fff;
+  transform: translateY(-50%);
+}
+.sg-photo-lightbox__nav:active {
+  transform: translateY(-50%) scale(0.96);
+}
+.sg-photo-lightbox__nav.is-hidden {
+  display: none;
+}
+.sg-photo-lightbox__nav--prev {
+  left: max(0.35rem, env(safe-area-inset-left));
+}
+.sg-photo-lightbox__nav--next {
+  right: max(0.35rem, env(safe-area-inset-right));
+}
+.sg-photo-lightbox__nav svg {
+  display: block;
+}
+
+
+/* Куки-плашка видима: поднимаем кнопку Битрикс24 (справа внизу) над ней.
+   Высоту плашки задаёт app.js через --sg-cookie-banner-h (syncFloatingUiAboveCookieBanner);
+   !important нужен, т.к. виджет Б24 позиционируется собственными стилями из CDN. */
+body.sg-cookie-banner-open .b24-widget-button-wrapper {
+  bottom: calc(var(--sg-cookie-banner-h, 0px) + 16px) !important;
+}

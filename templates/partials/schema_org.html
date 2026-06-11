@@ -1,0 +1,89 @@
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://gazony.ru/#organization",
+      "name": "Сибирские газоны",
+      "legalName": "ООО «Сибирский хвойник»",
+      "taxID": "5406843096",
+      "url": "https://gazony.ru/",
+      "logo": "https://gazony.ru/static/media/branding/logo-main.webp",
+      "description": "Производство рулонного газона (около 200 га полей), питомник растений 22 га, тепличный комплекс 5000 м² и технологичное озеленение в Новосибирске. Работаем с 1999 года.",
+      "foundingDate": "1999",
+      "telephone": "+7-383-201-06-00",
+      "email": "price@gazony.ru",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Железнодорожная, 12/1, оф. 501",
+        "addressLocality": "Новосибирск",
+        "addressRegion": "Новосибирская область",
+        "postalCode": "630132",
+        "addressCountry": "RU"
+      },
+      "areaServed": "Новосибирск и Сибирский федеральный округ",
+      "sameAs": [
+        "https://vk.com/sibirskiegazony",
+        "https://t.me/sibirskie_gazony",
+        "https://yandex.ru/maps/org/sibirskiye_gazony/1293998698/",
+        "https://2gis.ru/novosibirsk/firm/70000001103264163"
+      ],
+      "subOrganization": [
+        {"@id": "https://gazony.ru/#gc-mega"},
+        {"@id": "https://gazony.ru/#gc-novopichugovo"}
+      ]
+    },
+    {
+      "@type": "GardenStore",
+      "@id": "https://gazony.ru/#gc-mega",
+      "name": "Садовый центр МЕГА: Сибирские газоны",
+      "parentOrganization": {"@id": "https://gazony.ru/#organization"},
+      "url": "https://gazony.ru/sadovye-centry/",
+      "telephone": "+7-913-756-90-16",
+      "image": "https://gazony.ru/static/media/images/sadovye-center-mega.webp",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Ватутина, 107",
+        "addressLocality": "Новосибирск",
+        "addressRegion": "Новосибирская область",
+        "addressCountry": "RU"
+      },
+      "openingHoursSpecification": [
+        {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "09:00", "closes": "19:00"},
+        {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday", "Saturday"], "opens": "09:00", "closes": "20:00"}
+      ],
+      "priceRange": "₽₽"
+    },
+    {
+      "@type": "GardenStore",
+      "@id": "https://gazony.ru/#gc-novopichugovo",
+      "name": "Садовый центр Новопичугово: Сибирские газоны",
+      "parentOrganization": {"@id": "https://gazony.ru/#organization"},
+      "url": "https://gazony.ru/sadovye-centry/",
+      "telephone": "+7-913-756-90-61",
+      "image": "https://gazony.ru/static/media/images/sadovye-center-novopichugovo.webp",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Сосновая",
+        "addressLocality": "село Новопичугово",
+        "addressRegion": "Новосибирская область",
+        "addressCountry": "RU"
+      },
+      "openingHoursSpecification": [
+        {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "09:00", "closes": "19:00"},
+        {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday", "Saturday"], "opens": "09:00", "closes": "20:00"}
+      ],
+      "priceRange": "₽₽"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://gazony.ru/#website",
+      "url": "https://gazony.ru/",
+      "name": "Сибирские газоны",
+      "publisher": {"@id": "https://gazony.ru/#organization"},
+      "inLanguage": "ru-RU"
+    }
+  ]
+}
+</script>

@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ title }} — {{ brand }}{% endblock %}
+{% block title %}{{ seo_title|default:title }} — {{ brand }}{% endblock %}
 
 {% block content %}
   <!-- HERO: фон — оптимизированное видео + poster (мгновенный фон до загрузки) -->
@@ -709,7 +709,7 @@
         >
           <div class="h-60 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
             <img
-              src="{% static 'media/images/sadovye-center-novopichugovo.jpg' %}"
+              src="{% static 'media/images/sadovye-center-novopichugovo.webp' %}"
               alt="Садовый центр Новопичугово"
               class="h-full w-full object-cover object-center"
               loading="lazy"
@@ -754,7 +754,7 @@
         >
           <div class="h-60 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
             <img
-              src="{% static 'media/images/sadovye-center-mega.jpg' %}"
+              src="{% static 'media/images/sadovye-center-mega.webp' %}"
               alt="Садовый центр МЕГА"
               class="h-full w-full object-cover object-center"
               loading="lazy"

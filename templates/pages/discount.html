@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{{ title }} — {{ brand }}{% endblock %}
+{% block title %}{{ seo_title|default:title }} — {{ brand }}{% endblock %}
 
 {% block content %}
   <!-- HERO -->

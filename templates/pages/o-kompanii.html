@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ seo_title|default:title }} — {{ brand }}{% endblock %}
+
+{% block content %}
+  <section class="mt-10">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
+        <h1 class="text-3xl md:text-4xl font-semibold leading-tight">О компании «Сибирские газоны»</h1>
+        <p class="mt-4 text-lg text-slate-700 max-w-3xl">{{ lead }}</p>
+
+        <div class="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          {% for f in facts %}
+            <div class="rounded-2xl border border-black/5 bg-white p-4 text-center">
+              <div class="text-2xl font-semibold text-brand">{{ f.value }}</div>
+              <div class="mt-1 text-xs text-slate-600">{{ f.label }}</div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-12 lg:gap-8 items-start">
+        <div class="lg:col-span-7 space-y-6">
+          {% for section in sections %}
+            <section class="rounded-3xl border border-black/5 bg-white p-8" data-animate="fadeInUp">
+              <h2 class="text-2xl font-semibold leading-snug">{{ section.heading }}</h2>
+              {% for p in section.paragraphs %}
+                <p class="mt-3 text-slate-700 leading-relaxed">{{ p }}</p>
+              {% endfor %}
+            </section>
+          {% endfor %}
+
+          <section class="rounded-3xl border border-black/5 bg-white p-8" data-animate="fadeInUp">
+            <h2 class="text-2xl font-semibold leading-snug">Реквизиты</h2>
+            <dl class="mt-4 space-y-2 text-sm text-slate-700">
+              <div class="flex flex-col sm:flex-row sm:gap-2"><dt class="font-semibold text-slate-900 sm:w-40 shrink-0">Юридическое лицо</dt><dd>{{ requisites.name }}</dd></div>
+              <div class="flex flex-col sm:flex-row sm:gap-2"><dt class="font-semibold text-slate-900 sm:w-40 shrink-0">ИНН</dt><dd>{{ requisites.inn }}</dd></div>
+              <div class="flex flex-col sm:flex-row sm:gap-2"><dt class="font-semibold text-slate-900 sm:w-40 shrink-0">Адрес</dt><dd>{{ requisites.address }}</dd></div>
+              <div class="flex flex-col sm:flex-row sm:gap-2"><dt class="font-semibold text-slate-900 sm:w-40 shrink-0">Email</dt><dd><a href="mailto:{{ requisites.email }}" class="hover:text-brand transition">{{ requisites.email }}</a></dd></div>
+            </dl>
+          </section>
+
+          <section class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8" data-animate="fadeInUp">
+            <h2 class="text-2xl font-semibold">Посмотреть производство своими глазами</h2>
+            <p class="mt-2 text-slate-600">Проводим экскурсии по полям рулонного газона и питомнику.</p>
+            <div class="mt-5 flex flex-col sm:flex-row gap-3">
+              <button
+                type="button"
+                data-open-modal="contact_zaboty"
+                data-modal-title="Записаться на экскурсию"
+                data-modal-context="О компании — Записаться на экскурсию"
+                class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
+              >
+                Записаться на экскурсию
+              </button>
+              <a href="/kontakty/" class="inline-flex items-center justify-center rounded-2xl border border-black/10 px-6 py-3 font-semibold hover:bg-black/5 transition">
+                Контакты
+              </a>
+            </div>
+          </section>
+        </div>
+
+        <aside class="lg:col-span-5 space-y-5 lg:sticky lg:top-24" data-animate="fadeInUp">
+          <figure class="overflow-hidden rounded-3xl border border-black/5 bg-white shadow-soft">
+            <div class="aspect-[4/3] overflow-hidden bg-slate-100">
+              <img
+                src="{% static 'media/videos/gazon-proizvodstvo-poster.jpg' %}"
+                alt="Поля рулонного газона компании под Новосибирском"
+                class="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <figcaption class="p-4 text-sm text-slate-600">
+              <span class="font-semibold text-slate-900">Поля рулонного газона.</span>
+              Около 200 гектаров под Новосибирском, отгрузка до 8&nbsp;000&nbsp;м² в день.
+            </figcaption>
+          </figure>
+
+          <figure class="overflow-hidden rounded-3xl border border-black/5 bg-white shadow-soft">
+            <div class="aspect-[4/3] overflow-hidden bg-slate-100">
+              <img
+                src="{% static 'media/images/home-production-pitomnik-poster.jpg' %}"
+                alt="Питомник растений и тепличный комплекс"
+                class="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <figcaption class="p-4 text-sm text-slate-600">
+              <span class="font-semibold text-slate-900">Питомник и теплицы.</span>
+              22 гектара открытого грунта и 5000&nbsp;м² тепличного комплекса.
+            </figcaption>
+          </figure>
+
+          <figure class="overflow-hidden rounded-3xl border border-black/5 bg-white shadow-soft">
+            <div class="aspect-[4/3] overflow-hidden bg-slate-100">
+              <img
+                src="{% static 'media/images/sadovye-center-mega.webp' %}"
+                alt="Садовый центр у ТЦ МЕГА в Новосибирске"
+                class="h-full w-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+            </div>
+            <figcaption class="p-4 text-sm text-slate-600">
+              <span class="font-semibold text-slate-900">Садовые центры.</span>
+              У ТЦ МЕГА (ул. Ватутина, 107) и в селе Новопичугово.
+            </figcaption>
+          </figure>
+        </aside>
+      </div>
+    </div>
+  </section>
+{% endblock %}

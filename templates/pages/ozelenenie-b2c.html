@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ title }} — {{ brand }}{% endblock %}
+{% block title %}{{ seo_title|default:title }} — {{ brand }}{% endblock %}
 
 {% block content %}
   <!-- HERO -->
@@ -95,14 +95,14 @@
             <div class="rounded-3xl border border-black/5 overflow-hidden bg-slate-900">
               <video
                 class="h-72 w-full object-cover md:h-80 lg:h-[22rem]"
-                autoplay
                 muted
                 loop
                 playsinline
-                preload="metadata"
+                  data-lazy-video
+                preload="none"
                 poster="{% static 'media/videos/ozelenenie-kogda-obrashchatsya-poster.jpg' %}?v=1"
               >
-                <source src="{% static 'media/videos/ozelenenie-kogda-obrashchatsya.mp4' %}?v=1" type="video/mp4" />
+                <source data-src="{% static 'media/videos/ozelenenie-kogda-obrashchatsya.mp4' %}?v=1" type="video/mp4" />
               </video>
             </div>
           </div>
@@ -290,15 +290,15 @@
           <video
             class="absolute inset-0 h-full w-full object-cover"
             style="max-width: none; max-height: none"
-            autoplay
             muted
             loop
             playsinline
-            preload="metadata"
+                  data-lazy-video
+            preload="none"
             poster="{% static 'media/videos/ozelenenie-sobstvennoe-proizvodstvo-poster.jpg' %}?v=1"
             aria-label="Производство: поля и техника"
           >
-            <source src="{% static 'media/videos/ozelenenie-sobstvennoe-proizvodstvo.mp4' %}?v=1" type="video/mp4" />
+            <source data-src="{% static 'media/videos/ozelenenie-sobstvennoe-proizvodstvo.mp4' %}?v=1" type="video/mp4" />
           </video>
         </div>
         <button

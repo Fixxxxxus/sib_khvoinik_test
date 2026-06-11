@@ -19,15 +19,21 @@ pip install -r requirements.txt
 # Run dev server
 python manage.py runserver
 
+# Rebuild Tailwind CSS after editing classes in templates/ or static/js/app.js
+# (standalone CLI v3.4.x, https://github.com/tailwindlabs/tailwindcss/releases)
+tailwindcss -c tailwind.config.js -i tailwind.input.css -o static/css/tailwind.css --minify
+
 # Export pages to docs/ for GitHub Pages deployment
 python scripts/export_home_to_docs.py          # полный docs/index.html (включая модалки)
 python scripts/export_pitomnik_to_docs.py
 python scripts/export_b2b_to_docs.py
 python scripts/export_gazon_page_to_docs.py
 python scripts/export_catalog_to_docs.py
+python scripts/export_stati_to_docs.py         # список статей + детальные страницы
+python scripts/export_common.py                # ВСЕГДА после экспортов: noindex для зеркала
 ```
 
-There are no tests, linters, or frontend build steps configured.
+There are no tests or linters configured. The only frontend build step is the Tailwind CSS rebuild above (commit the regenerated `static/css/tailwind.css` together with template changes, and copy it to `docs/static/css/`).
 
 ## Bitrix24 MCP Server
 
@@ -59,12 +65,13 @@ Note: `sender.*` (email marketing) module is not available on this portal — ma
 4. **`scripts/`** — export scripts render templates to static HTML, rewrite paths (`/static/` → `/sib_khvoinik_test/static/`), and save to `docs/`.
 5. **`docs/`** — pre-rendered static site deployed via GitHub Actions (`deploy-pages.yml`). Changes here are committed to git.
 
-### Tailwind CSS — browser-compiled, no build step
+### Tailwind CSS — prebuilt static CSS
 
-Tailwind runs in the browser via `static/js/tailwind.browser.js`. Config is inline in `base.html`:
-- `brand: '#2D6A4F'`, `brand2: '#40916C'`, `accent: '#E9C46A'`
+Tailwind is compiled to `static/css/tailwind.css` with the standalone CLI (no node/npm). Config lives in `tailwind.config.js` (colors `brand: '#2D6A4F'`, `brand2: '#40916C'`, `accent: '#E9C46A'`; shadows `soft`/`glow`), entry file `tailwind.input.css`. After ANY change to Tailwind classes in `templates/` or `static/js/app.js`, rebuild the CSS (see Commands) - otherwise new classes silently have no styles. `static/js/tailwind.browser.js` is the legacy runtime compiler, kept only for old non-re-exported `docs/` pages.
 
-No `package.json`, `tailwind.config.js`, or PostCSS — all runtime.
+### SEO/GEO infrastructure (`pages/seo.py`)
+
+`robots.txt`, `sitemap.xml`, `llms.txt`, IndexNow key file and JSON-LD builders (FAQ, Product, Breadcrumbs, Article) live in `pages/seo.py` and are wired via `pages/urls.py`. Global Organization/GardenStore/WebSite JSON-LD: `templates/partials/schema_org.html` (included in `base.html`). Per-page meta: each dict in `pages/data.py` carries `seo_title`, `meta_description`, `canonical_path` (and optional `noindex`); dynamic pages set them in views. 301 redirects from the old site structure (`/company/`, `/services/*`, `/advice/*`) are in `pages/urls.py`.
 
 ### Client-side (`static/js/app.js`)
 

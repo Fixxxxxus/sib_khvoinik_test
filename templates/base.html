@@ -5,9 +5,22 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <title>{% block title %}Сибирские газоны{% endblock %}</title>
-    <meta name="description" content="Сибирские газоны — технологичное озеленение, питомник и рулонный газон" />
+    <meta name="description" content="{{ meta_description|default:'Сибирские газоны: собственное производство рулонного газона, питомник растений и технологичное озеленение в Новосибирске. Работаем с 1999 года.' }}" />
+    {% if noindex %}<meta name="robots" content="noindex,nofollow" />{% endif %}
+    {% if canonical_path %}<link rel="canonical" href="https://gazony.ru{{ canonical_path }}" />{% endif %}
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Сибирские газоны" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:title" content="{% firstof og_title seo_title title 'Сибирские газоны' %}" />
+    <meta property="og:description" content="{{ meta_description|default:'Сибирские газоны: собственное производство рулонного газона, питомник растений и технологичное озеленение в Новосибирске. Работаем с 1999 года.' }}" />
+    {% if canonical_path %}<meta property="og:url" content="https://gazony.ru{{ canonical_path }}" />{% endif %}
+    <meta property="og:image" content="https://gazony.ru{% static og_image|default:'media/branding/og-default.jpg' %}" />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="base-path" content="" />
     <meta name="zen-verification" content="Bu3VGfUe3AezccVAB29rXmp71iMefM5W1YLRtK7TI67SbqekTN80Hija2r4Napmw" />
+    {% include 'partials/schema_org.html' %}
+    {% for block in jsonld_blocks %}<script type="application/ld+json">{{ block|safe }}</script>
+    {% endfor %}{% block structured_data %}{% endblock %}
 
     <!-- Yandex.Metrika counter -->
     <script type="text/javascript">
@@ -49,30 +62,15 @@
     <link rel="icon" href="{% static 'media/branding/favicon.svg' %}" type="image/svg+xml" />
     <link rel="icon" href="{% static 'media/branding/favicon-32.png' %}" sizes="32x32" type="image/png" />
 
-    <!-- Tailwind: локальный скрипт (CDN без сети ломает всю вёрстку — классы hidden/md:* не работают) -->
-    <script src="{% static 'js/tailwind.browser.js' %}?v=1"></script>
-    <script>
-      tailwind.config = {
-        theme: {
-          extend: {
-            colors: {
-              brand: '#2D6A4F',
-              brand2: '#40916C',
-              accent: '#E9C46A',
-            },
-            boxShadow: {
-              soft: '0 10px 30px rgba(0,0,0,0.08)',
-              glow: '0 0 0 1px rgba(64,145,108,0.25), 0 20px 60px rgba(45,106,79,0.22)',
-            },
-          },
-        },
-      };
-    </script>
+    <!-- Tailwind: статический CSS, собранный standalone CLI (см. tailwind.config.js).
+         После правок классов в шаблонах пересобрать:
+         tailwindcss -c tailwind.config.js -i tailwind.input.css -o static/css/tailwind.css --minify -->
+    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}?v=1" />
 
-    <!-- Lucide icons -->
-    <script src="https://unpkg.com/lucide@0.546.0"></script>
+    <!-- Lucide icons: self-hosted (unpkg - внешняя зависимость, бывает недоступен из РФ) -->
+    <script src="{% static 'js/lucide.min.js' %}?v=1" defer></script>
 
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=22" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=23" />
   </head>
   <body class="bg-white text-slate-900 antialiased">
     <noscript>
@@ -94,7 +92,7 @@
     {% include 'partials/centers_widget.html' %}
     {% include 'partials/centers_modal.html' %}
 
-    <script src="{% static 'js/app.js' %}?v=53" defer></script>
+    <script src="{% static 'js/app.js' %}?v=55" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {

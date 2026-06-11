@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ title }} — {{ brand }}{% endblock %}
+{% block title %}{{ seo_title|default:title }} — {{ brand }}{% endblock %}
 
 {% block content %}
   <section
@@ -115,15 +115,15 @@
       <div class="mt-8 rounded-3xl border border-black/5 bg-slate-950 overflow-hidden shadow-soft" data-animate="fadeInUp">
         <video
           class="h-[260px] w-full object-cover sm:h-[340px] lg:h-[460px]"
-          autoplay
           muted
           loop
           playsinline
-          preload="metadata"
+                  data-lazy-video
+          preload="none"
           poster="{% static 'media/videos/b2b-production-capacity-poster.jpg' %}?v=1"
           aria-label="Производственные мощности"
         >
-          <source src="{% static 'media/videos/b2b-production-capacity.mp4' %}?v=2" type="video/mp4" />
+          <source data-src="{% static 'media/videos/b2b-production-capacity.mp4' %}?v=2" type="video/mp4" />
         </video>
       </div>
 

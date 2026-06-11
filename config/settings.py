@@ -61,7 +61,8 @@ if not DEBUG:
     SECURE_SSL_REDIRECT = os.environ.get(
         'DJANGO_SSL_REDIRECT', '1'
     ).lower() in ('1', 'true', 'yes')
-    SECURE_HSTS_SECONDS = int(os.environ.get('DJANGO_HSTS_SECONDS', '0'))
+    # Год HSTS по умолчанию: HTTPS на gazony.ru постоянный (Caddy), даунгрейда не планируется.
+    SECURE_HSTS_SECONDS = int(os.environ.get('DJANGO_HSTS_SECONDS', '31536000'))
     SECURE_HSTS_INCLUDE_SUBDOMAINS = os.environ.get(
         'DJANGO_HSTS_INCLUDE_SUBDOMAINS', '0'
     ).lower() in ('1', 'true', 'yes')
@@ -200,6 +201,11 @@ USE_DATABASE_CATALOG = _env_database_source_flag("USE_DATABASE_CATALOG")
 
 # Календарь (/stati/, /sluzhba-zaboty/calendar/): БД; иначе calendar_data.py.
 USE_DATABASE_CALENDAR = _env_database_source_flag("USE_DATABASE_CALENDAR")
+
+# TTL кэша собранного каталога в секундах (pages/catalog_cache.py).
+# 0 - кэш выключен. Сигналы post_save/post_delete сбрасывают кэш в своём процессе,
+# TTL страхует остальные gunicorn-воркеры.
+CATALOG_CACHE_TTL = int(os.environ.get("CATALOG_CACHE_TTL", "120") or "120")
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field

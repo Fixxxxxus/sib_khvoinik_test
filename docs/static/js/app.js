@@ -44,6 +44,21 @@ function initConsentCheckboxes() {
 }
 
 // ── 152-ФЗ: Cookie banner ──
+
+// Плавающие элементы не должны перекрывать куки-плашку: пока баннер виден,
+// поднимаем над ним виджет садовых центров (слева, inline bottom) и кнопку
+// Битрикс24 (справа, через body-класс + CSS-переменную в styles.css, т.к. её
+// DOM появляется асинхронно из CDN-лоадера).
+function syncFloatingUiAboveCookieBanner() {
+  var banner = document.getElementById('cookieBanner');
+  var bannerVisible = !!(banner && !banner.classList.contains('hidden'));
+  var h = bannerVisible ? banner.offsetHeight : 0;
+  document.documentElement.style.setProperty('--sg-cookie-banner-h', h + 'px');
+  document.body.classList.toggle('sg-cookie-banner-open', bannerVisible);
+  var widget = document.getElementById('centersWidget');
+  if (widget) widget.style.bottom = bannerVisible ? (h + 8) + 'px' : '';
+}
+
 function initCookieBanner() {
   const banner = document.getElementById('cookieBanner');
   const acceptAll = document.getElementById('cookieAcceptAll');
@@ -57,10 +72,13 @@ function initCookieBanner() {
   } else if (consent === 'all') {
     initYandexMetrika();
   }
+  syncFloatingUiAboveCookieBanner();
+  window.addEventListener('resize', syncFloatingUiAboveCookieBanner);
 
   const setConsent = (value) => {
     localStorage.setItem('cookie_consent', value);
     banner.classList.add('hidden');
+    syncFloatingUiAboveCookieBanner();
     if (value === 'all') initYandexMetrika();
   };
 
@@ -71,6 +89,7 @@ function initCookieBanner() {
     settingsBtn.addEventListener('click', () => {
       localStorage.removeItem('cookie_consent');
       banner.classList.remove('hidden');
+      syncFloatingUiAboveCookieBanner();
     });
   }
 }
@@ -1908,14 +1927,21 @@ function ensureSelectionAddEffectStyles() {
 
 function ensureSelectionButtonLabel(btn) {
   let label = btn.querySelector('[data-selection-label]');
-  if (label) return label;
-  const text = (btn.textContent || '').replace(/\s+/g, ' ').trim() || 'Добавить в подбор';
-  btn.textContent = '';
-  label = document.createElement('span');
-  label.setAttribute('data-selection-label', '');
-  label.className = 'relative z-[1] inline-block';
-  label.textContent = text;
-  btn.appendChild(label);
+  if (!label) {
+    const text = (btn.textContent || '').replace(/\s+/g, ' ').trim() || 'Добавить в подбор';
+    btn.textContent = '';
+    label = document.createElement('span');
+    label.setAttribute('data-selection-label', '');
+    label.className = 'relative z-[1] inline-block';
+    label.textContent = text;
+    btn.appendChild(label);
+  }
+  // Запоминаем исходную подпись кнопки (в сетке «В подбор», на карточке «Добавить в подбор»),
+  // чтобы возвращать её при удалении позиции из подбора
+  if (!btn.dataset.selectionLabelDefault) {
+    const current = (label.textContent || '').replace(/\s+/g, ' ').trim();
+    btn.dataset.selectionLabelDefault = !current || current === 'В подборе!' ? 'Добавить в подбор' : current;
+  }
   return label;
 }
 
@@ -2229,9 +2255,8 @@ function initCatalogSelection() {
         else return;
       }
       const label = ensureSelectionButtonLabel(btn);
-      label.textContent = active ? 'В подборе!' : 'Добавить в подбор';
+      label.textContent = active ? 'В подборе!' : btn.dataset.selectionLabelDefault || 'Добавить в подбор';
       btn.classList.toggle('whitespace-nowrap', active);
-      btn.classList.toggle('text-sm', active);
       btn.classList.toggle('opacity-80', active);
     });
   };
@@ -2405,7 +2430,7 @@ function initCatalogSelection() {
         save();
         const label = ensureSelectionButtonLabel(btn);
         label.textContent = 'В подборе!';
-        btn.classList.add('whitespace-nowrap', 'text-sm', 'opacity-80');
+        btn.classList.add('whitespace-nowrap', 'opacity-80');
         renderPanels();
         playSelectionAddedBurst(btn);
         showAddedNotice(btn);
@@ -2672,6 +2697,9 @@ document.addEventListener('DOMContentLoaded', () => {
   initTimeline();
   initPlantGalleries();
   initPlantCardCoverGallerySwap();
+  initPlantCardLightbox();
+  initImageSkeletons();
+  initCatalogNavMobileToggle();
 });
 
 // ── Plant image galleries ──
@@ -2756,6 +2784,187 @@ function initPlantCardCoverGallerySwap() {
           swap();
         }
       });
+    });
+  });
+}
+
+/** Карточка растения: лайтбокс по клику на главное фото. Навигация по всем фото (главное + галерея),
+ *  стрелки, Esc, клик по подложке. Список фото собирается в момент открытия (учитывает swap миниатюр). */
+function initPlantCardLightbox() {
+  var root = document.querySelector('[data-plant-photo-swap]');
+  if (!root) return;
+  var main = root.querySelector('[data-plant-main-cover]');
+  if (!main) return;
+
+  var svgChevL =
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>';
+  var svgChevR =
+    '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
+
+  var lb = document.createElement('div');
+  lb.className = 'sg-photo-lightbox';
+  lb.setAttribute('role', 'dialog');
+  lb.setAttribute('aria-modal', 'false');
+  lb.setAttribute('aria-hidden', 'true');
+  lb.setAttribute('aria-label', 'Просмотр фото растения');
+  lb.innerHTML = [
+    '<div class="sg-photo-lightbox__backdrop" data-plant-lb-backdrop></div>',
+    '<div class="sg-photo-lightbox__surface">',
+    '<div class="sg-photo-lightbox__img-wrap">',
+    '<img class="sg-photo-lightbox__img" data-plant-lb-img alt="" />',
+    '</div>',
+    '<button type="button" class="sg-photo-lightbox__close" data-plant-lb-close aria-label="Закрыть">&times;</button>',
+    '<button type="button" class="sg-photo-lightbox__nav sg-photo-lightbox__nav--prev" data-plant-lb-prev aria-label="Предыдущее фото">',
+    svgChevL,
+    '</button>',
+    '<button type="button" class="sg-photo-lightbox__nav sg-photo-lightbox__nav--next" data-plant-lb-next aria-label="Следующее фото">',
+    svgChevR,
+    '</button>',
+    '</div>',
+  ].join('');
+  document.body.appendChild(lb);
+
+  var backdrop = lb.querySelector('[data-plant-lb-backdrop]');
+  var lbImg = lb.querySelector('[data-plant-lb-img]');
+  var btnClose = lb.querySelector('[data-plant-lb-close]');
+  var btnPrev = lb.querySelector('[data-plant-lb-prev]');
+  var btnNext = lb.querySelector('[data-plant-lb-next]');
+
+  var photos = [];
+  var lbIndex = 0;
+  var lbOpen = false;
+  var bodyOverflowPrev = '';
+
+  function collectPhotos() {
+    var imgs = [main];
+    root.querySelectorAll('[data-plant-gallery-thumb]').forEach(function (t) {
+      imgs.push(t);
+    });
+    var out = [];
+    imgs.forEach(function (img) {
+      var src = img.getAttribute('src');
+      if (src) out.push({ src: src, alt: img.getAttribute('alt') || '' });
+    });
+    return out;
+  }
+
+  function paintLb() {
+    var d = photos[lbIndex];
+    if (!d || !lbImg) return;
+    lbImg.src = d.src;
+    lbImg.alt = d.alt;
+  }
+
+  function closeLb() {
+    if (!lbOpen) return;
+    lbOpen = false;
+    lb.classList.remove('is-open');
+    lb.setAttribute('aria-hidden', 'true');
+    lb.setAttribute('aria-modal', 'false');
+    document.body.style.overflow = bodyOverflowPrev;
+    document.removeEventListener('keydown', onLbKeydown);
+  }
+
+  function openLb() {
+    photos = collectPhotos();
+    if (!photos.length) return;
+    var currentSrc = main.getAttribute('src');
+    lbIndex = 0;
+    photos.forEach(function (d, idx) {
+      if (d.src === currentSrc) lbIndex = idx;
+    });
+    var single = photos.length < 2;
+    if (btnPrev) btnPrev.classList.toggle('is-hidden', single);
+    if (btnNext) btnNext.classList.toggle('is-hidden', single);
+    paintLb();
+    lbOpen = true;
+    lb.classList.add('is-open');
+    lb.setAttribute('aria-hidden', 'false');
+    lb.setAttribute('aria-modal', 'true');
+    bodyOverflowPrev = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', onLbKeydown);
+  }
+
+  function stepLb(delta) {
+    if (!photos.length) return;
+    lbIndex = (lbIndex + delta + photos.length) % photos.length;
+    paintLb();
+  }
+
+  function onLbKeydown(e) {
+    if (e.key === 'Escape' || e.key === 'Esc') {
+      e.preventDefault();
+      closeLb();
+      return;
+    }
+    if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      stepLb(-1);
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      stepLb(1);
+    }
+  }
+
+  main.addEventListener('click', function () {
+    openLb();
+  });
+  backdrop?.addEventListener('click', function () {
+    closeLb();
+  });
+  btnClose?.addEventListener('click', function (e) {
+    e.stopPropagation();
+    closeLb();
+  });
+  btnPrev?.addEventListener('click', function (e) {
+    e.stopPropagation();
+    stepLb(-1);
+  });
+  btnNext?.addEventListener('click', function (e) {
+    e.stopPropagation();
+    stepLb(1);
+  });
+}
+
+/** Каталог: shimmer-скелетон фото. Контейнер помечен data-img-skeleton; когда img загрузилась
+ *  (или загрузка не удалась, или img в контейнере нет) - вешаем is-loaded: плейсхолдер гаснет, фото проявляется. */
+function initImageSkeletons() {
+  document.querySelectorAll('[data-img-skeleton]').forEach(function (box) {
+    var img = box.querySelector('img');
+    function markLoaded() {
+      box.classList.add('is-loaded');
+    }
+    if (!img) {
+      markLoaded();
+      return;
+    }
+    if (img.complete) {
+      markLoaded();
+      return;
+    }
+    img.addEventListener('load', markLoaded, { once: true });
+    img.addEventListener('error', markLoaded, { once: true });
+  });
+}
+
+/** Сайдбар каталога: на экранах < lg (1024px) шапка «Каталог / Разделы» работает тогглом,
+ *  список разделов по умолчанию свёрнут (классы hidden lg:block в партиале). На lg+ всегда развёрнут через CSS. */
+function initCatalogNavMobileToggle() {
+  var mqDesktop = window.matchMedia('(min-width: 1024px)');
+  document.querySelectorAll('[data-catalog-nav-card]').forEach(function (card) {
+    var btn = card.querySelector('[data-catalog-nav-toggle]');
+    var panel = card.querySelector('[data-catalog-nav-panel]');
+    if (!btn || !panel) return;
+
+    btn.addEventListener('click', function () {
+      if (mqDesktop.matches) return; // на lg+ список всегда виден (lg:block), тоггл не нужен
+      var open = panel.classList.contains('hidden');
+      panel.classList.toggle('hidden', !open);
+      btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+      // Стрелку ищем в момент клика: lucide заменяет <i> на <svg>, сохраняя data-атрибут
+      var chevron = card.querySelector('[data-catalog-nav-chevron]');
+      if (chevron) chevron.classList.toggle('rotate-180', open);
     });
   });
 }
@@ -2960,3 +3169,46 @@ function initPlantCardCoverGallerySwap() {
   });
 })();
 
+
+// ── Ленивые фоновые видео ────────────────────────────────────────────────────
+// <video data-lazy-video preload="none" poster="..."><source data-src="..."></video>
+// src подставляется только когда блок приближается к вьюпорту: страница не тянет
+// десятки мегабайт видео при первом заходе (критично для мобильных).
+(function () {
+  function init() {
+    var vids = document.querySelectorAll('video[data-lazy-video]');
+    if (!vids.length) return;
+
+    function load(v) {
+      var sources = v.querySelectorAll('source[data-src]');
+      for (var i = 0; i < sources.length; i++) {
+        sources[i].src = sources[i].getAttribute('data-src');
+        sources[i].removeAttribute('data-src');
+      }
+      if (!sources.length) return;
+      v.load();
+      var p = v.play();
+      if (p && typeof p.catch === 'function') p.catch(function () { /* autoplay запрещён - остаётся постер */ });
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      vids.forEach(function (v) { load(v); });
+      return;
+    }
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          load(entry.target);
+          io.unobserve(entry.target);
+        }
+      });
+    }, { rootMargin: '300px' });
+    vids.forEach(function (v) { io.observe(v); });
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();

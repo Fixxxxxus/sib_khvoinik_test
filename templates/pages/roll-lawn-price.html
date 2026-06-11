@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}{{ title }} — {{ brand }}{% endblock %}
+{% block title %}{{ seo_title|default:title }} — {{ brand }}{% endblock %}
 
 {% block content %}
   <section class="relative isolate overflow-hidden pb-6 pt-10 md:pb-10 md:pt-14">
