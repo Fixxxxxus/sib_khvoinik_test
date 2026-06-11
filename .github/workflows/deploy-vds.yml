@@ -34,9 +34,10 @@ jobs:
             docker compose pull --ignore-pull-failures || true
             docker compose build
             docker compose up -d
-            # Caddyfile примонтирован bind-ом: up -d не перечитывает конфиг,
-            # поэтому явный reload (graceful, без обрыва соединений).
-            docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile || docker compose restart caddy
+            # Caddyfile примонтирован bind-ом одного файла: git reset --hard заменяет
+            # файл через rename, и контейнер продолжает видеть старый inode. Поэтому
+            # caddy пересоздаём (быстро, пару секунд), reload недостаточно.
+            docker compose up -d --force-recreate caddy
             # migrate/collectstatic выполняются в compose-команде web при старте,
             # дублировать здесь небезопасно (ManifestStaticFilesStorage конфликтует
             # с уже обработанными файлами в volume).
