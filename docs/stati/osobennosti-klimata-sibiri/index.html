@@ -114,42 +114,8 @@
     <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Когда снимать зимнее укрытие с роз и хвойных?", "acceptedAnswer": {"@type": "Answer", "text": "Укрытие снимают постепенно, когда снег полностью сошёл и ночные температуры стабильно выше -5 °C: в Новосибирске обычно середина - конец апреля. Сначала приоткрывают торцы для проветривания, через несколько дней снимают укрытие целиком, лучше в пасмурный день."}}, {"@type": "Question", "name": "Какие растения зимуют в Новосибирске без укрытия?", "acceptedAnswer": {"@type": "Answer", "text": "Районированные хвойные (ели, сосны, можжевельник казацкий), дерен, пузыреплодник, спирея, сирень и большинство растений 2-3 зоны морозостойкости. Розы, клематисы и молодые посадки первых двух лет требуют укрытия."}}]}</script>
     
 
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript">
-      (function(m, e, t, r, i, k, a) {
-        m[i] = m[i] || function() { (m[i].a = m[i].a || []).push(arguments); };
-        m[i].l = 1 * new Date();
-        for (var j = 0; j < document.scripts.length; j++) {
-          if (document.scripts[j].src === r) { return; }
-        }
-        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a);
-      })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=108722541', 'ym');
-      ym(108722541, 'init', {
-        ssr: true,
-        webvisor: true,
-        clickmap: true,
-        ecommerce: 'dataLayer',
-        referrer: document.referrer,
-        url: location.href,
-        accurateTrackBounce: true,
-        trackLinks: true
-      });
-    </script>
-    <!-- /Yandex.Metrika counter -->
-
-    <!-- Top.Mail.Ru counter -->
-    <script type="text/javascript">
-      var _tmr = window._tmr || (window._tmr = []);
-      _tmr.push({ id: '3760896', type: 'pageView', start: (new Date()).getTime() });
-      (function(d, w, id) {
-        if (d.getElementById(id)) return;
-        var ts = d.createElement('script'); ts.type = 'text/javascript'; ts.async = true; ts.id = id;
-        ts.src = 'https://top-fwz1.mail.ru/js/code.js';
-        var f = function() { var s = d.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ts, s); };
-        if (w.opera == '[object Opera]') { d.addEventListener('DOMContentLoaded', f, false); } else { f(); }
-      })(document, window, 'tmr-code');
-    </script>
-    <!-- /Top.Mail.Ru counter -->
+    <!-- Счётчики (Яндекс.Метрика, Top.Mail.Ru) и виджет Битрикс24 загружаются из app.js
+         только после согласия в cookie-баннере (152-ФЗ): см. initCookieBanner/loadConsentedScripts. -->
 
     <link rel="icon" href="/sib_khvoinik_test/static/media/branding/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/sib_khvoinik_test/static/media/branding/favicon-32.png" sizes="32x32" type="image/png" />
@@ -165,12 +131,6 @@
     <link rel="stylesheet" href="/sib_khvoinik_test/static/css/styles.css?v=23" />
   </head>
   <body class="bg-white text-slate-900 antialiased">
-    <noscript>
-      <div><img src="https://mc.yandex.ru/watch/108722541" style="position:absolute; left:-9999px;" alt="" /></div>
-    </noscript>
-    <noscript>
-      <div><img src="https://top-fwz1.mail.ru/counter?id=3760896;js=na" style="position:absolute; left:-9999px;" alt="Top.Mail.Ru" /></div>
-    </noscript>
     
 <header id="site-header" class="sticky top-0 z-50 border-b border-slate-200 bg-white">
   <!-- Десктоп: логотип слева, ссылки по центру, справа мессенджеры и звонок -->
@@ -630,7 +590,7 @@
         <a href="https://vk.com/sibirskiegazony" target="_blank" rel="noopener noreferrer" aria-label="VK" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow">VK</a>
       </div>
       <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
-        <span>© <span id="year"></span> ООО «Сибирский хвойник», ИНН 5406843096. Все права защищены.</span>
+        <span>© <span id="year"></span> ООО «Сибирский хвойник», ИНН 5406843096, ОГРН 1245400031799. Все права защищены.</span>
         <a href="/sib_khvoinik_test/privacy/" class="hover:text-brand transition">Политика конфиденциальности</a>
         <a href="/sib_khvoinik_test/consent/" class="hover:text-brand transition">Согласие на обработку ПД</a>
         <button type="button" id="cookieSettingsBtn" class="hover:text-brand transition">Настройки cookie</button>
@@ -843,7 +803,7 @@
         </label>
         <label class="flex cursor-pointer items-center gap-3 rounded-2xl border-[1.5px] border-black/15 bg-white px-4 py-3 text-sm text-slate-700">
           <input type="checkbox" name="promo" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Хочу получать информацию о новинках и акциях</span>
+          <span>Согласен(на) получать рекламные сообщения о новинках, акциях и предложениях <span class="text-slate-400">(можно отписаться в любой момент)</span></span>
         </label>
       </div>
     </div>
@@ -2817,7 +2777,7 @@
 </style>
 
 
-    <script src="/sib_khvoinik_test/static/js/app.js?v=55" defer></script>
+    <script src="/sib_khvoinik_test/static/js/app.js?v=56" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {
@@ -2825,12 +2785,6 @@
       });
     </script>
 
-    <script>
-      (function(w,d,u){
-        var s=d.createElement('script');s.async=true;s.src=u+'?'+(Date.now()/60000|0);
-        var h=d.getElementsByTagName('script')[0];h.parentNode.insertBefore(s,h);
-      })(window,document,'https://cdn-ru.bitrix24.ru/b32582882/crm/site_button/loader_3_nrfj41.js');
-    </script>
   </body>
 </html>
 

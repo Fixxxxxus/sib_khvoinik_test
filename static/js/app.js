@@ -70,7 +70,7 @@ function initCookieBanner() {
   if (!consent) {
     banner.classList.remove('hidden');
   } else if (consent === 'all') {
-    initYandexMetrika();
+    loadConsentedScripts();
   }
   syncFloatingUiAboveCookieBanner();
   window.addEventListener('resize', syncFloatingUiAboveCookieBanner);
@@ -79,7 +79,7 @@ function initCookieBanner() {
     localStorage.setItem('cookie_consent', value);
     banner.classList.add('hidden');
     syncFloatingUiAboveCookieBanner();
-    if (value === 'all') initYandexMetrika();
+    if (value === 'all') loadConsentedScripts();
   };
 
   acceptAll.addEventListener('click', () => setConsent('all'));
@@ -94,27 +94,61 @@ function initCookieBanner() {
   }
 }
 
-// ── Яндекс.Метрика (условная загрузка) ──
+// ── Счётчики и внешние виджеты: грузятся только после «Принять все» в cookie-баннере (152-ФЗ) ──
+function loadConsentedScripts() {
+  initYandexMetrika();
+  initTopMailRu();
+  initBitrix24Widget();
+}
+
 let metrikaLoaded = false;
 function initYandexMetrika() {
   if (metrikaLoaded) return;
   metrikaLoaded = true;
 
-  // Replace XXXXXXXX with actual counter ID
-  const COUNTER_ID = 'XXXXXXXX';
-
   (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
   m[i].l=1*new Date();
   for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
   k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+  (window, document, "script", "https://mc.yandex.ru/metrika/tag.js?id=108722541", "ym");
 
-  ym(COUNTER_ID, "init", {
-    clickmap: true,
-    trackLinks: true,
-    accurateTrackBounce: true,
+  ym(108722541, "init", {
+    ssr: true,
     webvisor: true,
+    clickmap: true,
+    ecommerce: "dataLayer",
+    referrer: document.referrer,
+    url: location.href,
+    accurateTrackBounce: true,
+    trackLinks: true,
   });
+}
+
+let tmrLoaded = false;
+function initTopMailRu() {
+  if (tmrLoaded) return;
+  tmrLoaded = true;
+
+  var _tmr = window._tmr || (window._tmr = []);
+  _tmr.push({ id: '3760896', type: 'pageView', start: (new Date()).getTime() });
+  (function(d, w, id) {
+    if (d.getElementById(id)) return;
+    var ts = d.createElement('script'); ts.type = 'text/javascript'; ts.async = true; ts.id = id;
+    ts.src = 'https://top-fwz1.mail.ru/js/code.js';
+    var f = function() { var s = d.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ts, s); };
+    if (w.opera == '[object Opera]') { d.addEventListener('DOMContentLoaded', f, false); } else { f(); }
+  })(document, window, 'tmr-code');
+}
+
+let b24WidgetLoaded = false;
+function initBitrix24Widget() {
+  if (b24WidgetLoaded) return;
+  b24WidgetLoaded = true;
+
+  (function(w,d,u){
+    var s=d.createElement('script');s.async=true;s.src=u+'?'+(Date.now()/60000|0);
+    var h=d.getElementsByTagName('script')[0];h.parentNode.insertBefore(s,h);
+  })(window,document,'https://cdn-ru.bitrix24.ru/b32582882/crm/site_button/loader_3_nrfj41.js');
 }
 
 // ── Аналитика: клики по телефону, почте, копирование почты ──
@@ -476,6 +510,7 @@ function initModal() {
     // даже если посетитель закроет модалку или не заполнит форму.
     if (targetKey === 'gazon_price_download') {
       scheduleFileDownload(opts.downloadUrl, opts.downloadName, 5000);
+      try { ym(108722541, 'reachGoal', 'price_download'); } catch (e) { /* noop */ }
     }
 
     activeNoOverlay = Boolean(opts.noOverlay);
