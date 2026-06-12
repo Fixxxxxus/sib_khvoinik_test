@@ -150,8 +150,10 @@ def handle_message(msg):
         if res.get("ok"):
             subscription_id = res.get("subscription_id")
             welcome = res.get("welcome")
+            # chat_id в лог не пишем: идентификатор подписчика в Telegram - ПДн,
+            # а логи лежат на зарубежном VPS; для разбора достаточно sub=
             print(
-                f"[poll] optin ok sub={subscription_id} chat={chat_id} "
+                f"[poll] optin ok sub={subscription_id} "
                 f"welcome={'yes' if welcome else 'no'}",
                 flush=True,
             )
