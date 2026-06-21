@@ -34,7 +34,9 @@ from django.utils import timezone
 from pages.data import CARE_SUBSCRIPTION_GROUPS
 
 from .content import CategoryEntries, PlantEntry, select_entries_for_week
+from .date_parser import iso_week_range
 from .models import CareSubscription
+from .seasonal_hero import build_hero
 
 
 SITE_URL = os.environ.get("CARE_SITE_URL", "https://gazony.ru")
@@ -131,11 +133,14 @@ def _season_label(now: dt.datetime) -> str:
 
 
 _ACTIVE_HERO_TITLE = "Что важно успеть на этой неделе"
+# ВАЖНО: текст нейтральный, без привязки к конкретному месяцу или погодному
+# событию. Это аварийный фолбэк на случай битого week_key; основной hero всегда
+# синтезируется из работ недели в _synthesize_hero (см. build_payload). Раньше
+# здесь жил абзац про «заморозки в конце мая», который слался всю весну и лето.
 _ACTIVE_HERO_TEXT = (
-    "На этой неделе в Новосибирске сад активно растёт, но погода ещё нестабильна. "
-    "Возвратные заморозки в конце мая случаются почти каждый год, а к выходным "
-    "обычно прогревается до +18. Главный совет на ближайшие дни: держите укрытия "
-    "и нетканку в режиме готовности - днём проветривайте, на ночь возвращайте."
+    "Идёт активный сезон: сад растёт, и работ по уходу хватает каждую неделю. "
+    "Загляните в календарь по своим группам - там собрано, что важно успеть "
+    "именно сейчас."
     "\n\n"
     "Ниже короткие рекомендации по группам, на которые вы подписаны."
 )
@@ -154,6 +159,32 @@ def _hero_for_season(season: str) -> tuple[str, str]:
     if season == "active":
         return _ACTIVE_HERO_TITLE, _ACTIVE_HERO_TEXT
     return _OFF_HERO_TITLE, _OFF_HERO_TEXT
+
+
+# Все группы с растениями (без hero-группы seasonal) - источник тем для врезки.
+_PLANT_GROUP_SLUGS = [
+    g["slug"] for g in CARE_SUBSCRIPTION_GROUPS if not g.get("is_hero")
+]
+
+
+def _synthesize_hero(week_key: str) -> tuple[str, str] | None:
+    """Hero-врезка из реальных работ недели по всем категориям.
+
+    Берёт темы только текущей недели (без fallback-будущего), чтобы врезка
+    совпадала с тем, что реально происходит в саду. Возвращает None, если
+    неделя не распарсилась - тогда вызывающий откатывается на сезонный текст.
+    """
+    week_range = iso_week_range(week_key)
+    if not week_range:
+        return None
+    week_start, week_end = week_range
+    entries = select_entries_for_week(_PLANT_GROUP_SLUGS, week_key, site_url=SITE_URL)
+    cat_to_themes: dict[str, list[str]] = {}
+    for cat in entries:
+        phrases = [p.summary for p in cat.plants if p.summary and not p.is_upcoming]
+        if phrases:
+            cat_to_themes.setdefault(cat.category_label, []).extend(phrases)
+    return build_hero(week_start, week_end, cat_to_themes)
 
 
 def _hero_image_paths_legacy(week_key: str) -> tuple[str | None, str | None]:
@@ -349,7 +380,9 @@ def build_payload(subscription: CareSubscription, week_key: str | None = None) -
     now = timezone.now()
     week = week_key or get_current_week_key(now)
     season = _season_label(now)
-    hero_title, hero_text = _hero_for_season(season)
+    # Hero из реальных работ недели; откат на статичный сезонный текст, если
+    # неделя не распарсилась или контента для синтеза нет.
+    hero_title, hero_text = _synthesize_hero(week) or _hero_for_season(season)
 
     slugs = list(subscription.groups or [])
 
