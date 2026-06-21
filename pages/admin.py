@@ -23,7 +23,11 @@ from pages.models import (
     Plant,
     PlantGalleryImage,
     PlantVariant,
+    PreorderGroup,
+    PreorderPlant,
+    PreorderSettings,
 )
+from django.templatetags.static import static as static_url
 
 
 class CatalogSubcategoryInline(admin.TabularInline):
@@ -450,6 +454,80 @@ class CareCalendarPlantAdmin(admin.ModelAdmin):
         obj = form.instance
         if obj.pk and obj.primary_category_id:
             obj.categories.add(obj.primary_category_id)
+
+
+@admin.register(PreorderSettings)
+class PreorderSettingsAdmin(admin.ModelAdmin):
+    save_on_top = True
+
+    fieldsets = (
+        ("Первый экран", {"fields": ("hero_eyebrow", "hero_title", "hero_subtitle", "hero_cta")}),
+        ("Информационный блок", {"fields": ("info_title", "info_json")}),
+        ("Каталог", {"fields": ("catalog_title", "catalog_subtitle")}),
+        ("Форма заявки", {"fields": ("form_title", "form_subtitle", "form_submit")}),
+    )
+
+    def has_add_permission(self, request: HttpRequest) -> bool:
+        # Синглтон: не даём создавать вторую строку.
+        return not PreorderSettings.objects.exists()
+
+    def has_delete_permission(self, request: HttpRequest, obj: Any = None) -> bool:
+        return False
+
+
+@admin.register(PreorderGroup)
+class PreorderGroupAdmin(admin.ModelAdmin):
+    list_display = ("sort_order", "label", "note", "is_active", "plant_count")
+    list_display_links = ("label",)
+    list_editable = ("sort_order", "is_active")
+
+    @admin.display(description="Позиций")
+    def plant_count(self, obj: PreorderGroup) -> int:
+        return obj.plants.count()
+
+
+@admin.register(PreorderPlant)
+class PreorderPlantAdmin(admin.ModelAdmin):
+    save_on_top = True
+    list_display = ("list_photo", "name", "group", "size", "price", "sort_order", "is_active")
+    list_display_links = ("name",)
+    list_editable = ("sort_order", "is_active")
+    list_filter = ("group", "is_active")
+    search_fields = ("name", "size")
+    autocomplete_fields = ()
+    readonly_fields = ("photo_preview",)
+
+    fieldsets = (
+        ("Основное", {"fields": ("group", "name", "size", "price", "is_active", "sort_order")}),
+        (
+            "Фото",
+            {
+                "fields": ("image_upload", "image_path", "image_alt", "photo_preview"),
+                "description": "Загрузите файл или укажите путь в static. Загруженный файл имеет приоритет.",
+            },
+        ),
+    )
+
+    def _thumb(self, obj: PreorderPlant, h: int) -> str:
+        url = obj.image_url
+        if not url and obj.image_path:
+            try:
+                url = static_url(obj.image_path)
+            except Exception:  # noqa: BLE001
+                url = ""
+        if url:
+            return format_html(
+                '<img src="{}" style="height:{}px;border-radius:8px;object-fit:cover" alt="" />', url, h
+            )
+        return "—"
+
+    @admin.display(description="Фото")
+    def list_photo(self, obj: PreorderPlant) -> str:
+        return self._thumb(obj, 40)
+
+    @admin.display(description="Предпросмотр")
+    def photo_preview(self, obj: PreorderPlant) -> str:
+        return self._thumb(obj, 160)
 
 
 admin.site.site_header = "Сибирские газоны — администрирование"

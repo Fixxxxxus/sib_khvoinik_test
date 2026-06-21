@@ -42,4 +42,5 @@ urlpatterns = [
     path("consent/", views.consent, name="consent"),
     path("discount/", views.discount, name="discount"),
     path("zayavka-direct/", views.zayavka_direct, name="zayavka_direct"),
+    path("predzakaz/", views.predzakaz, name="predzakaz"),
 ]

@@ -578,3 +578,171 @@ class CareCalendarPeriod(models.Model):
 
     def __str__(self) -> str:
         return f"{self.date_label} — {self.plant}"
+
+
+# ── Лендинг «Предзаказ растений на осень» (редактируется из админки) ──
+
+
+class PreorderSettings(models.Model):
+    """Тексты лендинга предзаказа. Синглтон: одна строка, правится из админки."""
+
+    hero_eyebrow = models.CharField(
+        "Плашка над заголовком",
+        max_length=200,
+        default="Осенняя посадка 2026",
+    )
+    hero_title = models.CharField(
+        "Заголовок (H1)",
+        max_length=300,
+        default="Открыт предзаказ растений на осень 2026",
+    )
+    hero_subtitle = models.CharField(
+        "Подзаголовок",
+        max_length=400,
+        default="Забронируйте нужные растения заранее. Количество ограничено.",
+    )
+    hero_cta = models.CharField("Кнопка в первом экране", max_length=80, default="Оставить заявку")
+
+    info_title = models.CharField(
+        "Заголовок информационного блока",
+        max_length=300,
+        default="Как работает предзаказ",
+    )
+    info_json = models.JSONField(
+        "Пункты информационного блока (JSON-массив объектов {\"title\":\"…\",\"text\":\"…\"})",
+        default=list,
+        blank=True,
+        help_text="Иконки подставляются автоматически по порядку.",
+    )
+
+    catalog_title = models.CharField(
+        "Заголовок каталога",
+        max_length=300,
+        default="Доступные растения",
+    )
+    catalog_subtitle = models.CharField(
+        "Подзаголовок каталога",
+        max_length=400,
+        blank=True,
+        default="Отметьте нужные позиции — они автоматически попадут в заявку.",
+    )
+
+    form_title = models.CharField("Заголовок формы", max_length=200, default="Забронировать растения")
+    form_subtitle = models.CharField(
+        "Подзаголовок формы",
+        max_length=400,
+        blank=True,
+        default="Менеджер свяжется для подтверждения заказа в течение рабочего дня.",
+    )
+    form_submit = models.CharField("Кнопка отправки", max_length=80, default="Забронировать растения")
+
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "предзаказ: тексты лендинга"
+        verbose_name_plural = "предзаказ: тексты лендинга"
+
+    def __str__(self) -> str:
+        return "Тексты лендинга предзаказа"
+
+    def save(self, *args: Any, **kwargs: Any) -> None:
+        self.pk = 1
+        super().save(*args, **kwargs)
+
+    @classmethod
+    def load(cls) -> "PreorderSettings":
+        obj, _ = cls.objects.get_or_create(pk=1)
+        return obj
+
+
+class PreorderGroup(models.Model):
+    """Группа (вкладка) каталога предзаказа, напр. «Наш питомник (Кирза)»."""
+
+    label = models.CharField("Название вкладки", max_length=200)
+    note = models.CharField(
+        "Подпись под вкладкой",
+        max_length=300,
+        blank=True,
+        help_text="Короткое пояснение, напр. «Новосибирск, собственный питомник».",
+    )
+    sort_order = models.PositiveIntegerField("Порядок", default=0)
+    is_active = models.BooleanField("Показывать", default=True)
+
+    class Meta:
+        ordering = ["sort_order", "pk"]
+        verbose_name = "предзаказ: группа (вкладка)"
+        verbose_name_plural = "предзаказ: группы (вкладки)"
+
+    def __str__(self) -> str:
+        return self.label
+
+
+class PreorderPlant(models.Model):
+    """Позиция в каталоге предзаказа. Полностью правится из админки."""
+
+    group = models.ForeignKey(
+        PreorderGroup,
+        verbose_name="Группа (вкладка)",
+        related_name="plants",
+        on_delete=models.PROTECT,
+    )
+    name = models.CharField("Название", max_length=300)
+    size = models.CharField(
+        "Размер / формат",
+        max_length=200,
+        blank=True,
+        help_text="Напр.: «ком+сетка, H 1,5-2 м».",
+    )
+    price = models.PositiveIntegerField(
+        "Цена, ₽",
+        null=True,
+        blank=True,
+        help_text="Цена по предзаказу за штуку. Пусто — цена не показывается («по запросу»).",
+    )
+    image_path = models.CharField(
+        "Фото (путь в static)",
+        max_length=500,
+        blank=True,
+        help_text="Если фото уже в репозитории: путь относительно static/, "
+        "напр. media/images/catalog/migrated/....webp",
+    )
+    image_upload = models.ImageField(
+        "Загрузить фото",
+        upload_to="preorder/%Y/%m/",
+        blank=True,
+        null=True,
+        help_text="Файл сохранится в MEDIA. Имеет приоритет над «Фото (путь в static)».",
+    )
+    image_alt = models.CharField("Alt для фото", max_length=255, blank=True)
+    sort_order = models.PositiveIntegerField("Порядок", default=0)
+    is_active = models.BooleanField("Показывать", default=True)
+
+    class Meta:
+        ordering = ["group__sort_order", "sort_order", "pk"]
+        verbose_name = "предзаказ: растение"
+        verbose_name_plural = "предзаказ: растения"
+
+    def __str__(self) -> str:
+        return self.name
+
+    @property
+    def image_url(self) -> str:
+        """URL фото: загруженный файл имеет приоритет над путём в static."""
+        if self.image_upload:
+            try:
+                return self.image_upload.url
+            except ValueError:
+                pass
+        return ""
+
+    @property
+    def price_display(self) -> str:
+        """'14900' -> '14 900 ₽' (пробел как разделитель тысяч)."""
+        if not self.price:
+            return ""
+        return f"{self.price:,}".replace(",", " ") + " ₽"
+
+    @property
+    def choice_value(self) -> str:
+        """Значение для чекбокса и заявки: «Название (размер)»."""
+        return f"{self.name} ({self.size})" if self.size else self.name

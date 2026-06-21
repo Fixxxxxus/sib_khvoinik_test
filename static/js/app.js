@@ -638,6 +638,7 @@ function initModal() {
     'assortment-interest': 'Запрос по ассортименту (каталог)',
     'discount-direct': 'Скидка на рассаду (Директ)',
     'zayavka-direct': 'Заявка с лендинга Директа',
+    'predzakaz': 'Предзаказ растений на осень 2026',
   };
 
   // Labels for COMMENTS fields
@@ -720,6 +721,7 @@ function initModal() {
     'Запись на день открытых дверей (Питомник)': 1361,
     'Консультация': 1361,
     'Заявка с лендинга Директа': 1361,
+    'Предзаказ растений на осень 2026': 1361,
     'Покупка продукции (B2B)': 1347,
     'Прайс и наличие (B2B)': 1347,
     'Калькулятор газона': 17,
@@ -776,7 +778,7 @@ function initModal() {
     var skipKeys = [
       'name', 'phone', 'email', 'company', 'formTag', 'consent',
       'contactPerson', 'contact', 'consent_messages',
-      'modalContext', 'selectedPlants', 'pageTitle', 'pagePath',
+      'modalContext', 'selectedPlants', 'pageTitle', 'pagePath', 'company_site',
       'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
     ];
 
@@ -984,6 +986,13 @@ function initModal() {
     const tag = form.getAttribute('data-form-tag') || 'unknown';
     const uiAction = form.getAttribute('data-ui-action') || '';
 
+    // Honeypot-защита от спама: скрытое поле, которое заполняют только боты.
+    // Если оно непустое - тихо имитируем успех, ничего не отправляя.
+    const honeypot = form.querySelector('input[name="company_site"]');
+    if (honeypot && honeypot.value.trim()) {
+      return;
+    }
+
     // Native HTML5 validation (required, type=*, pattern) — браузер покажет тултип на первом невалидном поле
     if (typeof form.reportValidity === 'function' && !form.reportValidity()) {
       return;
@@ -1058,6 +1067,8 @@ function initModal() {
         specificGoal = 'form_submit_discount';
       } else if (tag === 'zayavka-direct' || tag.endsWith('/zayavka-direct')) {
         specificGoal = 'form_submit_direct';
+      } else if (tag === 'predzakaz' || tag.endsWith('/predzakaz')) {
+        specificGoal = 'form_submit_predzakaz';
       } else {
         specificGoal = 'form_submit_site';
       }
@@ -1074,9 +1085,10 @@ function initModal() {
     }
     if (!careSuccessRendered) {
       const isDigitalCard = tag === 'digital-card' || tag.endsWith('/digital-card');
+      const isPredzakaz = tag === 'predzakaz' || tag.endsWith('/predzakaz');
       const successTplId = isDigitalCard
         ? 'modal-template-success-digital-card'
-        : 'modal-template-success';
+        : (isPredzakaz ? 'modal-template-success-predzakaz' : 'modal-template-success');
       const successTpl = document.getElementById(successTplId)
         || document.getElementById('modal-template-success');
       if (successTpl) {

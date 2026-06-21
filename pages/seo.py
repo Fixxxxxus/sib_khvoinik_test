@@ -192,7 +192,7 @@ def _static_sitemap_paths() -> list[str]:
         "home", "gazon", "roll_lawn_price", "ozelenenie_b2c", "b2b",
         "pitomnik", "sadovye_centry", "catalog", "sluzhba_zaboty",
         "calendar", "stati_list", "kontakty", "o_kompanii",
-        "privacy", "consent",
+        "privacy", "consent", "predzakaz",
     ]
     paths = []
     for name in names:
