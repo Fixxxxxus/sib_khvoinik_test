@@ -594,12 +594,12 @@ class PreorderSettings(models.Model):
     hero_title = models.CharField(
         "Заголовок (H1)",
         max_length=300,
-        default="Открыт предзаказ растений на осень 2026",
+        default="Предзаказ деревьев на осень 2026",
     )
     hero_subtitle = models.CharField(
         "Подзаголовок",
         max_length=400,
-        default="Забронируйте нужные растения заранее. Количество ограничено.",
+        default="Забронируйте нужные деревья заранее. Количество ограничено.",
     )
     hero_cta = models.CharField("Кнопка в первом экране", max_length=80, default="Оставить заявку")
 
@@ -618,13 +618,13 @@ class PreorderSettings(models.Model):
     catalog_title = models.CharField(
         "Заголовок каталога",
         max_length=300,
-        default="Доступные растения",
+        default="Деревья в наличии",
     )
     catalog_subtitle = models.CharField(
         "Подзаголовок каталога",
         max_length=400,
         blank=True,
-        default="Отметьте нужные позиции — они автоматически попадут в заявку.",
+        default="Отметьте нужные позиции, они автоматически попадут в заявку.",
     )
 
     form_title = models.CharField("Заголовок формы", max_length=200, default="Забронировать растения")

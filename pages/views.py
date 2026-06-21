@@ -241,31 +241,30 @@ def predzakaz(request):
     """
     cfg = PreorderSettings.load()
 
-    groups = []
+    # Единый список наличия: все активные позиции из всех групп, без разделения
+    # на Кирза/Пермь (по просьбе маркетинга, задача Б24 #1323).
+    plants = []
     for group in PreorderGroup.objects.filter(is_active=True).prefetch_related("plants"):
-        plants = [p for p in group.plants.all() if p.is_active]
-        if not plants:
-            continue
-        groups.append({"obj": group, "plants": plants})
+        plants.extend(p for p in group.plants.all() if p.is_active)
 
     canonical = "/predzakaz/"
 
     # JSON-LD: хлебные крошки + FAQ + каталог предложений (для SEO/GEO).
     faq = [
         {
-            "q": "Что такое предзаказ растений на осень?",
-            "a": "Это бронирование деревьев и кустарников до начала осенней посадки. "
+            "q": "Что такое предзаказ деревьев на осень?",
+            "a": "Это бронирование деревьев до начала осенней посадки. "
             "Вы заранее закрепляете нужные позиции и размеры, а поставку получаете осенью - "
             "в лучший срок для приживаемости.",
         },
         {
-            "q": "Откуда растения?",
+            "q": "Откуда деревья?",
             "a": "Из питомника «Сибирских газонов» в Новосибирске и проверенных питомников-партнёров. "
             "Хвойные и лиственные крупномеры поставляются с комом и сеткой.",
         },
         {
             "q": "Как оформить заявку?",
-            "a": "Отметьте нужные растения в каталоге, заполните имя и телефон и отправьте заявку. "
+            "a": "Отметьте нужные деревья в каталоге, заполните имя и телефон и отправьте заявку. "
             "Менеджер свяжется, уточнит размеры, цену и сроки и подтвердит заказ.",
         },
         {
@@ -276,33 +275,30 @@ def predzakaz(request):
     ]
 
     list_items = []
-    position = 1
-    for grp in groups:
-        for p in grp["plants"]:
-            item = {
-                "@type": "Product",
-                "name": p.name,
-                "category": "Деревья и кустарники",
+    for position, p in enumerate(plants, start=1):
+        item = {
+            "@type": "Product",
+            "name": p.name,
+            "category": "Деревья",
+            "url": seo.absolute(canonical),
+            "brand": {"@id": "https://gazony.ru/#organization"},
+        }
+        if p.size:
+            item["description"] = f"{p.name}. {p.size}".strip(". ")
+        if p.price:
+            item["offers"] = {
+                "@type": "Offer",
+                "price": str(p.price),
+                "priceCurrency": "RUB",
+                "availability": "https://schema.org/PreOrder",
                 "url": seo.absolute(canonical),
-                "brand": {"@id": "https://gazony.ru/#organization"},
             }
-            if p.image_alt:
-                item["description"] = f"{p.name}. {p.size}".strip(". ")
-            if p.price:
-                item["offers"] = {
-                    "@type": "Offer",
-                    "price": str(p.price),
-                    "priceCurrency": "RUB",
-                    "availability": "https://schema.org/PreOrder",
-                    "url": seo.absolute(canonical),
-                }
-            list_items.append({"@type": "ListItem", "position": position, "item": item})
-            position += 1
+        list_items.append({"@type": "ListItem", "position": position, "item": item})
 
     offer_catalog = seo.jsonld({
         "@context": "https://schema.org",
         "@type": "ItemList",
-        "name": "Предзаказ растений на осень 2026",
+        "name": "Предзаказ деревьев на осень 2026",
         "numberOfItems": len(list_items),
         "itemListElement": list_items,
     })
@@ -310,22 +306,22 @@ def predzakaz(request):
     ctx = {
         "brand": "Сибирские газоны",
         "title": cfg.hero_title,
-        "seo_title": "Предзаказ растений на осень 2026: деревья и кустарники - Сибирские газоны",
+        "seo_title": "Предзаказ деревьев на осень 2026: ели, сосны, берёзы - Сибирские газоны",
         "meta_description": (
-            "Откройте предзаказ деревьев и кустарников на осеннюю посадку 2026: ели, сосны, "
-            "берёза, липа, рябина, черёмуха, клён. Крупномеры с комом и сеткой из питомника "
-            "«Сибирских газонов» и партнёров в Новосибирске. Количество ограничено - бронируйте заранее."
+            "Предзаказ деревьев на осеннюю посадку 2026: ели, сосны, берёза, липа, рябина, "
+            "черёмуха, клён. Крупномеры с комом и сеткой из питомника «Сибирских газонов» "
+            "и партнёров в Новосибирске. Количество ограничено, бронируйте заранее."
         ),
         "canonical_path": canonical,
         "og_image": "media/images/pitomnik-product-hvoynye.jpg",
         "form_tag": "predzakaz",
         "cfg": cfg,
-        "groups": groups,
+        "plants": plants,
         "faq": faq,
         "jsonld_blocks": [
             seo.breadcrumbs_jsonld([
                 ("Главная", "/"),
-                ("Предзаказ растений на осень 2026", canonical),
+                ("Предзаказ деревьев на осень 2026", canonical),
             ]),
             seo.faq_jsonld(faq),
             offer_catalog,

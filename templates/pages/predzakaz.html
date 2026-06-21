@@ -68,66 +68,45 @@
         <p class="mt-2 max-w-2xl text-sm text-slate-600 md:text-base">{{ cfg.catalog_subtitle }}</p>
       {% endif %}
 
-      <!-- Tabs -->
-      <div class="mt-6 flex flex-wrap gap-2" role="tablist" data-preorder-tabs>
-        {% for grp in groups %}
-          <button
-            type="button"
-            role="tab"
-            data-tab="{{ forloop.counter0 }}"
-            class="min-h-[44px] rounded-2xl border px-4 py-2 text-sm font-semibold transition {% if forloop.first %}border-brand bg-brand text-white shadow-glow{% else %}border-black/10 bg-white text-slate-700 hover:border-brand/40{% endif %}"
+      <!-- Единый список наличия (без разделения на группы) -->
+      <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {% for p in plants %}
+          <label
+            class="group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl border border-black/5 bg-white shadow-soft transition hover:shadow-glow has-[:checked]:border-brand has-[:checked]:ring-2 has-[:checked]:ring-brand/30"
           >
-            {{ grp.obj.label }}
-            <span class="ml-1 text-xs font-normal opacity-70">{{ grp.plants|length }}</span>
-          </button>
+            <span class="relative block aspect-[4/3] overflow-hidden bg-slate-100">
+              <img
+                src="{% if p.image_url %}{{ p.image_url }}{% else %}{% static p.image_path %}{% endif %}"
+                alt="{{ p.image_alt|default:p.name }}"
+                loading="lazy"
+                class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
+              />
+              <span class="absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-white/80 text-transparent shadow-sm transition group-has-[:checked]:bg-brand group-has-[:checked]:text-white">
+                <i data-lucide="check" class="h-4 w-4"></i>
+              </span>
+            </span>
+            <span class="flex flex-1 flex-col gap-1 p-4">
+              <span class="font-semibold leading-snug text-slate-900">{{ p.name }}</span>
+              {% if p.size %}<span class="text-sm text-slate-500">{{ p.size }}</span>{% endif %}
+              <span class="mt-2 flex items-center justify-between">
+                {% if p.price_display %}
+                  <span class="text-base font-semibold text-brand">{{ p.price_display }}</span>
+                {% else %}
+                  <span class="text-sm text-slate-500">Цена по запросу</span>
+                {% endif %}
+                <span class="text-xs font-medium text-slate-400 group-has-[:checked]:text-brand">Выбрать</span>
+              </span>
+            </span>
+            <input
+              type="checkbox"
+              name="plant"
+              value="{{ p.choice_value }}"
+              data-preorder-plant
+              class="sr-only"
+            />
+          </label>
         {% endfor %}
       </div>
-
-      {% for grp in groups %}
-        <div data-tab-panel="{{ forloop.counter0 }}" class="{% if not forloop.first %}hidden{% endif %}">
-          {% if grp.obj.note %}
-            <p class="mt-5 text-sm text-slate-500">{{ grp.obj.note }}</p>
-          {% endif %}
-          <div class="mt-5 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {% for p in grp.plants %}
-              <label
-                class="group relative flex cursor-pointer flex-col overflow-hidden rounded-3xl border border-black/5 bg-white shadow-soft transition hover:shadow-glow has-[:checked]:border-brand has-[:checked]:ring-2 has-[:checked]:ring-brand/30"
-              >
-                <span class="relative block aspect-[4/3] overflow-hidden bg-slate-100">
-                  <img
-                    src="{% if p.image_url %}{{ p.image_url }}{% else %}{% static p.image_path %}{% endif %}"
-                    alt="{{ p.image_alt|default:p.name }}"
-                    loading="lazy"
-                    class="h-full w-full object-cover transition duration-300 group-hover:scale-[1.03]"
-                  />
-                  <span class="absolute right-3 top-3 inline-flex h-7 w-7 items-center justify-center rounded-full border-2 border-white bg-white/80 text-transparent shadow-sm transition group-has-[:checked]:bg-brand group-has-[:checked]:text-white">
-                    <i data-lucide="check" class="h-4 w-4"></i>
-                  </span>
-                </span>
-                <span class="flex flex-1 flex-col gap-1 p-4">
-                  <span class="font-semibold leading-snug text-slate-900">{{ p.name }}</span>
-                  {% if p.size %}<span class="text-sm text-slate-500">{{ p.size }}</span>{% endif %}
-                  <span class="mt-2 flex items-center justify-between">
-                    {% if p.price_display %}
-                      <span class="text-base font-semibold text-brand">{{ p.price_display }}</span>
-                    {% else %}
-                      <span class="text-sm text-slate-500">Цена по запросу</span>
-                    {% endif %}
-                    <span class="text-xs font-medium text-slate-400 group-has-[:checked]:text-brand">Выбрать</span>
-                  </span>
-                </span>
-                <input
-                  type="checkbox"
-                  name="plant"
-                  value="{{ p.choice_value }}"
-                  data-preorder-plant
-                  class="sr-only"
-                />
-              </label>
-            {% endfor %}
-          </div>
-        </div>
-      {% endfor %}
 
       <!-- Sticky selection bar (mobile-friendly) -->
       <div
@@ -166,7 +145,7 @@
           <ul class="mt-1 space-y-0.5" data-preorder-list></ul>
         </div>
         <p data-preorder-empty class="mt-5 text-sm text-slate-500">
-          Отметьте растения в каталоге выше — они появятся здесь и уйдут вместе с заявкой.
+          Отметьте деревья в каталоге выше, они появятся здесь и уйдут вместе с заявкой.
         </p>
 
         <form
@@ -274,29 +253,7 @@
         if (input && params.get(key)) input.value = params.get(key);
       });
 
-      // 2. Вкладки каталога.
-      var tabs = document.querySelectorAll('[data-preorder-tabs] [data-tab]');
-      var panels = document.querySelectorAll('[data-tab-panel]');
-      tabs.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var id = btn.getAttribute('data-tab');
-          tabs.forEach(function (b) {
-            var on = b === btn;
-            b.classList.toggle('bg-brand', on);
-            b.classList.toggle('text-white', on);
-            b.classList.toggle('border-brand', on);
-            b.classList.toggle('shadow-glow', on);
-            b.classList.toggle('bg-white', !on);
-            b.classList.toggle('text-slate-700', !on);
-            b.classList.toggle('border-black/10', !on);
-          });
-          panels.forEach(function (p) {
-            p.classList.toggle('hidden', p.getAttribute('data-tab-panel') !== id);
-          });
-        });
-      });
-
-      // 3. Чекбоксы растений -> скрытое поле selectedPlants + сводка + счётчики.
+      // 2. Чекбоксы деревьев -> скрытое поле selectedPlants + сводка + счётчики.
       var hidden = document.querySelector('input[name="selectedPlants"]');
       var countEls = document.querySelectorAll('[data-preorder-count]');
       var listEl = document.querySelector('[data-preorder-list]');
