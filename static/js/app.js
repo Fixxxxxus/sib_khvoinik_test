@@ -281,6 +281,58 @@ function initBurger() {
   });
 }
 
+function initNavDropdowns() {
+  const dds = Array.from(document.querySelectorAll('[data-nav-dd]'));
+  if (!dds.length) return;
+  const isDesktop = () => window.matchMedia('(min-width: 768px)').matches;
+
+  function setState(dd, open) {
+    const trigger = dd.querySelector('[data-nav-trigger]');
+    const panel = dd.querySelector('[data-nav-panel]');
+    const chevron = dd.querySelector('[data-nav-chevron]');
+    if (panel) panel.classList.toggle('hidden', !open);
+    if (trigger) trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    if (chevron) chevron.classList.toggle('rotate-180', open);
+  }
+  function closeAll(except) {
+    dds.forEach((dd) => { if (dd !== except) setState(dd, false); });
+  }
+
+  dds.forEach((dd) => {
+    const trigger = dd.querySelector('[data-nav-trigger]');
+    const panel = dd.querySelector('[data-nav-panel]');
+    if (!trigger || !panel) return;
+    const isMobile = dd.hasAttribute('data-nav-mobile');
+
+    trigger.addEventListener('click', (e) => {
+      e.preventDefault();
+      const open = trigger.getAttribute('aria-expanded') === 'true';
+      if (open) {
+        setState(dd, false);
+      } else {
+        closeAll(dd);
+        setState(dd, true);
+      }
+    });
+
+    if (!isMobile) {
+      dd.addEventListener('mouseenter', () => {
+        if (isDesktop()) { closeAll(dd); setState(dd, true); }
+      });
+      dd.addEventListener('mouseleave', () => {
+        if (isDesktop()) setState(dd, false);
+      });
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeAll(null);
+  });
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('[data-nav-dd]')) closeAll(null);
+  });
+}
+
 function initModal() {
   const overlay = document.getElementById('modalOverlay');
   const host = document.getElementById('modalHost');
@@ -2715,6 +2767,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initGazonHeroVideo();
   initB2bHeroVideo();
   initBurger();
+  initNavDropdowns();
   initModal();
   // Auto-open gazon calculator from URL: /gazon/?calc=1
   try {
