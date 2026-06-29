@@ -59,6 +59,7 @@ def build_week_cards(week_key: str, *, force: bool = False) -> dict:
     season = season_for_date(rng[0])
     labels = _labels()
     wdir = week_dir(week_key)
+    wdir.mkdir(parents=True, exist_ok=True)
 
     jobs: list[tuple[str, pathlib.Path]] = []
     categories: dict[str, dict] = {}
@@ -88,7 +89,6 @@ def build_week_cards(week_key: str, *, force: bool = False) -> dict:
 
     manifest = {"week_key": week_key, "season": season,
                 "categories": categories, "promo": promo}
-    wdir.mkdir(parents=True, exist_ok=True)
     mpath.write_text(json.dumps(manifest, ensure_ascii=False), encoding="utf-8")
     return manifest
 

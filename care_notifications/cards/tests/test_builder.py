@@ -55,3 +55,4 @@ class BuildWeekCardsTests(TestCase):
             from care_notifications.cards.builder import build_week_cards
             man = build_week_cards("2026-W50")  # декабрь, контента нет
             self.assertEqual(man["categories"], {})
+            self.assertIsNone(man["promo"])
