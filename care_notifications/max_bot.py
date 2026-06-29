@@ -243,10 +243,16 @@ class MaxBotClient:
         if album and payload.promo_image_url:
             album.append(payload.promo_image_url)
         if album:
-            res = self.send_photos(chat_id, album)
-            if not res.get("ok"):
-                logger.warning("MAX sendPhotos failed for sub %s: %s",
-                               subscription.id, res.get("error"))
+            # Альбом best-effort: любой сбой (в т.ч. неожиданный) не должен
+            # мешать уйти тексту дайджеста.
+            try:
+                res = self.send_photos(chat_id, album)
+                if not res.get("ok"):
+                    logger.warning("MAX sendPhotos failed for sub %s: %s",
+                                   subscription.id, res.get("error"))
+            except Exception as exc:
+                logger.warning("MAX sendPhotos unexpected error for sub %s: %s",
+                               subscription.id, exc)
         text = render_max(payload)
         footer = payload.footer
         keyboard = {
