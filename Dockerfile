@@ -5,6 +5,8 @@ ENV PYTHONDONTWRITEBYTECODE=1 \
     PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1
 
+ENV CARE_CHROMIUM_PATH=/usr/bin/chromium
+
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -12,6 +14,20 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         libjpeg-dev \
         zlib1g-dev \
         curl \
+        chromium \
+        fonts-liberation \
+        libnss3 \
+        libatk-bridge2.0-0 \
+        libatk1.0-0 \
+        libcups2 \
+        libdrm2 \
+        libxkbcommon0 \
+        libxcomposite1 \
+        libxdamage1 \
+        libxfixes3 \
+        libxrandr2 \
+        libgbm1 \
+        libasound2 \
     && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt ./
