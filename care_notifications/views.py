@@ -418,13 +418,19 @@ def tg_pending_digest(request: HttpRequest) -> HttpResponse:
             # из списка polling-скрипту.
             continue
         site = payload.footer.site_url
-        cat_slugs = category_slugs_for_groups(sub.groups or [])
-        images = []
-        for cs in cat_slugs:
-            url = category_image_url(week_key, cs, site_url=site)
-            if url:
-                images.append(url)
-        promo = promo_image_url(week_key, site_url=site) if images else None
+        # Сбор URL карточек защищён от ошибок: текстовая доставка не должна
+        # зависеть от доступности или корректности манифеста с картинками.
+        try:
+            cat_slugs = category_slugs_for_groups(sub.groups or [])
+            images = []
+            for cs in cat_slugs:
+                url = category_image_url(week_key, cs, site_url=site)
+                if url:
+                    images.append(url)
+            promo = promo_image_url(week_key, site_url=site) if images else None
+        except Exception:  # noqa: BLE001
+            images = []
+            promo = None
         items.append({
             "subscription_id": sub.id,
             "telegram_chat_id": sub.telegram_chat_id,
