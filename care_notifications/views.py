@@ -395,6 +395,12 @@ def tg_pending_digest(request: HttpRequest) -> HttpResponse:
     from .digest import build_payload, get_current_week_key, render_telegram
     from .models import DigestDelivery
     week_key = request.GET.get("week") or get_current_week_key()
+    from .cards.builder import ensure_week_cards, category_image_url, promo_image_url
+    from .cards.subscriptions import category_slugs_for_groups
+    try:
+        ensure_week_cards(week_key)
+    except Exception:
+        pass  # картинки не должны ломать текстовую доставку
     sent_ids = set(
         DigestDelivery.objects.filter(
             channel="telegram", week_key=week_key, status=DigestDelivery.STATUS_SENT
@@ -411,6 +417,14 @@ def tg_pending_digest(request: HttpRequest) -> HttpResponse:
             # этом пишет уже send_weekly_digest. Здесь просто исключаем
             # из списка polling-скрипту.
             continue
+        site = payload.footer.site_url
+        cat_slugs = category_slugs_for_groups(sub.groups or [])
+        images = []
+        for cs in cat_slugs:
+            url = category_image_url(week_key, cs, site_url=site)
+            if url:
+                images.append(url)
+        promo = promo_image_url(week_key, site_url=site) if images else None
         items.append({
             "subscription_id": sub.id,
             "telegram_chat_id": sub.telegram_chat_id,
@@ -420,6 +434,8 @@ def tg_pending_digest(request: HttpRequest) -> HttpResponse:
             "manage_url": payload.footer.manage_url,
             "unsub_url": payload.footer.unsubscribe_url,
             "site_url": payload.footer.site_url,
+            "images": images,
+            "promo_image": promo,
         })
     return JsonResponse({"ok": True, "week_key": week_key, "count": len(items), "items": items})
 
