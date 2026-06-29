@@ -31,6 +31,9 @@ python scripts/export_gazon_page_to_docs.py
 python scripts/export_catalog_to_docs.py
 python scripts/export_stati_to_docs.py         # список статей + детальные страницы
 python scripts/export_common.py                # ВСЕГДА после экспортов: noindex для зеркала
+
+# Сгенерировать картинки-карточки Службы заботы за неделю (web-контейнер, нужен Chromium в образе)
+python manage.py render_care_cards --week 2026-W27
 ```
 
 There are no tests or linters configured. The only frontend build step is the Tailwind CSS rebuild above (commit the regenerated `static/css/tailwind.css` together with template changes, and copy it to `docs/static/css/`).
