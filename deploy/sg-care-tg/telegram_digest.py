@@ -37,7 +37,7 @@ def main():
             f"{CARE_API_BASE}/api/care/tg/pending-digest/",
             headers=CARE_HEADERS,
             params=params,
-            timeout=20,
+            timeout=120,
         )
         r.raise_for_status()
         data = r.json()
@@ -69,6 +69,18 @@ def main():
                 [{"text": "Управление подпиской", "url": manage_url}],
             ]
         }
+
+        # Альбом карточек (если есть) - отправляем до текстового сообщения
+        images = item.get("images") or []
+        promo = item.get("promo_image")
+        if images:
+            media = [{"type": "photo", "media": u} for u in images]
+            if promo:
+                media.append({"type": "photo", "media": promo})
+            media = media[:10]  # лимит Telegram
+            album = tg_call("sendMediaGroup", {"chat_id": chat_id, "media": media})
+            if not album.get("ok"):
+                print(f"sendMediaGroup failed for {sub_id}: {album.get('description')}", flush=True)
 
         res = tg_call(
             "sendMessage",
