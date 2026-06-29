@@ -89,6 +89,9 @@ class DigestPayload:
     blocks: list[DigestBlock]
     footer: DigestFooter
     season_label: str
+    # Сгенерированные карточки недели (публичные URL) - альбом для всех каналов.
+    card_image_urls: list[str] = field(default_factory=list)
+    promo_image_url: str | None = None
     meta: dict[str, Any] = field(default_factory=dict)
 
 
@@ -416,6 +419,21 @@ def build_payload(subscription: CareSubscription, week_key: str | None = None) -
     )
 
     subject = f"{hero_title} - {format_week_display(week)}" if blocks else hero_title
+
+    # Карточки недели (альбом) - единый источник для Email/MAX/Telegram.
+    # Генерация и сбор URL не должны ломать текстовую доставку: гасим любые сбои
+    # (нет Chromium, нет манифеста и т.п.) - тогда альбома просто нет.
+    card_urls: list[str] = []
+    promo_card_url: str | None = None
+    try:
+        from .cards.builder import card_urls_for_subscription, ensure_week_cards
+        ensure_week_cards(week)
+        card_urls, promo_card_url = card_urls_for_subscription(
+            subscription.groups, week, site_url=SITE_URL
+        )
+    except Exception:
+        card_urls, promo_card_url = [], None
+
     return DigestPayload(
         week_key=week,
         subject=subject,
@@ -426,6 +444,8 @@ def build_payload(subscription: CareSubscription, week_key: str | None = None) -
         blocks=blocks,
         footer=footer,
         season_label=season,
+        card_image_urls=card_urls,
+        promo_image_url=promo_card_url,
         meta={"subscription_id": subscription.id},
     )
 
@@ -441,6 +461,8 @@ def _ctx(payload: DigestPayload) -> dict[str, Any]:
         "blocks": payload.blocks,
         "footer": payload.footer,
         "season_label": payload.season_label,
+        "card_image_urls": payload.card_image_urls,
+        "promo_image_url": payload.promo_image_url,
     }
 
 

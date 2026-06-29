@@ -197,13 +197,40 @@ class MaxBotClient:
             return {"ok": False, "error": str(e)}
         return {"ok": True, "error": ""}
 
-    def send_digest(self, subscription: CareSubscription, payload: DigestPayload) -> dict:
-        """Шлёт текст дайджеста с inline-клавиатурой (Сайт / Управление / Отписаться).
+    def send_photos(self, chat_id: int | str, image_urls: list[str]) -> dict:
+        """Шлёт одно сообщение-альбом из картинок по публичным URL. Best-effort.
 
-        В отличие от Telegram, hero-картинку отдельным сообщением пока не шлём:
-        у MAX нужен либо upload через /uploads, либо публичный URL на attachment.
-        На MVP укладываемся в одно текстовое сообщение - hero-картинку можно
-        добавить отдельной итерацией, когда канал войдёт в стабильную работу.
+        MAX принимает image-attachment по публичному URL (как наши /media/ карточки),
+        без upload через /uploads. Пустой токен или сбой - возвращаем ok=False,
+        чтобы это не ломало текстовую доставку дайджеста.
+        """
+        if not self.token:
+            return {"ok": False, "message_id": None, "error": "MAX_BOT_TOKEN не задан"}
+        urls = [u for u in (image_urls or []) if u]
+        if not urls:
+            return {"ok": False, "message_id": None, "error": "нет картинок"}
+        payload: dict[str, Any] = {
+            "attachments": [{"type": "image", "payload": {"url": u}} for u in urls]
+        }
+        try:
+            result = self._api_call(
+                "POST", "/messages", payload, params={"chat_id": str(chat_id)}
+            )
+        except MaxBotError as e:
+            return {"ok": False, "message_id": None, "error": str(e)}
+        msg_id = (
+            result.get("message_id")
+            or (result.get("message") or {}).get("id")
+            or (result.get("message") or {}).get("mid")
+        )
+        return {"ok": True, "message_id": msg_id, "error": ""}
+
+    def send_digest(self, subscription: CareSubscription, payload: DigestPayload) -> dict:
+        """Шлёт альбом карточек недели (если есть) и следом текст дайджеста с
+        inline-клавиатурой (Сайт / Управление / Отписаться).
+
+        Альбом - картинки категорий подписчика плюс промо, по публичным URL.
+        Отправка картинок best-effort: её сбой не мешает уйти тексту.
         """
         chat_id = subscription.max_chat_id
         if not chat_id:
@@ -212,6 +239,14 @@ class MaxBotClient:
                 "message_id": None,
                 "error": "subscription.max_chat_id is empty",
             }
+        album = list(payload.card_image_urls or [])
+        if album and payload.promo_image_url:
+            album.append(payload.promo_image_url)
+        if album:
+            res = self.send_photos(chat_id, album)
+            if not res.get("ok"):
+                logger.warning("MAX sendPhotos failed for sub %s: %s",
+                               subscription.id, res.get("error"))
         text = render_max(payload)
         footer = payload.footer
         keyboard = {

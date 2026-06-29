@@ -141,3 +141,21 @@ def promo_image_url(week_key: str, *, site_url: str) -> str | None:
     man = json.loads(mpath.read_text(encoding="utf-8"))
     promo = man.get("promo")
     return _abs(site_url, week_key, promo["file"]) if promo else None
+
+
+def card_urls_for_subscription(group_slugs, week_key: str, *,
+                               site_url: str) -> tuple[list[str], str | None]:
+    """Публичные URL карточек подписчика за неделю: (картинки категорий, промо).
+
+    Маппит группы подписки в категории, собирает URL имеющихся карточек.
+    Промо добавляется только если есть хотя бы одна карточка категории.
+    Единый источник для всех каналов (Telegram, Email, MAX).
+    """
+    from .subscriptions import category_slugs_for_groups
+    images: list[str] = []
+    for cs in category_slugs_for_groups(list(group_slugs or [])):
+        url = category_image_url(week_key, cs, site_url=site_url)
+        if url:
+            images.append(url)
+    promo = promo_image_url(week_key, site_url=site_url) if images else None
+    return images, promo

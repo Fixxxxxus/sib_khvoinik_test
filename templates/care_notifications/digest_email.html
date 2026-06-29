@@ -29,6 +29,27 @@
               <p style="margin:12px 0 0 0; font-size:15px; line-height:1.55; color:#1f2937;"><em>С уважением, Команда Сибирских Газонов.</em></p>
             </td>
           </tr>
+          {% if card_image_urls %}
+            <tr>
+              <td style="padding: 16px 32px 4px 32px;">
+                <p style="margin:0 0 8px 0; font-size:13px; font-weight:600; color:#374151; text-transform:uppercase; letter-spacing:0.04em;">Карточки недели</p>
+              </td>
+            </tr>
+            {% for u in card_image_urls %}
+              <tr>
+                <td style="padding: 6px 32px;">
+                  <img src="{{ u }}" alt="" style="display:block; width:100%; height:auto; max-width:576px; border-radius:14px;" />
+                </td>
+              </tr>
+            {% endfor %}
+            {% if promo_image_url %}
+              <tr>
+                <td style="padding: 6px 32px 4px 32px;">
+                  <img src="{{ promo_image_url }}" alt="" style="display:block; width:100%; height:auto; max-width:576px; border-radius:14px;" />
+                </td>
+              </tr>
+            {% endif %}
+          {% endif %}
           {% if blocks %}
             <tr>
               <td style="padding: 12px 32px 4px 32px;">
