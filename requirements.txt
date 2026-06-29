@@ -15,3 +15,6 @@ beautifulsoup4>=4.12,<5
 
 # Клиент Битрикс24 REST (care_notifications/bitrix24.py)
 requests>=2.32,<3
+
+# Рендер карточек Службы заботы (headless Chromium через системный бинарник)
+playwright>=1.44,<2
