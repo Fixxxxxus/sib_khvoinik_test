@@ -100,10 +100,9 @@ def build_hero(
         )
         return OFF_TITLE, text
 
-    rng = date_range_display(week_start, week_end)
     body = _join_parts(parts)
     text = (
-        f"{rng} в саду под Новосибирском. Главное на этой неделе: {body}."
+        f"Главное на этой неделе: {body}."
         f"\n\n{_TAIL}"
     )
     return ACTIVE_TITLE, text
