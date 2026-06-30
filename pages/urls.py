@@ -10,6 +10,11 @@ urlpatterns = [
     path("sitemap.xml", seo.sitemap_xml, name="sitemap_xml"),
     path("llms.txt", seo.llms_txt, name="llms_txt"),
     path(f"{seo.INDEXNOW_KEY}.txt", seo.indexnow_key, name="indexnow_key"),
+    path(
+        f"yandex_{seo.YANDEX_VERIFICATION_HASH}.html",
+        seo.yandex_verification,
+        name="yandex_verification",
+    ),
     # 301 со структуры старого сайта: эти URL до сих пор в индексе и в выдаче AI.
     path("company/", RedirectView.as_view(url="/o-kompanii/", permanent=True)),
     path(

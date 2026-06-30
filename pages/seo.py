@@ -187,6 +187,23 @@ def indexnow_key(request):
     return HttpResponse(INDEXNOW_KEY, content_type="text/plain; charset=utf-8")
 
 
+# Подтверждение прав Яндекс.Вебмастера способом «HTML-файл»: Яндекс проверяет
+# файл /yandex_<hash>.html и ждёт в теле строку «Verification: <hash>».
+YANDEX_VERIFICATION_HASH = "89218f181b73f8a9"
+YANDEX_VERIFICATION_HTML = (
+    "<html>\n"
+    "    <head>\n"
+    '        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">\n'
+    "    </head>\n"
+    f"    <body>Verification: {YANDEX_VERIFICATION_HASH}</body>\n"
+    "</html>"
+)
+
+
+def yandex_verification(request):
+    return HttpResponse(YANDEX_VERIFICATION_HTML, content_type="text/html; charset=utf-8")
+
+
 def _static_sitemap_paths() -> list[str]:
     names = [
         "home", "gazon", "roll_lawn_price", "ozelenenie_b2c", "b2b",
