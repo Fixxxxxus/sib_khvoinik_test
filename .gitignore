@@ -57,3 +57,11 @@ AGENTS.md
 AUDIT_REPORT.md
 page-care.yml
 docs/_gazon_main_fragment.html
+
+# Разовые локальные утилиты: отчёты в .docx и заливка в Notion - не часть сайта
+scripts/build_report_*.py
+scripts/finalize_report.py
+scripts/build_care_calendar_notion.py
+scripts/build_notion_db.py
+scripts/fill_notion_digest_text.py
+scripts/update_notion_hero.py
