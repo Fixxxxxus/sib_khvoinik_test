@@ -125,6 +125,33 @@ class TelegramBotClient:
             return {"ok": False, "message_id": None, "error": f"file error: {e}"}
         return {"ok": True, "message_id": result.get("message_id"), "error": ""}
 
+    def send_media_group(self, chat_id: int, image_urls: list[str]) -> dict:
+        """Шлёт альбом карточек по публичным URL. Best-effort.
+
+        Telegram принимает URL прямо в поле media у sendMediaGroup - без upload
+        файлов, как и MAX с нашими /media/ карточками. Нюанс: sendMediaGroup
+        требует 2..10 элементов, поэтому одну картинку шлём как sendPhoto по URL,
+        а больше десяти - бьём на чанки. Пустой список/сбой -> ok=False, чтобы это
+        не ломало текстовую доставку дайджеста.
+        """
+        urls = [u for u in (image_urls or []) if u]
+        if not urls:
+            return {"ok": False, "message_id": None, "error": "нет картинок"}
+        try:
+            if len(urls) == 1:
+                result = self._api_call("sendPhoto", {"chat_id": chat_id, "photo": urls[0]})
+                return {"ok": True, "message_id": result.get("message_id"), "error": ""}
+            first_msg_id = None
+            for i in range(0, len(urls), 10):
+                chunk = urls[i:i + 10]
+                media = [{"type": "photo", "media": u} for u in chunk]
+                result = self._api_call("sendMediaGroup", {"chat_id": chat_id, "media": media})
+                if first_msg_id is None and isinstance(result, list) and result:
+                    first_msg_id = result[0].get("message_id")
+            return {"ok": True, "message_id": first_msg_id, "error": ""}
+        except TelegramBotError as e:
+            return {"ok": False, "message_id": None, "error": str(e)}
+
     def answer_callback_query(self, callback_id: str, text: str | None = None) -> dict:
         payload: dict[str, Any] = {"callback_query_id": callback_id}
         if text:
@@ -157,10 +184,13 @@ class TelegramBotClient:
         return {"ok": True, "error": ""}
 
     def send_digest(self, subscription: CareSubscription, payload: DigestPayload) -> dict:
-        """Шлёт hero-картинку (если есть) + текст дайджеста с inline-клавиатурой.
+        """Шлёт hero-картинку (если есть), альбом карточек недели и текст дайджеста
+        с inline-клавиатурой.
 
-        Возвращает результат последнего sendMessage: его message_id логируем
-        в DigestDelivery.external_id оркестратором.
+        Альбом - те же карточки категорий подписчика плюс промо, что в Email и MAX
+        (единый источник URL). Отправка картинок best-effort: любой сбой не мешает
+        уйти тексту. Возвращает результат последнего sendMessage: его message_id
+        логируем в DigestDelivery.external_id оркестратором.
         """
         chat_id = subscription.telegram_chat_id
         if not chat_id:
@@ -176,7 +206,27 @@ class TelegramBotClient:
                     photo_res["error"],
                 )
 
-        # 2. Текст + inline-клавиатура: Сайт / Управление подпиской.
+        # 2. Альбом карточек недели (карточки категорий + промо), best-effort.
+        album = list(payload.card_image_urls or [])
+        if album and payload.promo_image_url:
+            album.append(payload.promo_image_url)
+        if album:
+            try:
+                album_res = self.send_media_group(chat_id=chat_id, image_urls=album)
+                if not album_res["ok"]:
+                    logger.warning(
+                        "send_digest: album failed for sub=%s: %s",
+                        subscription.id,
+                        album_res["error"],
+                    )
+            except Exception as exc:
+                logger.warning(
+                    "send_digest: album unexpected error for sub=%s: %s",
+                    subscription.id,
+                    exc,
+                )
+
+        # 3. Текст + inline-клавиатура: Сайт / Управление подпиской.
         # Отписку убрали - она доступна на странице управления подпиской.
         text = render_telegram(payload)
         footer = payload.footer
