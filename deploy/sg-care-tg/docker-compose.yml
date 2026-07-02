@@ -31,6 +31,7 @@ services:
     command: ["/app/cron-entrypoint.sh"]
     volumes:
       - ./cron-entrypoint.sh:/app/cron-entrypoint.sh:ro
+      - ./run_promo_invite.sh:/app/run_promo_invite.sh:ro
     networks:
       - default
     logging:
