@@ -1,6 +1,7 @@
+from django.core.management import call_command
 from django.test import Client, TestCase
 
-from care_notifications.digest import build_payload, render_telegram
+from care_notifications.digest import build_payload, get_current_week_key, render_telegram
 from care_notifications.models import CareSubscription, WeeklyPromo
 from care_notifications.promo import active_promo_for_week, promo_for_payload
 
@@ -106,3 +107,12 @@ class PromoApiTest(TestCase):
             **self._hdr(),
         )
         self.assertEqual(r.status_code, 403)
+
+
+class PromoLockAfterSendTest(TestCase):
+    def test_confirmed_promo_locked_to_sent_after_digest_run(self):
+        week = get_current_week_key()
+        WeeklyPromo.objects.create(week_key=week, status=WeeklyPromo.STATUS_CONFIRMED, text="Акция")
+        call_command("send_weekly_digest", "--channel", "email", "--dry-run")
+        promo = WeeklyPromo.objects.get(week_key=week)
+        self.assertEqual(promo.status, WeeklyPromo.STATUS_SENT)
