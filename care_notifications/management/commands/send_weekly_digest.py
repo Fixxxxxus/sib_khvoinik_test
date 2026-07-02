@@ -8,6 +8,7 @@
   --week 2026-W21      ISO-неделя выпуска (по умолчанию текущая)
   --channel email|telegram|max|all   фильтр канала (по умолчанию all)
   --subscription-id N  только одну подписку (для отладки)
+  --only-subscription-id N  только одну подписку по pk (для безопасного живого теста в проде)
 
 Идемпотентность: на каждую тройку (подписка, канал, week_key) пишем DigestDelivery
 с unique_together. Если запись с тем же ключом уже sent - пропускаем без повторной
@@ -45,6 +46,12 @@ class Command(BaseCommand):
         )
         parser.add_argument("--subscription-id", type=int, default=None)
         parser.add_argument(
+            "--only-subscription-id",
+            type=int,
+            default=None,
+            help="Ограничить рассылку одной подпиской по pk (для безопасного теста в проде).",
+        )
+        parser.add_argument(
             "--throttle-ms",
             type=int,
             default=120,
@@ -62,6 +69,10 @@ class Command(BaseCommand):
             qs = qs.filter(pk=opts["subscription_id"])
         if channel_filter != "all":
             qs = qs.filter(preferred_channel=channel_filter)
+
+        only_id = opts.get("only_subscription_id")
+        if only_id:
+            qs = qs.filter(pk=only_id)
 
         total = qs.count()
         self.stdout.write(self.style.NOTICE(
