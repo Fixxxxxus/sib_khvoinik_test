@@ -6,6 +6,7 @@ Bot API, reports results back.
 Runs on Thursday 05:00 UTC = 12:00 NSK via cron inside the digest-cron
 container.
 """
+import json
 import os
 import sys
 import requests
@@ -24,6 +25,55 @@ def tg_call(method, payload=None, timeout=15):
         return r.json()
     except Exception as e:
         print(f"[tg] {method} error: {e}", flush=True)
+        return {"ok": False, "description": str(e)}
+
+
+def tg_send_album(chat_id, image_urls, timeout=120):
+    """Заливает альбом карточек в Telegram МУЛЬТИПАРТОМ (attach://), а не по URL.
+
+    Метод `media: <url>` перекладывает скачивание на серверы Telegram и
+    периодически падает с WEBPAGE_CURL_FAILED (media group атомарен - валится
+    весь альбом). Поэтому качаем байты сами и отдаём файлами. Best-effort:
+    любой сбой возвращает {'ok': False, ...} и не должен ронять текст дайджеста.
+    """
+    urls = [u for u in (image_urls or []) if u][:10]  # лимит Telegram: 2..10
+    if not urls:
+        return {"ok": False, "description": "no images"}
+
+    files = {}
+    media = []
+    for i, u in enumerate(urls):
+        try:
+            r = requests.get(u, timeout=30)
+            r.raise_for_status()
+        except Exception as e:
+            print(f"[album] fetch failed {u}: {e}", flush=True)
+            continue
+        key = f"photo{i}"
+        files[key] = (f"{key}.png", r.content, "image/png")
+        media.append({"type": "photo", "media": f"attach://{key}"})
+
+    if not media:
+        return {"ok": False, "description": "no images fetched"}
+    try:
+        if len(media) == 1:
+            # sendMediaGroup требует 2..10 элементов; одну картинку шлём sendPhoto.
+            only_key = media[0]["media"].split("://", 1)[1]
+            r = requests.post(
+                f"{TG_API}/sendPhoto",
+                data={"chat_id": chat_id},
+                files={"photo": files[only_key]},
+                timeout=timeout,
+            )
+        else:
+            r = requests.post(
+                f"{TG_API}/sendMediaGroup",
+                data={"chat_id": chat_id, "media": json.dumps(media)},
+                files=files,
+                timeout=timeout,
+            )
+        return r.json()
+    except Exception as e:
         return {"ok": False, "description": str(e)}
 
 
@@ -70,15 +120,16 @@ def main():
             ]
         }
 
-        # Альбом карточек (если есть) - отправляем до текстового сообщения
+        # Альбом карточек (если есть) - отправляем до текстового сообщения.
+        # Мультипарт-заливкой (attach://), а не по URL: так Telegram не скачивает
+        # картинки сам и не падает с WEBPAGE_CURL_FAILED. Best-effort.
         images = item.get("images") or []
         promo = item.get("promo_image")
-        if images:
-            media = [{"type": "photo", "media": u} for u in images]
-            if promo:
-                media.append({"type": "photo", "media": promo})
-            media = media[:10]  # лимит Telegram
-            album = tg_call("sendMediaGroup", {"chat_id": chat_id, "media": media})
+        album_urls = list(images)
+        if promo:
+            album_urls.append(promo)
+        if album_urls:
+            album = tg_send_album(chat_id, album_urls)
             if not album.get("ok"):
                 print(f"sendMediaGroup failed for {sub_id}: {album.get('description')}", flush=True)
 
