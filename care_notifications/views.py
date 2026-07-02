@@ -431,6 +431,10 @@ def tg_pending_digest(request: HttpRequest) -> HttpResponse:
         except Exception:  # noqa: BLE001
             images = []
             promo = None
+        # Картинка промо-акции недели (если подписчик согласен и промо подтверждено).
+        # Кладём в общий альбом images: крон заливает его мультипартом.
+        if payload.smm_promo_image_url:
+            images.append(payload.smm_promo_image_url)
         items.append({
             "subscription_id": sub.id,
             "telegram_chat_id": sub.telegram_chat_id,
