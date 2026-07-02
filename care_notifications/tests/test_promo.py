@@ -117,27 +117,39 @@ class PromoApiTest(TestCase):
 
 class PromoLockAfterSendTest(TestCase):
     def test_confirmed_promo_locked_to_sent_after_digest_run(self):
+        # Нет активных подписчиков под фильтром - ранний return, реальных
+        # отправок нет (некому слать), поэтому это НЕ dry-run прогон.
         week = get_current_week_key()
         WeeklyPromo.objects.create(week_key=week, status=WeeklyPromo.STATUS_CONFIRMED, text="Акция")
-        call_command("send_weekly_digest", "--channel", "email", "--dry-run")
+        call_command("send_weekly_digest", "--channel", "email")
         promo = WeeklyPromo.objects.get(week_key=week)
         self.assertEqual(promo.status, WeeklyPromo.STATUS_SENT)
 
     def test_confirmed_promo_locked_to_sent_with_active_subscriber(self):
         # Тот же лок, но по "нормальному" пути: total >= 1, а не ранний
         # return при нуле активных подписчиков под фильтром канала.
+        # Подписчик без email -> команда пишет skipped "no email", без сети,
+        # но доходит до конца handle и лочит промо.
         week = get_current_week_key()
         WeeklyPromo.objects.create(week_key=week, status=WeeklyPromo.STATUS_CONFIRMED, text="Акция")
         CareSubscription.objects.create(
             preferred_channel="email",
-            email="care-test@gazony.ru",
+            email="",
             groups=["seasonal"],
             promo_subscribed=True,
             active=True,
         )
-        call_command("send_weekly_digest", "--channel", "email", "--dry-run")
+        call_command("send_weekly_digest", "--channel", "email")
         promo = WeeklyPromo.objects.get(week_key=week)
         self.assertEqual(promo.status, WeeklyPromo.STATUS_SENT)
+
+    def test_dry_run_does_not_lock_promo(self):
+        # Контракт флага: --dry-run только показывает охват, ничего не меняет.
+        week = get_current_week_key()
+        WeeklyPromo.objects.create(week_key=week, status=WeeklyPromo.STATUS_CONFIRMED, text="Акция")
+        call_command("send_weekly_digest", "--channel", "email", "--dry-run")
+        promo = WeeklyPromo.objects.get(week_key=week)
+        self.assertEqual(promo.status, WeeklyPromo.STATUS_CONFIRMED)
 
 
 class SubscriptionIdFlagTest(TestCase):

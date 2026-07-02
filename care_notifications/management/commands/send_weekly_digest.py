@@ -69,7 +69,8 @@ class Command(BaseCommand):
         ))
         if total == 0:
             self.stdout.write("(нет активных подписчиков под фильтром, выходим)")
-            self._lock_promo(week_key)
+            if not dry_run:
+                self._lock_promo(week_key)
             return
 
         # Ленивая инициализация клиентов, чтобы при dry_run не падать из-за пустых env-ключей.
@@ -169,7 +170,8 @@ class Command(BaseCommand):
             f"[digest] done week={week_key} sent={sent} failed={failed} skipped={skipped}"
         ))
 
-        self._lock_promo(week_key)
+        if not dry_run:
+            self._lock_promo(week_key)
 
     def _lock_promo(self, week_key):
         # Промо недели отработало в рассылке - блокируем правки на эту неделю.
