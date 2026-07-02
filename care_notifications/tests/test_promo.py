@@ -29,6 +29,12 @@ class PromoGateTest(TestCase):
         WeeklyPromo.objects.filter(week_key="2026-W28").update(status=WeeklyPromo.STATUS_CONFIRMED)
         self.assertIsNotNone(active_promo_for_week("2026-W28"))
 
+    def test_active_promo_includes_sent(self):
+        # sent - промо, уже залоченное send_weekly_digest на другом хосте.
+        # Гейт для дайджеста обязан по-прежнему отдавать его (см. промо.py).
+        WeeklyPromo.objects.create(week_key="2026-W29", status=WeeklyPromo.STATUS_SENT, text="Акция")
+        self.assertIsNotNone(active_promo_for_week("2026-W29"))
+
     def test_payload_gated_on_subscription_flag(self):
         WeeklyPromo.objects.create(
             week_key="2026-W28", status=WeeklyPromo.STATUS_CONFIRMED, text="Скидка 20%"
@@ -113,6 +119,22 @@ class PromoLockAfterSendTest(TestCase):
     def test_confirmed_promo_locked_to_sent_after_digest_run(self):
         week = get_current_week_key()
         WeeklyPromo.objects.create(week_key=week, status=WeeklyPromo.STATUS_CONFIRMED, text="Акция")
+        call_command("send_weekly_digest", "--channel", "email", "--dry-run")
+        promo = WeeklyPromo.objects.get(week_key=week)
+        self.assertEqual(promo.status, WeeklyPromo.STATUS_SENT)
+
+    def test_confirmed_promo_locked_to_sent_with_active_subscriber(self):
+        # Тот же лок, но по "нормальному" пути: total >= 1, а не ранний
+        # return при нуле активных подписчиков под фильтром канала.
+        week = get_current_week_key()
+        WeeklyPromo.objects.create(week_key=week, status=WeeklyPromo.STATUS_CONFIRMED, text="Акция")
+        CareSubscription.objects.create(
+            preferred_channel="email",
+            email="care-test@gazony.ru",
+            groups=["seasonal"],
+            promo_subscribed=True,
+            active=True,
+        )
         call_command("send_weekly_digest", "--channel", "email", "--dry-run")
         promo = WeeklyPromo.objects.get(week_key=week)
         self.assertEqual(promo.status, WeeklyPromo.STATUS_SENT)

@@ -14,9 +14,19 @@ from .models import CareSubscription, WeeklyPromo
 
 
 def active_promo_for_week(week_key: str) -> "WeeklyPromo | None":
-    """Подтверждённое промо недели или None."""
+    """Промо недели для дайджеста: confirmed или уже sent.
+
+    sent включаем сюда намеренно: send_weekly_digest переводит промо
+    confirmed -> sent на первом хосте, который его залочит (email/MAX-крон).
+    Telegram-дайджест собирается на отдельном хосте (Contabo) тем же кроном
+    и читает промо через этот же гейт - если оставить только confirmed, он
+    молча потеряет промо, если email-крон успел раньше. Для ЧТЕНИЯ sent -
+    всё ещё "промо этой недели"; редактирование (promo_edit/promo_confirm)
+    по-прежнему блокируется на sent отдельно, это не трогаем.
+    """
     return WeeklyPromo.objects.filter(
-        week_key=week_key, status=WeeklyPromo.STATUS_CONFIRMED
+        week_key=week_key,
+        status__in=[WeeklyPromo.STATUS_CONFIRMED, WeeklyPromo.STATUS_SENT],
     ).first()
 
 
