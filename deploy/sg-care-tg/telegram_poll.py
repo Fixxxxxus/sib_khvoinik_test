@@ -24,6 +24,7 @@ TG_API = f"https://api.telegram.org/bot{BOT_TOKEN}"
 CARE_HEADERS = {"X-Api-Secret": TG_API_SECRET, "Content-Type": "application/json"}
 
 POLL_TIMEOUT = int(os.environ.get("TG_POLL_TIMEOUT", "50"))  # long-poll seconds
+PROMO_ADMIN_CHAT_ID = os.environ.get("CARE_PROMO_ADMIN_CHAT_ID", "").strip()
 
 
 def tg_call(method, payload=None, timeout=15):
@@ -47,6 +48,61 @@ def care_post(path, body, timeout=15):
     except Exception as e:
         print(f"[care] POST {path} error: {e}", flush=True)
         return {"ok": False, "error": str(e)}
+
+
+def care_get(path, timeout=15):
+    try:
+        r = requests.get(f"{CARE_API_BASE}{path}", headers=CARE_HEADERS, timeout=timeout)
+        return r.json()
+    except Exception as e:
+        print(f"[care] GET {path} error: {e}", flush=True)
+        return {"ok": False, "error": str(e)}
+
+
+def care_post_multipart(path, data, files, timeout=60):
+    """POST multipart в Django. Заголовок Content-Type ставит requests сам."""
+    headers = {"X-Api-Secret": TG_API_SECRET}
+    try:
+        r = requests.post(
+            f"{CARE_API_BASE}{path}", data=data, files=files, headers=headers, timeout=timeout
+        )
+        return r.json()
+    except Exception as e:
+        print(f"[care] MP POST {path} error: {e}", flush=True)
+        return {"ok": False, "error": str(e)}
+
+
+def tg_get_file_bytes(file_id, timeout=30):
+    """getFile + скачивание байтов картинки по токену бота. None при сбое."""
+    try:
+        meta = requests.post(f"{TG_API}/getFile", json={"file_id": file_id}, timeout=timeout).json()
+        if not meta.get("ok"):
+            return None
+        file_path = meta["result"]["file_path"]
+        url = f"https://api.telegram.org/file/bot{BOT_TOKEN}/{file_path}"
+        resp = requests.get(url, timeout=timeout)
+        resp.raise_for_status()
+        return resp.content
+    except Exception as e:
+        print(f"[promo] getFile failed: {e}", flush=True)
+        return None
+
+
+def send_promo_preview(chat_id, preview):
+    """Отправляет специалисту превью акции с кнопками Подтвердить/Изменить."""
+    text = preview.get("text") or ""
+    image_url = preview.get("image_url")
+    caption = "Так будет выглядеть акция в дайджесте:\n\n" + text if text else "Картинка акции:"
+    keyboard = {
+        "inline_keyboard": [[
+            {"text": "Подтвердить", "callback_data": "promo_confirm"},
+            {"text": "Изменить", "callback_data": "promo_edit"},
+        ]]
+    }
+    if image_url:
+        tg_call("sendPhoto", {"chat_id": chat_id, "photo": image_url, "caption": caption, "reply_markup": keyboard})
+    else:
+        send_msg(chat_id, caption, reply_markup=keyboard)
 
 
 def send_msg(chat_id, text, parse_mode="Markdown", reply_markup=None):
@@ -134,6 +190,37 @@ def handle_message(msg):
     text = (msg.get("text") or "").strip()
     username = (msg.get("from") or {}).get("username", "")
 
+    from_id = (msg.get("from") or {}).get("id")
+    # Промо-контент от СММ: только этот chat_id, только когда ждём контент.
+    if PROMO_ADMIN_CHAT_ID and str(from_id) == PROMO_ADMIN_CHAT_ID:
+        cur = care_get("/api/care/tg/promo/current/")
+        if cur.get("status") == "awaiting_content":
+            photos = msg.get("photo") or []
+            content_text = (msg.get("caption") or msg.get("text") or "").strip()
+            data = {"telegram_chat_id": from_id, "text": content_text, "tg_file_id": ""}
+            files = {}
+            photo_download_failed = False
+            if photos:
+                file_id = photos[-1]["file_id"]  # самый крупный размер
+                data["tg_file_id"] = file_id
+                img = tg_get_file_bytes(file_id)
+                if img is not None:
+                    files["image"] = ("promo.jpg", img, "image/jpeg")
+                else:
+                    photo_download_failed = True
+            res = care_post_multipart("/api/care/tg/promo/content/", data, files)
+            if res.get("ok"):
+                send_promo_preview(from_id, res.get("preview") or {"text": content_text})
+                if photo_download_failed:
+                    send_msg(
+                        from_id,
+                        "Не удалось скачать картинку из Telegram, акция сохранена без неё. "
+                        "Пришлите фото ещё раз или добавьте его вручную.",
+                    )
+            else:
+                send_msg(from_id, "Не получилось сохранить акцию, попробуйте ещё раз.")
+            return
+
     if text.startswith("/start "):
         token = text[7:].strip()
         if not token:
@@ -216,6 +303,44 @@ def handle_callback(cb):
                 "answerCallbackQuery",
                 {"callback_query_id": callback_id, "text": "Ошибка, попробуйте позже."},
             )
+    elif data == "promo_add":
+        if not (PROMO_ADMIN_CHAT_ID and str(chat_id) == PROMO_ADMIN_CHAT_ID):
+            tg_call("answerCallbackQuery", {"callback_query_id": callback_id})
+            return
+        care_post("/api/care/tg/promo/start/", {"telegram_chat_id": chat_id})
+        tg_call("answerCallbackQuery", {"callback_query_id": callback_id, "text": "Жду акцию"})
+        # Убираем кнопку и подсказываем прислать контент.
+        msg_id = (cb.get("message") or {}).get("message_id")
+        if msg_id:
+            tg_call("editMessageReplyMarkup", {"chat_id": chat_id, "message_id": msg_id, "reply_markup": {"inline_keyboard": []}})
+        send_msg(chat_id, "Пришлите текст акции и/или картинку одним сообщением.")
+
+    elif data == "promo_confirm":
+        if not (PROMO_ADMIN_CHAT_ID and str(chat_id) == PROMO_ADMIN_CHAT_ID):
+            tg_call("answerCallbackQuery", {"callback_query_id": callback_id})
+            return
+        res = care_post("/api/care/tg/promo/confirm/", {"telegram_chat_id": chat_id})
+        if res.get("ok"):
+            tg_call("answerCallbackQuery", {"callback_query_id": callback_id, "text": "Подтверждено"})
+            send_msg(chat_id, "Готово, акция уйдёт подписчикам в ближайшей рассылке.")
+        elif res.get("error") == "already_sent":
+            tg_call("answerCallbackQuery", {"callback_query_id": callback_id, "text": "Рассылка уже ушла"})
+        else:
+            tg_call("answerCallbackQuery", {"callback_query_id": callback_id, "text": "Ошибка, попробуйте позже"})
+
+    elif data == "promo_edit":
+        if not (PROMO_ADMIN_CHAT_ID and str(chat_id) == PROMO_ADMIN_CHAT_ID):
+            tg_call("answerCallbackQuery", {"callback_query_id": callback_id})
+            return
+        res = care_post("/api/care/tg/promo/edit/", {"telegram_chat_id": chat_id})
+        if res.get("ok"):
+            tg_call("answerCallbackQuery", {"callback_query_id": callback_id, "text": "Пришлите новый вариант"})
+            send_msg(chat_id, "Пришлите новый текст акции и/или картинку.")
+        elif res.get("error") == "already_sent":
+            tg_call("answerCallbackQuery", {"callback_query_id": callback_id, "text": "Рассылка уже ушла, изменить нельзя"})
+        else:
+            tg_call("answerCallbackQuery", {"callback_query_id": callback_id, "text": "Ошибка, попробуйте позже"})
+
     else:
         tg_call("answerCallbackQuery", {"callback_query_id": callback_id})
 

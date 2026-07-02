@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import CareSubscription, DigestDelivery, OneCCardSync
+from .models import CareSubscription, DigestDelivery, OneCCardSync, WeeklyPromo
 
 
 @admin.register(CareSubscription)
@@ -44,3 +44,15 @@ class OneCCardSyncAdmin(admin.ModelAdmin):
     list_filter = ("status",)
     search_fields = ("phone", "last_name", "first_name", "b24_contact_id")
     readonly_fields = ("created_at", "updated_at", "sent_at")
+
+
+@admin.register(WeeklyPromo)
+class WeeklyPromoAdmin(admin.ModelAdmin):
+    list_display = ("week_key", "status", "has_image", "updated_at", "confirmed_at")
+    list_filter = ("status",)
+    search_fields = ("week_key", "text")
+    readonly_fields = ("created_at", "updated_at", "confirmed_at")
+
+    @admin.display(boolean=True, description="Картинка")
+    def has_image(self, obj):
+        return bool(obj.image)

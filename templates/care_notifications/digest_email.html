@@ -50,6 +50,15 @@
               </tr>
             {% endif %}
           {% endif %}
+          {% if smm_promo_text %}
+            <tr><td style="padding:16px 24px;">
+              <h2 style="margin:0 0 8px;font-size:18px;color:#2D6A4F;">Акции и новинки недели</h2>
+              {% if smm_promo_image_url %}
+              <img src="{{ smm_promo_image_url }}" alt="Акция недели" style="max-width:100%;border-radius:8px;margin-bottom:8px;">
+              {% endif %}
+              <p style="margin:0;font-size:15px;line-height:1.5;color:#333;">{{ smm_promo_text|linebreaksbr }}</p>
+            </td></tr>
+          {% endif %}
           {% if blocks %}
             <tr>
               <td style="padding: 12px 32px 4px 32px;">

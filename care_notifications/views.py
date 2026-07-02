@@ -24,6 +24,14 @@ from django.views.decorators.http import require_GET, require_http_methods, requ
 
 _TG_API_SECRET = os.environ.get("TG_API_SECRET", "")
 _MAX_WEBHOOK_SECRET = os.environ.get("MAX_WEBHOOK_SECRET", "")
+_PROMO_ADMIN_CHAT_ID = os.environ.get("CARE_PROMO_ADMIN_CHAT_ID", "").strip()
+
+
+def _promo_admin_ok(request: HttpRequest, chat_id) -> bool:
+    """Промо-действия только для одного chat_id из env. Пустой env запрещает всё."""
+    if not _PROMO_ADMIN_CHAT_ID:
+        return False
+    return str(chat_id) == _PROMO_ADMIN_CHAT_ID
 
 from pages.data import (
     B24_CARE_SUBSCRIPTIONS_LEAD_FIELD,
@@ -431,6 +439,10 @@ def tg_pending_digest(request: HttpRequest) -> HttpResponse:
         except Exception:  # noqa: BLE001
             images = []
             promo = None
+        # Картинка промо-акции недели (если подписчик согласен и промо подтверждено).
+        # Кладём в общий альбом images: крон заливает его мультипартом.
+        if payload.smm_promo_image_url:
+            images.append(payload.smm_promo_image_url)
         items.append({
             "subscription_id": sub.id,
             "telegram_chat_id": sub.telegram_chat_id,
@@ -477,6 +489,131 @@ def tg_mark_digest_sent(request: HttpRequest) -> HttpResponse:
             CareSubscription.objects.filter(pk=sub_id).update(last_digest_sent_at=timezone.now())
         created += 1
     return JsonResponse({"ok": True, "processed": created})
+
+
+def _promo_json(request):
+    """Разбор тела: JSON или form/multipart. Возвращает dict."""
+    if request.content_type and request.content_type.startswith("application/json"):
+        try:
+            return json.loads(request.body or b"{}")
+        except (ValueError, UnicodeDecodeError):
+            return {}
+    return request.POST
+
+
+@csrf_exempt
+@require_POST
+def promo_start(request: HttpRequest) -> HttpResponse:
+    """Специалист нажал «Добавить»: создаём/сбрасываем промо недели в awaiting_content."""
+    if not _tg_auth(request):
+        return HttpResponse("forbidden", status=403)
+    from .digest import get_current_week_key
+    from .models import WeeklyPromo
+    body = _promo_json(request)
+    if not _promo_admin_ok(request, body.get("telegram_chat_id")):
+        return HttpResponse("forbidden", status=403)
+    week_key = get_current_week_key()
+    promo, _ = WeeklyPromo.objects.get_or_create(week_key=week_key)
+    if promo.status != WeeklyPromo.STATUS_SENT:
+        promo.status = WeeklyPromo.STATUS_AWAITING
+        promo.save(update_fields=["status", "updated_at"])
+    return JsonResponse({"ok": True, "week_key": week_key, "status": promo.status})
+
+
+@csrf_exempt
+@require_POST
+def promo_content(request: HttpRequest) -> HttpResponse:
+    """Специалист прислал контент акции (текст и/или картинка). Переводим в review."""
+    if not _tg_auth(request):
+        return HttpResponse("forbidden", status=403)
+    from .digest import get_current_week_key
+    from .models import WeeklyPromo
+    if not _promo_admin_ok(request, request.POST.get("telegram_chat_id")):
+        return HttpResponse("forbidden", status=403)
+    week_key = get_current_week_key()
+    promo, _ = WeeklyPromo.objects.get_or_create(week_key=week_key)
+    if promo.status == WeeklyPromo.STATUS_SENT:
+        return JsonResponse({"ok": False, "error": "already_sent"}, status=409)
+    promo.text = (request.POST.get("text") or "").strip()
+    promo.tg_file_id = (request.POST.get("tg_file_id") or "").strip()
+    image = request.FILES.get("image")
+    if image is not None:
+        promo.image.save(image.name, image, save=False)
+    promo.status = WeeklyPromo.STATUS_REVIEW
+    promo.save()
+    image_url = None
+    if promo.image:
+        image_url = request.build_absolute_uri(promo.image.url)
+    return JsonResponse(
+        {"ok": True, "week_key": week_key, "preview": {"text": promo.text, "image_url": image_url}}
+    )
+
+
+@csrf_exempt
+@require_POST
+def promo_confirm(request: HttpRequest) -> HttpResponse:
+    """Специалист подтвердил акцию: confirmed. Только это попадает в рассылку."""
+    if not _tg_auth(request):
+        return HttpResponse("forbidden", status=403)
+    from .digest import get_current_week_key
+    from .models import WeeklyPromo
+    body = _promo_json(request)
+    if not _promo_admin_ok(request, body.get("telegram_chat_id")):
+        return HttpResponse("forbidden", status=403)
+    week_key = get_current_week_key()
+    try:
+        promo = WeeklyPromo.objects.get(week_key=week_key)
+    except WeeklyPromo.DoesNotExist:
+        return JsonResponse({"ok": False, "error": "no_promo"}, status=404)
+    if promo.status == WeeklyPromo.STATUS_SENT:
+        return JsonResponse({"ok": False, "error": "already_sent"}, status=409)
+    promo.status = WeeklyPromo.STATUS_CONFIRMED
+    promo.confirmed_at = timezone.now()
+    promo.save(update_fields=["status", "confirmed_at", "updated_at"])
+    return JsonResponse({"ok": True, "week_key": week_key})
+
+
+@csrf_exempt
+@require_POST
+def promo_edit(request: HttpRequest) -> HttpResponse:
+    """Специалист нажал «Изменить»: возвращаем в awaiting_content (если ещё не разослано)."""
+    if not _tg_auth(request):
+        return HttpResponse("forbidden", status=403)
+    from .digest import get_current_week_key
+    from .models import WeeklyPromo
+    body = _promo_json(request)
+    if not _promo_admin_ok(request, body.get("telegram_chat_id")):
+        return HttpResponse("forbidden", status=403)
+    week_key = get_current_week_key()
+    try:
+        promo = WeeklyPromo.objects.get(week_key=week_key)
+    except WeeklyPromo.DoesNotExist:
+        return JsonResponse({"ok": False, "error": "no_promo"}, status=404)
+    if promo.status == WeeklyPromo.STATUS_SENT:
+        return JsonResponse({"ok": False, "error": "already_sent", "status": promo.status}, status=409)
+    promo.status = WeeklyPromo.STATUS_AWAITING
+    promo.save(update_fields=["status", "updated_at"])
+    return JsonResponse({"ok": True, "week_key": week_key, "status": promo.status})
+
+
+@require_GET
+def promo_current(request: HttpRequest) -> HttpResponse:
+    """Текущее состояние промо недели (для идемпотентности поллера)."""
+    if not _tg_auth(request):
+        return HttpResponse("forbidden", status=403)
+    from .digest import get_current_week_key
+    from .models import WeeklyPromo
+    week_key = get_current_week_key()
+    promo = WeeklyPromo.objects.filter(week_key=week_key).first()
+    if promo is None:
+        return JsonResponse({"ok": True, "week_key": week_key, "status": None, "has_image": False, "text": ""})
+    return JsonResponse({
+        "ok": True,
+        "week_key": week_key,
+        "status": promo.status,
+        "has_image": bool(promo.image),
+        "text": promo.text,
+    })
 
 
 # ---------------------------------------------------------------------------

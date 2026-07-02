@@ -214,3 +214,58 @@ class OneCCardSync(models.Model):
     def __str__(self) -> str:
         who = " ".join(p for p in (self.last_name, self.first_name) if p) or "(без имени)"
         return f"{self.phone} · {who} · {self.status}"
+
+
+class WeeklyPromo(models.Model):
+    """Промо-акция недели от СММ-специалиста для блока «скидки, акции и новинки».
+
+    Одна запись на ISO-неделю. Хранит и контент акции, и состояние диалога с
+    специалистом (статусы), чтобы переживать перезапуск процесса-поллера - state
+    не в памяти. В рассылку попадает только status == confirmed.
+    """
+
+    STATUS_AWAITING = "awaiting_content"
+    STATUS_REVIEW = "review"
+    STATUS_CONFIRMED = "confirmed"
+    STATUS_SENT = "sent"
+    STATUS_CANCELLED = "cancelled"
+    STATUS_CHOICES = [
+        (STATUS_AWAITING, "Ждём контент"),
+        (STATUS_REVIEW, "На согласовании"),
+        (STATUS_CONFIRMED, "Подтверждено"),
+        (STATUS_SENT, "Разослано"),
+        (STATUS_CANCELLED, "Отменено"),
+    ]
+
+    week_key = models.CharField(
+        max_length=16,
+        unique=True,
+        db_index=True,
+        help_text="ISO неделя, например 2026-W28. Один промо на неделю.",
+    )
+    status = models.CharField(
+        max_length=16, choices=STATUS_CHOICES, default=STATUS_AWAITING, db_index=True
+    )
+    text = models.TextField(blank=True, help_text="Текст акции от специалиста.")
+    image = models.ImageField(
+        upload_to="care_promo/",
+        blank=True,
+        help_text="Присланная картинка акции. Даёт публичный URL для всех каналов.",
+    )
+    tg_file_id = models.CharField(
+        max_length=256,
+        blank=True,
+        help_text="Telegram file_id исходной картинки (подстраховка, если скачать не удалось).",
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True, db_index=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    confirmed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Промо-акция недели"
+        verbose_name_plural = "Промо-акции недели"
+        ordering = ["-week_key"]
+
+    def __str__(self) -> str:
+        return f"{self.week_key} · {self.status}"

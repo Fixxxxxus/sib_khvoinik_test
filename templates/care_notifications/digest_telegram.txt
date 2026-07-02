@@ -9,6 +9,10 @@ _Дайджест Службы заботы · {{ week_display }}_
 {% for p in b.plants %}• *{{ p.name }}*{% if p.is_upcoming %} (с {{ p.date_label }}){% endif %}{% if p.summary %} - {{ p.summary }}{% endif %}
 {% endfor %}{% if b.extra_count %}и ещё {{ b.extra_count }} растений с работами на этой неделе
 {% endif %}{% endfor %}{% endif %}
+{% if smm_promo_text %}
+🔥 *Акции и новинки недели*
+{{ smm_promo_text }}
+{% endif %}
 _С уважением, Команда Сибирских Газонов._
 [Сибирские Газоны]({{ footer.site_url }})
 {% endautoescape %}

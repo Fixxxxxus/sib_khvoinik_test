@@ -1,0 +1,7 @@
+# Еженедельный дайджест email+MAX: четверг 05:00 UTC = 12:00 Asia/Krasnoyarsk.
+# Контейнер запускается с TZ=UTC, поэтому время здесь в UTC.
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+0 5 * * 4 root /app/run_email_max_digest.sh >> /var/log/gazony-digest.log 2>&1
+# Пустая строка в конце обязательна для cron

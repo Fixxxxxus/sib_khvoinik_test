@@ -24,6 +24,23 @@ services:
   # bot-сервис удалён: Telegram-polling перенесён в GitHub Actions
   # (api.telegram.org недоступен из RU-VDS, GitHub runner вне РФ)
 
+  digest-cron:
+    build: .
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.settings
+      - TZ=UTC
+    volumes:
+      - ./data/db:/app/db
+      - ./data/media:/app/media
+      - static_files:/app/staticfiles
+    entrypoint: ["/usr/bin/tini", "--"]
+    command: ["/app/cron-entrypoint.sh"]
+    depends_on:
+      - web
+
   caddy:
     image: caddy:2-alpine
     restart: unless-stopped

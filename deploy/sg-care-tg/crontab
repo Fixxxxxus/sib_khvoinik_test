@@ -5,4 +5,7 @@ SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 0 5 * * 4 root /app/run_digest.sh >> /var/log/sg-care-digest.log 2>&1
+
+# Промо-приглашение СММ: понедельник 03:00 UTC = 10:00 Asia/Krasnoyarsk (=Новосибирск).
+0 3 * * 1 root /app/run_promo_invite.sh >> /var/log/sg-care-digest.log 2>&1
 # Пустая строка в конце обязательна для cron

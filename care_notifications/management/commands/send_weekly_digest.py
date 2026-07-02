@@ -69,6 +69,8 @@ class Command(BaseCommand):
         ))
         if total == 0:
             self.stdout.write("(нет активных подписчиков под фильтром, выходим)")
+            if not dry_run:
+                self._lock_promo(week_key)
             return
 
         # Ленивая инициализация клиентов, чтобы при dry_run не падать из-за пустых env-ключей.
@@ -167,6 +169,18 @@ class Command(BaseCommand):
         self.stdout.write(self.style.SUCCESS(
             f"[digest] done week={week_key} sent={sent} failed={failed} skipped={skipped}"
         ))
+
+        if not dry_run:
+            self._lock_promo(week_key)
+
+    def _lock_promo(self, week_key):
+        # Промо недели отработало в рассылке - блокируем правки на эту неделю.
+        # Единая точка: команда запускается email+MAX-кроном каждый четверг
+        # безусловно (даже при нуле активных подписчиков под фильтром канала).
+        from care_notifications.models import WeeklyPromo
+        WeeklyPromo.objects.filter(
+            week_key=week_key, status=WeeklyPromo.STATUS_CONFIRMED
+        ).update(status=WeeklyPromo.STATUS_SENT)
 
     def _record(self, subscription, channel, week_key, status, error, dry_run, external_id=""):
         if dry_run:
