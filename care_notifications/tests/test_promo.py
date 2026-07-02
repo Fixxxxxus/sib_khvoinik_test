@@ -1,6 +1,7 @@
 from django.test import TestCase
 
-from care_notifications.models import WeeklyPromo
+from care_notifications.models import CareSubscription, WeeklyPromo
+from care_notifications.promo import active_promo_for_week, promo_for_payload
 
 
 class WeeklyPromoModelTest(TestCase):
@@ -17,3 +18,24 @@ class WeeklyPromoModelTest(TestCase):
             values,
             {"awaiting_content", "review", "confirmed", "sent", "cancelled"},
         )
+
+
+class PromoGateTest(TestCase):
+    def test_active_promo_only_confirmed(self):
+        WeeklyPromo.objects.create(week_key="2026-W28", status=WeeklyPromo.STATUS_REVIEW, text="draft")
+        self.assertIsNone(active_promo_for_week("2026-W28"))
+        WeeklyPromo.objects.filter(week_key="2026-W28").update(status=WeeklyPromo.STATUS_CONFIRMED)
+        self.assertIsNotNone(active_promo_for_week("2026-W28"))
+
+    def test_payload_gated_on_subscription_flag(self):
+        WeeklyPromo.objects.create(
+            week_key="2026-W28", status=WeeklyPromo.STATUS_CONFIRMED, text="Скидка 20%"
+        )
+        sub_off = CareSubscription.objects.create(promo_subscribed=False)
+        sub_on = CareSubscription.objects.create(promo_subscribed=True)
+        self.assertEqual(
+            promo_for_payload(sub_off, "2026-W28", "https://gazony.ru"), (None, None)
+        )
+        text, image = promo_for_payload(sub_on, "2026-W28", "https://gazony.ru")
+        self.assertEqual(text, "Скидка 20%")
+        self.assertIsNone(image)  # картинки нет

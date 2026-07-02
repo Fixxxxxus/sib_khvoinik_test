@@ -92,6 +92,9 @@ class DigestPayload:
     # Сгенерированные карточки недели (публичные URL) - альбом для всех каналов.
     card_image_urls: list[str] = field(default_factory=list)
     promo_image_url: str | None = None
+    # Промо-акция недели от СММ (блок «скидки, акции и новинки»), гейт по promo_subscribed.
+    smm_promo_text: str | None = None
+    smm_promo_image_url: str | None = None
     meta: dict[str, Any] = field(default_factory=dict)
 
 
@@ -434,6 +437,18 @@ def build_payload(subscription: CareSubscription, week_key: str | None = None) -
     except Exception:
         card_urls, promo_card_url = [], None
 
+    # Промо-акция недели (блок «скидки, акции и новинки»). Best-effort:
+    # любой сбой гейта не должен ронять сборку основного дайджеста.
+    smm_promo_text: str | None = None
+    smm_promo_image_url: str | None = None
+    try:
+        from .promo import promo_for_payload
+        smm_promo_text, smm_promo_image_url = promo_for_payload(
+            subscription, week, site_url=SITE_URL
+        )
+    except Exception:
+        smm_promo_text, smm_promo_image_url = None, None
+
     return DigestPayload(
         week_key=week,
         subject=subject,
@@ -446,6 +461,8 @@ def build_payload(subscription: CareSubscription, week_key: str | None = None) -
         season_label=season,
         card_image_urls=card_urls,
         promo_image_url=promo_card_url,
+        smm_promo_text=smm_promo_text,
+        smm_promo_image_url=smm_promo_image_url,
         meta={"subscription_id": subscription.id},
     )
 
@@ -463,6 +480,8 @@ def _ctx(payload: DigestPayload) -> dict[str, Any]:
         "season_label": payload.season_label,
         "card_image_urls": payload.card_image_urls,
         "promo_image_url": payload.promo_image_url,
+        "smm_promo_text": payload.smm_promo_text,
+        "smm_promo_image_url": payload.smm_promo_image_url,
     }
 
 
