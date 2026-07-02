@@ -199,15 +199,24 @@ def handle_message(msg):
             content_text = (msg.get("caption") or msg.get("text") or "").strip()
             data = {"telegram_chat_id": from_id, "text": content_text, "tg_file_id": ""}
             files = {}
+            photo_download_failed = False
             if photos:
                 file_id = photos[-1]["file_id"]  # самый крупный размер
                 data["tg_file_id"] = file_id
                 img = tg_get_file_bytes(file_id)
                 if img is not None:
                     files["image"] = ("promo.jpg", img, "image/jpeg")
+                else:
+                    photo_download_failed = True
             res = care_post_multipart("/api/care/tg/promo/content/", data, files)
             if res.get("ok"):
                 send_promo_preview(from_id, res.get("preview") or {"text": content_text})
+                if photo_download_failed:
+                    send_msg(
+                        from_id,
+                        "Не удалось скачать картинку из Telegram, акция сохранена без неё. "
+                        "Пришлите фото ещё раз или добавьте его вручную.",
+                    )
             else:
                 send_msg(from_id, "Не получилось сохранить акцию, попробуйте ещё раз.")
             return
