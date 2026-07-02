@@ -140,8 +140,8 @@ class PromoLockAfterSendTest(TestCase):
         self.assertEqual(promo.status, WeeklyPromo.STATUS_SENT)
 
 
-class OnlySubscriptionFlagTest(TestCase):
-    def test_only_subscription_id_limits_to_one(self):
+class SubscriptionIdFlagTest(TestCase):
+    def test_subscription_id_limits_to_one(self):
         target = CareSubscription.objects.create(
             preferred_channel="email", email="t@example.com", groups=["seasonal"]
         )
@@ -151,8 +151,8 @@ class OnlySubscriptionFlagTest(TestCase):
         # dry-run: реально не шлём, только считаем охват через лог/подсчёт доставок
         call_command(
             "send_weekly_digest", "--channel", "email", "--dry-run",
-            "--only-subscription-id", str(target.pk),
+            "--subscription-id", str(target.pk),
         )
         # В dry-run доставки не пишутся, поэтому проверяем через отсутствие исключений
-        # и то, что команда приняла аргумент. Точный охват проверяется в Step 4 вручную.
+        # и то, что команда приняла аргумент. Точный охват проверяется вручную.
         self.assertTrue(True)
