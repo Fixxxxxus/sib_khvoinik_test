@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import Client, TestCase
 
 from care_notifications.digest import build_payload, render_telegram
 from care_notifications.models import CareSubscription, WeeklyPromo
@@ -64,3 +64,45 @@ class PromoRenderTest(TestCase):
         )
         payload = build_payload(sub, week_key="2026-W28")
         self.assertNotIn("Черновик акции", render_telegram(payload))
+
+
+class PromoApiTest(TestCase):
+    def setUp(self):
+        self.client = Client()
+        self.secret = "test-secret"
+        self.admin = 971679598
+
+    def _hdr(self):
+        return {"HTTP_X_API_SECRET": self.secret}
+
+    def test_requires_secret(self):
+        import care_notifications.views as v
+        v._TG_API_SECRET = self.secret
+        r = self.client.post("/api/care/tg/promo/start/", data={"telegram_chat_id": self.admin})
+        self.assertEqual(r.status_code, 403)
+
+    def test_start_confirm_flow(self):
+        import care_notifications.views as v
+        v._TG_API_SECRET = self.secret
+        v._PROMO_ADMIN_CHAT_ID = str(self.admin)
+        r = self.client.post(
+            "/api/care/tg/promo/start/",
+            data={"telegram_chat_id": self.admin},
+            content_type="application/json",
+            **self._hdr(),
+        )
+        self.assertEqual(r.status_code, 200)
+        self.assertTrue(r.json()["ok"])
+        self.assertEqual(r.json()["status"], "awaiting_content")
+
+    def test_foreign_chat_id_rejected(self):
+        import care_notifications.views as v
+        v._TG_API_SECRET = self.secret
+        v._PROMO_ADMIN_CHAT_ID = str(self.admin)
+        r = self.client.post(
+            "/api/care/tg/promo/start/",
+            data={"telegram_chat_id": 111},
+            content_type="application/json",
+            **self._hdr(),
+        )
+        self.assertEqual(r.status_code, 403)
