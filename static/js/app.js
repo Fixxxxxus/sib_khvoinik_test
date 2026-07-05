@@ -460,12 +460,10 @@ function initModal() {
     root.insertBefore(wrap, root.firstChild);
   };
 
-  // Отложенное скачивание файла. Флаг гасит повторные таймеры при
-  // дабл-клике / повторном открытии модалки.
+  // Отложенное скачивание файла: невидимый таймер запускает загрузку через
+  // delayMs, независимо от того, заполнит ли посетитель форму. Флаг гасит
+  // повторные таймеры при дабл-клике / повторном открытии модалки.
   let fileDownloadPending = false;
-  // Прайс газона: url/имя файла запоминаются при открытии модалки, а сама
-  // загрузка стартует только после успешной отправки формы (обязательный захват).
-  let pendingPriceDownload = null;
   const scheduleFileDownload = (url, filename, delayMs) => {
     if (!url || fileDownloadPending) return;
     fileDownloadPending = true;
@@ -561,10 +559,11 @@ function initModal() {
       initConsentCheckboxes();
     }
 
-    // Прайс газон: файл отдаём только после отправки контактов - здесь лишь
-    // запоминаем, что скачивать после сабмита формы.
+    // Прайс газон: форма выезжает сразу, а файл скачивается через 5 секунд -
+    // даже если посетитель закроет модалку или не заполнит форму.
     if (targetKey === 'gazon_price_download') {
-      pendingPriceDownload = { url: opts.downloadUrl, name: opts.downloadName };
+      scheduleFileDownload(opts.downloadUrl, opts.downloadName, 5000);
+      try { ym(108722541, 'reachGoal', 'price_download'); } catch (e) { /* noop */ }
     }
 
     activeNoOverlay = Boolean(opts.noOverlay);
@@ -1155,10 +1154,6 @@ function initModal() {
     // Optional UI-only side effects
     if (uiAction === 'download_gazon_checklist') {
       window.SGDownloadGazonChecklist && window.SGDownloadGazonChecklist();
-    }
-    if (uiAction === 'download_gazon_price' && pendingPriceDownload) {
-      scheduleFileDownload(pendingPriceDownload.url, pendingPriceDownload.name, 0);
-      try { ym(108722541, 'reachGoal', 'price_download'); } catch (e) { /* noop */ }
     }
 
     // Ensure success is visible even for non-modal forms

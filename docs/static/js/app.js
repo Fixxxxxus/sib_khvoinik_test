@@ -282,58 +282,6 @@ function initBurger() {
   });
 }
 
-function initNavDropdowns() {
-  const dds = Array.from(document.querySelectorAll('[data-nav-dd]'));
-  if (!dds.length) return;
-  const isDesktop = () => window.matchMedia('(min-width: 768px)').matches;
-
-  function setState(dd, open) {
-    const trigger = dd.querySelector('[data-nav-trigger]');
-    const panel = dd.querySelector('[data-nav-panel]');
-    const chevron = dd.querySelector('[data-nav-chevron]');
-    if (panel) panel.classList.toggle('hidden', !open);
-    if (trigger) trigger.setAttribute('aria-expanded', open ? 'true' : 'false');
-    if (chevron) chevron.classList.toggle('rotate-180', open);
-  }
-  function closeAll(except) {
-    dds.forEach((dd) => { if (dd !== except) setState(dd, false); });
-  }
-
-  dds.forEach((dd) => {
-    const trigger = dd.querySelector('[data-nav-trigger]');
-    const panel = dd.querySelector('[data-nav-panel]');
-    if (!trigger || !panel) return;
-    const isMobile = dd.hasAttribute('data-nav-mobile');
-
-    trigger.addEventListener('click', (e) => {
-      e.preventDefault();
-      const open = trigger.getAttribute('aria-expanded') === 'true';
-      if (open) {
-        setState(dd, false);
-      } else {
-        closeAll(dd);
-        setState(dd, true);
-      }
-    });
-
-    if (!isMobile) {
-      dd.addEventListener('mouseenter', () => {
-        if (isDesktop()) { closeAll(dd); setState(dd, true); }
-      });
-      dd.addEventListener('mouseleave', () => {
-        if (isDesktop()) setState(dd, false);
-      });
-    }
-  });
-
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeAll(null);
-  });
-  document.addEventListener('click', (e) => {
-    if (!e.target.closest('[data-nav-dd]')) closeAll(null);
-  });
-}
-
 function initModal() {
   const overlay = document.getElementById('modalOverlay');
   const host = document.getElementById('modalHost');
@@ -460,12 +408,10 @@ function initModal() {
     root.insertBefore(wrap, root.firstChild);
   };
 
-  // Отложенное скачивание файла. Флаг гасит повторные таймеры при
-  // дабл-клике / повторном открытии модалки.
+  // Отложенное скачивание файла: невидимый таймер запускает загрузку через
+  // delayMs, независимо от того, заполнит ли посетитель форму. Флаг гасит
+  // повторные таймеры при дабл-клике / повторном открытии модалки.
   let fileDownloadPending = false;
-  // Прайс газона: url/имя файла запоминаются при открытии модалки, а сама
-  // загрузка стартует только после успешной отправки формы (обязательный захват).
-  let pendingPriceDownload = null;
   const scheduleFileDownload = (url, filename, delayMs) => {
     if (!url || fileDownloadPending) return;
     fileDownloadPending = true;
@@ -561,10 +507,11 @@ function initModal() {
       initConsentCheckboxes();
     }
 
-    // Прайс газон: файл отдаём только после отправки контактов - здесь лишь
-    // запоминаем, что скачивать после сабмита формы.
+    // Прайс газон: форма выезжает сразу, а файл скачивается через 5 секунд -
+    // даже если посетитель закроет модалку или не заполнит форму.
     if (targetKey === 'gazon_price_download') {
-      pendingPriceDownload = { url: opts.downloadUrl, name: opts.downloadName };
+      scheduleFileDownload(opts.downloadUrl, opts.downloadName, 5000);
+      try { ym(108722541, 'reachGoal', 'price_download'); } catch (e) { /* noop */ }
     }
 
     activeNoOverlay = Boolean(opts.noOverlay);
@@ -692,7 +639,6 @@ function initModal() {
     'assortment-interest': 'Запрос по ассортименту (каталог)',
     'discount-direct': 'Скидка на рассаду (Директ)',
     'zayavka-direct': 'Заявка с лендинга Директа',
-    'predzakaz': 'Предзаказ деревьев на осень 2026',
   };
 
   // Labels for COMMENTS fields
@@ -775,7 +721,6 @@ function initModal() {
     'Запись на день открытых дверей (Питомник)': 1361,
     'Консультация': 1361,
     'Заявка с лендинга Директа': 1361,
-    'Предзаказ деревьев на осень 2026': 1361,
     'Покупка продукции (B2B)': 1347,
     'Прайс и наличие (B2B)': 1347,
     'Калькулятор газона': 17,
@@ -832,7 +777,7 @@ function initModal() {
     var skipKeys = [
       'name', 'phone', 'email', 'company', 'formTag', 'consent',
       'contactPerson', 'contact', 'consent_messages',
-      'modalContext', 'selectedPlants', 'pageTitle', 'pagePath', 'company_site',
+      'modalContext', 'selectedPlants', 'pageTitle', 'pagePath',
       'utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content',
     ];
 
@@ -1040,13 +985,6 @@ function initModal() {
     const tag = form.getAttribute('data-form-tag') || 'unknown';
     const uiAction = form.getAttribute('data-ui-action') || '';
 
-    // Honeypot-защита от спама: скрытое поле, которое заполняют только боты.
-    // Если оно непустое - тихо имитируем успех, ничего не отправляя.
-    const honeypot = form.querySelector('input[name="company_site"]');
-    if (honeypot && honeypot.value.trim()) {
-      return;
-    }
-
     // Native HTML5 validation (required, type=*, pattern) — браузер покажет тултип на первом невалидном поле
     if (typeof form.reportValidity === 'function' && !form.reportValidity()) {
       return;
@@ -1121,8 +1059,6 @@ function initModal() {
         specificGoal = 'form_submit_discount';
       } else if (tag === 'zayavka-direct' || tag.endsWith('/zayavka-direct')) {
         specificGoal = 'form_submit_direct';
-      } else if (tag === 'predzakaz' || tag.endsWith('/predzakaz')) {
-        specificGoal = 'form_submit_predzakaz';
       } else {
         specificGoal = 'form_submit_site';
       }
@@ -1139,10 +1075,9 @@ function initModal() {
     }
     if (!careSuccessRendered) {
       const isDigitalCard = tag === 'digital-card' || tag.endsWith('/digital-card');
-      const isPredzakaz = tag === 'predzakaz' || tag.endsWith('/predzakaz');
       const successTplId = isDigitalCard
         ? 'modal-template-success-digital-card'
-        : (isPredzakaz ? 'modal-template-success-predzakaz' : 'modal-template-success');
+        : 'modal-template-success';
       const successTpl = document.getElementById(successTplId)
         || document.getElementById('modal-template-success');
       if (successTpl) {
@@ -1155,10 +1090,6 @@ function initModal() {
     // Optional UI-only side effects
     if (uiAction === 'download_gazon_checklist') {
       window.SGDownloadGazonChecklist && window.SGDownloadGazonChecklist();
-    }
-    if (uiAction === 'download_gazon_price' && pendingPriceDownload) {
-      scheduleFileDownload(pendingPriceDownload.url, pendingPriceDownload.name, 0);
-      try { ym(108722541, 'reachGoal', 'price_download'); } catch (e) { /* noop */ }
     }
 
     // Ensure success is visible even for non-modal forms
@@ -2773,7 +2704,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initGazonHeroVideo();
   initB2bHeroVideo();
   initBurger();
-  initNavDropdowns();
   initModal();
   // Auto-open gazon calculator from URL: /gazon/?calc=1
   try {

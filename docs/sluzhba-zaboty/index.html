@@ -1357,12 +1357,12 @@
   <div class="mb-4 flex items-start gap-3 rounded-2xl border border-brand/20 bg-brand/5 p-4">
     <i data-lucide="download" class="mt-0.5 h-5 w-5 shrink-0 text-brand"></i>
     <p class="text-sm leading-snug text-slate-700">
-      Оставьте имя и телефон - прайс скачается сразу после отправки.
-      Менеджер бесплатно проконсультирует по позициям и поможет подобрать
-      газон под ваш объект.
+      Файл начнёт скачиваться через несколько секунд. Пока прайс загружается -
+      оставьте контакты: менеджер бесплатно проконсультирует по позициям и
+      поможет подобрать газон под ваш объект.
     </p>
   </div>
-  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-price-after-download" data-ui-action="download_gazon_price">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-price-after-download" data-ui-action="none">
     <input type="hidden" name="formTag" value="Gas/gazon-price-after-download" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label class="text-sm font-medium text-slate-700">
@@ -1375,7 +1375,7 @@
       </label>
     </div>
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
-      Скачать прайс
+      Получить консультацию
     </button>
   </form>
 </template>
