@@ -19,6 +19,7 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="base-path" content="" />
     <meta name="zen-verification" content="Bu3VGfUe3AezccVAB29rXmp71iMefM5W1YLRtK7TI67SbqekTN80Hija2r4Napmw" />
+    <meta name="msvalidate.01" content="8A1B6A64D332D6235571419F8D312325" />
     <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -111,42 +112,8 @@
 
     
 
-    <!-- Yandex.Metrika counter -->
-    <script type="text/javascript">
-      (function(m, e, t, r, i, k, a) {
-        m[i] = m[i] || function() { (m[i].a = m[i].a || []).push(arguments); };
-        m[i].l = 1 * new Date();
-        for (var j = 0; j < document.scripts.length; j++) {
-          if (document.scripts[j].src === r) { return; }
-        }
-        k = e.createElement(t), a = e.getElementsByTagName(t)[0], k.async = 1, k.src = r, a.parentNode.insertBefore(k, a);
-      })(window, document, 'script', 'https://mc.yandex.ru/metrika/tag.js?id=108722541', 'ym');
-      ym(108722541, 'init', {
-        ssr: true,
-        webvisor: true,
-        clickmap: true,
-        ecommerce: 'dataLayer',
-        referrer: document.referrer,
-        url: location.href,
-        accurateTrackBounce: true,
-        trackLinks: true
-      });
-    </script>
-    <!-- /Yandex.Metrika counter -->
-
-    <!-- Top.Mail.Ru counter -->
-    <script type="text/javascript">
-      var _tmr = window._tmr || (window._tmr = []);
-      _tmr.push({ id: '3760896', type: 'pageView', start: (new Date()).getTime() });
-      (function(d, w, id) {
-        if (d.getElementById(id)) return;
-        var ts = d.createElement('script'); ts.type = 'text/javascript'; ts.async = true; ts.id = id;
-        ts.src = 'https://top-fwz1.mail.ru/js/code.js';
-        var f = function() { var s = d.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ts, s); };
-        if (w.opera == '[object Opera]') { d.addEventListener('DOMContentLoaded', f, false); } else { f(); }
-      })(document, window, 'tmr-code');
-    </script>
-    <!-- /Top.Mail.Ru counter -->
+    <!-- Счётчики (Яндекс.Метрика, Top.Mail.Ru) и виджет Битрикс24 загружаются из app.js
+         только после согласия в cookie-баннере (152-ФЗ): см. initCookieBanner/loadConsentedScripts. -->
 
     <link rel="icon" href="/sib_khvoinik_test/static/media/branding/favicon.svg" type="image/svg+xml" />
     <link rel="icon" href="/sib_khvoinik_test/static/media/branding/favicon-32.png" sizes="32x32" type="image/png" />
@@ -162,15 +129,9 @@
     <link rel="stylesheet" href="/sib_khvoinik_test/static/css/styles.css?v=23" />
   </head>
   <body class="bg-white text-slate-900 antialiased">
-    <noscript>
-      <div><img src="https://mc.yandex.ru/watch/108722541" style="position:absolute; left:-9999px;" alt="" /></div>
-    </noscript>
-    <noscript>
-      <div><img src="https://top-fwz1.mail.ru/counter?id=3760896;js=na" style="position:absolute; left:-9999px;" alt="Top.Mail.Ru" /></div>
-    </noscript>
     
 <header id="site-header" class="sticky top-0 z-50 border-b border-slate-200 bg-white">
-  <!-- Десктоп: логотип слева, ссылки по центру, справа мессенджеры и звонок -->
+  <!-- Десктоп: логотип слева, сгруппированное меню по центру, справа «Связаться» и звонок -->
   <div class="sg-nav-fallback-desktop mx-auto hidden w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-4 sm:px-6 md:flex lg:gap-6 lg:px-8">
     <a href="/sib_khvoinik_test/" class="flex shrink-0 items-center">
       <img
@@ -182,65 +143,112 @@
       />
     </a>
     <nav
-      class="flex min-w-0 flex-1 flex-nowrap items-center justify-center gap-x-2 gap-y-1 overflow-x-auto px-1.5 py-0.5 sm:gap-x-2.5 sm:px-2 lg:gap-x-3 lg:px-2.5 [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden"
+      class="flex min-w-0 flex-1 flex-nowrap items-center justify-center gap-x-1 py-0.5 sm:gap-x-1.5 lg:gap-x-2"
       aria-label="Основное меню"
     >
-      <a href="/sib_khvoinik_test/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
-        Главная
-      </a>
-      <a href="/sib_khvoinik_test/gazon/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
-        Газон
-      </a>
-      <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+      <!-- Газон -->
+      <div class="relative" data-nav-dd>
+        <button
+          type="button"
+          data-nav-trigger
+          aria-haspopup="true"
+          aria-expanded="false"
+          class="inline-flex items-center gap-1 whitespace-nowrap rounded-lg px-3 py-1.5 text-[15px] text-slate-700 transition hover:bg-brand/5 hover:text-brand sm:text-[16px]"
+        >
+          Газон
+          <i data-lucide="chevron-down" class="h-4 w-4 transition-transform" data-nav-chevron aria-hidden="true"></i>
+        </button>
+        <div data-nav-panel class="absolute left-0 top-full z-50 hidden min-w-[230px] pt-2">
+          <div class="rounded-2xl border border-slate-200 bg-white p-1.5 shadow-soft">
+            <a href="/sib_khvoinik_test/gazon/" class="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-brand/5 hover:text-brand">О рулонном газоне</a>
+            <a href="/sib_khvoinik_test/prais-rulonnyy-gazon/" class="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-brand/5 hover:text-brand">Цены и расчёт</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Озеленение -->
+      <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="whitespace-nowrap rounded-lg px-3 py-1.5 text-[15px] text-slate-700 transition hover:bg-brand/5 hover:text-brand sm:text-[16px]">
         Озеленение
       </a>
-      <a href="/sib_khvoinik_test/b2b/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
+
+      <!-- Растения -->
+      <div class="relative" data-nav-dd>
+        <button
+          type="button"
+          data-nav-trigger
+          aria-haspopup="true"
+          aria-expanded="false"
+          class="inline-flex items-center gap-1 whitespace-nowrap rounded-lg px-3 py-1.5 text-[15px] text-slate-700 transition hover:bg-brand/5 hover:text-brand sm:text-[16px]"
+        >
+          Растения
+          <i data-lucide="chevron-down" class="h-4 w-4 transition-transform" data-nav-chevron aria-hidden="true"></i>
+        </button>
+        <div data-nav-panel class="absolute left-0 top-full z-50 hidden min-w-[230px] pt-2">
+          <div class="rounded-2xl border border-slate-200 bg-white p-1.5 shadow-soft">
+            <a href="/sib_khvoinik_test/catalog/" class="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-brand/5 hover:text-brand">Каталог</a>
+            <a href="/sib_khvoinik_test/pitomnik/" class="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-brand/5 hover:text-brand">Питомник</a>
+            <a href="/sib_khvoinik_test/sadovye-centry/" class="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-brand/5 hover:text-brand">Садовые центры</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- B2B -->
+      <a href="/sib_khvoinik_test/b2b/" class="whitespace-nowrap rounded-lg px-3 py-1.5 text-[15px] text-slate-700 transition hover:bg-brand/5 hover:text-brand sm:text-[16px]">
         B2B
       </a>
-      <a href="/sib_khvoinik_test/pitomnik/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
-        Питомник
-      </a>
-      <a href="/sib_khvoinik_test/sadovye-centry/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
-        Садовые центры
-      </a>
-      <a href="/sib_khvoinik_test/catalog/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
-        Каталог
-      </a>
-      <a href="/sib_khvoinik_test/stati/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
-        Статьи
-      </a>
-      <a href="/sib_khvoinik_test/kontakty/" class="whitespace-nowrap py-1.5 text-[15px] text-slate-700 transition hover:text-brand sm:text-[16px]">
-        Контакты
-      </a>
+
+      <!-- О компании -->
+      <div class="relative" data-nav-dd>
+        <button
+          type="button"
+          data-nav-trigger
+          aria-haspopup="true"
+          aria-expanded="false"
+          class="inline-flex items-center gap-1 whitespace-nowrap rounded-lg px-3 py-1.5 text-[15px] text-slate-700 transition hover:bg-brand/5 hover:text-brand sm:text-[16px]"
+        >
+          О компании
+          <i data-lucide="chevron-down" class="h-4 w-4 transition-transform" data-nav-chevron aria-hidden="true"></i>
+        </button>
+        <div data-nav-panel class="absolute left-0 top-full z-50 hidden min-w-[230px] pt-2">
+          <div class="rounded-2xl border border-slate-200 bg-white p-1.5 shadow-soft">
+            <a href="/sib_khvoinik_test/sluzhba-zaboty/" class="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-brand/5 hover:text-brand">Служба заботы</a>
+            <a href="/sib_khvoinik_test/stati/" class="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-brand/5 hover:text-brand">Статьи</a>
+            <a href="/sib_khvoinik_test/kontakty/" class="block rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-brand/5 hover:text-brand">Контакты</a>
+          </div>
+        </div>
+      </div>
     </nav>
     <div class="flex shrink-0 items-center gap-2">
-      <a
-        href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="MAX"
-        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[11px] font-semibold text-indigo-700 shadow-sm transition hover:-translate-y-0.5 hover:border-indigo-300 hover:shadow"
-      >
-        MAX
-      </a>
-      <a
-        href="https://t.me/sibirskie_gazony"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Telegram"
-        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm transition hover:-translate-y-0.5 hover:border-sky-300 hover:shadow"
-      >
-        <i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i>
-      </a>
-      <a
-        href="https://vk.com/sibirskiegazony"
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="VK"
-        class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow"
-      >
-        VK
-      </a>
+      <!-- Связаться: мессенджеры свёрнуты в одну кнопку -->
+      <div class="relative" data-nav-dd>
+        <button
+          type="button"
+          data-nav-trigger
+          aria-haspopup="true"
+          aria-expanded="false"
+          class="inline-flex items-center gap-1.5 rounded-2xl border border-slate-200 px-3 py-2 text-sm font-medium text-slate-700 transition hover:border-brand/40 hover:text-brand sm:py-2.5"
+        >
+          <i data-lucide="message-circle" class="h-4 w-4" aria-hidden="true"></i>
+          Связаться
+          <i data-lucide="chevron-down" class="h-4 w-4 transition-transform" data-nav-chevron aria-hidden="true"></i>
+        </button>
+        <div data-nav-panel class="absolute right-0 top-full z-50 hidden min-w-[210px] pt-2">
+          <div class="rounded-2xl border border-slate-200 bg-white p-1.5 shadow-soft">
+            <a href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-indigo-50 hover:text-indigo-700">
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-50 to-violet-50 text-[10px] font-semibold text-indigo-700">MAX</span>
+              MAX
+            </a>
+            <a href="https://t.me/sibirskie_gazony" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-sky-50 hover:text-sky-700">
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700"><i data-lucide="send" class="h-4 w-4" aria-hidden="true"></i></span>
+              Telegram
+            </a>
+            <a href="https://vk.com/sibirskiegazony" target="_blank" rel="noopener noreferrer" class="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm text-slate-700 transition hover:bg-blue-50 hover:text-blue-700">
+              <span class="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-gradient-to-br from-blue-50 to-slate-50 text-[11px] font-semibold tracking-wide text-blue-700">VK</span>
+              VKontakte
+            </a>
+          </div>
+        </div>
+      </div>
       <a
         href="tel:+73832010600"
         class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 py-2 text-sm font-semibold text-white shadow-glow transition hover:brightness-105 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand sm:px-5 sm:py-2.5 sm:text-[15px]"
@@ -265,33 +273,6 @@
       </a>
       <div class="flex shrink-0 items-center gap-1.5">
         <a
-          href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="MAX"
-          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-indigo-200/80 bg-gradient-to-br from-indigo-50 to-violet-50 text-[9px] font-semibold text-indigo-700 shadow-sm"
-        >
-          MAX
-        </a>
-        <a
-          href="https://t.me/sibirskie_gazony"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Telegram"
-          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-sky-200/80 bg-gradient-to-br from-sky-50 to-cyan-50 text-sky-700 shadow-sm"
-        >
-          <i data-lucide="send" class="h-3.5 w-3.5" aria-hidden="true"></i>
-        </a>
-        <a
-          href="https://vk.com/sibirskiegazony"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="VK"
-          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[10px] font-semibold tracking-wide text-blue-700 shadow-sm"
-        >
-          VK
-        </a>
-        <a
           href="tel:+73832010600"
           aria-label="Позвонить"
           class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-emerald-200/80 bg-gradient-to-br from-emerald-50 to-green-50 text-emerald-700 shadow-sm"
@@ -314,34 +295,56 @@
   <div id="mobileMenu" class="sg-mobile-menu-panel hidden border-b border-slate-200 bg-white md:hidden">
     <div class="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-1 gap-1">
-        <a href="/sib_khvoinik_test/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
-          Главная
-        </a>
-        <a href="/sib_khvoinik_test/gazon/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
-          Газон
-        </a>
-        <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+        <!-- Газон -->
+        <div data-nav-dd data-nav-mobile>
+          <button type="button" data-nav-trigger aria-expanded="false" class="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-brand/5 hover:text-brand">
+            Газон
+            <i data-lucide="chevron-down" class="h-4 w-4 transition-transform" data-nav-chevron aria-hidden="true"></i>
+          </button>
+          <div data-nav-panel class="hidden pb-1 pl-3">
+            <a href="/sib_khvoinik_test/gazon/" class="block rounded-xl px-3 py-2 text-sm text-slate-600 transition hover:bg-brand/5 hover:text-brand">О рулонном газоне</a>
+            <a href="/sib_khvoinik_test/prais-rulonnyy-gazon/" class="block rounded-xl px-3 py-2 text-sm text-slate-600 transition hover:bg-brand/5 hover:text-brand">Цены и расчёт</a>
+          </div>
+        </div>
+
+        <!-- Озеленение -->
+        <a href="/sib_khvoinik_test/ozelenenie-b2c/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-brand/5 hover:text-brand">
           Озеленение
         </a>
-        <a href="/sib_khvoinik_test/b2b/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
+
+        <!-- Растения -->
+        <div data-nav-dd data-nav-mobile>
+          <button type="button" data-nav-trigger aria-expanded="false" class="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-brand/5 hover:text-brand">
+            Растения
+            <i data-lucide="chevron-down" class="h-4 w-4 transition-transform" data-nav-chevron aria-hidden="true"></i>
+          </button>
+          <div data-nav-panel class="hidden pb-1 pl-3">
+            <a href="/sib_khvoinik_test/catalog/" class="block rounded-xl px-3 py-2 text-sm text-slate-600 transition hover:bg-brand/5 hover:text-brand">Каталог</a>
+            <a href="/sib_khvoinik_test/pitomnik/" class="block rounded-xl px-3 py-2 text-sm text-slate-600 transition hover:bg-brand/5 hover:text-brand">Питомник</a>
+            <a href="/sib_khvoinik_test/sadovye-centry/" class="block rounded-xl px-3 py-2 text-sm text-slate-600 transition hover:bg-brand/5 hover:text-brand">Садовые центры</a>
+          </div>
+        </div>
+
+        <!-- B2B -->
+        <a href="/sib_khvoinik_test/b2b/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-brand/5 hover:text-brand">
           B2B
         </a>
-        <a href="/sib_khvoinik_test/pitomnik/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
-          Питомник
-        </a>
-        <a href="/sib_khvoinik_test/sadovye-centry/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
-          Садовые центры
-        </a>
-        <a href="/sib_khvoinik_test/catalog/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
-          Каталог
-        </a>
-        <a href="/sib_khvoinik_test/stati/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
-          Статьи
-        </a>
-        <a href="/sib_khvoinik_test/kontakty/" class="rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 hover:bg-brand/5 hover:text-brand transition">
-          Контакты
-        </a>
-        <div class="mt-2 grid grid-cols-4 gap-2">
+
+        <!-- О компании -->
+        <div data-nav-dd data-nav-mobile>
+          <button type="button" data-nav-trigger aria-expanded="false" class="flex w-full items-center justify-between rounded-xl px-3 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-brand/5 hover:text-brand">
+            О компании
+            <i data-lucide="chevron-down" class="h-4 w-4 transition-transform" data-nav-chevron aria-hidden="true"></i>
+          </button>
+          <div data-nav-panel class="hidden pb-1 pl-3">
+            <a href="/sib_khvoinik_test/sluzhba-zaboty/" class="block rounded-xl px-3 py-2 text-sm text-slate-600 transition hover:bg-brand/5 hover:text-brand">Служба заботы</a>
+            <a href="/sib_khvoinik_test/stati/" class="block rounded-xl px-3 py-2 text-sm text-slate-600 transition hover:bg-brand/5 hover:text-brand">Статьи</a>
+            <a href="/sib_khvoinik_test/kontakty/" class="block rounded-xl px-3 py-2 text-sm text-slate-600 transition hover:bg-brand/5 hover:text-brand">Контакты</a>
+          </div>
+        </div>
+
+        <!-- Связаться + звонок -->
+        <div class="mt-3 grid grid-cols-4 gap-2">
           <a
             href="https://max.ru/join/UcCEFlabfpAocHobifXghtEecgUghhCLy6gD6vAHMXM"
             target="_blank"
@@ -389,7 +392,7 @@
       <div class="rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-12" data-animate="fadeInUp">
         <h1 class="text-3xl font-semibold leading-tight">Политика конфиденциальности</h1>
         <p class="mt-3 text-sm text-slate-500">
-          ООО «Сибирский хвойник» (ИНН 5406843096)<br>
+          ООО «Сибирский хвойник» (ИНН 5406843096, ОГРН 1245400031799)<br>
           Адрес: 630132, Новосибирская область, г. Новосибирск, ул. Железнодорожная, д. 12/1, оф. 501
         </p>
       </div>
@@ -523,6 +526,12 @@
               
                 <p>Для целей веб-аналитики Оператор использует сервис «Яндекс.Метрика» (ООО «Яндекс», ОГРН 1027700229193). Яндекс.Метрика собирает данные о посещении сайта, включая просмотры страниц, действия пользователей (с помощью технологии «Вебвизор»), параметры устройства, источники переходов. Данные обрабатываются и хранятся на серверах ООО «Яндекс» на территории Российской Федерации.</p>
               
+                <p>Для целей веб-аналитики Оператор также использует счётчик «Top.Mail.Ru» (ООО «ВК», ОГРН 1027739850962, адрес: 125167, г. Москва, Ленинградский проспект, д. 39, стр. 79). Счётчик собирает данные о посещении сайта: просмотры страниц, параметры устройства и браузера, источники переходов, идентификаторы в cookie. Данные обрабатываются и хранятся на серверах ООО «ВК» на территории Российской Федерации.</p>
+              
+                <p>Для онлайн-консультаций на сайте используется виджет «Битрикс24» (ООО «1С-Битрикс», ОГРН 5077746476209): при обращении через виджет передаются сообщения Пользователя и технические идентификаторы сессии.</p>
+              
+                <p>Счётчики веб-аналитики подключаются только после согласия Пользователя, выраженного в баннере cookie. Виджет онлайн-консультаций «Битрикс24» относится к технически необходимым сервисам Сайта: он обеспечивает работу канала консультаций и подключается при загрузке страниц; состав обрабатываемых при обращении данных описан выше в настоящем разделе.</p>
+              
                 <p>Оператор не осуществляет трансграничную передачу персональных данных.</p>
               
             </div>
@@ -553,7 +562,9 @@
               
                 <p>Необходимые cookie — обеспечивают базовую функциональность сайта (хранение настроек согласия, данных форм в браузере). Эти cookie не могут быть отключены, так как без них сайт не сможет работать корректно.</p>
               
-                <p>Аналитические cookie — используются сервисом «Яндекс.Метрика» для сбора статистики посещений, анализа поведения пользователей и работы технологии «Вебвизор» (запись действий пользователей на страницах сайта). Аналитические cookie устанавливаются только с согласия Пользователя.</p>
+                <p>Аналитические cookie: используются сервисами «Яндекс.Метрика» (включая технологию «Вебвизор», записывающую действия пользователей на страницах сайта) и «Top.Mail.Ru» (ООО «ВК») для сбора статистики посещений и анализа поведения пользователей. Аналитические cookie устанавливаются только с согласия Пользователя.</p>
+              
+                <p>Cookie сторонних сервисов: устанавливаются виджетом онлайн-консультаций «Битрикс24» для работы чата и идентификации сессии обращения. Виджет относится к необходимым сервисам Сайта (обеспечивает канал онлайн-консультаций), поэтому его cookie устанавливаются без отдельного согласия; для аналитики и рекламы они не используются.</p>
               
                 <p>Управление и отзыв согласия: Пользователь может управлять cookie через баннер на сайте (кнопка «Настройки cookie» в подвале сайта) или через настройки браузера. Отключение аналитических cookie не влияет на базовую функциональность сайта.</p>
               
@@ -642,7 +653,7 @@
         <a href="https://vk.com/sibirskiegazony" target="_blank" rel="noopener noreferrer" aria-label="VK" class="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-blue-200/80 bg-gradient-to-br from-blue-50 to-slate-50 text-[12px] font-semibold tracking-wide text-blue-700 shadow-sm transition hover:-translate-y-0.5 hover:border-blue-300 hover:shadow">VK</a>
       </div>
       <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
-        <span>© <span id="year"></span> ООО «Сибирский хвойник», ИНН 5406843096. Все права защищены.</span>
+        <span>© <span id="year"></span> ООО «Сибирский хвойник», ИНН 5406843096, ОГРН 1245400031799. Все права защищены.</span>
         <a href="/sib_khvoinik_test/privacy/" class="hover:text-brand transition">Политика конфиденциальности</a>
         <a href="/sib_khvoinik_test/consent/" class="hover:text-brand transition">Согласие на обработку ПД</a>
         <button type="button" id="cookieSettingsBtn" class="hover:text-brand transition">Настройки cookie</button>
@@ -855,7 +866,7 @@
         </label>
         <label class="flex cursor-pointer items-center gap-3 rounded-2xl border-[1.5px] border-black/15 bg-white px-4 py-3 text-sm text-slate-700">
           <input type="checkbox" name="promo" value="1" class="h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
-          <span>Хочу получать информацию о новинках и акциях</span>
+          <span>Согласен(на) получать рекламные сообщения о новинках, акциях и предложениях <span class="text-slate-400">(можно отписаться в любой момент)</span></span>
         </label>
       </div>
     </div>
@@ -2072,6 +2083,21 @@
   </div>
 </template>
 
+<template id="modal-template-success-predzakaz">
+  <div class="space-y-3">
+    <div class="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-brand/5 px-4 py-3 text-sm">
+      <i data-lucide="check-circle-2" class="h-5 w-5 text-brand"></i>
+      <span class="font-semibold">Спасибо за заявку!</span>
+    </div>
+    <p class="text-sm text-slate-600">
+      Мы получили ваш запрос и свяжемся с вами в ближайшее время для уточнения деталей заказа.
+    </p>
+    <button type="button" data-close-modal class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition">
+      Ок
+    </button>
+  </div>
+</template>
+
 <template id="modal-template-success-care">
   <div class="space-y-4">
     <div class="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-brand/5 px-4 py-3 text-sm">
@@ -2829,7 +2855,7 @@
 </style>
 
 
-    <script src="/sib_khvoinik_test/static/js/app.js?v=55" defer></script>
+    <script src="/sib_khvoinik_test/static/js/app.js?v=58" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {
@@ -2837,12 +2863,6 @@
       });
     </script>
 
-    <script>
-      (function(w,d,u){
-        var s=d.createElement('script');s.async=true;s.src=u+'?'+(Date.now()/60000|0);
-        var h=d.getElementsByTagName('script')[0];h.parentNode.insertBefore(s,h);
-      })(window,document,'https://cdn-ru.bitrix24.ru/b32582882/crm/site_button/loader_3_nrfj41.js');
-    </script>
   </body>
 </html>
 

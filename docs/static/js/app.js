@@ -94,11 +94,12 @@ function initCookieBanner() {
   }
 }
 
-// ── Счётчики и внешние виджеты: грузятся только после «Принять все» в cookie-баннере (152-ФЗ) ──
+// ── Счётчики аналитики: грузятся только после «Принять все» в cookie-баннере (152-ФЗ).
+// Виджет онлайн-чата Битрикс24 отнесён к необходимым сервисам (канал консультаций)
+// и грузится всегда - см. раздел 10 политики конфиденциальности. ──
 function loadConsentedScripts() {
   initYandexMetrika();
   initTopMailRu();
-  initBitrix24Widget();
 }
 
 let metrikaLoaded = false;
@@ -2795,6 +2796,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactsYandexMap();
   initConsentCheckboxes();
   initCookieBanner();
+  initBitrix24Widget();
   initAnalyticsClicks();
   initPackagingFormatsDialog();
   initCatalogSelection();
