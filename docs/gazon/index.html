@@ -170,7 +170,6 @@
 
 
     <main>
-
 <!-- HERO: на всю ширину окна, на высоту экрана (минус шапка), фон — оптимизированное видео -->
   <section
     data-gazon-hero
@@ -178,7 +177,7 @@
   >
     <div
       class="gazon-hero-media"
-      style="background: #0f172a url('/sib_khvoinik_test/static/media/videos/gazon-hero-block-poster.jpg?v=13') center / cover no-repeat"
+      style="background: #0f172a url('{% static "media/videos/gazon-hero-block-poster.jpg" %}?v=13') center / cover no-repeat"
     >
       <video
         id="gazon-hero-video"
@@ -213,7 +212,7 @@
             <button
               type="button"
               data-open-modal="gazon_price_download"
-              data-modal-title="Ваш прайс уже скачивается"
+              data-modal-title="Скачать прайс"
               data-download-url="/sib_khvoinik_test/static/media/docs/gazon-price-2026-nds.docx"
               data-download-name="Прайс на газоны 2026 с НДС.docx"
               class="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition"
@@ -336,14 +335,14 @@
             <video
               class="absolute inset-0 h-full w-full object-cover"
               style="max-width: none; max-height: none"
-              autoplay
               muted
               loop
               playsinline
-              preload="metadata"
+                  data-lazy-video
+              preload="none"
               poster="/sib_khvoinik_test/static/media/videos/gazon-proizvodstvo-poster.jpg?v=2"
             >
-              <source src="/sib_khvoinik_test/static/media/videos/gazon-proizvodstvo.mp4?v=2" type="video/mp4" />
+              <source data-src="/sib_khvoinik_test/static/media/videos/gazon-proizvodstvo.mp4?v=2" type="video/mp4" />
             </video>
           </div>
           <div class="shrink-0 border-t border-black/5 bg-slate-50/60 p-5 sm:p-6 grid grid-cols-3 gap-3 sm:gap-4">
@@ -743,15 +742,15 @@
             <video
               class="absolute inset-0 h-full w-full object-cover"
               style="max-width: none; max-height: none"
-              autoplay
               muted
               loop
               playsinline
-              preload="metadata"
+                  data-lazy-video
+              preload="none"
               poster="/sib_khvoinik_test/static/media/videos/gazon-samostoyatelnye-klienty-poster.jpg?v=2"
               aria-label="Видео: укладка рулонного газона бригадой"
             >
-              <source src="/sib_khvoinik_test/static/media/videos/gazon-samostoyatelnye-klienty.mp4?v=2" type="video/mp4" />
+              <source data-src="/sib_khvoinik_test/static/media/videos/gazon-samostoyatelnye-klienty.mp4?v=2" type="video/mp4" />
             </video>
           </div>
         </div>
@@ -773,15 +772,15 @@
             <video
               class="absolute inset-0 h-full w-full object-cover"
               style="max-width: none; max-height: none"
-              autoplay
               muted
               loop
               playsinline
-              preload="metadata"
+                  data-lazy-video
+              preload="none"
               poster="/sib_khvoinik_test/static/media/videos/gazon-b2b-developers-poster.jpg?v=1"
               aria-label="Видео: благоустройство и рулонный газон у жилого комплекса"
             >
-              <source src="/sib_khvoinik_test/static/media/videos/gazon-b2b-developers.mp4?v=1" type="video/mp4" />
+              <source data-src="/sib_khvoinik_test/static/media/videos/gazon-b2b-developers.mp4?v=1" type="video/mp4" />
             </video>
           </div>
           <div class="order-1 flex flex-col justify-center p-8 md:p-10 lg:order-2 lg:col-span-6 lg:p-12 lg:pl-10 lg:pr-12">
@@ -829,6 +828,31 @@
     </div>
   </section>
 
+  <!-- FAQ -->
+  <section class="mt-14">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-3xl border border-black/5 bg-white p-8 md:p-12" data-animate="fadeInUp">
+        <h2 class="text-3xl font-semibold leading-tight">Частые вопросы о рулонном газоне</h2>
+        <p class="mt-3 text-slate-600 max-w-3xl">
+          Мы выращиваем рулонный газон на собственных полях около 200 гектаров и отгружаем
+          до 8&nbsp;000&nbsp;м² в день. Ниже отвечаем на вопросы, которые задают чаще всего.
+        </p>
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-4">
+          {% for item in faq %}
+            <div class="rounded-2xl border border-black/5 bg-slate-50/70 p-5">
+              <div class="font-semibold text-slate-900">{{ item.q }}</div>
+              <p class="mt-2 text-sm text-slate-700 leading-relaxed">{{ item.a }}</p>
+            </div>
+          {% endfor %}
+        </div>
+        <div class="mt-6 text-sm text-slate-600">
+          Подробная технология укладки - в статье
+          <a href="/stati/kak-ukladyvat-gazon/" class="font-semibold text-brand hover:underline">«Как укладывать рулонный газон: пошаговая инструкция»</a>.
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Final CTA -->
   <section class="mt-14 pb-16">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -839,14 +863,14 @@
         <video
           class="absolute inset-0 z-0 h-full w-full object-cover"
           style="max-width: none; max-height: none"
-          autoplay
           muted
           loop
           playsinline
-          preload="metadata"
+                  data-lazy-video
+          preload="none"
           poster="/sib_khvoinik_test/static/media/videos/gazon-final-cta-bg-poster.jpg?v=1"
         >
-          <source src="/sib_khvoinik_test/static/media/videos/gazon-final-cta-bg.mp4?v=1" type="video/mp4" />
+          <source data-src="/sib_khvoinik_test/static/media/videos/gazon-final-cta-bg.mp4?v=1" type="video/mp4" />
         </video>
         <div
           class="pointer-events-none absolute inset-0 z-[1] bg-gradient-to-r from-black/88 via-black/65 to-black/40"
@@ -905,7 +929,7 @@
     </div>
   </section>
 
-  </main>
+</main>
 
     
 <footer class="mt-20 border-t border-black/5 bg-white">
@@ -1194,12 +1218,12 @@
   <div class="mb-4 flex items-start gap-3 rounded-2xl border border-brand/20 bg-brand/5 p-4">
     <i data-lucide="download" class="mt-0.5 h-5 w-5 shrink-0 text-brand"></i>
     <p class="text-sm leading-snug text-slate-700">
-      Файл начнёт скачиваться через несколько секунд. Пока прайс загружается -
-      оставьте контакты: менеджер бесплатно проконсультирует по позициям и
-      поможет подобрать газон под ваш объект.
+      Оставьте имя и телефон - прайс скачается сразу после отправки.
+      Менеджер бесплатно проконсультирует по позициям и поможет подобрать
+      газон под ваш объект.
     </p>
   </div>
-  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-price-after-download" data-ui-action="none">
+  <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-price-after-download" data-ui-action="download_gazon_price">
     <input type="hidden" name="formTag" value="Gas/gazon-price-after-download" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label class="text-sm font-medium text-slate-700">
@@ -1212,7 +1236,7 @@
       </label>
     </div>
     <button class="w-full rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-white font-semibold shadow-glow hover:brightness-105 transition" type="submit">
-      Получить консультацию
+      Скачать прайс
     </button>
   </form>
 </template>
