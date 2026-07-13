@@ -3145,9 +3145,10 @@ function initCatalogNavMobileToggle() {
 }
 
 (function initPromoPopup() {
-  var STORAGE_KEY = 'sg_promo_popup_2_centers_2026';
+  var STORAGE_KEY = 'sg_promo_popup_3_sale50_jul2026';
   var SHOW_DELAY_MS = 2000;
   var EXCLUDED_PATHS = ['/sadovye-centry/', '/discount/', '/zayavka-direct/'];
+  var EXPIRES_AT = new Date(2026, 7, 1); // акция до конца июля: с 1 августа не показываем
 
   function ready(fn) {
     if (document.readyState === 'loading') {
@@ -3160,6 +3161,8 @@ function initCatalogNavMobileToggle() {
   ready(function () {
     var popup = document.getElementById('promoPopup');
     if (!popup) return;
+
+    if (new Date() >= EXPIRES_AT) return;
 
     var path = location.pathname;
     if (EXCLUDED_PATHS.some(function (p) { return path.indexOf(p) === 0; })) return;

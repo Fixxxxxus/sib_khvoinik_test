@@ -1,5 +1,5 @@
 {% load static %}
-<div id="promoPopup" class="sg-promo-popup" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="promoPopupTitle">
+<div id="promoPopup" class="sg-promo-popup" aria-hidden="true" role="dialog" aria-modal="true" aria-label="Акция: скидка 50% на хвойные и многолетники">
   <div class="sg-promo-popup__overlay" data-promo-close></div>
   <div class="sg-promo-popup__card" role="document">
     <button type="button" class="sg-promo-popup__close" aria-label="Закрыть" data-promo-close>
@@ -9,40 +9,12 @@
       </svg>
     </button>
 
-    <div class="sg-promo-popup__body">
-      <h2 id="promoPopupTitle" class="sg-promo-popup__title">
-        <span class="sg-promo-popup__title-icon" aria-hidden="true">🌿</span>
-        <span>Открыли садовые центры в Новосибирске</span>
-      </h2>
-
-      <ul class="sg-promo-popup__list" role="list">
-        <li class="sg-promo-popup__item">
-          <span class="sg-promo-popup__chip">25 апр</span>
-          <div class="sg-promo-popup__item-text">
-            <p class="sg-promo-popup__item-title">Новопичугово · уже работает</p>
-            <p class="sg-promo-popup__item-meta">село Новопичугово, ориентир ул. Сосновая</p>
-          </div>
-        </li>
-        <li class="sg-promo-popup__item">
-          <span class="sg-promo-popup__chip">28 апр</span>
-          <div class="sg-promo-popup__item-text">
-            <p class="sg-promo-popup__item-title">МЕГА · уже работает</p>
-            <p class="sg-promo-popup__item-meta">ул. Ватутина, 107</p>
-          </div>
-        </li>
-      </ul>
-
-      <p class="sg-promo-popup__subtitle">Рассада · цветы · газон · плодовые</p>
-
-      <div class="sg-promo-popup__actions">
-        <a href="/sadovye-centry/?show=centers" class="sg-promo-popup__btn sg-promo-popup__btn--primary" data-promo-action="centers-cta">
-          Адреса и контакты →
-        </a>
-        <button type="button" class="sg-promo-popup__btn sg-promo-popup__btn--ghost" data-promo-close>
-          Закрыть
-        </button>
-      </div>
-    </div>
+    <a href="/sadovye-centry/" class="sg-promo-popup__banner" data-promo-action="sale50-centers">
+      <img
+        src="{% static 'media/images/promo-sale50-jul2026.webp' %}"
+        alt="Акция до конца июля: скидка 50% на хвойные и скидка 50% на многолетки. Количество акционных предложений ограничено. Актуальное наличие можно уточнить по телефону или при визите в садовый центр."
+        width="1200" height="900" loading="lazy" decoding="async">
+    </a>
   </div>
 </div>
 
@@ -73,16 +45,15 @@
   .sg-promo-popup__card {
     position: relative;
     width: 100%;
-    max-width: 460px;
+    max-width: 640px;
     max-height: calc(100vh - 32px);
     max-height: calc(100dvh - 32px);
-    overflow-y: auto;
+    overflow: hidden;
     background: #fff;
     border-radius: 20px;
     box-shadow: 0 25px 60px rgba(15, 23, 42, 0.28);
     transform: translateY(14px) scale(0.98);
     transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
-    -webkit-overflow-scrolling: touch;
   }
   .sg-promo-popup.is-open .sg-promo-popup__card {
     transform: translateY(0) scale(1);
@@ -114,134 +85,22 @@
   .sg-promo-popup__close:focus-visible {
     box-shadow: 0 0 0 3px rgba(45, 106, 79, 0.5);
   }
-  .sg-promo-popup__body {
-    padding: 28px 24px 22px;
+  .sg-promo-popup__banner {
+    display: block;
+    line-height: 0;
   }
-  .sg-promo-popup__title {
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    margin: 0 0 18px;
-    color: #2D6A4F;
-    font-size: 21px;
-    font-weight: 700;
-    line-height: 1.25;
-    letter-spacing: -0.01em;
-    padding-right: 28px;
-  }
-  .sg-promo-popup__title-icon {
-    font-size: 24px;
-    line-height: 1;
-    flex-shrink: 0;
-    margin-top: -1px;
-  }
-  .sg-promo-popup__list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    margin: 0 0 16px;
-    padding: 0;
-    list-style: none;
-  }
-  .sg-promo-popup__item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-  }
-  .sg-promo-popup__chip {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 64px;
-    padding: 6px 10px;
-    border-radius: 999px;
-    background: #E9C46A;
-    color: #2D6A4F;
-    font-size: 12px;
-    font-weight: 700;
-    line-height: 1;
-    letter-spacing: 0.01em;
-    white-space: nowrap;
-  }
-  .sg-promo-popup__item-text {
-    flex: 1;
-    min-width: 0;
-  }
-  .sg-promo-popup__item-title {
-    margin: 0;
-    color: #0f172a;
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1.35;
-  }
-  .sg-promo-popup__item-meta {
-    margin: 2px 0 0;
-    color: #475569;
-    font-size: 13px;
-    line-height: 1.4;
-  }
-  .sg-promo-popup__subtitle {
-    margin: 0 0 18px;
-    padding-top: 14px;
-    border-top: 1px solid rgba(15, 23, 42, 0.08);
-    color: #475569;
-    font-size: 13px;
-    line-height: 1.5;
-    text-align: center;
-    letter-spacing: 0.01em;
-  }
-  .sg-promo-popup__actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-  }
-  .sg-promo-popup__btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    padding: 13px 16px;
-    border: none;
-    border-radius: 12px;
-    font-size: 15px;
-    font-weight: 600;
-    line-height: 1.1;
-    text-decoration: none;
-    text-align: center;
-    cursor: pointer;
-    transition: background 180ms cubic-bezier(0.22, 1, 0.36, 1), transform 120ms ease, box-shadow 180ms ease;
-    min-height: 48px;
-  }
-  .sg-promo-popup__btn:active {
-    transform: translateY(1px);
-  }
-  .sg-promo-popup__btn--primary {
-    background: linear-gradient(135deg, #2D6A4F 0%, #40916C 100%);
-    color: #fff;
-    box-shadow: 0 10px 24px rgba(45, 106, 79, 0.28);
-  }
-  .sg-promo-popup__btn--primary:hover,
-  .sg-promo-popup__btn--primary:focus-visible {
-    background: linear-gradient(135deg, #245A41 0%, #357C5A 100%);
-    outline: none;
-    box-shadow: 0 14px 30px rgba(45, 106, 79, 0.36);
-  }
-  .sg-promo-popup__btn--ghost {
-    background: transparent;
-    color: #475569;
-  }
-  .sg-promo-popup__btn--ghost:hover,
-  .sg-promo-popup__btn--ghost:focus-visible {
-    background: rgba(15, 23, 42, 0.05);
-    color: #0f172a;
-    outline: none;
+  .sg-promo-popup__banner img {
+    display: block;
+    width: 100%;
+    height: auto;
+    max-height: calc(100vh - 32px);
+    max-height: calc(100dvh - 32px);
+    object-fit: contain;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .sg-promo-popup,
-    .sg-promo-popup__card,
-    .sg-promo-popup__btn {
+    .sg-promo-popup__card {
       transition: none;
     }
   }
