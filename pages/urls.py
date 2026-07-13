@@ -1,10 +1,11 @@
 from django.urls import path, re_path
 from django.views.generic import RedirectView
 
-from . import loyalty, seo, views
+from . import loyalty, promo, seo, views
 
 urlpatterns = [
     path("api/loyalty/card/", loyalty.loyalty_card, name="loyalty_card"),
+    path("api/promo/sale50/", promo.promo_sale50, name="promo_sale50"),
     # SEO/GEO-инфраструктура: всё через Django, не через docs/ (конвенция проекта).
     path("robots.txt", seo.robots_txt, name="robots_txt"),
     path("sitemap.xml", seo.sitemap_xml, name="sitemap_xml"),
@@ -47,5 +48,7 @@ urlpatterns = [
     path("consent/", views.consent, name="consent"),
     path("discount/", views.discount, name="discount"),
     path("zayavka-direct/", views.zayavka_direct, name="zayavka_direct"),
+    path("akciya-hvoynye-50/", views.akciya_hvoynye_50, name="akciya_hvoynye_50"),
+    path("direct-50/", views.direct_50, name="direct_50"),
     path("predzakaz/", views.predzakaz, name="predzakaz"),
 ]

@@ -27,6 +27,8 @@ from .data import (
     CONSENT_PAGE,
     DISCOUNT_LANDING_PAGE,
     DIRECT_LANDING_PAGE,
+    PROMO_SALE50_SITE_PAGE,
+    PROMO_SALE50_DIRECT_PAGE,
 )
 
 
@@ -231,6 +233,16 @@ def discount(request):
 
 def zayavka_direct(request):
     return render(request, "pages/zayavka_direct.html", DIRECT_LANDING_PAGE)
+
+
+def akciya_hvoynye_50(request):
+    """Открытая посадочная акции -50% (промокод САЙТ50), индексируется."""
+    return render(request, "pages/promo_sale50.html", PROMO_SALE50_SITE_PAGE)
+
+
+def direct_50(request):
+    """Скрытая посадочная акции -50% (промокод ДИРЕКТ50) для Яндекс.Директа, noindex."""
+    return render(request, "pages/promo_sale50.html", PROMO_SALE50_DIRECT_PAGE)
 
 
 def predzakaz(request):

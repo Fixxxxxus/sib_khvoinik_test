@@ -3147,7 +3147,7 @@ function initCatalogNavMobileToggle() {
 (function initPromoPopup() {
   var STORAGE_KEY = 'sg_promo_popup_3_sale50_jul2026';
   var SHOW_DELAY_MS = 2000;
-  var EXCLUDED_PATHS = ['/sadovye-centry/', '/discount/', '/zayavka-direct/'];
+  var EXCLUDED_PATHS = ['/sadovye-centry/', '/discount/', '/zayavka-direct/', '/akciya-hvoynye-50/', '/direct-50/'];
   var EXPIRES_AT = new Date(2026, 7, 1); // акция до конца июля: с 1 августа не показываем
   var HIDE_FOR_MS = 24 * 60 * 60 * 1000; // после закрытия прячем на сутки
 
@@ -3223,10 +3223,184 @@ function initCatalogNavMobileToggle() {
   });
 })();
 
+// ── Посадочные страницы акции «-50%» (/akciya-hvoynye-50/, /direct-50/) ──
+// Собственный обработчик формы: POST на /api/promo/sale50/ (upsert контакта),
+// затем показ промокода В ЛЮБОМ СЛУЧАЕ (код не секретный, конверсию не теряем).
+// Цели Метрики разделены по источнику суффиксом _site / _direct.
+(function initPromoSale50() {
+  var ENDPOINT = '/api/promo/sale50/';
+  var METRIKA_ID = 108722541;
+  var TIMEOUT_MS = 6000;
+
+  function ready(fn) {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', fn, { once: true });
+    } else {
+      fn();
+    }
+  }
+
+  ready(function () {
+    var page = document.querySelector('[data-promo-page]');
+    if (!page) return;
+
+    var source = page.getAttribute('data-promo-source') || 'site';
+    var code = page.getAttribute('data-promo-code') || '';
+    var lastFired = {};
+
+    function reachGoal(event) {
+      var goal = 'promo_' + event + '_' + source;
+      if (!window.ym) return;
+      var now = Date.now();
+      if (lastFired[goal] && now - lastFired[goal] < 1200) return;
+      lastFired[goal] = now;
+      try { ym(METRIKA_ID, 'reachGoal', goal); } catch (e) { /* noop */ }
+    }
+
+    function parseUtm() {
+      var utm = {};
+      try {
+        var sp = new URLSearchParams(window.location.search || '');
+        sp.forEach(function (v, k) {
+          if (k.toLowerCase().indexOf('utm_') === 0) utm[k.toLowerCase()] = v;
+        });
+      } catch (e) { /* noop */ }
+      return utm;
+    }
+
+    // Клики по CTA / телефону / маршруту (делегирование по всей странице акции).
+    page.addEventListener('click', function (e) {
+      var t = e.target && e.target.closest ? e.target : null;
+      if (!t) return;
+      if (t.closest('[data-promo-cta]')) reachGoal('cta');
+      if (t.closest('[data-promo-phone]')) reachGoal('phone');
+      if (t.closest('[data-promo-route]')) reachGoal('route');
+    });
+
+    var form = page.querySelector('[data-promo-form]');
+    var formWrap = page.querySelector('[data-promo-form-wrap]');
+    var successBox = page.querySelector('[data-promo-success]');
+    if (!form) return;
+
+    // Гейт согласия: кнопка активна только при отмеченном чекбоксе.
+    var checkbox = form.querySelector('[data-consent-checkbox]');
+    var submitBtn = form.querySelector('[data-consent-submit]');
+    if (checkbox && submitBtn) {
+      var syncBtn = function () {
+        submitBtn.disabled = !checkbox.checked;
+        submitBtn.classList.toggle('opacity-60', !checkbox.checked);
+      };
+      checkbox.addEventListener('change', syncBtn);
+      syncBtn();
+    }
+
+    // Начало заполнения формы - один раз.
+    var startFired = false;
+    form.addEventListener('input', function () {
+      if (startFired) return;
+      startFired = true;
+      reachGoal('form_start');
+    });
+
+    var postPromo = function (payload) {
+      var ctrl = (typeof AbortController !== 'undefined') ? new AbortController() : null;
+      var timer = ctrl ? setTimeout(function () { ctrl.abort(); }, TIMEOUT_MS) : null;
+      return fetch(ENDPOINT, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        credentials: 'same-origin',
+        signal: ctrl ? ctrl.signal : undefined,
+      }).then(function (resp) {
+        if (timer) clearTimeout(timer);
+        return resp.ok ? resp.json().catch(function () { return null; }) : null;
+      }).catch(function (err) {
+        if (timer) clearTimeout(timer);
+        console.warn('[promo] send failed:', err && err.message || err);
+        return null;
+      });
+    };
+
+    var showSuccess = function () {
+      if (formWrap) formWrap.classList.add('hidden');
+      if (successBox) {
+        successBox.classList.remove('hidden');
+        if (window.lucide) window.lucide.createIcons();
+        try { successBox.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) { /* noop */ }
+      }
+      reachGoal('code_shown');
+    };
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      var phoneInput = form.querySelector('input[name="phone"]');
+      var digits = phoneInput ? (phoneInput.value || '').replace(/\D/g, '') : '';
+      if (digits.length < 10) {
+        if (phoneInput) {
+          phoneInput.setCustomValidity('Введите номер телефона целиком - не менее 10 цифр.');
+          phoneInput.reportValidity();
+          phoneInput.addEventListener('input', function () { phoneInput.setCustomValidity(''); }, { once: true });
+        }
+        return;
+      }
+      if (phoneInput) phoneInput.setCustomValidity('');
+      if (checkbox && !checkbox.checked) {
+        checkbox.reportValidity && checkbox.reportValidity();
+        return;
+      }
+
+      var nameInput = form.querySelector('input[name="name"]');
+      var payload = {
+        name: nameInput ? (nameInput.value || '').trim() : '',
+        phone: phoneInput ? phoneInput.value.trim() : '',
+        consent: checkbox && checkbox.checked ? '1' : '',
+        source: source,
+        utm: parseUtm(),
+        pagePath: (window.location.pathname || '') || '/',
+      };
+
+      reachGoal('form_submit');
+
+      // Промокод показываем в любом случае - не ждём и не блокируем на ошибке бэка.
+      postPromo(payload);
+      showSuccess();
+    });
+
+    // Копирование промокода.
+    var copyBtn = page.querySelector('[data-promo-copy]');
+    if (copyBtn) {
+      copyBtn.addEventListener('click', function () {
+        var label = copyBtn.querySelector('[data-promo-copy-label]');
+        var done = function () {
+          if (label) label.textContent = 'Скопировано';
+          reachGoal('code_copy');
+          setTimeout(function () { if (label) label.textContent = 'Скопировать'; }, 2000);
+        };
+        try {
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(code).then(done).catch(done);
+          } else {
+            var ta = document.createElement('textarea');
+            ta.value = code;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); } catch (e) { /* noop */ }
+            document.body.removeChild(ta);
+            done();
+          }
+        } catch (e) { done(); }
+      });
+    }
+  });
+})();
+
 (function initCentersWidget() {
   var STORAGE_KEY = 'sg_centers_widget_closed';
   var SHOW_DELAY_MS = 800;
-  var EXCLUDED_PATHS = ['/sadovye-centry/', '/discount/', '/zayavka-direct/'];
+  var EXCLUDED_PATHS = ['/sadovye-centry/', '/discount/', '/zayavka-direct/', '/akciya-hvoynye-50/', '/direct-50/'];
 
   function ready(fn) {
     if (document.readyState === 'loading') {

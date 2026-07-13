@@ -66,25 +66,41 @@ def _split_full_name(full_name: str) -> dict[str, str]:
     return {"LAST_NAME": parts[0], "NAME": parts[1], "SECOND_NAME": " ".join(parts[2:])}
 
 
-def _merge_product_dir(existing: object) -> list:
-    """Дополняет мультисписок «Товарное направление» тегом «Скидочная карта».
+def _merge_product_dir(existing: object, extra_tags: list[int] | None = None) -> list:
+    """Дополняет мультисписок «Товарное направление» тегом «Скидочная карта» (+ доп. теги).
 
     Б24 при update полностью замещает значение multiple-поля, поэтому читаем текущее
-    и дописываем ID тега, если его там ещё нет.
+    и дописываем ID тегов, которых там ещё нет. extra_tags - например пометка источника
+    акции («Акция -50% (Директ)» / «(сайт)»).
     """
     values: list = []
     if isinstance(existing, list):
         values = [str(v) for v in existing if str(v)]
     elif existing:
         values = [str(existing)]
-    tag = str(B24_PRODUCT_DIR_LOYALTY_CARD_ID)
-    if tag not in values:
-        values.append(tag)
+    tags = [B24_PRODUCT_DIR_LOYALTY_CARD_ID, *(extra_tags or [])]
+    for tag in tags:
+        tag_s = str(tag)
+        if tag_s not in values:
+            values.append(tag_s)
     return values
 
 
-def register_loyalty_card(*, name: str, phone: str) -> tuple[int, bool]:
-    """Создаёт или помечает контакт как участника программы. Возвращает (contact_id, created)."""
+def register_loyalty_card(
+    *,
+    name: str,
+    phone: str,
+    extra_dir_tags: list[int] | None = None,
+    source_id: str | None = None,
+    comments: str = "",
+) -> tuple[int, bool]:
+    """Создаёт или помечает контакт как участника программы. Возвращает (contact_id, created).
+
+    extra_dir_tags - доп. пункты мультиполя «Товарное направление» (пометка акции).
+    source_id      - SOURCE_ID для НОВОГО контакта (по умолчанию источник цифровой карты);
+                     у существующего контакта источник не трогаем.
+    comments       - текст в COMMENTS, пишется только при создании контакта (UTM и т.п.).
+    """
     client = Bitrix24Client()
     today = timezone.localdate().isoformat()
     contact_id = client.find_contact_id_by_phone(phone)
@@ -98,7 +114,7 @@ def register_loyalty_card(*, name: str, phone: str) -> tuple[int, bool]:
         if not existing.get(B24_LOYALTY_DATE_FIELD):
             fields[B24_LOYALTY_DATE_FIELD] = today
         fields[B24_CONTACT_PRODUCT_DIR_FIELD] = _merge_product_dir(
-            existing.get(B24_CONTACT_PRODUCT_DIR_FIELD)
+            existing.get(B24_CONTACT_PRODUCT_DIR_FIELD), extra_dir_tags
         )
         # ФИО дозаполняем, только если у контакта пусто (не перетираем оператора).
         if name and not (existing.get("NAME") or existing.get("LAST_NAME")):
@@ -108,12 +124,14 @@ def register_loyalty_card(*, name: str, phone: str) -> tuple[int, bool]:
         return contact_id, False
 
     fields = {
-        "SOURCE_ID": B24_LOYALTY_SOURCE_ID,
+        "SOURCE_ID": source_id or B24_LOYALTY_SOURCE_ID,
         "PHONE": [{"VALUE": phone, "VALUE_TYPE": "WORK"}],
         B24_LOYALTY_FLAG_FIELD: 1,
         B24_LOYALTY_DATE_FIELD: today,
-        B24_CONTACT_PRODUCT_DIR_FIELD: [str(B24_PRODUCT_DIR_LOYALTY_CARD_ID)],
+        B24_CONTACT_PRODUCT_DIR_FIELD: _merge_product_dir(None, extra_dir_tags),
     }
+    if comments:
+        fields["COMMENTS"] = comments
     fields.update(_split_full_name(name))
     contact_id = client.create_contact(fields)
     return contact_id, True

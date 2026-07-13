@@ -151,6 +151,7 @@ ROBOTS_TXT = """User-agent: *
 Disallow: /admin/
 Disallow: /api/
 Disallow: /zayavka-direct/
+Disallow: /direct-50/
 Disallow: /discount/
 
 # AI-краулеры: доступ открыт явно
@@ -209,7 +210,7 @@ def _static_sitemap_paths() -> list[str]:
         "home", "gazon", "roll_lawn_price", "ozelenenie_b2c", "b2b",
         "pitomnik", "sadovye_centry", "catalog", "sluzhba_zaboty",
         "calendar", "stati_list", "kontakty", "o_kompanii",
-        "privacy", "consent", "predzakaz",
+        "privacy", "consent", "predzakaz", "akciya_hvoynye_50",
     ]
     paths = []
     for name in names:

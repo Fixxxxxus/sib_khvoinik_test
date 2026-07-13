@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ seo_title|default:title }} - {{ brand }}{% endblock %}
+
+{% block content %}
+<div data-promo-page data-promo-source="{{ source }}" data-promo-code="{{ promo_code }}">
+
+  <!-- HERO -->
+  <section class="relative isolate overflow-hidden bg-gradient-to-br from-brand via-brand2 to-brand text-white">
+    <div class="absolute inset-0 -z-10 opacity-30 pointer-events-none">
+      <div class="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-accent/40 blur-3xl"></div>
+      <div class="absolute right-0 bottom-0 h-80 w-80 rounded-full bg-red-500/40 blur-3xl"></div>
+    </div>
+    <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 px-4 py-10 sm:px-6 sm:py-14 lg:grid-cols-2 lg:py-20">
+      <div class="max-w-xl">
+        <div class="inline-flex items-center gap-2 rounded-full bg-red-600 px-4 py-2 text-sm font-semibold text-white shadow-glow">
+          <i data-lucide="badge-percent" class="h-4 w-4"></i>
+          {{ hero.eyebrow }}
+        </div>
+        <h1 class="mt-4 text-3xl font-semibold leading-[1.08] sm:text-4xl lg:text-5xl">
+          {{ hero.h1 }}
+        </h1>
+        <p class="mt-4 text-base text-white/90 sm:text-lg">
+          {{ hero.sub }}
+        </p>
+        <p class="mt-2 text-sm text-white/75">
+          {{ hero.note }}
+        </p>
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+          <a
+            href="#promo-form"
+            data-promo-cta
+            class="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl bg-red-600 px-6 py-3 text-base font-semibold text-white shadow-glow transition hover:brightness-110"
+          >
+            {{ hero.cta_label }}
+            <i data-lucide="arrow-right" class="h-5 w-5"></i>
+          </a>
+          <a
+            href="tel:{{ center.phone_tel }}"
+            data-promo-phone
+            class="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl border border-white/40 bg-white/10 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/20"
+          >
+            <i data-lucide="phone-call" class="h-5 w-5"></i>
+            {{ hero.secondary_label }}
+          </a>
+        </div>
+      </div>
+      <div class="relative">
+        <img
+          src="{% static promo_image %}"
+          alt="Акция: скидка 50% на отдельные хвойные и многолетние растения по промокоду {{ promo_code }}"
+          width="1200" height="900" loading="eager" decoding="async"
+          class="w-full rounded-3xl shadow-soft"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ЧТО МОЖНО ПРИОБРЕСТИ -->
+  <section class="bg-white py-12 sm:py-16">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6">
+      <h2 class="text-center text-2xl font-semibold text-slate-900 md:text-3xl">{{ categories_title }}</h2>
+      <div class="mx-auto mt-8 grid max-w-3xl grid-cols-1 gap-5 sm:grid-cols-2">
+        {% for cat in categories %}
+          <div class="overflow-hidden rounded-3xl border border-black/5 bg-white shadow-soft">
+            <img src="{% static cat.image %}" alt="{{ cat.image_alt }}" class="h-44 w-full object-cover" width="600" height="400" loading="lazy" decoding="async" />
+            <div class="p-5">
+              <div class="inline-flex items-center gap-2 rounded-full bg-red-50 px-3 py-1 text-sm font-semibold text-red-700">
+                <i data-lucide="badge-percent" class="h-4 w-4"></i>
+                Скидка 50%
+              </div>
+              <h3 class="mt-3 text-lg font-semibold text-slate-900">{{ cat.name }}</h3>
+              <p class="mt-1 text-sm text-slate-600">{{ cat.desc }}</p>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+      <p class="mx-auto mt-6 max-w-3xl rounded-2xl bg-slate-50 px-4 py-3 text-center text-xs text-slate-500 sm:text-sm">
+        {{ disclaimer }}
+      </p>
+    </div>
+  </section>
+
+  <!-- КАК ПОЛУЧИТЬ СКИДКУ -->
+  <section class="bg-slate-50 py-12 sm:py-16">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6">
+      <h2 class="text-center text-2xl font-semibold text-slate-900 md:text-3xl">{{ steps_title }}</h2>
+      <ol class="mx-auto mt-8 grid max-w-4xl grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {% for step in steps %}
+          <li class="relative rounded-2xl border border-black/5 bg-white px-4 py-5 shadow-soft">
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand text-base font-semibold text-white">{{ forloop.counter }}</span>
+            <p class="mt-3 text-sm text-slate-700">{{ step }}</p>
+          </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ФОРМА + SUCCESS -->
+  <section id="promo-form" class="bg-white py-12 sm:py-16">
+    <div class="mx-auto max-w-2xl px-4 sm:px-6">
+      <div class="rounded-3xl border border-black/5 bg-white p-6 shadow-soft sm:p-8">
+
+        <!-- Форма -->
+        <div data-promo-form-wrap>
+          <h2 class="text-2xl font-semibold text-slate-900 md:text-3xl">{{ form.title }}</h2>
+          <p class="mt-2 text-sm text-slate-600">{{ form.sub }}</p>
+
+          <form class="mt-6 space-y-4" data-promo-form novalidate>
+            <label class="block text-sm font-medium text-slate-700">
+              Телефон*
+              <input
+                name="phone"
+                type="tel"
+                required
+                inputmode="tel"
+                autocomplete="tel"
+                class="mt-1 w-full min-h-[52px] rounded-2xl border border-black/10 bg-white px-4 py-3 text-base outline-none focus:ring-2 focus:ring-brand/20"
+                placeholder="+7 ..."
+              />
+            </label>
+            <label class="block text-sm font-medium text-slate-700">
+              Имя
+              <input
+                name="name"
+                autocomplete="name"
+                class="mt-1 w-full min-h-[52px] rounded-2xl border border-black/10 bg-white px-4 py-3 text-base outline-none focus:ring-2 focus:ring-brand/20"
+                placeholder="Как к вам обращаться (по желанию)"
+              />
+            </label>
+
+            <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-600">
+              <input type="checkbox" name="consent" value="1" required data-consent-checkbox class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30" />
+              <span>
+                Даю согласие на обработку персональных данных в соответствии с
+                <a href="{% url 'consent' %}" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">условиями</a>
+                и
+                <a href="{% url 'privacy' %}" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+              </span>
+            </label>
+
+            <button
+              type="submit"
+              data-consent-submit
+              disabled
+              class="w-full min-h-[52px] rounded-2xl bg-red-600 px-6 py-3 text-base font-semibold text-white shadow-glow transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+            >
+              {{ form.submit_label }}
+            </button>
+          </form>
+        </div>
+
+        <!-- Success (промокод показывается после отправки телефона) -->
+        <div data-promo-success class="hidden text-center">
+          <div class="inline-flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-700">
+            <i data-lucide="check" class="h-7 w-7"></i>
+          </div>
+          <h2 class="mt-4 text-2xl font-semibold text-slate-900 md:text-3xl">{{ success.title }}</h2>
+          <div class="mx-auto mt-5 flex max-w-sm flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-red-300 bg-red-50 px-4 py-5">
+            <span class="text-3xl font-bold tracking-wider text-red-700 sm:text-4xl" data-promo-code-value>{{ promo_code }}</span>
+            <button
+              type="button"
+              data-promo-copy
+              class="inline-flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:brightness-110"
+            >
+              <i data-lucide="copy" class="h-4 w-4"></i>
+              <span data-promo-copy-label>Скопировать</span>
+            </button>
+          </div>
+          <p class="mx-auto mt-5 max-w-md text-sm text-slate-700">{{ success.instruction }}</p>
+          <p class="mx-auto mt-2 max-w-md text-sm font-medium text-slate-900">{{ success.deadline_note }}</p>
+          <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
+            <a
+              href="{{ center.maps_route_url }}"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-promo-route
+              class="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-sm font-semibold text-white shadow-glow transition hover:brightness-105"
+            >
+              <i data-lucide="map-pin" class="h-5 w-5"></i>
+              Построить маршрут
+            </a>
+            <a
+              href="tel:{{ center.phone_tel }}"
+              data-promo-phone
+              class="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-brand/30 px-6 py-3 text-sm font-semibold text-brand transition hover:bg-brand/5"
+            >
+              <i data-lucide="phone-call" class="h-5 w-5"></i>
+              Позвонить
+            </a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ДЕФИЦИТ -->
+  <section class="bg-slate-50 py-12 sm:py-16">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6">
+      <h2 class="text-center text-2xl font-semibold text-slate-900 md:text-3xl">{{ urgency_title }}</h2>
+      <div class="mx-auto mt-8 grid max-w-4xl grid-cols-1 gap-5 sm:grid-cols-3">
+        {% for adv in advantages %}
+          <div class="rounded-2xl border border-black/5 bg-white px-5 py-6 text-center shadow-soft">
+            <span class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-red-50 text-red-600">
+              <i data-lucide="{{ adv.icon }}" class="h-6 w-6"></i>
+            </span>
+            <h3 class="mt-3 text-lg font-semibold text-slate-900">{{ adv.title }}</h3>
+            <p class="mt-1 text-sm text-slate-600">{{ adv.desc }}</p>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- ГДЕ ПРОХОДИТ АКЦИЯ -->
+  <section class="bg-white py-12 sm:py-16">
+    <div class="mx-auto max-w-5xl px-4 sm:px-6">
+      <h2 class="text-center text-2xl font-semibold text-slate-900 md:text-3xl">{{ center.title }}</h2>
+      <div class="mx-auto mt-8 max-w-2xl rounded-3xl border border-black/5 bg-white p-6 shadow-soft sm:p-8">
+        <h3 class="text-lg font-semibold text-slate-900">{{ center.name }}</h3>
+        <ul class="mt-4 space-y-3 text-sm text-slate-700">
+          <li class="flex items-start gap-3">
+            <i data-lucide="map-pin" class="mt-0.5 h-5 w-5 shrink-0 text-brand"></i>
+            <span>{{ center.address }}<br /><span class="text-slate-500">{{ center.landmark }}</span></span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i data-lucide="phone" class="mt-0.5 h-5 w-5 shrink-0 text-brand"></i>
+            <a href="tel:{{ center.phone_tel }}" data-promo-phone class="font-medium text-brand hover:text-brand2">{{ center.phone_label }}</a>
+          </li>
+          <li class="flex items-start gap-3">
+            <i data-lucide="clock" class="mt-0.5 h-5 w-5 shrink-0 text-brand"></i>
+            <span>
+              {% for h in center.hours %}{{ h }}{% if not forloop.last %}<br />{% endif %}{% endfor %}
+            </span>
+          </li>
+        </ul>
+        <div class="mt-6 flex flex-col gap-3 sm:flex-row">
+          <a
+            href="{{ center.maps_route_url }}"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-promo-route
+            class="inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 text-sm font-semibold text-white shadow-glow transition hover:brightness-105"
+          >
+            <i data-lucide="map-pin" class="h-5 w-5"></i>
+            Построить маршрут
+          </a>
+          <a
+            href="tel:{{ center.phone_tel }}"
+            data-promo-phone
+            class="inline-flex min-h-[48px] flex-1 items-center justify-center gap-2 rounded-2xl border border-brand/30 px-6 py-3 text-sm font-semibold text-brand transition hover:bg-brand/5"
+          >
+            <i data-lucide="phone-call" class="h-5 w-5"></i>
+            Позвонить
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- УСЛОВИЯ АКЦИИ -->
+  <section class="bg-slate-50 py-12 pb-28 sm:py-16 md:pb-16">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6">
+      <h2 class="text-center text-2xl font-semibold text-slate-900 md:text-3xl">{{ conditions_title }}</h2>
+      <ul class="mt-8 space-y-2.5">
+        {% for cond in conditions %}
+          <li class="flex items-start gap-3 text-sm text-slate-600">
+            <i data-lucide="check" class="mt-0.5 h-4 w-4 shrink-0 text-brand"></i>
+            <span>{{ cond }}</span>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </section>
+
+  <!-- Мобильная фиксированная нижняя панель (только на этих страницах) -->
+  <div class="fixed inset-x-0 bottom-0 z-[70] border-t border-slate-200 bg-white/95 backdrop-blur-sm md:hidden" style="padding-bottom: env(safe-area-inset-bottom);">
+    <div class="grid grid-cols-2 gap-2 px-3 py-2.5">
+      <a
+        href="#promo-form"
+        data-promo-cta
+        class="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl bg-red-600 px-3 py-2.5 text-sm font-semibold text-white shadow-glow"
+      >
+        <i data-lucide="badge-percent" class="h-4 w-4"></i>
+        Получить промокод
+      </a>
+      <a
+        href="tel:{{ center.phone_tel }}"
+        data-promo-phone
+        class="inline-flex min-h-[48px] items-center justify-center gap-2 rounded-xl border border-brand/40 px-3 py-2.5 text-sm font-semibold text-brand"
+      >
+        <i data-lucide="phone-call" class="h-4 w-4"></i>
+        Позвонить
+      </a>
+    </div>
+  </div>
+
+</div>
+{% endblock %}
