@@ -3149,6 +3149,7 @@ function initCatalogNavMobileToggle() {
   var SHOW_DELAY_MS = 2000;
   var EXCLUDED_PATHS = ['/sadovye-centry/', '/discount/', '/zayavka-direct/'];
   var EXPIRES_AT = new Date(2026, 7, 1); // акция до конца июля: с 1 августа не показываем
+  var HIDE_FOR_MS = 24 * 60 * 60 * 1000; // после закрытия прячем на сутки
 
   function ready(fn) {
     if (document.readyState === 'loading') {
@@ -3168,7 +3169,9 @@ function initCatalogNavMobileToggle() {
     if (EXCLUDED_PATHS.some(function (p) { return path.indexOf(p) === 0; })) return;
 
     try {
-      if (localStorage.getItem(STORAGE_KEY) === '1') return;
+      // старое значение '1' парсится в 1 (давно в прошлом), так что попап снова покажется
+      var closedAt = parseInt(localStorage.getItem(STORAGE_KEY), 10);
+      if (closedAt && Date.now() - closedAt < HIDE_FOR_MS) return;
     } catch (e) { /* приватный режим — всё равно показываем */ }
 
     var closers = popup.querySelectorAll('[data-promo-close]');
@@ -3194,7 +3197,7 @@ function initCatalogNavMobileToggle() {
       document.body.style.overflow = prevBodyOverflow;
       document.removeEventListener('keydown', onKeydown);
       if (persist !== false) {
-        try { localStorage.setItem(STORAGE_KEY, '1'); } catch (e) { /* noop */ }
+        try { localStorage.setItem(STORAGE_KEY, String(Date.now())); } catch (e) { /* noop */ }
       }
     }
 
