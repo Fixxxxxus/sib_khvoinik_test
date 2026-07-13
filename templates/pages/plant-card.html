@@ -111,17 +111,9 @@
           {% if active_plant %}
             {% if active_plant.variants %}
             <div class="mt-6 space-y-5">
-              <div>
-                <label class="block text-xs font-medium text-slate-600" for="pv-height">{% if active_plant.pv_field_labels %}{{ active_plant.pv_field_labels.height }}{% else %}Высота{% endif %}</label>
-                <select
-                  id="pv-height"
-                  data-pv-height
-                  class="mt-1.5 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/25"
-                ></select>
-              </div>
-              <div>
-                <div class="mb-1.5 flex flex-wrap items-center gap-x-1 text-xs font-medium text-slate-600">
-                  <label class="min-w-0" for="pv-container">{% if active_plant.pv_field_labels %}{{ active_plant.pv_field_labels.container }}{% else %}Корневая система / контейнер{% endif %}</label>
+              <div data-pv-container-wrap>
+                <div class="mb-2 flex flex-wrap items-center gap-x-1 text-xs font-medium text-slate-600">
+                  <span class="min-w-0">{% if active_plant.pv_field_labels %}{{ active_plant.pv_field_labels.container }}{% else %}Формат посадки{% endif %}</span>
                   <button
                     type="button"
                     class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-brand/85 hover:bg-brand/10 hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
@@ -131,11 +123,17 @@
                     <span class="select-none text-[11px] font-semibold leading-none" aria-hidden="true">ⓘ</span>
                   </button>
                 </div>
+                <div data-pv-container-group role="group" aria-label="Формат посадки" class="flex flex-wrap gap-2"></div>
+                <p data-pv-container-note class="mt-2 text-xs leading-relaxed text-slate-500"></p>
+              </div>
+              <div data-pv-height-wrap>
+                <label class="block text-xs font-medium text-slate-600" for="pv-height">{% if active_plant.pv_field_labels %}{{ active_plant.pv_field_labels.height }}{% else %}Высота{% endif %}</label>
                 <select
-                  id="pv-container"
-                  data-pv-container
-                  class="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/25"
+                  id="pv-height"
+                  data-pv-height
+                  class="mt-1.5 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/25"
                 ></select>
+                <p data-pv-height-note class="mt-1.5 hidden text-sm text-slate-500"></p>
               </div>
               <div class="rounded-2xl border border-brand/20 bg-gradient-to-br from-brand/[0.07] to-brand2/[0.05] p-5">
                 <div class="text-xs font-medium text-slate-600">Цена</div>
@@ -144,11 +142,7 @@
               </div>
             </div>
             <p class="mt-4 text-xs text-slate-500">
-              {% if active_plant.merged_format_group %}
-                Выберите формат посадки - цена пересчитается автоматически.
-              {% else %}
-                Выберите высоту и формат посадки - цена обновится автоматически.
-              {% endif %}
+              Выберите формат посадки - цена пересчитается автоматически.
             </p>
             {% elif active_plant.formats %}
             <div class="mt-6">

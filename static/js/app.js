@@ -1876,15 +1876,18 @@ function initPlantVariantPicker() {
     return;
   }
   if (!Array.isArray(variants) || variants.length === 0) return;
+  // «уточняйте»/пусто = высота не зафиксирована (типично для комовых). Не выдумываем
+  // «фиксированную» - помечаем как расплывчатое значение и показываем честно.
+  const isVague = (s) => s === '' || /уточн/i.test(s);
   const normalizeHeightLabel = (v) => {
     const s = String(v || '').trim();
-    return /^уточняйте$/i.test(s) ? 'фиксированная' : s;
+    return isVague(s) ? '' : s;
   };
   const normalizeContainerLabel = (v) => {
     const s = String(v || '').trim();
     if (s === 'кассета 6 ячеек' || s === 'кассета из 6 ячеек') return s;
     if (s === 'кассета из 4 ячеек' || s === 'кассета 4 ячеек') return s;
-    if (/^формат\s+уточняйте$/i.test(s) || /^уточняйте$/i.test(s)) return 'формат фиксированный';
+    if (/^формат\s+уточняйте$/i.test(s) || /^уточняйте$/i.test(s)) return 'формат уточняется';
     return s;
   };
   variants = variants.map((x) => ({
@@ -1894,7 +1897,10 @@ function initPlantVariantPicker() {
   }));
 
   const selH = root.querySelector('[data-pv-height]');
-  const selC = root.querySelector('[data-pv-container]');
+  const heightWrap = root.querySelector('[data-pv-height-wrap]');
+  const heightNote = root.querySelector('[data-pv-height-note]');
+  const contGroup = root.querySelector('[data-pv-container-group]');
+  const contNote = root.querySelector('[data-pv-container-note]');
   const priceEl = root.querySelector('[data-pv-price]');
   const hintEl = root.querySelector('[data-pv-stock-hint]');
   const badgeEl = root.querySelector('[data-pv-stock-badge]');
@@ -1913,9 +1919,18 @@ function initPlantVariantPicker() {
     });
   }
 
-  if (!selH || !selC || !priceEl) return;
+  if (!selH || !contGroup || !priceEl) return;
 
   const uniq = (arr) => [...new Set(arr)];
+
+  // Тара - ведущее поле. Клиент выбирает формат посадки (C2.3 / C5 / ком),
+  // высота подстраивается под выбранную тару.
+  let curC = uniq(variants.map((x) => x.container))[0];
+
+  const CHIP_ON =
+    'rounded-xl border border-brand bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition';
+  const CHIP_OFF =
+    'rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-brand/50 hover:text-brand';
 
   function fillSel(sel, values) {
     sel.innerHTML = '';
@@ -1927,23 +1942,77 @@ function initPlantVariantPicker() {
     });
   }
 
-  function variantsForHeight(h) {
-    return variants.filter((x) => x.height === h);
+  function containersAll() {
+    return uniq(variants.map((x) => x.container));
   }
 
-  function findVariant(h, c) {
-    return variants.find((x) => x.height === h && x.container === c);
+  function heightsForContainer(c) {
+    return uniq(variants.filter((x) => x.container === c).map((x) => x.height));
   }
 
-  function refreshContainerOptions() {
-    const h = selH.value;
-    const list = variantsForHeight(h);
-    const conts = uniq(list.map((x) => x.container));
-    const fallback = uniq(variants.map((x) => x.container));
-    fillSel(selC, conts.length ? conts : fallback);
-    if (conts.length && !conts.includes(selC.value)) {
-      selC.value = conts[0];
+  function findVariant(c, h) {
+    return (
+      variants.find((x) => x.container === c && x.height === h) ||
+      variants.find((x) => x.container === c) ||
+      null
+    );
+  }
+
+  // Человеческая расшифровка формата прямо под кнопками - чтобы «ком»/«C2.3»
+  // были понятны без открытия справки. Подробности - по значку ⓘ.
+  function containerHint(c) {
+    const s = String(c || '').toLowerCase();
+    if (/ком/.test(s)) return 'Ком: растение выкопано из поля с комом земли (в сетке или мешковине). Так продают крупные деревья и кустарники - готово к посадке на участке.';
+    if (/кассет/.test(s)) return 'Кассета: несколько растений в общей упаковке, каждое в своей ячейке. Удобно для живой изгороди и массовой посадки.';
+    if (/кашпо/.test(s)) return 'Кашпо: растение уже в декоративном горшке - можно не пересаживать, сразу на террасу или у входа.';
+    if (/^р\s*\d|^p\s*\d/.test(s)) return 'Маленький стакан: молодой саженец под доращивание, самая низкая цена.';
+    if (/^[cс]\s*\d/.test(s)) return 'Контейнер (горшок с землёй): растение с закрытой корневой системой, готово к посадке. Число - объём горшка в литрах.';
+    return '';
+  }
+
+  function updateContainerNote() {
+    if (!contNote) return;
+    contNote.textContent = containerHint(curC);
+  }
+
+  function renderContainerChips() {
+    contGroup.innerHTML = '';
+    containersAll().forEach((c) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.pvContainerChip = '';
+      b.dataset.value = c;
+      b.textContent = c;
+      const active = c === curC;
+      b.className = active ? CHIP_ON : CHIP_OFF;
+      b.setAttribute('aria-pressed', active ? 'true' : 'false');
+      contGroup.appendChild(b);
+    });
+    updateContainerNote();
+  }
+
+  // Показываем селект высоты, только если у тары есть настоящие (не расплывчатые) высоты.
+  // Комовые и т.п. без фиксированной высоты - селект прячем, пишем «высота уточняется».
+  function refreshHeightOptions() {
+    const heights = heightsForContainer(curC).filter((h) => h !== '');
+    if (heights.length) {
+      selH.classList.remove('hidden');
+      if (heightNote) heightNote.classList.add('hidden');
+      fillSel(selH, heights);
+      if (!heights.includes(selH.value)) selH.value = heights[0];
+    } else {
+      selH.classList.add('hidden');
+      if (heightNote) {
+        heightNote.textContent = 'Высота уточняется при заказе.';
+        heightNote.classList.remove('hidden');
+      }
     }
+  }
+
+  function currentVariant() {
+    const heights = heightsForContainer(curC).filter((h) => h !== '');
+    const h = heights.length ? selH.value : '';
+    return findVariant(curC, h);
   }
 
   function applyVariant(v) {
@@ -1969,7 +2038,7 @@ function initPlantVariantPicker() {
       }
     }
 
-    const detail = `${v.height}, ${v.container}`;
+    const detail = v.height ? `${v.container}, ${v.height}` : v.container;
     const selectionBtn = root.querySelector('[data-pv-sync-selection-button="1"]');
     if (selectionBtn) {
       selectionBtn.setAttribute('data-selection-variant', detail);
@@ -1978,22 +2047,26 @@ function initPlantVariantPicker() {
     }
   }
 
-  fillSel(selH, uniq(variants.map((x) => x.height)));
-  if (!selH.options.length) return;
-  if (!selH.value) selH.value = selH.options[0].value;
-  refreshContainerOptions();
+  renderContainerChips();
+  refreshHeightOptions();
 
+  contGroup.addEventListener('click', (e) => {
+    const chip = e.target && e.target.closest('[data-pv-container-chip]');
+    if (!chip) return;
+    const val = chip.dataset.value;
+    if (val === curC) return;
+    curC = val;
+    renderContainerChips();
+    refreshHeightOptions();
+    const v = currentVariant();
+    if (v) applyVariant(v);
+  });
   selH.addEventListener('change', () => {
-    refreshContainerOptions();
-    const v = findVariant(selH.value, selC.value);
-    if (v) applyVariant(v);
-  });
-  selC.addEventListener('change', () => {
-    const v = findVariant(selH.value, selC.value);
+    const v = currentVariant();
     if (v) applyVariant(v);
   });
 
-  applyVariant(findVariant(selH.value, selC.value) || variants[0]);
+  applyVariant(currentVariant() || variants[0]);
 }
 
 const SG_SELECTION_ADD_ANIM_MS = 800;
