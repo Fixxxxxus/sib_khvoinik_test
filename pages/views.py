@@ -1,5 +1,7 @@
+import re
+
 from django.conf import settings
-from django.http import Http404
+from django.http import Http404, HttpResponsePermanentRedirect
 from django.shortcuts import render
 
 from .catalog_context import get_catalog_page_for_template
@@ -29,16 +31,172 @@ from .data import (
     DIRECT_LANDING_PAGE,
     PROMO_SALE50_SITE_PAGE,
     PROMO_SALE50_DIRECT_PAGE,
+    REVIEWS_DATA,
 )
 
 
+BRAND_SUFFIX = "Сибирские газоны"
+CITY_SUFFIX = "купить в Новосибирске"
+
+
+def _plant_display_name(plant: dict) -> str:
+    return (plant.get("catalog_display_name") or plant.get("name") or "").strip()
+
+
+def _plant_min_price_line(plant: dict) -> str | None:
+    """Минимальная цена карточки строкой '590 ₽' или None, если цены нет."""
+    line = (plant.get("catalog_price_line") or "").strip()
+    if line and line.lower() != "уточняйте":
+        return line
+    nums = []
+    for v in plant.get("variants") or []:
+        digits = re.sub(r"\D", "", str(v.get("price") or ""))
+        if digits:
+            nums.append(int(digits))
+    if not nums:
+        return None
+    return f"{min(nums):,}".replace(",", " ") + " ₽"
+
+
+def _plant_in_stock(plant: dict) -> bool:
+    return any(v.get("in_stock") for v in (plant.get("variants") or []))
+
+
+def _h1_suffix_reads_naturally(base_name: str) -> bool:
+    """«{Название} купить в Новосибирске» естественно только для коротких названий."""
+    name = (base_name or "").strip()
+    if not name:
+        return False
+    words = name.split()
+    return len(words) <= 3 and len(name) <= 34
+
+
+def _trim_meta(text: str, limit: int = 160) -> str:
+    """Обрезаем мету по границе слова, не длиннее limit символов."""
+    text = re.sub(r"\s+", " ", text).strip()
+    if len(text) <= limit:
+        return text
+    cut = text[:limit]
+    if " " in cut:
+        cut = cut[: cut.rfind(" ")]
+    return cut.rstrip(" ,.-")
+
+
+def _plant_commercial_seo(plant: dict) -> dict:
+    """title / h1_suffix / meta_description карточки товара (коммерческий интент)."""
+    name = _plant_display_name(plant)
+    # Видимое название в h1: русская часть, если латиница вынесена отдельно.
+    visible = (plant.get("title_ru") or name).strip() if plant.get("title_latin") else name
+    seo_title = f"{name} {CITY_SUFFIX} - цена, наличие | {BRAND_SUFFIX}"
+    h1_suffix = CITY_SUFFIX if _h1_suffix_reads_naturally(visible) else ""
+
+    price_line = _plant_min_price_line(plant)
+    if price_line:
+        price_part = f"Цена от {price_line}"
+    else:
+        price_part = "Цену и наличие уточняйте"
+    stock_part = "есть в наличии" if _plant_in_stock(plant) else "поставка под заказ"
+    meta = (
+        f"{name} - {CITY_SUFFIX} в питомнике «{BRAND_SUFFIX}». {price_part}, {stock_part}. "
+        "Доставка по Новосибирску и области, растения адаптированы к сибирскому климату."
+    )
+    return {
+        "seo_title": seo_title,
+        "plant_h1_suffix": h1_suffix,
+        "meta_description": _trim_meta(meta),
+    }
+
+
+def _norm_legacy_path(path: str) -> str:
+    p = "/" + str(path or "").strip().strip("/")
+    return p + "/" if p != "/" else p
+
+
+def _build_legacy_redirect_map() -> dict:
+    """{старый /product/...-путь -> актуальный /catalog/<slug>/} из категорий и растений."""
+    mapping: dict[str, str] = {}
+    ctx = get_catalog_page_for_template()
+    for cat in ctx.get("categories") or []:
+        slug = cat.get("slug")
+        if not slug:
+            continue
+        for lp in cat.get("legacy_paths") or []:
+            mapping[_norm_legacy_path(lp)] = f"/catalog/{slug}/"
+    merged, _ = get_merged_catalog_plants()
+    for plant in merged:
+        slug = plant.get("slug")
+        if not slug:
+            continue
+        for lp in plant.get("legacy_paths") or []:
+            mapping.setdefault(_norm_legacy_path(lp), f"/catalog/{slug}/")
+    return mapping
+
+
+def legacy_product_redirect(request):
+    """301 со старых URL каталога (/product/...) на актуальные страницы каталога."""
+    mapping = _build_legacy_redirect_map()
+    target = mapping.get(_norm_legacy_path(request.path))
+    if target:
+        return HttpResponsePermanentRedirect(target)
+    raise Http404("Старый адрес каталога не сопоставлен с актуальным")
+
+
+_RU_MONTHS_GENITIVE = (
+    "", "января", "февраля", "марта", "апреля", "мая", "июня",
+    "июля", "августа", "сентября", "октября", "ноября", "декабря",
+)
+
+# Общая шкала для отрисовки звёзд (1..5) в видимом блоке отзывов.
+STAR_SCALE = [1, 2, 3, 4, 5]
+
+
+def _review_date_display(iso: str) -> str:
+    """ISO-дату '2024-10-14' -> '14 октября 2024' (для видимого блока отзывов)."""
+    try:
+        y, m, d = (int(x) for x in str(iso).split("-"))
+        return f"{d} {_RU_MONTHS_GENITIVE[m]} {y}"
+    except (ValueError, IndexError):
+        return str(iso or "")
+
+
+def _reviews_items(centers=None):
+    """Список отзывов с человекочитаемой датой; при centers - фильтр по центрам."""
+    items = []
+    for it in REVIEWS_DATA["items"]:
+        if centers is not None and it["center"] not in centers:
+            continue
+        item = dict(it)
+        item["date_display"] = _review_date_display(it.get("date"))
+        items.append(item)
+    return items
+
+
 def home(request):
-    return render(request, "pages/home.html", HOME_PAGE)
+    ctx = dict(HOME_PAGE)
+    ctx["reviews_aggregate"] = REVIEWS_DATA["aggregate"]
+    # Компактный блок на главной: 6 отзывов (брендовые запросы + rich-сниппет).
+    ctx["reviews_items"] = _reviews_items()[:6]
+    ctx["star_scale"] = STAR_SCALE
+    return render(request, "pages/home.html", ctx)
 
 
 def gazon(request):
     ctx = dict(GAZON_PAGE)
-    ctx["jsonld_blocks"] = [seo.faq_jsonld(GAZON_PAGE["faq"])]
+    # Product + Offer с ценой рулонного газона (цена в сниппет). Цены из прайса.
+    roll_product = {
+        "name": "Рулонный газон",
+        "description": GAZON_PAGE["meta_description"],
+        "category_slug": "Рулонный газон",
+        "variants": [
+            {"price": row["price"], "in_stock": True}
+            for row in ROLL_LAWN_PRICE_PAGE["price_rows"]
+        ],
+    }
+    blocks = [seo.faq_jsonld(GAZON_PAGE["faq"])]
+    product = seo.product_jsonld(roll_product, "/gazon/")
+    if product:
+        blocks.append(product)
+    ctx["jsonld_blocks"] = blocks
     return render(request, "pages/gazon.html", ctx)
 
 
@@ -62,7 +220,15 @@ def pitomnik(request):
 
 
 def sadovye_centry(request):
-    return render(request, "pages/sadovye-centry.html", SADOVYE_CENTRY_PAGE)
+    ctx = dict(SADOVYE_CENTRY_PAGE)
+    ctx["reviews_aggregate"] = REVIEWS_DATA["aggregate"]
+    ctx["reviews_center_mega"] = REVIEWS_DATA["centers"]["МЕГА"]
+    ctx["reviews_center_novopichugovo"] = REVIEWS_DATA["centers"]["Новопичугово"]
+    # На странице центров показываем отзывы про конкретные точки (МЕГА / Новопичугово).
+    ctx["reviews_mega"] = _reviews_items(centers=["МЕГА"])
+    ctx["reviews_novopichugovo"] = _reviews_items(centers=["Новопичугово"])
+    ctx["star_scale"] = STAR_SCALE
+    return render(request, "pages/sadovye-centry.html", ctx)
 
 
 def catalog(request):
@@ -84,10 +250,14 @@ def catalog_item(request, slug):
         ctx["category_hub_links"] = (cat or {}).get("category_hub_links")
         ctx["plants"] = [p for p in merged_plants if plant_belongs_to_category(p, slug)]
         ctx["canonical_path"] = f"/catalog/{slug}/"
-        ctx["og_title"] = f"{ctx['category_label']}: каталог питомника"
-        ctx["meta_description"] = (
-            f"{ctx['category_label']} в каталоге питомника «Сибирские газоны»: "
-            "цены, наличие и описания растений, выращенных и адаптированных для Сибири."
+        label = ctx["category_label"]
+        ctx["seo_title"] = (
+            f"{label} - {CITY_SUFFIX}, цена в питомнике | {BRAND_SUFFIX}"
+        )
+        ctx["og_title"] = f"{label} {CITY_SUFFIX}"
+        ctx["meta_description"] = _trim_meta(
+            f"{label} {CITY_SUFFIX} в питомнике «{BRAND_SUFFIX}»: актуальные цены, наличие "
+            "и доставка по области. Растения адаптированы к сибирскому климату."
         )
         ctx["jsonld_blocks"] = [
             seo.breadcrumbs_jsonld([
@@ -108,12 +278,11 @@ def catalog_item(request, slug):
         canonical_path = f"/catalog/{canon}/"
         plant_name = plant.get("catalog_display_name") or plant.get("name") or ""
         ctx["canonical_path"] = canonical_path
-        ctx["og_title"] = plant_name
-        description = (plant.get("description") or "").strip()
-        if description:
-            ctx["meta_description"] = (
-                description[:157] + "…" if len(description) > 160 else description
-            )
+        commercial = _plant_commercial_seo(plant)
+        ctx["seo_title"] = commercial["seo_title"]
+        ctx["plant_h1_suffix"] = commercial["plant_h1_suffix"]
+        ctx["og_title"] = f"{plant_name} {CITY_SUFFIX}"
+        ctx["meta_description"] = commercial["meta_description"]
         jsonld_blocks = [
             seo.breadcrumbs_jsonld([
                 ("Главная", "/"),

@@ -205,20 +205,46 @@ def yandex_verification(request):
     return HttpResponse(YANDEX_VERIFICATION_HTML, content_type="text/html; charset=utf-8")
 
 
-def _static_sitemap_paths() -> list[str]:
-    names = [
-        "home", "gazon", "roll_lawn_price", "ozelenenie_b2c", "b2b",
-        "pitomnik", "sadovye_centry", "catalog", "sluzhba_zaboty",
-        "calendar", "stati_list", "kontakty", "o_kompanii",
-        "privacy", "consent", "predzakaz", "akciya_hvoynye_50",
-    ]
-    paths = []
-    for name in names:
+# Приоритет и частота обхода по типам страниц. lastmod ставим только там, где
+# есть реальная дата (статьи) - фейковый per-page lastmod вредит доверию.
+_STATIC_SITEMAP_META: dict[str, tuple[float, str]] = {
+    "home": (1.0, "weekly"),
+    "gazon": (0.9, "weekly"),
+    "roll_lawn_price": (0.9, "weekly"),
+    "catalog": (0.9, "weekly"),
+    "pitomnik": (0.8, "monthly"),
+    "predzakaz": (0.7, "weekly"),
+    "ozelenenie_b2c": (0.7, "monthly"),
+    "b2b": (0.7, "monthly"),
+    "sadovye_centry": (0.7, "monthly"),
+    "sluzhba_zaboty": (0.6, "monthly"),
+    "calendar": (0.6, "monthly"),
+    "stati_list": (0.6, "weekly"),
+    "kontakty": (0.5, "monthly"),
+    "o_kompanii": (0.5, "monthly"),
+    "akciya_hvoynye_50": (0.5, "monthly"),
+    "privacy": (0.2, "yearly"),
+    "consent": (0.2, "yearly"),
+}
+
+
+def _static_sitemap_entries() -> list[tuple[str, float, str, str | None]]:
+    entries: list[tuple[str, float, str, str | None]] = []
+    for name, (priority, changefreq) in _STATIC_SITEMAP_META.items():
         try:
-            paths.append(reverse(name))
+            entries.append((reverse(name), priority, changefreq, None))
         except Exception:
             continue
-    return paths
+    return entries
+
+
+def _sitemap_url_xml(path: str, priority: float, changefreq: str, lastmod: str | None) -> str:
+    parts = [f"<loc>{absolute(path)}</loc>"]
+    if lastmod:
+        parts.append(f"<lastmod>{lastmod}</lastmod>")
+    parts.append(f"<changefreq>{changefreq}</changefreq>")
+    parts.append(f"<priority>{priority:.1f}</priority>")
+    return "  <url>" + "".join(parts) + "</url>"
 
 
 def sitemap_xml(request):
@@ -228,44 +254,48 @@ def sitemap_xml(request):
     from .calendar_live import merge_calendar_base
     from .data import CALENDAR_PAGE, STATI_PAGE
 
-    paths: list[str] = list(_static_sitemap_paths())
+    # (path, priority, changefreq, lastmod|None)
+    entries: list[tuple[str, float, str, str | None]] = list(_static_sitemap_entries())
 
-    # Каталог: категории + карточки растений (на проде - из БД).
+    # Каталог: категории + карточки растений (на проде - из БД). Приоритет 0.7.
     try:
         ctx = get_catalog_page_for_template()
         for slug in all_catalog_category_slugs(ctx.get("categories") or []):
-            paths.append(f"/catalog/{slug}/")
+            entries.append((f"/catalog/{slug}/", 0.7, "weekly", None))
         merged, _ = get_merged_catalog_plants()
         for plant in merged:
             if plant.get("slug"):
-                paths.append(f"/catalog/{plant['slug']}/")
+                entries.append((f"/catalog/{plant['slug']}/", 0.7, "weekly", None))
     except Exception:
         pass
 
-    # Статьи.
+    # Статьи: приоритет 0.6, lastmod из реальной даты (dateModified/datePublished).
     for art in STATI_PAGE.get("articles", []):
         if art.get("slug"):
-            paths.append(f"/stati/{art['slug']}/")
+            lastmod = art.get("date_modified") or art.get("date_published")
+            entries.append((f"/stati/{art['slug']}/", 0.6, "monthly", lastmod or None))
 
-    # Календарь ухода: категории и растения.
+    # Календарь ухода: категории и растения (служебная глубина, 0.4).
     try:
         cal = merge_calendar_base(dict(CALENDAR_PAGE))
         for cat in cal.get("categories", []):
-            paths.append(f"/sluzhba-zaboty/calendar/{cat['slug']}/")
+            entries.append((f"/sluzhba-zaboty/calendar/{cat['slug']}/", 0.4, "monthly", None))
         for plant in cal.get("plants", []):
             cat_slug = plant.get("category_slug")
             if cat_slug and plant.get("slug"):
-                paths.append(f"/sluzhba-zaboty/calendar/{cat_slug}/{plant['slug']}/")
+                entries.append(
+                    (f"/sluzhba-zaboty/calendar/{cat_slug}/{plant['slug']}/", 0.4, "monthly", None)
+                )
     except Exception:
         pass
 
     seen: set[str] = set()
     urls = []
-    for p in paths:
-        if p in seen:
+    for path, priority, changefreq, lastmod in entries:
+        if path in seen:
             continue
-        seen.add(p)
-        urls.append(f"  <url><loc>{absolute(p)}</loc></url>")
+        seen.add(path)
+        urls.append(_sitemap_url_xml(path, priority, changefreq, lastmod))
     xml = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
         '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'

@@ -698,6 +698,109 @@
   <!-- Service care -->
   {% include 'partials/service_zaboty_snippet.html' %}
 
+  <!-- Отзывы покупателей по центрам (реальные, 2ГИС). Данные: pages/data.py REVIEWS_DATA -->
+  <section id="reviews" class="mt-14 scroll-mt-24" aria-labelledby="reviews-heading">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between" data-animate="fadeInUp">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-brand/15 bg-white/90 px-4 py-2 text-sm font-medium text-brand shadow-sm">
+            <i data-lucide="message-square-quote" class="h-4 w-4 text-brand"></i>
+            Отзывы покупателей
+          </div>
+          <h2 id="reviews-heading" class="mt-4 text-3xl font-semibold leading-tight tracking-tight text-slate-900">Что говорят гости наших центров</h2>
+        </div>
+        {% if reviews_aggregate %}
+          <div class="flex items-center gap-3 rounded-2xl border border-black/[0.06] bg-white px-5 py-4 shadow-sm">
+            <div class="text-3xl font-semibold leading-none text-slate-900 tabular-nums">{{ reviews_aggregate.rating_value }}</div>
+            <div class="text-xs leading-snug text-slate-600">
+              средняя оценка<br>{{ reviews_aggregate.rating_count }} отзывов в 2ГИС
+            </div>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="mt-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <!-- МЕГА -->
+        <div class="rounded-[1.75rem] border border-black/[0.06] bg-gradient-to-br from-slate-50 via-white to-brand/[0.05] p-5 md:p-6 shadow-soft" data-animate="fadeInUp">
+          <div class="flex items-center justify-between gap-3 border-b border-black/5 pb-4">
+            <div>
+              <div class="font-semibold text-slate-900">Садовый центр МЕГА</div>
+              <div class="text-xs text-slate-500">Ватутина, 107</div>
+            </div>
+            {% with c=reviews_center_mega %}
+              <div class="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
+                <span class="text-2xl font-semibold leading-none text-slate-900 tabular-nums">{{ c.rating_value }}</span>
+                <div class="flex items-center gap-0.5">
+                  {% for s in star_scale %}
+                    <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 {% if s <= 5 %}fill-accent{% else %}fill-slate-200{% endif %}" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endwith %}
+          </div>
+          <div class="mt-4 space-y-3">
+            {% for review in reviews_mega %}
+              <figure class="rounded-2xl border border-black/[0.06] bg-white p-4 shadow-sm">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-0.5" aria-label="Оценка {{ review.rating }} из 5">
+                    {% for s in star_scale %}
+                      <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 {% if s <= review.rating %}fill-accent{% else %}fill-slate-200{% endif %}" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    {% endfor %}
+                  </div>
+                  <span class="text-[11px] font-semibold text-slate-400">{{ review.source }}</span>
+                </div>
+                <blockquote class="mt-2 text-sm leading-relaxed text-slate-700">{{ review.text }}</blockquote>
+                <figcaption class="mt-3 flex items-center justify-between gap-2 text-xs text-slate-500">
+                  <span class="font-semibold text-slate-800">{{ review.author }}</span>
+                  <span>{{ review.date_display }}</span>
+                </figcaption>
+              </figure>
+            {% endfor %}
+          </div>
+        </div>
+
+        <!-- Новопичугово -->
+        <div class="rounded-[1.75rem] border border-black/[0.06] bg-gradient-to-br from-slate-50 via-white to-brand2/[0.05] p-5 md:p-6 shadow-soft" data-animate="fadeInUp">
+          <div class="flex items-center justify-between gap-3 border-b border-black/5 pb-4">
+            <div>
+              <div class="font-semibold text-slate-900">Садовый центр Новопичугово</div>
+              <div class="text-xs text-slate-500">Село Новопичугово, ул. Сосновая</div>
+            </div>
+            {% with c=reviews_center_novopichugovo %}
+              <div class="flex items-center gap-2 rounded-xl bg-white px-3 py-2 shadow-sm">
+                <span class="text-2xl font-semibold leading-none text-slate-900 tabular-nums">{{ c.rating_value }}</span>
+                <div class="flex items-center gap-0.5">
+                  {% for s in star_scale %}
+                    <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 {% if s <= 4 %}fill-accent{% else %}fill-slate-200{% endif %}" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  {% endfor %}
+                </div>
+              </div>
+            {% endwith %}
+          </div>
+          <div class="mt-4 space-y-3">
+            {% for review in reviews_novopichugovo %}
+              <figure class="rounded-2xl border border-black/[0.06] bg-white p-4 shadow-sm">
+                <div class="flex items-center justify-between gap-2">
+                  <div class="flex items-center gap-0.5" aria-label="Оценка {{ review.rating }} из 5">
+                    {% for s in star_scale %}
+                      <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 {% if s <= review.rating %}fill-accent{% else %}fill-slate-200{% endif %}" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    {% endfor %}
+                  </div>
+                  <span class="text-[11px] font-semibold text-slate-400">{{ review.source }}</span>
+                </div>
+                <blockquote class="mt-2 text-sm leading-relaxed text-slate-700">{{ review.text }}</blockquote>
+                <figcaption class="mt-3 flex items-center justify-between gap-2 text-xs text-slate-500">
+                  <span class="font-semibold text-slate-800">{{ review.author }}</span>
+                  <span>{{ review.date_display }}</span>
+                </figcaption>
+              </figure>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Centers list -->
   <section id="adresa-i-rezhim-raboty" class="mt-14 scroll-mt-24" aria-labelledby="adresa-i-rezhim-raboty-heading">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

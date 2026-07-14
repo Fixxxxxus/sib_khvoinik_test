@@ -548,6 +548,60 @@
       </div>
     </div>
   </section>
+  <!-- Отзывы покупателей (реальные, 2ГИС). Данные: pages/data.py REVIEWS_DATA -->
+  <section id="reviews" class="mt-16 scroll-mt-24" aria-labelledby="reviews-heading">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div class="rounded-[2rem] border border-black/[0.06] bg-gradient-to-br from-slate-50 via-white to-brand/[0.06] p-6 md:p-10 shadow-soft" data-animate="fadeInUp">
+        <div class="flex flex-col gap-5 md:flex-row md:items-end md:justify-between">
+          <div>
+            <div class="inline-flex items-center gap-2 rounded-full border border-brand/15 bg-white/90 px-4 py-2 text-sm font-medium text-brand shadow-sm">
+              <i data-lucide="message-square-quote" class="h-4 w-4 text-brand"></i>
+              Отзывы покупателей
+            </div>
+            <h2 id="reviews-heading" class="mt-4 text-3xl md:text-4xl font-semibold leading-tight tracking-tight text-slate-900">
+              Нам доверяют садоводы Новосибирска
+            </h2>
+          </div>
+          {% if reviews_aggregate %}
+            <div class="flex items-center gap-4 rounded-2xl border border-black/[0.06] bg-white px-5 py-4 shadow-sm">
+              <div class="text-4xl font-semibold leading-none text-slate-900 tabular-nums">{{ reviews_aggregate.rating_value }}</div>
+              <div>
+                <div class="flex items-center gap-0.5" aria-label="Рейтинг {{ reviews_aggregate.rating_value }} из 5">
+                  {% for s in star_scale %}
+                    <svg viewBox="0 0 24 24" class="h-5 w-5 {% if s <= 4 %}fill-accent{% else %}fill-accent/40{% endif %}" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  {% endfor %}
+                </div>
+                <div class="mt-1 text-xs text-slate-600">{{ reviews_aggregate.rating_count }} оценок в 2ГИС</div>
+              </div>
+            </div>
+          {% endif %}
+        </div>
+
+        <div class="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+          {% for review in reviews_items %}
+            <figure class="flex h-full flex-col rounded-2xl border border-black/[0.06] bg-white p-5 shadow-sm transition hover:shadow-glow" data-animate="fadeInUp">
+              <div class="flex items-center justify-between gap-3">
+                <div class="flex items-center gap-0.5" aria-label="Оценка {{ review.rating }} из 5">
+                  {% for s in star_scale %}
+                    <svg viewBox="0 0 24 24" class="h-4 w-4 {% if s <= review.rating %}fill-accent{% else %}fill-slate-200{% endif %}" aria-hidden="true"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  {% endfor %}
+                </div>
+                <span class="inline-flex items-center gap-1 rounded-full border border-black/[0.06] bg-slate-50 px-2.5 py-1 text-[11px] font-semibold text-slate-500">
+                  <i data-lucide="map-pin" class="h-3 w-3"></i>{{ review.source }}
+                </span>
+              </div>
+              <blockquote class="mt-3 flex-1 text-sm leading-relaxed text-slate-700">{{ review.text }}</blockquote>
+              <figcaption class="mt-4 flex items-center justify-between gap-3 border-t border-black/5 pt-3">
+                <span class="font-semibold text-slate-900">{{ review.author }}</span>
+                <span class="text-xs text-slate-500">{{ review.date_display }}</span>
+              </figcaption>
+            </figure>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- Service -->
   {% include 'partials/service_zaboty_snippet.html' %}
 

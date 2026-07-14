@@ -1,7 +1,11 @@
-{# item: dict растения; size: lg | md | sm #}
+{# item: растение; size: lg|md|sm; as_heading -> название в h1 (детальная карточка); heading_suffix -> хвост в h1. #}
 {% if item.title_latin %}
   {% if size == "lg" %}
-    <div class="text-2xl font-semibold tracking-tight text-slate-900">{{ item.title_ru }}</div>
+    {% if as_heading %}
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">{{ item.title_ru }}{% if heading_suffix %} <span class="font-normal text-slate-500">{{ heading_suffix }}</span>{% endif %}</h1>
+    {% else %}
+      <div class="text-2xl font-semibold tracking-tight text-slate-900">{{ item.title_ru }}</div>
+    {% endif %}
     <div class="mt-1 text-base font-normal text-slate-600">{{ item.title_latin }}</div>
   {% elif size == "sm" %}
     <div class="text-sm font-semibold leading-snug text-slate-900">{{ item.title_ru }}</div>
@@ -12,7 +16,11 @@
   {% endif %}
 {% else %}
   {% if size == "lg" %}
-    <div class="text-2xl font-semibold tracking-tight text-slate-900">{{ item.catalog_display_name|default:item.name }}</div>
+    {% if as_heading %}
+      <h1 class="text-2xl font-semibold tracking-tight text-slate-900">{{ item.catalog_display_name|default:item.name }}{% if heading_suffix %} <span class="font-normal text-slate-500">{{ heading_suffix }}</span>{% endif %}</h1>
+    {% else %}
+      <div class="text-2xl font-semibold tracking-tight text-slate-900">{{ item.catalog_display_name|default:item.name }}</div>
+    {% endif %}
   {% elif size == "sm" %}
     <div class="text-sm font-semibold leading-snug text-slate-900">{{ item.catalog_display_name|default:item.name }}</div>
   {% else %}

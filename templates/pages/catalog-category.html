@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static catalog_media %}
-{% block title %}{{ category_label }} - каталог - {{ brand }}{% endblock %}
+{% block title %}{{ seo_title|default:category_label }}{% endblock %}
 
 {% block content %}
   <section class="mt-10">

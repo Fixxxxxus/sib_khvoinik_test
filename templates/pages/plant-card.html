@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 {% load static catalog_media %}
-{% block title %}{{ active_plant.catalog_display_name|default:active_plant.name|default:'Карточка растения' }} - {{ brand }}{% endblock %}
+{% block title %}{{ seo_title|default:active_plant.catalog_display_name|default:active_plant.name|default:'Карточка растения' }}{% endblock %}
 
 {% block content %}
   <section class="mt-10">
@@ -52,7 +52,7 @@
             {% endif %}
             </div>
             <div class="p-6">
-              {% include 'partials/plant_catalog_title.html' with item=active_plant size="lg" %}
+              {% include 'partials/plant_catalog_title.html' with item=active_plant size="lg" as_heading=True heading_suffix=plant_h1_suffix %}
               {% if not active_plant.title_latin and active_plant.latin %}
                 <div class="mt-1 text-sm italic text-slate-500">{{ active_plant.latin }}</div>
               {% endif %}

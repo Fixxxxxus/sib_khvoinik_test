@@ -27,6 +27,8 @@ urlpatterns = [
         RedirectView.as_view(url="/ozelenenie-b2c/", permanent=True),
     ),
     re_path(r"^advice/.*$", RedirectView.as_view(url="/stati/", permanent=True)),
+    # 301 со старых URL каталога /product/<категория>/<товар>/ на актуальные /catalog/.
+    re_path(r"^product/", views.legacy_product_redirect),
     path("", views.home, name="home"),
     path("gazon/", views.gazon, name="gazon"),
     path("prais-rulonnyy-gazon/", views.roll_lawn_price, name="roll_lawn_price"),
