@@ -65,3 +65,6 @@ scripts/build_care_calendar_notion.py
 scripts/build_notion_db.py
 scripts/fill_notion_digest_text.py
 scripts/update_notion_hero.py
+
+# Черновые выгрузки тем контента (канонический снапшот живёт в codex-siberian)
+exports/
