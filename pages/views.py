@@ -62,15 +62,6 @@ def _plant_in_stock(plant: dict) -> bool:
     return any(v.get("in_stock") for v in (plant.get("variants") or []))
 
 
-def _h1_suffix_reads_naturally(base_name: str) -> bool:
-    """«{Название} купить в Новосибирске» естественно только для коротких названий."""
-    name = (base_name or "").strip()
-    if not name:
-        return False
-    words = name.split()
-    return len(words) <= 3 and len(name) <= 34
-
-
 def _trim_meta(text: str, limit: int = 160) -> str:
     """Обрезаем мету по границе слова, не длиннее limit символов."""
     text = re.sub(r"\s+", " ", text).strip()
@@ -85,10 +76,10 @@ def _trim_meta(text: str, limit: int = 160) -> str:
 def _plant_commercial_seo(plant: dict) -> dict:
     """title / h1_suffix / meta_description карточки товара (коммерческий интент)."""
     name = _plant_display_name(plant)
-    # Видимое название в h1: русская часть, если латиница вынесена отдельно.
-    visible = (plant.get("title_ru") or name).strip() if plant.get("title_latin") else name
     seo_title = f"{name} {CITY_SUFFIX} - цена, наличие | {BRAND_SUFFIX}"
-    h1_suffix = CITY_SUFFIX if _h1_suffix_reads_naturally(visible) else ""
+    # Гео-суффикс держим только в title / og / мете: в видимом H1 он смотрится
+    # навязчиво для живого посетителя, на ранжирование по гео это не влияет.
+    h1_suffix = ""
 
     price_line = _plant_min_price_line(plant)
     if price_line:
