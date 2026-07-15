@@ -133,12 +133,18 @@ def _build_legacy_redirect_map() -> dict:
 
 
 def legacy_product_redirect(request):
-    """301 со старых URL каталога (/product/...) на актуальные страницы каталога."""
+    """301 со старых URL каталога (/product/...) на актуальные страницы каталога.
+
+    Точное совпадение ведёт на конкретную карточку или раздел. Всё остальное под
+    retired-деревом /product/ (категорийные URL, дрейф слагов БД vs data.py,
+    любые старые адреса из индекса) отправляем на корень каталога, чтобы ни один
+    старый URL не упирался в 404 и не терял ссылочный вес.
+    """
     mapping = _build_legacy_redirect_map()
     target = mapping.get(_norm_legacy_path(request.path))
     if target:
         return HttpResponsePermanentRedirect(target)
-    raise Http404("Старый адрес каталога не сопоставлен с актуальным")
+    return HttpResponsePermanentRedirect("/catalog/")
 
 
 _RU_MONTHS_GENITIVE = (
@@ -201,7 +207,7 @@ def gazon(request):
 
 
 def roll_lawn_price(request):
-    """Прайс рулонного газона — пункт «Рулонные газоны» в боковом меню каталога."""
+    """Прайс рулонного газона: пункт «Рулонные газоны» в боковом меню каталога."""
     ctx = dict(ROLL_LAWN_PRICE_PAGE)
     ctx["active_catalog_nav_route"] = "roll_lawn_price"
     return render(request, "pages/roll-lawn-price.html", enrich_catalog_context(ctx))
