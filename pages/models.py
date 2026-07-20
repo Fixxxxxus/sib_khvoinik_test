@@ -42,6 +42,12 @@ class CatalogCategory(models.Model):
         default=0,
         help_text="Меньше число — выше в списке категорий в админке и на сайте.",
     )
+    hidden = models.BooleanField(
+        "Скрыть с сайта",
+        default=False,
+        help_text="Раздел пропадает из меню каталога (например, сезонная рассада вне сезона). "
+        "Прямые ссылки на раздел и его товары продолжают работать.",
+    )
     cover_path = models.CharField(
         "Путь к обложке (файл в static)",
         max_length=500,

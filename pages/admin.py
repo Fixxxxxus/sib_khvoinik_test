@@ -84,9 +84,9 @@ class InStockFilter(admin.SimpleListFilter):
 @admin.register(CatalogCategory)
 class CatalogCategoryAdmin(admin.ModelAdmin):
     inlines = (CatalogSubcategoryInline,)
-    list_display = ("sort_order", "label", "slug", "plant_count")
+    list_display = ("sort_order", "label", "slug", "hidden", "plant_count")
     list_display_links = ("label",)
-    list_editable = ("sort_order",)
+    list_editable = ("sort_order", "hidden")
     list_filter = ("sort_order",)
     search_fields = ("label", "slug")
     ordering = ("sort_order", "label")
@@ -96,8 +96,9 @@ class CatalogCategoryAdmin(admin.ModelAdmin):
         (
             None,
             {
-                "fields": ("label", "slug", "sort_order", "card_label"),
-                "description": "Название и порядок видны на сайте. Slug можно поправить вручную, если автозаполнение не устроило.",
+                "fields": ("label", "slug", "sort_order", "hidden", "card_label"),
+                "description": "Название и порядок видны на сайте. Slug можно поправить вручную, если автозаполнение не устроило. "
+                "«Скрыть с сайта» убирает раздел из меню каталога, не удаляя его.",
             },
         ),
         (

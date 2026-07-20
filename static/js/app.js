@@ -1896,7 +1896,7 @@ function initPlantVariantPicker() {
     container: normalizeContainerLabel(x && x.container),
   }));
 
-  const selH = root.querySelector('[data-pv-height]');
+  const heightGroup = root.querySelector('[data-pv-height-group]');
   const heightWrap = root.querySelector('[data-pv-height-wrap]');
   const heightNote = root.querySelector('[data-pv-height-note]');
   const contGroup = root.querySelector('[data-pv-container-group]');
@@ -1919,28 +1919,24 @@ function initPlantVariantPicker() {
     });
   }
 
-  if (!selH || !contGroup || !priceEl) return;
+  if (!heightGroup || !contGroup || !priceEl) return;
 
   const uniq = (arr) => [...new Set(arr)];
 
   // Тара - ведущее поле. Клиент выбирает формат посадки (C2.3 / C5 / ком),
   // высота подстраивается под выбранную тару.
   let curC = uniq(variants.map((x) => x.container))[0];
+  let curH = '';
 
   const CHIP_ON =
     'rounded-xl border border-brand bg-brand px-4 py-2 text-sm font-semibold text-white shadow-sm transition';
   const CHIP_OFF =
     'rounded-xl border border-black/15 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition hover:border-brand/50 hover:text-brand';
 
-  function fillSel(sel, values) {
-    sel.innerHTML = '';
-    values.forEach((v) => {
-      const o = document.createElement('option');
-      o.value = v;
-      o.textContent = v;
-      sel.appendChild(o);
-    });
-  }
+  const HEIGHT_ROW_ON =
+    'flex w-full items-center justify-between gap-3 rounded-xl border border-brand bg-brand/[0.07] px-4 py-2.5 text-sm font-semibold text-slate-900 transition';
+  const HEIGHT_ROW_OFF =
+    'flex w-full items-center justify-between gap-3 rounded-xl border border-black/15 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:border-brand/50';
 
   function containersAll() {
     return uniq(variants.map((x) => x.container));
@@ -1991,28 +1987,61 @@ function initPlantVariantPicker() {
     updateContainerNote();
   }
 
-  // Показываем селект высоты, только если у тары есть настоящие (не расплывчатые) высоты.
-  // Комовые и т.п. без фиксированной высоты - селект прячем, пишем «высота уточняется».
-  function refreshHeightOptions() {
+  function priceForHeight(c, h) {
+    const v = variants.find((x) => x.container === c && x.height === h);
+    return v ? v.price || '' : '';
+  }
+
+  // Все высоты выбранной тары видны сразу списком строк «высота - цена»:
+  // клиенту не нужно догадываться, что вариантов несколько и цена зависит от высоты.
+  // Комовые и т.п. без фиксированной высоты - список прячем, пишем «высота уточняется».
+  function renderHeightRows() {
     const heights = heightsForContainer(curC).filter((h) => h !== '');
-    if (heights.length) {
-      selH.classList.remove('hidden');
-      if (heightNote) heightNote.classList.add('hidden');
-      fillSel(selH, heights);
-      if (!heights.includes(selH.value)) selH.value = heights[0];
-    } else {
-      selH.classList.add('hidden');
+    heightGroup.innerHTML = '';
+    if (!heights.length) {
+      curH = '';
+      heightGroup.classList.add('hidden');
       if (heightNote) {
         heightNote.textContent = 'Высота уточняется при заказе.';
         heightNote.classList.remove('hidden');
       }
+      return;
     }
+    if (!heights.includes(curH)) curH = heights[0];
+    heightGroup.classList.remove('hidden');
+    if (heightNote) heightNote.classList.add('hidden');
+    heights.forEach((h) => {
+      const active = h === curH;
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.dataset.pvHeightRow = '';
+      b.dataset.value = h;
+      b.className = active ? HEIGHT_ROW_ON : HEIGHT_ROW_OFF;
+      b.setAttribute('role', 'radio');
+      b.setAttribute('aria-checked', active ? 'true' : 'false');
+      const left = document.createElement('span');
+      left.className = 'flex min-w-0 items-center gap-2.5';
+      const dot = document.createElement('span');
+      dot.className = active
+        ? 'h-4 w-4 shrink-0 rounded-full border-[5px] border-brand bg-white'
+        : 'h-4 w-4 shrink-0 rounded-full border border-black/25 bg-white';
+      dot.setAttribute('aria-hidden', 'true');
+      const lab = document.createElement('span');
+      lab.className = 'truncate';
+      lab.textContent = h;
+      left.appendChild(dot);
+      left.appendChild(lab);
+      const price = document.createElement('span');
+      price.className = active ? 'shrink-0 font-semibold text-brand' : 'shrink-0 font-semibold text-slate-800';
+      price.textContent = priceForHeight(curC, h);
+      b.appendChild(left);
+      b.appendChild(price);
+      heightGroup.appendChild(b);
+    });
   }
 
   function currentVariant() {
-    const heights = heightsForContainer(curC).filter((h) => h !== '');
-    const h = heights.length ? selH.value : '';
-    return findVariant(curC, h);
+    return findVariant(curC, curH);
   }
 
   function applyVariant(v) {
@@ -2048,7 +2077,7 @@ function initPlantVariantPicker() {
   }
 
   renderContainerChips();
-  refreshHeightOptions();
+  renderHeightRows();
 
   contGroup.addEventListener('click', (e) => {
     const chip = e.target && e.target.closest('[data-pv-container-chip]');
@@ -2057,11 +2086,17 @@ function initPlantVariantPicker() {
     if (val === curC) return;
     curC = val;
     renderContainerChips();
-    refreshHeightOptions();
+    renderHeightRows();
     const v = currentVariant();
     if (v) applyVariant(v);
   });
-  selH.addEventListener('change', () => {
+  heightGroup.addEventListener('click', (e) => {
+    const row = e.target && e.target.closest('[data-pv-height-row]');
+    if (!row) return;
+    const val = row.dataset.value;
+    if (val === curH) return;
+    curH = val;
+    renderHeightRows();
     const v = currentVariant();
     if (v) applyVariant(v);
   });

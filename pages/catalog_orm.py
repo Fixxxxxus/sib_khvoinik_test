@@ -11,6 +11,7 @@ def category_to_dict(c: CatalogCategory) -> dict[str, Any]:
     return {
         "slug": c.slug,
         "sort_order": c.sort_order,
+        "hidden": bool(c.hidden),
         "label": c.label,
         "card_label": (c.card_label or c.label).strip(),
         "desc": (c.description or "").strip(),

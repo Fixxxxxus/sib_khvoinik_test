@@ -279,12 +279,30 @@ def enrich_catalog_context(ctx: dict) -> dict:
     except Exception:  # pragma: no cover
         pass
 
+    # Категории с галочкой «Скрыть с сайта» (панель) выпадают из бокового меню:
+    # и добавленные через панель, и захардкоженные секции ниже.
+    hidden_slugs: set[str] = set()
+    if getattr(settings, "USE_DATABASE_CATALOG", False):
+        cats = ctx.get("categories")
+        if cats is None:
+            try:
+                from pages.catalog_orm import categories_for_site
+
+                cats = categories_for_site()
+            except Exception:  # pragma: no cover
+                cats = []
+        hidden_slugs = {
+            str((c or {}).get("slug") or "").strip()
+            for c in cats or []
+            if (c or {}).get("hidden") and str((c or {}).get("slug") or "").strip()
+        }
+
     if getattr(settings, "USE_DATABASE_CATALOG", False):
         seen_slugs = _collect_nav_slugs(sections)
         extra: list[tuple[int, dict[str, Any]]] = []
         for cat in ctx.get("categories") or []:
             slug = str((cat or {}).get("slug") or "").strip()
-            if not slug or slug in seen_slugs:
+            if not slug or slug in seen_slugs or slug in hidden_slugs:
                 continue
             label = str((cat or {}).get("label") or (cat or {}).get("card_label") or slug).strip()
             order = int((cat or {}).get("sort_order") or 0)
@@ -326,6 +344,30 @@ def enrich_catalog_context(ctx: dict) -> dict:
                     "nav_slug": sub_slug,
                 }
             )
+
+    def _section_root_slug(sec: dict[str, Any]) -> str:
+        """Слаг категории, которой принадлежит секция: свой nav_slug или nav_slug первого ребёнка «Все …»."""
+        if sec.get("nav_slug"):
+            return str(sec["nav_slug"])
+        ch = sec.get("children") or []
+        if ch and ch[0].get("nav_slug"):
+            return str(ch[0]["nav_slug"])
+        return ""
+
+    if hidden_slugs:
+        sections = [s for s in sections if _section_root_slug(s) not in hidden_slugs]
+
+    def _alpha_key(label: Any) -> str:
+        # «ё» сортируем как «е», иначе слова на «ё» улетают в конец списка
+        return str(label or "").casefold().replace("ё", "е")
+
+    # Первая строка «Все …» остаётся на месте, остальные группы - строго по алфавиту:
+    # захардкоженные списки уже алфавитные, а группы, добавленные через панель,
+    # раньше просто дописывались в конец (Арония и Вейгела оказывались после Чубушника).
+    for sec in sections:
+        ch = sec.get("children")
+        if ch and len(ch) > 2:
+            sec["children"] = [ch[0]] + sorted(ch[1:], key=lambda c: _alpha_key(c.get("label")))
 
     def child_is_active(child: dict[str, Any]) -> bool:
         if child.get("soon"):
