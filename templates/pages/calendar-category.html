@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
+{% load calendar_extras %}
 
 {% block title %}{{ active_category.label }} — {{ title }} — {{ brand }}{% endblock %}
 
@@ -65,21 +66,23 @@
             {% endif %}
 
             {% if p.periods %}
-              <div class="mt-4 flex flex-wrap gap-2">
-                {% with first_period=p.periods.0 %}
-                  <div class="rounded-full bg-brand/10 px-3 py-1 text-xs font-medium text-brand">
-                    {{ first_period.date_label }}
-                  </div>
-                  {% if first_period.theme %}
-                    <div class="text-xs text-slate-500 self-center">{{ first_period.theme|truncatewords:6 }}</div>
+              {% with cur=p.periods|current_period %}
+                <div class="mt-4 flex flex-wrap gap-2">
+                  {% with main_period=cur|default:p.periods.0 %}
+                    <div class="rounded-full px-3 py-1 text-xs font-medium {% if cur %}bg-brand text-white{% else %}bg-brand/10 text-brand{% endif %}">
+                      {{ main_period.date_label }}
+                    </div>
+                    {% if main_period.theme %}
+                      <div class="text-xs text-slate-500 self-center">{{ main_period.theme|truncatewords:6 }}</div>
+                    {% endif %}
+                  {% endwith %}
+                  {% if p.periods|length > 1 %}
+                    <div class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">
+                      +{{ p.periods|length|add:"-1" }} ещё
+                    </div>
                   {% endif %}
-                {% endwith %}
-                {% if p.periods|length > 1 %}
-                  <div class="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-500">
-                    +{{ p.periods|length|add:"-1" }} ещё
-                  </div>
-                {% endif %}
-              </div>
+                </div>
+              {% endwith %}
             {% endif %}
 
             <div class="mt-4 inline-flex items-center gap-1 text-sm font-semibold text-brand opacity-0 group-hover:opacity-100 transition">

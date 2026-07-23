@@ -121,7 +121,11 @@ def _period_image_url(period) -> tuple[str | None, str | None]:
 
 
 def _plant_url(category_slug: str, plant_slug: str, site_url: str) -> str:
-    return f"{site_url}/sluzhba-zaboty/calendar/{category_slug}/#{plant_slug}"
+    # Ведём сразу на страницу растения: там полный контент по каждому периоду
+    # и авто-подсветка/прокрут к текущему периоду. Раньше ссылка шла на страницу
+    # категории с якорем `#{slug}`, но у карточек категории нет id — якорь был
+    # мёртвым, и человек попадал в верх страницы на весенний тизер.
+    return f"{site_url}/sluzhba-zaboty/calendar/{category_slug}/{plant_slug}/"
 
 
 def select_entries_for_week(

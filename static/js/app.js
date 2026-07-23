@@ -2806,6 +2806,19 @@ function initTimeline() {
 
   if (activePill) {
     activePill.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+
+    // Страница растения: пилюли — якоря #period-N. Прокручиваем к карточке
+    // текущего периода, чтобы человек из дайджеста попадал сразу на актуальную
+    // работу недели, а не в начало списка. Свой якорь в URL уважаем — не трогаем.
+    const anchor = activePill.getAttribute('href');
+    if (anchor && anchor.charAt(0) === '#' && !window.location.hash) {
+      const card = document.querySelector(anchor);
+      if (card) {
+        requestAnimationFrame(() => {
+          card.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+    }
   }
 
   // Smooth scroll for anchor pills (plant page)
