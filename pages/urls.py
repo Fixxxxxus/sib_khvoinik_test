@@ -52,5 +52,6 @@ urlpatterns = [
     path("zayavka-direct/", views.zayavka_direct, name="zayavka_direct"),
     path("akciya-hvoynye-50/", views.akciya_hvoynye_50, name="akciya_hvoynye_50"),
     path("direct-50/", views.direct_50, name="direct_50"),
+    path("kottedzhi-direct/", views.kottedzhi_direct, name="kottedzhi_direct"),
     path("predzakaz/", views.predzakaz, name="predzakaz"),
 ]

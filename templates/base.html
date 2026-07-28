@@ -41,7 +41,12 @@
     <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=23" />
   </head>
   <body class="bg-white text-slate-900 antialiased">
-    {% include 'partials/navbar.html' %}
+    {% comment %}
+      landing_mode: режим посадочной под рекламу. Выключает общий навбар (страница
+      ставит свою шапку в блоке header), всплывающее промо и виджет садовых центров -
+      всё это уводит человека с оффера, за который заплачены клики.
+    {% endcomment %}
+    {% if landing_mode %}{% block header %}{% endblock %}{% else %}{% include 'partials/navbar.html' %}{% endif %}
 
     <main>
       {% block content %}{% endblock %}
@@ -50,11 +55,13 @@
     {% include 'partials/footer.html' %}
     {% include 'partials/modals.html' %}
     {% include 'partials/cookie_banner.html' %}
-    {% include 'partials/promo_popup.html' %}
-    {% include 'partials/centers_widget.html' %}
-    {% include 'partials/centers_modal.html' %}
+    {% if not landing_mode %}
+      {% include 'partials/promo_popup.html' %}
+      {% include 'partials/centers_widget.html' %}
+      {% include 'partials/centers_modal.html' %}
+    {% endif %}
 
-    <script src="{% static 'js/app.js' %}?v=59" defer></script>
+    <script src="{% static 'js/app.js' %}?v=60" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {

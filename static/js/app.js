@@ -408,6 +408,11 @@ function initModal() {
     });
   };
 
+  // Формы прямо на странице (не в модалке) с data-consent-gated: без этого вызова
+  // кнопка «Отправить» оставалась бы заблокированной навсегда - гейт вешался только
+  // на свежесклонированное тело модалки.
+  initConsentGate(document);
+
   const ensureModalTitleFx = () => {
     if (titleFxStyleReady || document.getElementById('sg-modal-title-fx')) return;
     const st = document.createElement('style');
@@ -692,6 +697,7 @@ function initModal() {
     'discount-direct': 'Скидка на рассаду (Директ)',
     'zayavka-direct': 'Заявка с лендинга Директа',
     'predzakaz': 'Предзаказ деревьев на осень 2026',
+    'kottedzhi-direct': 'Коттеджи директ',
   };
 
   // Labels for COMMENTS fields
@@ -708,6 +714,7 @@ function initModal() {
     deadline: 'Сроки',
     quantity: 'Количество',
     comment: 'Комментарий',
+    village: 'Посёлок или район',
     notes: 'Пожелания',
     collaborationFormat: 'Формат сотрудничества',
     clientType: 'Тип клиента',
@@ -775,6 +782,7 @@ function initModal() {
     'Консультация': 1361,
     'Заявка с лендинга Директа': 1361,
     'Предзаказ деревьев на осень 2026': 1361,
+    'Коттеджи директ': 1361,
     'Покупка продукции (B2B)': 1347,
     'Прайс и наличие (B2B)': 1347,
     'Калькулятор газона': 17,
@@ -1122,6 +1130,8 @@ function initModal() {
         specificGoal = 'form_submit_direct';
       } else if (tag === 'predzakaz' || tag.endsWith('/predzakaz')) {
         specificGoal = 'form_submit_predzakaz';
+      } else if (tag === 'kottedzhi-direct' || tag.endsWith('/kottedzhi-direct')) {
+        specificGoal = 'form_submit_kottedzhi';
       } else {
         specificGoal = 'form_submit_site';
       }

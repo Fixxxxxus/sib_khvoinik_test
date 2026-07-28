@@ -1,0 +1,294 @@
+{% extends 'base.html' %}
+{% load static %}
+{% comment %}
+  Посадочная «Коттеджи директ» (/kottedzhi-direct/) - только под трафик Яндекс.Директа.
+  Страница noindex, нет в навигации и sitemap, закрыта в robots.txt: приходят на неё
+  строго по прямой ссылке из объявления. Контент живёт в KOTTEDZHI_DIRECT_PAGE
+  (pages/data.py), форма - через общую систему форм (data-ui-form + data-form-tag),
+  лид уходит в Б24 с заголовком «Сайт: Коттеджи директ».
+{% endcomment %}
+{% block title %}{{ seo_title|default:title }} - {{ brand }}{% endblock %}
+
+{% comment %}
+  Собственная шапка лендинга вместо навбара сайта (hide_navbar в KOTTEDZHI_DIRECT_PAGE):
+  логотип, плашка скидки и кнопка звонка. Меню сайта здесь не нужно - оно уводит
+  человека с оффера, а страница живёт только под рекламный трафик.
+{% endcomment %}
+{% block header %}
+  <header class="sticky top-0 z-40 border-b border-black/5 bg-white/90 backdrop-blur">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+      <img
+        src="{% static 'media/branding/logo-main.webp' %}"
+        alt="{{ brand }}"
+        width="168" height="48"
+        class="h-9 w-auto sm:h-11"
+        draggable="false"
+      />
+      <a
+        href="tel:{{ phone_tel }}"
+        class="inline-flex min-h-[44px] items-center gap-2 rounded-full bg-gradient-to-r from-brand to-brand2 px-5 py-2 text-sm font-semibold text-white shadow-glow transition hover:brightness-105"
+      >
+        <i data-lucide="phone" class="h-4 w-4"></i>
+        Позвонить
+      </a>
+    </div>
+  </header>
+{% endblock %}
+
+{% block content %}
+  <!-- HERO -->
+  <section class="relative isolate overflow-hidden bg-gradient-to-br from-brand via-brand2 to-brand text-white">
+    <div class="absolute inset-0 -z-10 opacity-30 pointer-events-none">
+      <div class="absolute -left-24 -top-24 h-72 w-72 rounded-full bg-accent/40 blur-3xl"></div>
+      <div class="absolute right-0 bottom-0 h-80 w-80 rounded-full bg-brand2/60 blur-3xl"></div>
+    </div>
+    <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-8 px-4 py-12 sm:px-6 sm:py-16 lg:grid-cols-2 lg:py-20">
+      <div class="max-w-xl">
+        <div class="inline-flex items-center gap-2 rounded-full bg-white/15 px-4 py-2 text-sm font-semibold text-white ring-1 ring-white/25">
+          <i data-lucide="trees" class="h-4 w-4"></i>
+          {{ hero.eyebrow }}
+        </div>
+        <h1 class="mt-5 text-3xl font-semibold leading-[1.08] sm:text-4xl lg:text-5xl">
+          {{ hero.h1 }}
+        </h1>
+        {# hero.sub содержит <strong> из текста исходного макета, см. data.py #}
+        <p class="mt-4 text-base text-white/90 sm:text-lg [&>strong]:font-semibold [&>strong]:text-white">
+          {{ hero.sub|safe }}
+        </p>
+
+        <!-- Единственное место, где скидка заявлена крупно: дальше по странице
+             она упоминается только в форме и в условиях, без повторов. -->
+        <div class="mt-6 inline-flex items-center gap-3 rounded-2xl bg-red-600/85 px-4 py-3 text-white ring-1 ring-white/20">
+          <span class="text-2xl font-semibold leading-none">-10%</span>
+          <span class="text-sm font-medium leading-snug text-white/95">{{ hero.discount_note }}</span>
+        </div>
+
+        <div class="mt-7 flex flex-col gap-3 sm:flex-row">
+          <a
+            href="#lead-form"
+            class="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl bg-white px-6 py-3 text-base font-semibold text-brand shadow-glow transition hover:brightness-105"
+          >
+            {{ hero.cta_label }}
+            <i data-lucide="arrow-right" class="h-5 w-5"></i>
+          </a>
+          <a
+            href="tel:{{ phone_tel }}"
+            class="inline-flex min-h-[52px] items-center justify-center gap-2 rounded-2xl border border-white/40 bg-white/10 px-6 py-3 text-base font-semibold text-white transition hover:bg-white/20"
+          >
+            <i data-lucide="phone-call" class="h-5 w-5"></i>
+            {{ hero.secondary_label }}
+          </a>
+        </div>
+      </div>
+
+      <div class="relative">
+        <img
+          src="{% static hero.image %}"
+          alt="{{ hero.image_alt }}"
+          width="1200" height="900" loading="eager" decoding="async"
+          class="w-full rounded-3xl object-cover shadow-soft"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- ЦИФРЫ -->
+  <section class="bg-white py-12 sm:py-14">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <h2 class="text-2xl font-semibold text-slate-900 md:text-3xl">{{ facts_title }}</h2>
+      <dl class="mt-6 grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
+        {% for fact in facts %}
+          <div class="rounded-2xl border border-black/5 bg-slate-50/80 px-5 py-5 shadow-soft">
+            <dt class="text-2xl font-semibold text-brand sm:text-3xl">{{ fact.value }}</dt>
+            <dd class="mt-1 text-sm leading-snug text-slate-600">{{ fact.unit }}</dd>
+          </div>
+        {% endfor %}
+      </dl>
+    </div>
+  </section>
+
+  <!-- ЧТО ВЫ ПОЛУЧАЕТЕ -->
+  <section class="bg-slate-50 py-12 sm:py-16">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <h2 class="text-2xl font-semibold text-slate-900 md:text-3xl">{{ benefits_title }}</h2>
+      <div class="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {% for item in benefits %}
+          <article class="rounded-3xl border border-black/5 bg-white p-6 shadow-soft">
+            <span class="inline-flex h-11 w-11 items-center justify-center rounded-2xl bg-brand/10 text-brand">
+              <i data-lucide="{{ item.icon }}" class="h-5 w-5"></i>
+            </span>
+            <h3 class="mt-4 text-lg font-semibold text-slate-900">{{ item.title }}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ item.desc }}</p>
+          </article>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- КАК ИДЁТ РАБОТА -->
+  <section class="bg-white py-12 sm:py-16">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <h2 class="text-2xl font-semibold text-slate-900 md:text-3xl">{{ steps_title }}</h2>
+      <ol class="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {% for step in steps %}
+          <li class="rounded-3xl border border-black/5 bg-slate-50/80 p-6 shadow-soft">
+            <span class="inline-flex h-9 w-9 items-center justify-center rounded-full bg-brand text-sm font-semibold text-white">
+              {{ step.num }}
+            </span>
+            <h3 class="mt-4 text-base font-semibold text-slate-900">{{ step.title }}</h3>
+            <p class="mt-2 text-sm leading-relaxed text-slate-600">{{ step.text }}</p>
+          </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ФОРМА -->
+  <section id="lead-form" class="bg-slate-50 py-12 sm:py-16">
+    <div class="mx-auto grid max-w-5xl grid-cols-1 gap-8 px-4 sm:px-6 lg:grid-cols-2 lg:items-start">
+      <div>
+        <h2 class="text-2xl font-semibold text-slate-900 md:text-3xl">{{ form.title }}</h2>
+        <p class="mt-3 text-base leading-relaxed text-slate-600">{{ form.sub }}</p>
+        <ul class="mt-6 space-y-3">
+          {% for point in form_points %}
+            <li class="flex items-start gap-3 text-sm text-slate-700 md:text-base">
+              <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
+                <i data-lucide="check" class="h-3.5 w-3.5"></i>
+              </span>
+              {{ point }}
+            </li>
+          {% endfor %}
+        </ul>
+        <a
+          href="tel:{{ phone_tel }}"
+          class="mt-6 inline-flex items-center gap-2 text-base font-semibold text-brand transition hover:text-brand2"
+        >
+          <i data-lucide="phone" class="h-4 w-4"></i>
+          {{ phone_label }}
+        </a>
+      </div>
+
+      <div class="rounded-3xl border border-black/5 bg-white p-6 shadow-soft sm:p-8">
+        <form
+          class="space-y-4"
+          data-ui-form
+          data-form-tag="{{ form_tag }}"
+          data-consent-gated="1"
+          novalidate
+        >
+          <input type="hidden" name="formTag" value="{{ form_tag }}" />
+
+          <label class="block text-sm font-medium text-slate-700">
+            Имя*
+            <input
+              name="name"
+              required
+              autocomplete="name"
+              class="mt-1 w-full min-h-[48px] rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20"
+              placeholder="Как к вам обращаться"
+            />
+          </label>
+
+          <label class="block text-sm font-medium text-slate-700">
+            Телефон*
+            <input
+              name="phone"
+              type="tel"
+              required
+              autocomplete="tel"
+              class="mt-1 w-full min-h-[48px] rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20"
+              placeholder="+7 ..."
+            />
+          </label>
+
+          <label class="block text-sm font-medium text-slate-700">
+            Посёлок или район
+            <input
+              name="village"
+              class="mt-1 w-full min-h-[48px] rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20"
+              placeholder="Необязательно"
+            />
+          </label>
+
+          <label class="block text-sm font-medium text-slate-700">
+            Комментарий
+            <textarea
+              name="comment"
+              rows="3"
+              class="mt-1 w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-brand/20"
+              placeholder="Площадь участка, стадия стройки, что хотите получить"
+            ></textarea>
+          </label>
+
+          <!-- Honeypot: реальные пользователи это поле не видят -->
+          <div aria-hidden="true" class="absolute left-[-9999px] h-0 w-0 overflow-hidden" style="opacity:0">
+            <label>Не заполняйте это поле
+              <input type="text" name="company_site" tabindex="-1" autocomplete="off" />
+            </label>
+          </div>
+
+          <!-- UTM (заполняются JS из location.search) -->
+          <input type="hidden" name="utm_source" value="" />
+          <input type="hidden" name="utm_medium" value="" />
+          <input type="hidden" name="utm_campaign" value="" />
+          <input type="hidden" name="utm_term" value="" />
+          <input type="hidden" name="utm_content" value="" />
+
+          <label class="flex cursor-pointer items-start gap-3 text-sm leading-snug text-slate-700">
+            <input
+              type="checkbox"
+              name="consent"
+              value="1"
+              required
+              data-consent-checkbox
+              class="mt-0.5 h-4 w-4 shrink-0 rounded border-black/20 text-brand focus:ring-brand/30"
+            />
+            <span>
+              Даю согласие на обработку персональных данных в соответствии с
+              <a href="{% url 'privacy' %}" class="text-brand underline underline-offset-2 hover:text-brand2" target="_blank" rel="noopener noreferrer">Политикой конфиденциальности</a>
+            </span>
+          </label>
+
+          <button
+            type="submit"
+            data-consent-submit
+            disabled
+            class="w-full min-h-[48px] rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 py-3 font-semibold text-white shadow-glow transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-60"
+          >
+            {{ form.submit_label }}
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="bg-white py-12 sm:py-16">
+    <div class="mx-auto max-w-3xl px-4 sm:px-6">
+      <h2 class="text-2xl font-semibold text-slate-900 md:text-3xl">{{ faq_title }}</h2>
+      <div class="mt-6 space-y-3">
+        {% for item in faq %}
+          <details class="group rounded-2xl border border-black/5 bg-slate-50/80 px-5 py-4 shadow-soft">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-medium text-slate-900">
+              {{ item.q }}
+              <i data-lucide="chevron-down" class="h-5 w-5 shrink-0 text-slate-400 transition group-open:rotate-180"></i>
+            </summary>
+            <p class="mt-3 text-sm leading-relaxed text-slate-600">{{ item.a }}</p>
+          </details>
+        {% endfor %}
+      </div>
+      <p class="mt-8 text-xs leading-relaxed text-slate-500">{{ fine_print }}</p>
+    </div>
+  </section>
+
+  <script>
+    // UTM и yclid из адресной строки уезжают вместе с заявкой в Битрикс24.
+    (function () {
+      var params = new URLSearchParams(location.search);
+      ['utm_source', 'utm_medium', 'utm_campaign', 'utm_term', 'utm_content'].forEach(function (key) {
+        var input = document.querySelector('#lead-form input[name="' + key + '"]');
+        if (input && params.get(key)) input.value = params.get(key);
+      });
+    })();
+  </script>
+{% endblock %}

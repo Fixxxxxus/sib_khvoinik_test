@@ -31,6 +31,7 @@ from .data import (
     DIRECT_LANDING_PAGE,
     PROMO_SALE50_SITE_PAGE,
     PROMO_SALE50_DIRECT_PAGE,
+    KOTTEDZHI_DIRECT_PAGE,
     REVIEWS_DATA,
 )
 
@@ -409,6 +410,15 @@ def akciya_hvoynye_50(request):
 def direct_50(request):
     """Скрытая посадочная акции -50% (промокод ДИРЕКТ50) для Яндекс.Директа, noindex."""
     return render(request, "pages/promo_sale50.html", PROMO_SALE50_DIRECT_PAGE)
+
+
+def kottedzhi_direct(request):
+    """Скрытая посадочная «Коттеджи директ» для Яндекс.Директа, noindex.
+
+    Доступна только по прямой ссылке из объявления: ссылок с сайта нет,
+    в sitemap.xml не попадает, в robots.txt закрыта.
+    """
+    return render(request, "pages/kottedzhi_direct.html", KOTTEDZHI_DIRECT_PAGE)
 
 
 def predzakaz(request):

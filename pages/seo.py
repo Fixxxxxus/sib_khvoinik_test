@@ -152,6 +152,7 @@ Disallow: /admin/
 Disallow: /api/
 Disallow: /zayavka-direct/
 Disallow: /direct-50/
+Disallow: /kottedzhi-direct/
 Disallow: /discount/
 
 # AI-краулеры: доступ открыт явно
