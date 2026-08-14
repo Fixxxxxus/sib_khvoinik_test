@@ -1,7 +1,7 @@
 import re
 
 from django.conf import settings
-from django.http import Http404, HttpResponsePermanentRedirect
+from django.http import Http404, HttpResponsePermanentRedirect, JsonResponse
 from django.shortcuts import render
 
 from .catalog_context import get_catalog_page_for_template
@@ -231,6 +231,33 @@ def sadovye_centry(request):
 
 def catalog(request):
     return render(request, "pages/catalog.html", enrich_catalog_context(get_catalog_page_for_template()))
+
+
+def catalog_search_index(request):
+    """JSON-индекс каталога для живого поиска из шапки (кнопка-лупа).
+
+    Скрытые категории (сезонная рассада вне сезона) в индекс не попадают:
+    поиск не должен рекламировать то, что убрано из меню.
+    """
+    from pages.templatetags.catalog_media import plant_image_thumb_url
+
+    ctx = get_catalog_page_for_template()
+    hidden_slugs = {c.get("slug") for c in (ctx.get("categories") or []) if c.get("hidden")}
+    plants, _ = get_merged_catalog_plants()
+    items = [
+        {
+            "n": (p.get("title_ru") or p.get("name") or "").strip(),
+            "l": (p.get("title_latin") or "").strip(),
+            "s": p["slug"],
+            "t": (p.get("catalog_teaser") or "").strip(),
+            "i": plant_image_thumb_url(p),
+        }
+        for p in plants
+        if p.get("slug") and p.get("category_slug") not in hidden_slugs
+    ]
+    resp = JsonResponse({"items": items})
+    resp["Cache-Control"] = "public, max-age=1800"
+    return resp
 
 
 def catalog_item(request, slug):

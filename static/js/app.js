@@ -282,6 +282,116 @@ function initBurger() {
   });
 }
 
+function initCatalogSearch() {
+  const overlay = document.getElementById('searchOverlay');
+  const input = document.getElementById('searchInput');
+  const resultsBox = document.getElementById('searchResults');
+  const openBtns = Array.from(document.querySelectorAll('[data-search-open]'));
+  if (!overlay || !input || !resultsBox || !openBtns.length) return;
+
+  const endpoint = overlay.getAttribute('data-search-endpoint');
+  let index = null; // null = не грузили, [] = пусто/ошибка
+  let loading = null;
+  let debounceTimer = null;
+
+  const norm = (s) => (s || '').toLowerCase().replace(/ё/g, 'е');
+
+  function loadIndex() {
+    if (index || loading) return loading;
+    loading = fetch(endpoint)
+      .then((r) => (r.ok ? r.json() : { items: [] }))
+      .then((data) => {
+        index = (data.items || []).map((it) => ({ ...it, q: norm(it.n + ' ' + it.l) }));
+        return index;
+      })
+      .catch(() => { index = []; return index; });
+    return loading;
+  }
+
+  function hint(text) {
+    resultsBox.innerHTML =
+      '<div class="px-3 py-6 text-center text-sm text-slate-500">' + text + '</div>';
+  }
+
+  function renderResults(query) {
+    const q = norm(query).trim();
+    if (!q) {
+      hint('Начните вводить название растения');
+      return;
+    }
+    if (!index) {
+      hint('Загружаем каталог…');
+      loadIndex().then(() => renderResults(input.value));
+      return;
+    }
+    const words = q.split(/\s+/).filter(Boolean);
+    const matched = index.filter((it) => words.every((w) => it.q.includes(w)));
+    // Сначала совпадения с начала названия, затем остальные
+    matched.sort((a, b) => {
+      const aStart = a.q.startsWith(q) ? 0 : 1;
+      const bStart = b.q.startsWith(q) ? 0 : 1;
+      return aStart - bStart || a.n.localeCompare(b.n, 'ru');
+    });
+    const top = matched.slice(0, 20);
+    if (!top.length) {
+      resultsBox.innerHTML =
+        '<div class="px-3 py-6 text-center text-sm text-slate-500">Ничего не нашлось.<br/>' +
+        '<a href="/catalog/" class="mt-2 inline-block font-medium text-brand hover:underline">Открыть весь каталог</a></div>';
+      return;
+    }
+    resultsBox.innerHTML = top
+      .map((it) => {
+        const img = it.i
+          ? '<img src="' + it.i + '" alt="" loading="lazy" class="h-12 w-12 shrink-0 rounded-xl object-cover bg-slate-100" />'
+          : '<span class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-400"><i data-lucide="sprout" class="h-5 w-5"></i></span>';
+        const latin = it.l ? '<span class="block truncate text-xs text-slate-400">' + it.l + '</span>' : '';
+        // В строке результата только цена: полный teaser с контейнерами давит название на мобиле
+        const price = (it.t || '').split('·')[0].trim();
+        const teaser = price ? '<span class="shrink-0 whitespace-nowrap text-sm font-medium text-slate-600">' + price + '</span>' : '';
+        return (
+          '<a href="/catalog/' + it.s + '/" class="flex items-center gap-3 rounded-xl px-3 py-2 transition hover:bg-brand/5">' +
+          img +
+          '<span class="min-w-0 flex-1"><span class="block truncate text-sm font-medium text-slate-800">' + it.n + '</span>' + latin + '</span>' +
+          teaser +
+          '</a>'
+        );
+      })
+      .join('');
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function openSearch() {
+    overlay.classList.remove('hidden');
+    document.body.style.overflow = 'hidden';
+    renderResults(input.value);
+    loadIndex();
+    // Небольшая задержка: iOS не фокусирует внутри только что показанного слоя
+    setTimeout(() => input.focus(), 30);
+    if (window.lucide) window.lucide.createIcons();
+  }
+
+  function closeSearch() {
+    overlay.classList.add('hidden');
+    document.body.style.overflow = '';
+  }
+
+  openBtns.forEach((btn) => btn.addEventListener('click', openSearch));
+  overlay.querySelectorAll('[data-search-close]').forEach((el) => el.addEventListener('click', closeSearch));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !overlay.classList.contains('hidden')) closeSearch();
+  });
+  input.addEventListener('input', () => {
+    clearTimeout(debounceTimer);
+    debounceTimer = setTimeout(() => renderResults(input.value), 150);
+  });
+  // Enter = переход на первый результат
+  input.addEventListener('keydown', (e) => {
+    if (e.key !== 'Enter') return;
+    const first = resultsBox.querySelector('a[href^="/catalog/"]');
+    if (first) window.location.href = first.getAttribute('href');
+  });
+}
+
 function initNavDropdowns() {
   const dds = Array.from(document.querySelectorAll('[data-nav-dd]'));
   if (!dds.length) return;
@@ -2900,6 +3010,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initB2bHeroVideo();
   initBurger();
   initNavDropdowns();
+  initCatalogSearch();
   initModal();
   // Auto-open gazon calculator from URL: /gazon/?calc=1
   try {

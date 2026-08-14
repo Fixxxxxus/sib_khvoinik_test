@@ -56,12 +56,13 @@
     {% include 'partials/modals.html' %}
     {% include 'partials/cookie_banner.html' %}
     {% if not landing_mode %}
+      {% include 'partials/search_overlay.html' %}
       {% include 'partials/promo_popup.html' %}
       {% include 'partials/centers_widget.html' %}
       {% include 'partials/centers_modal.html' %}
     {% endif %}
 
-    <script src="{% static 'js/app.js' %}?v=60" defer></script>
+    <script src="{% static 'js/app.js' %}?v=61" defer></script>
     <script>
       // Initialize lucide icons after the DOM is ready.
       document.addEventListener('DOMContentLoaded', () => {

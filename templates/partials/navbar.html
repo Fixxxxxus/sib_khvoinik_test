@@ -88,6 +88,15 @@
       </div>
     </nav>
     <div class="flex shrink-0 items-center gap-2">
+      <!-- Поиск по каталогу: открывает оверлей (partials/search_overlay.html) -->
+      <button
+        type="button"
+        data-search-open
+        aria-label="Поиск по каталогу"
+        class="inline-flex h-9 w-9 items-center justify-center rounded-2xl border border-slate-200 text-slate-700 transition hover:border-brand/40 hover:text-brand sm:h-10 sm:w-10"
+      >
+        <i data-lucide="search" class="h-4 w-4" aria-hidden="true"></i>
+      </button>
       <!-- Акция -50%: выделенная кнопка (ведёт на посадочную акции) -->
       <a
         href="{% url 'akciya_hvoynye_50' %}"
@@ -149,6 +158,14 @@
         />
       </a>
       <div class="flex shrink-0 items-center gap-1.5">
+        <button
+          type="button"
+          data-search-open
+          aria-label="Поиск по каталогу"
+          class="inline-flex h-8 w-8 items-center justify-center rounded-lg border border-slate-200 text-slate-700"
+        >
+          <i data-lucide="search" class="h-3.5 w-3.5" aria-hidden="true"></i>
+        </button>
         <a
           href="tel:+73832010600"
           aria-label="Позвонить"

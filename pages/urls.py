@@ -37,6 +37,7 @@ urlpatterns = [
     path("pitomnik/", views.pitomnik, name="pitomnik"),
     path("sadovye-centry/", views.sadovye_centry, name="sadovye_centry"),
     path("catalog/", views.catalog, name="catalog"),
+    path("catalog/search-index.json", views.catalog_search_index, name="catalog_search_index"),
     path("catalog/<slug:slug>/", views.catalog_item, name="catalog_item"),
     path("sluzhba-zaboty/", views.sluzhba_zaboty, name="sluzhba_zaboty"),
     path("sluzhba-zaboty/calendar/", views.calendar, name="calendar"),
