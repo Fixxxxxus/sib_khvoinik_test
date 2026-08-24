@@ -752,3 +752,118 @@ class PreorderPlant(models.Model):
     def choice_value(self) -> str:
         """Значение для чекбокса и заявки: «Название (размер)»."""
         return f"{self.name} ({self.size})" if self.size else self.name
+
+
+class Article(models.Model):
+    """
+    Статья раздела /stati/, загруженная из контент-фабрики через API.
+
+    Источник правды для новых статей - эта таблица; старые статьи остаются
+    питон-диктами в pages/data.py и мержатся с БД во вью (pages/articles.py).
+    Тело статьи хранится JSON-ом в том же формате, что и дикты data.py:
+    sections[].heading / paragraphs / steps / list / table, faq[].q / a.
+    """
+
+    STATUS_DRAFT = "draft"
+    STATUS_SCHEDULED = "scheduled"
+    STATUS_PUBLISHED = "published"
+    STATUS_CHOICES = [
+        (STATUS_DRAFT, "Черновик (виден только по preview-ссылке)"),
+        (STATUS_SCHEDULED, "Запланирована (выйдет в дату публикации)"),
+        (STATUS_PUBLISHED, "Опубликована (видна сразу)"),
+    ]
+
+    slug = models.SlugField(
+        "URL-метка",
+        max_length=200,
+        unique=True,
+        help_text="Адрес статьи: /stati/<метка>/. Латиница, дефисы.",
+    )
+    title = models.CharField("Заголовок", max_length=300)
+    excerpt = models.TextField(
+        "Аннотация",
+        validators=[MaxLengthValidator(1000)],
+        help_text="Короткое описание для карточки в списке и для meta description по умолчанию.",
+    )
+    lead = models.TextField("Лид (первый абзац)", blank=True)
+    sections = models.JSONField(
+        "Разделы статьи",
+        default=list,
+        blank=True,
+        help_text="Список объектов: heading, paragraphs[], steps[], list[], table{headers,rows}.",
+    )
+    faq = models.JSONField(
+        "FAQ",
+        default=list,
+        blank=True,
+        help_text="Список объектов {q, a}. Идёт в FAQPage JSON-LD.",
+    )
+
+    seo_title = models.CharField("SEO-заголовок (title)", max_length=300, blank=True)
+    meta_description = models.CharField("Meta description", max_length=500, blank=True)
+
+    image_upload = models.ImageField(
+        "Обложка (загруженный файл)",
+        upload_to="articles/%Y/%m/",
+        blank=True,
+        null=True,
+        help_text="Файл сохранится в MEDIA. Имеет приоритет над «Обложка (путь в static)».",
+    )
+    image_path = models.CharField(
+        "Обложка (путь в static)",
+        max_length=300,
+        blank=True,
+        help_text="Например media/images/gazon-b2b-courtyard.jpg (без ведущего /static/).",
+    )
+    image_alt = models.CharField("Alt для обложки", max_length=300, blank=True)
+
+    status = models.CharField(
+        "Статус",
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_DRAFT,
+    )
+    date_published = models.DateField(
+        "Дата публикации",
+        help_text="Для статуса «Запланирована» статья появится на сайте в эту дату.",
+    )
+    date_modified = models.DateField("Дата обновления", blank=True, null=True)
+
+    source = models.CharField(
+        "Источник",
+        max_length=100,
+        blank=True,
+        help_text="Кто загрузил: api, admin, имя оператора.",
+    )
+    created_at = models.DateTimeField("Создана", auto_now_add=True)
+    updated_at = models.DateTimeField("Изменена", auto_now=True)
+
+    class Meta:
+        ordering = ["-date_published", "-pk"]
+        verbose_name = "статья"
+        verbose_name_plural = "статьи (/stati/)"
+
+    def __str__(self) -> str:
+        return f"{self.title} ({self.slug})"
+
+    @property
+    def image_url(self) -> str:
+        """URL обложки: загруженный файл имеет приоритет над путём в static."""
+        if self.image_upload:
+            try:
+                return self.image_upload.url
+            except ValueError:
+                pass
+        return ""
+
+    def is_visible(self, today=None) -> bool:
+        """Видна ли статья публично: published - всегда, scheduled - с даты выхода."""
+        if self.status == self.STATUS_PUBLISHED:
+            return True
+        if self.status == self.STATUS_SCHEDULED:
+            if today is None:
+                from django.utils import timezone
+
+                today = timezone.localdate()
+            return bool(self.date_published and self.date_published <= today)
+        return False

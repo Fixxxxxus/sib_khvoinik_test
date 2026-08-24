@@ -4,6 +4,7 @@ from django.conf import settings
 from django.http import Http404, HttpResponsePermanentRedirect, JsonResponse
 from django.shortcuts import render
 
+from .articles import find_article, merged_articles
 from .catalog_context import get_catalog_page_for_template
 from .catalog_nav import enrich_catalog_context
 from .catalog_merge import find_merged_plant, get_merged_catalog_plants
@@ -368,24 +369,30 @@ def calendar_plant(request, category, plant):
 
 
 def stati_list(request):
-    return render(request, "pages/stati.html", dict(STATI_PAGE))
+    ctx = dict(STATI_PAGE)
+    ctx["articles"] = merged_articles()
+    return render(request, "pages/stati.html", ctx)
 
 
 def stati_detail(request, article_slug):
-    article = next(
-        (a for a in STATI_PAGE["articles"] if a["slug"] == article_slug), None
-    )
+    # Черновик и запланированная статья доступны только по preview-токену (noindex).
+    article, is_preview = find_article(article_slug, request.GET.get("preview", ""))
     if not article:
         raise Http404("Статья не найдена")
     canonical_path = f"/stati/{article_slug}/"
     ctx = dict(STATI_PAGE)
+    ctx["articles"] = merged_articles()
+    if is_preview:
+        ctx["noindex"] = True
     ctx["active_article_slug"] = article_slug
     ctx["article"] = article
-    ctx["seo_title"] = article["title"]
+    ctx["seo_title"] = article.get("seo_title") or article["title"]
     ctx["og_title"] = article["title"]
-    ctx["meta_description"] = article["excerpt"]
+    ctx["meta_description"] = article.get("meta_description") or article["excerpt"]
     ctx["canonical_path"] = canonical_path
-    if article.get("image"):
+    if article.get("image_url"):
+        ctx["og_image_url"] = article["image_url"]
+    elif article.get("image"):
         ctx["og_image"] = article["image"]
     jsonld_blocks = [
         seo.article_jsonld(article, canonical_path),

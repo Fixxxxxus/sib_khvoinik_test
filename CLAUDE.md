@@ -76,6 +76,15 @@ Tailwind is compiled to `static/css/tailwind.css` with the standalone CLI (no no
 
 `robots.txt`, `sitemap.xml`, `llms.txt`, IndexNow key file and JSON-LD builders (FAQ, Product, Breadcrumbs, Article) live in `pages/seo.py` and are wired via `pages/urls.py`. Global Organization/GardenStore/WebSite JSON-LD: `templates/partials/schema_org.html` (included in `base.html`). Per-page meta: each dict in `pages/data.py` carries `seo_title`, `meta_description`, `canonical_path` (and optional `noindex`); dynamic pages set them in views. 301 redirects from the old site structure (`/company/`, `/services/*`, `/advice/*`) are in `pages/urls.py`.
 
+### Статьи /stati/: БД + API публикации
+
+Новые статьи приходят из контент-фабрики (`../siberian-cursor`, скилл `publish-article`) через API и живут в модели `Article` (`pages/models.py`), старые остаются диктами в `STATI_PAGE` внутри `pages/data.py`. Мерж двух источников - `pages/articles.py` (`merged_articles`, `find_article`), его же использует `sitemap_xml`.
+
+- `POST /api/articles/` - upsert по slug (JSON), `POST /api/articles/<slug>/image/` - обложка (multipart), `GET /api/articles/list/` - статусы. Всё в `pages/articles_api.py`, авторизация - общий секрет `ARTICLE_API_TOKEN` (env; пусто = 503).
+- Статусы: `draft` (только preview), `scheduled` (выходит сам в `date_published`), `published`. Скрытая статья открывается по `/stati/<slug>/?preview=<HMAC-токен>` и отдаётся с `noindex`.
+- Обложка из MEDIA идёт в шаблоны как `image_url` (мимо `{% static %}`), путь в static - как `image`. То же различие в `article_jsonld` и в `og:image`.
+- Редактирование и смена статуса руками - Django admin, раздел «статьи (/stati/)».
+
 ### Client-side (`static/js/app.js`)
 
 Single JS file handling: hero viewport sizing, mobile menu, modal system, accordions, scroll animations, animated counters, before/after sliders, carousels, gazon pricing calculator, localStorage-based form submissions, Lucide icons.

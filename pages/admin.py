@@ -13,6 +13,7 @@ from django.utils.html import format_html
 from pages.catalog_io import export_catalog_workbook, import_catalog_workbook
 from pages.forms_catalog import PlantAdminForm
 from pages.models import (
+    Article,
     CareCalendarCategory,
     CareCalendarPeriod,
     CareCalendarPlant,
@@ -59,7 +60,7 @@ class PlantGalleryImageInline(admin.TabularInline):
                 )
         except ValueError:
             pass
-        return "—"
+        return "-"
 
 
 class InStockFilter(admin.SimpleListFilter):
@@ -106,7 +107,7 @@ class CatalogCategoryAdmin(admin.ModelAdmin):
             {
                 "fields": ("hub_links", "legacy_paths"),
                 "classes": ("collapse",),
-                "description": "hub_links — JSON-массив ссылок для страниц-хабов. legacy_paths — старые URL для редиректов.",
+                "description": "hub_links - JSON-массив ссылок для страниц-хабов. legacy_paths - старые URL для редиректов.",
             },
         ),
     )
@@ -148,7 +149,7 @@ class PlantAdmin(admin.ModelAdmin):
             {
                 "fields": ("name", "slug", "category", "is_published", "is_new"),
                 "description": "Slug создаётся автоматически при первом сохранении (латиница из названия). "
-                "Поле можно отредактировать вручную. Категорию выберите из списка — она задаёт раздел на сайте.",
+                "Поле можно отредактировать вручную. Категорию выберите из списка - она задаёт раздел на сайте.",
             },
         ),
         (
@@ -178,7 +179,7 @@ class PlantAdmin(admin.ModelAdmin):
             {
                 "fields": ("legacy_paths", "specs_json"),
                 "classes": ("collapse", "sg-admin-tail"),
-                "description": "Подразделы выбираются чекбоксами выше; сюда — только старые URL и сырой JSON характеристик.",
+                "description": "Подразделы выбираются чекбоксами выше; сюда - только старые URL и сырой JSON характеристик.",
             },
         ),
         (
@@ -241,7 +242,7 @@ class PlantAdmin(admin.ModelAdmin):
                 '<img src="/static/{}" style="width:52px;height:52px;border-radius:10px;object-fit:cover" alt="" />',
                 p,
             )
-        return "—"
+        return "-"
 
     @admin.display(description="Наличие", boolean=True)
     def has_stock_display(self, obj: Plant) -> bool:
@@ -278,7 +279,7 @@ class CareCalendarPlantGalleryImageInline(admin.TabularInline):
                 )
         except ValueError:
             pass
-        return "—"
+        return "-"
 
 
 class CareCalendarSeasonRecommendationInline(admin.TabularInline):
@@ -296,7 +297,7 @@ class CareCalendarPeriodInline(admin.StackedInline):
             None,
             {
                 "fields": ("sort_order", "date_label", "theme"),
-                "description": "Подпись даты — как на сайте в шкале сезона. Порядок задаёт последовательность карточек.",
+                "description": "Подпись даты - как на сайте в шкале сезона. Порядок задаёт последовательность карточек.",
             },
         ),
         (
@@ -317,14 +318,14 @@ class CareCalendarPeriodInline(admin.StackedInline):
                     "period_image_5",
                     "period_image_6",
                 ),
-                "description": "Загрузка файлов с компьютера (до 6 штук). На странице срока они показываются первыми, затем — картинки по ссылкам из JSON ниже.",
+                "description": "Загрузка файлов с компьютера (до 6 штук). На странице срока они показываются первыми, затем - картинки по ссылкам из JSON ниже.",
             },
         ),
         (
             "Медиа и списки (JSON)",
             {
                 "fields": ("images_json", "products_json", "videos_json"),
-                "description": "Дополнительные URL картинок; videos_json — массив объектов {\"label\":\"…\",\"url\":\"https://…\"}.",
+                "description": "Дополнительные URL картинок; videos_json - массив объектов {\"label\":\"…\",\"url\":\"https://…\"}.",
             },
         ),
     )
@@ -424,7 +425,7 @@ class CareCalendarPlantAdmin(admin.ModelAdmin):
                     "is_published",
                     "show_paid_service_cta",
                 ),
-                "description": "Основная категория — часть URL. Дополнительные категории: растение покажется в нескольких разделах. "
+                "description": "Основная категория - часть URL. Дополнительные категории: растение покажется в нескольких разделах. "
                 "После сохранения основная категория автоматически добавляется в «Все категории».",
             },
         ),
@@ -432,7 +433,7 @@ class CareCalendarPlantAdmin(admin.ModelAdmin):
             "Контент",
             {
                 "fields": ("description", "varieties_json", "yonote_id"),
-                "description": "Сорта — JSON-массив строк, например [\"Сорт А\", \"Сорт Б\"].",
+                "description": "Сорта - JSON-массив строк, например [\"Сорт А\", \"Сорт Б\"].",
             },
         ),
         (
@@ -520,7 +521,7 @@ class PreorderPlantAdmin(admin.ModelAdmin):
             return format_html(
                 '<img src="{}" style="height:{}px;border-radius:8px;object-fit:cover" alt="" />', url, h
             )
-        return "—"
+        return "-"
 
     @admin.display(description="Фото")
     def list_photo(self, obj: PreorderPlant) -> str:
@@ -531,6 +532,55 @@ class PreorderPlantAdmin(admin.ModelAdmin):
         return self._thumb(obj, 160)
 
 
-admin.site.site_header = "Сибирские газоны — администрирование"
+@admin.register(Article)
+class ArticleAdmin(admin.ModelAdmin):
+    """
+    Статьи /stati/. Обычный путь - загрузка из контент-фабрики через API
+    (`POST /api/articles/`), здесь их правят руками, смотрят предпросмотр
+    черновиков и переключают статус.
+    """
+
+    list_display = (
+        "title",
+        "slug",
+        "status",
+        "date_published",
+        "visible_badge",
+        "preview_link",
+        "updated_at",
+    )
+    list_filter = ("status", "date_published", "source")
+    search_fields = ("title", "slug", "excerpt")
+    ordering = ("-date_published", "-pk")
+    readonly_fields = ("created_at", "updated_at", "preview_link")
+    fieldsets = (
+        ("Публикация", {
+            "fields": ("status", "date_published", "date_modified", "preview_link", "source"),
+            "description": "«Запланирована» - статья появится на сайте сама в дату публикации.",
+        }),
+        ("Текст", {"fields": ("slug", "title", "excerpt", "lead", "sections", "faq")}),
+        ("Обложка", {"fields": ("image_upload", "image_path", "image_alt")}),
+        ("SEO", {"fields": ("seo_title", "meta_description")}),
+        ("Служебное", {"fields": ("created_at", "updated_at"), "classes": ("collapse",)}),
+    )
+
+    @admin.display(description="На сайте")
+    def visible_badge(self, obj: Article) -> str:
+        return "Да" if obj.is_visible() else "Нет"
+
+    @admin.display(description="Предпросмотр")
+    def preview_link(self, obj: Article) -> str:
+        if not obj.pk or not obj.slug:
+            return "-"
+        from pages.articles import preview_path
+
+        if obj.is_visible():
+            return format_html('<a href="/stati/{}/" target="_blank">Открыть статью</a>', obj.slug)
+        return format_html(
+            '<a href="{}" target="_blank">Открыть черновик</a>', preview_path(obj.slug)
+        )
+
+
+admin.site.site_header = "Сибирские газоны - администрирование"
 admin.site.site_title = "Каталог и контент"
 admin.site.index_title = "Панель управления"

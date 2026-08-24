@@ -29,10 +29,10 @@
           <p class="mt-5 text-lg text-slate-700 max-w-3xl">{{ article.lead }}</p>
         {% endif %}
 
-        {% if article.image %}
+        {% if article.image_url or article.image %}
           <figure class="mt-7 max-w-3xl overflow-hidden rounded-3xl border border-black/5 bg-slate-100">
             <img
-              src="{% static article.image %}"
+              src="{% if article.image_url %}{{ article.image_url }}{% else %}{% static article.image %}{% endif %}"
               alt="{{ article.image_alt|default:article.title }}"
               class="w-full object-cover"
               loading="lazy"

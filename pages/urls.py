@@ -1,10 +1,14 @@
 from django.urls import path, re_path
 from django.views.generic import RedirectView
 
-from . import loyalty, promo, seo, views
+from . import articles_api, loyalty, promo, seo, views
 
 urlpatterns = [
     path("api/loyalty/card/", loyalty.loyalty_card, name="loyalty_card"),
+    # Публикация статей из контент-фабрики (siberian-cursor), авторизация X-Api-Token.
+    path("api/articles/", articles_api.articles_upsert, name="articles_upsert"),
+    path("api/articles/list/", articles_api.articles_list, name="articles_list"),
+    path("api/articles/<slug:slug>/image/", articles_api.articles_image, name="articles_image"),
     path("api/promo/sale50/", promo.promo_sale50, name="promo_sale50"),
     # SEO/GEO-инфраструктура: всё через Django, не через docs/ (конвенция проекта).
     path("robots.txt", seo.robots_txt, name="robots_txt"),

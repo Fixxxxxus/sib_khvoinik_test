@@ -212,5 +212,9 @@ CATALOG_CACHE_TTL = int(os.environ.get("CATALOG_CACHE_TTL", "120") or "120")
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# Токен API публикации статей из контент-фабрики (siberian-cursor).
+# Пустое значение = эндпоинты /api/articles/* выключены (отдают 503).
+ARTICLE_API_TOKEN = os.environ.get('ARTICLE_API_TOKEN', '').strip()
+
 # JavaScript API Яндекс.Карт (страница «Контакты»). Задайте в окружении: YANDEX_MAPS_API_KEY
 YANDEX_MAPS_API_KEY = os.environ.get('YANDEX_MAPS_API_KEY', '').strip()

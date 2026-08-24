@@ -138,7 +138,9 @@ def article_jsonld(article: dict[str, Any], canonical_path: str) -> str:
         data["datePublished"] = article["date_published"]
     if article.get("date_modified"):
         data["dateModified"] = article["date_modified"]
-    if article.get("image"):
+    if article.get("image_url"):
+        data["image"] = absolute(article["image_url"])
+    elif article.get("image"):
         data["image"] = absolute(f"/static/{article['image']}")
     return jsonld(data)
 
@@ -271,7 +273,14 @@ def sitemap_xml(request):
         pass
 
     # Статьи: приоритет 0.6, lastmod из реальной даты (dateModified/datePublished).
-    for art in STATI_PAGE.get("articles", []):
+    # Сначала статьи из БД (загружены через API), затем статика из data.py.
+    from .articles import merged_articles
+
+    try:
+        article_items = merged_articles()
+    except Exception:
+        article_items = list(STATI_PAGE.get("articles", []))
+    for art in article_items:
         if art.get("slug"):
             lastmod = art.get("date_modified") or art.get("date_published")
             entries.append((f"/stati/{art['slug']}/", 0.6, "monthly", lastmod or None))
