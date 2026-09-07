@@ -17227,14 +17227,14 @@ OZELENENIE_SEASON_END_PAGE = {
     # Фото объектов от маркетолога (07.09.2026).
     "gallery": [
         {
-            "image": "media/images/landing/ozelenenie-season-end/gallery-fence-lawn.webp",
+            "image": "media/images/landing/ozelenenie-season-end/gallery-pines-lawn.webp",
             "caption": "Ухоженный газон",
-            "alt": "Свежеуложенный рулонный газон вдоль забора на участке частного дома",
+            "alt": "Свежеуложенный рулонный газон под двумя соснами во дворе",
         },
         {
-            "image": "media/images/landing/ozelenenie-season-end/gallery-pines-lawn.webp",
+            "image": "media/images/landing/ozelenenie-season-end/gallery-house-plantings.webp",
             "caption": "Посадки и композиции",
-            "alt": "Газон под соснами во дворе с кирпичным забором",
+            "alt": "Деревянный дом с газоном, дорожками и цветущими посадками у крыльца",
         },
         {
             "image": "media/images/landing/ozelenenie-season-end/gallery-paved-yard.webp",
