@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import re
 from typing import Any
 
 from django import template
@@ -65,3 +66,28 @@ def plant_image_url(plant: dict[str, Any] | None) -> str:
 def plant_image_thumb_url(plant: dict[str, Any] | None) -> str:
     """Миниатюра для списка: thumb.webp -> webp -> оригинал; MEDIA как есть."""
     return _resolve(plant, thumb=True)
+
+
+@register.filter
+def selection_description_hint(value: Any) -> str:
+    """Короткая подсказка из описания растения для кнопки «В подбор».
+
+    В data-selection-description нужно не всё описание, а только фрагмент, по
+    которому app.js (selectionSuffixFromDescription) уточняет неоднозначное имя
+    сорта: скобки с русским текстом или кавычки-ёлочки. Полные описания на
+    странице категории давали десятки килобайт HTML, которых не видит ни
+    человек, ни поисковик.
+    """
+    text = re.sub(r"\s+", " ", str(value or "")).strip()
+    if not text:
+        return ""
+    match = re.search(r"\([А-ЯЁа-яё][^)]{1,48}\)", text)
+    if match:
+        return match.group(0)
+    match = re.search(r"«[^»]{2,48}»", text)
+    if match:
+        return match.group(0)
+    match = re.search(r"[Вв]ильям\s+[Шш]експир", text)
+    if match:
+        return match.group(0)
+    return ""

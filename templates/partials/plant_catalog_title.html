@@ -11,8 +11,8 @@
     <div class="text-sm font-semibold leading-snug text-slate-900">{{ item.title_ru }}</div>
     <div class="mt-0.5 text-xs font-normal leading-snug text-slate-600">{{ item.title_latin }}</div>
   {% else %}
-    <div class="font-semibold leading-snug text-slate-900 line-clamp-3">{{ item.title_ru }}</div>
-    <div class="mt-0.5 text-xs font-normal leading-snug text-slate-600 line-clamp-2">{{ item.title_latin }}</div>
+    <div class="pc-t">{{ item.title_ru }}</div>
+    <div class="pc-lat">{{ item.title_latin }}</div>
   {% endif %}
 {% else %}
   {% if size == "lg" %}
@@ -24,6 +24,6 @@
   {% elif size == "sm" %}
     <div class="text-sm font-semibold leading-snug text-slate-900">{{ item.catalog_display_name|default:item.name }}</div>
   {% else %}
-    <div class="font-semibold leading-snug text-slate-900 line-clamp-3">{{ item.catalog_display_name|default:item.name }}</div>
+    <div class="pc-t">{{ item.catalog_display_name|default:item.name }}</div>
   {% endif %}
 {% endif %}

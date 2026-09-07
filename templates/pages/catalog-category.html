@@ -41,9 +41,9 @@
       {% if plants %}
       <div class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
         {% for p in plants %}
-          <div class="flex h-full min-h-0 flex-col rounded-3xl border border-black/5 bg-white p-6 hover:shadow-glow transition" data-animate="fadeInUp">
+          <div class="pc" data-animate="fadeInUp">
             <a href="{% url 'catalog_item' slug=p.slug %}" class="shrink-0">
-              <div class="aspect-[4/3] rounded-2xl overflow-hidden bg-slate-50" data-img-skeleton>
+              <div class="pc-img" data-img-skeleton>
                 {% if p|plant_image_thumb_url %}
                   <img src="{{ p|plant_image_thumb_url }}" alt="{{ p.image_alt }}" class="h-full w-full object-contain" loading="lazy" decoding="async" />
                 {% endif %}
@@ -55,29 +55,29 @@
                 <span class="inline-flex items-center rounded-full bg-accent/25 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-brand">Новинка</span>
               </div>
             {% endif %}
-            <div class="mt-2 shrink-0 text-xs text-slate-500">{% include 'partials/plant_card_category.html' with category_slug=p.category_slug %}</div>
+            <div class="mt-2 shrink-0 pc-cap">{% include 'partials/plant_card_category.html' with category_slug=p.category_slug %}</div>
 
             <div class="mt-auto flex min-h-0 flex-col pt-4">
               <div>
               {% if p.catalog_price_line %}
-                <div class="text-xs text-slate-500">Цена</div>
-                <div class="mt-1 text-sm font-semibold text-brand leading-snug">{{ p.catalog_price_line }}</div>
+                <div class="pc-cap">Цена</div>
+                <div class="pc-price leading-snug">{{ p.catalog_price_line }}</div>
                 {% if p.catalog_container_line %}
-                <div class="mt-1 flex flex-wrap items-center gap-x-1 text-xs text-slate-600">
+                <div class="pc-tara">
                   <span>Тара: <span class="font-medium text-slate-800">{{ p.catalog_container_line }}</span></span>
                   <button
                     type="button"
-                    class="inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-brand/85 hover:bg-brand/10 hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/30"
+                    class="pc-i"
                     data-packaging-formats-open
                     aria-label="Справка по форматам тары"
                   >
-                    <span class="select-none text-[11px] font-semibold leading-none" aria-hidden="true">ⓘ</span>
+                    <span class="pc-ig" aria-hidden="true">ⓘ</span>
                   </button>
                 </div>
                 {% endif %}
               {% elif p.catalog_teaser %}
-                <div class="text-xs text-slate-500">Цена</div>
-                <div class="mt-1 text-sm font-semibold text-brand">{{ p.catalog_teaser }}</div>
+                <div class="pc-cap">Цена</div>
+                <div class="pc-price">{{ p.catalog_teaser }}</div>
               {% elif p.formats %}
                 <div class="text-xs text-slate-500">Форматы и розничные цены</div>
                 <div class="mt-2 space-y-1 text-sm text-slate-600">
@@ -91,7 +91,7 @@
               </div>
 
             <div class="mt-5 flex flex-col gap-2 sm:flex-row">
-              <a href="{% url 'catalog_item' slug=p.slug %}" data-catalog-more class="flex-1 inline-flex items-center justify-center rounded-xl border border-black/10 px-4 py-2.5 text-sm font-semibold hover:bg-black/5 transition">
+              <a href="{% url 'catalog_item' slug=p.slug %}" data-catalog-more class="pc-more">
                 Подробнее
               </a>
               <button
@@ -100,12 +100,12 @@
                 data-selection-id="{{ p.slug }}"
                 data-selection-name="{{ p.catalog_display_name|default:p.name|escape }}"
                 data-selection-category="{% include 'partials/plant_card_category.html' with category_slug=p.category_slug %}"
-                data-selection-description="{{ p.description|default:''|escape }}"
-                data-selection-price="{{ p.catalog_price_line|default:p.catalog_teaser|default:''|escape }}"
+                {% with dhint=p.description|selection_description_hint %}{% if dhint %}data-selection-description="{{ dhint|escape }}"{% endif %}{% endwith %}
+                {% with dprice=p.catalog_price_line|default:p.catalog_teaser %}{% if dprice %}data-selection-price="{{ dprice|escape }}"{% endif %}{% endwith %}
                 data-selection-image="{{ p|plant_image_thumb_url }}"
                 data-selection-url="{% url 'catalog_item' slug=p.slug %}"
                 {% if p.selection_qty_step %}data-selection-qty-step="{{ p.selection_qty_step }}"{% endif %}
-                class="relative overflow-visible flex-1 inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-brand to-brand2 px-4 py-2.5 text-sm text-white font-semibold shadow-glow hover:brightness-105 transition"
+                class="pc-add"
               >
                 <span data-selection-label class="relative z-[1] inline-block">В подбор</span>
               </button>

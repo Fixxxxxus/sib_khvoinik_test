@@ -1,4 +1,14 @@
 {% load static %}
+{% comment %}
+  page_modals - белый список ключей модалок для конкретной страницы.
+  Пусто (переменной нет) - отдаём все шаблоны, как и раньше: так работают
+  все страницы, которые ничего про page_modals не знают. Если страница
+  передала список, в HTML попадают только перечисленные <template>.
+  Нужно это тяжёлым страницам вроде категории каталога: там 44 шаблона
+  модалок весят под 100 КБ, а открывается из них одна.
+  Ключи берём из data-open-modal на самой странице плюс success-экраны,
+  которые подставляет app.js после отправки формы.
+{% endcomment %}
 <div id="modalOverlay" class="fixed inset-0 bg-black/40 z-[60] hidden"></div>
 
 <!-- Generic modal wrapper -->
@@ -22,7 +32,7 @@
 </div>
 
 <!-- UI-only content templates -->
-<template id="modal-template-mini_brief">
+{% if not page_modals or "mini_brief" in page_modals %}<template id="modal-template-mini_brief">
   <form class="space-y-4" data-ui-form data-form-tag="B2C/mini-brief" data-modal-success="true">
     <input type="hidden" name="formTag" value="B2C/mini-brief" />
     <div class="grid grid-cols-1 gap-3">
@@ -48,8 +58,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-home_private_choice">
+{% if not page_modals or "home_private_choice" in page_modals %}<template id="modal-template-home_private_choice">
   <div class="space-y-3">
     <button
       type="button"
@@ -71,8 +82,9 @@
     </button>
   </div>
 </template>
+{% endif %}
 
-<template id="modal-template-home_b2b_choice">
+{% if not page_modals or "home_b2b_choice" in page_modals %}<template id="modal-template-home_b2b_choice">
   <div class="space-y-3">
     <button
       type="button"
@@ -94,8 +106,9 @@
     </button>
   </div>
 </template>
+{% endif %}
 
-<template id="modal-template-home_b2b_project">
+{% if not page_modals or "home_b2b_project" in page_modals %}<template id="modal-template-home_b2b_project">
   <form class="space-y-4" data-ui-form data-form-tag="B2B/home-project-calc">
     <input type="hidden" name="formTag" value="B2B/home-project-calc" />
     <div class="grid grid-cols-1 gap-3">
@@ -129,8 +142,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-contact_zaboty">
+{% if not page_modals or "contact_zaboty" in page_modals %}<template id="modal-template-contact_zaboty">
   <form class="space-y-5" data-ui-form data-form-tag="B2C/sluzhba-zaboty" data-consent-gated="1">
     <input type="hidden" name="formTag" value="B2C/sluzhba-zaboty" />
     <div class="grid grid-cols-1 gap-3">
@@ -155,8 +169,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-contact_zaboty_calendar">
+{% if not page_modals or "contact_zaboty_calendar" in page_modals %}<template id="modal-template-contact_zaboty_calendar">
   <form class="space-y-5" data-ui-form data-form-tag="B2C/sluzhba-zaboty-calendar" data-consent-gated="1">
     <input type="hidden" name="formTag" value="B2C/sluzhba-zaboty-calendar" />
     <div class="grid grid-cols-1 gap-3">
@@ -251,8 +266,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-zaboty_expert_visit">
+{% if not page_modals or "zaboty_expert_visit" in page_modals %}<template id="modal-template-zaboty_expert_visit">
   <form class="space-y-5" data-ui-form data-form-tag="B2C/zaboty-expert-vyezd" data-consent-gated="1">
     <input type="hidden" name="formTag" value="B2C/zaboty-expert-vyezd" />
     <div class="flex items-start gap-3 rounded-2xl border border-amber-200/90 bg-gradient-to-br from-amber-50 via-white to-orange-50/50 px-4 py-3.5 text-sm text-amber-950 shadow-sm" role="note">
@@ -284,8 +300,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-contact_consult">
+{% if not page_modals or "contact_consult" in page_modals %}<template id="modal-template-contact_consult">
   <form class="space-y-4" data-ui-form data-form-tag="B2C/consultation">
     <input type="hidden" name="formTag" value="B2C/consultation" />
     <div class="grid grid-cols-1 gap-3">
@@ -307,8 +324,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-catalog_actual_stock">
+{% if not page_modals or "catalog_actual_stock" in page_modals %}<template id="modal-template-catalog_actual_stock">
   <form class="space-y-4" data-ui-form data-form-tag="Catalog/assortment-interest">
     <input type="hidden" name="formTag" value="Catalog/assortment-interest" />
     <p class="text-sm leading-relaxed text-slate-600">Отметьте интересующие категории — пришлём актуальную информацию по ассортименту.</p>
@@ -350,8 +368,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-catalog_electronic_catalog">
+{% if not page_modals or "catalog_electronic_catalog" in page_modals %}<template id="modal-template-catalog_electronic_catalog">
   <form class="space-y-4" data-ui-form data-form-tag="Catalog/electronic-catalog">
     <input type="hidden" name="formTag" value="Catalog/electronic-catalog" />
     <div class="grid grid-cols-1 gap-3">
@@ -369,8 +388,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-sadovye_novinki_notify">
+{% if not page_modals or "sadovye_novinki_notify" in page_modals %}<template id="modal-template-sadovye_novinki_notify">
   <form class="space-y-5" data-ui-form data-form-tag="B2C/sadovye-novinki-notify">
     <input type="hidden" name="formTag" value="B2C/sadovye-novinki-notify" />
     <div class="grid grid-cols-1 gap-3">
@@ -399,8 +419,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-b2b_cpo">
+{% if not page_modals or "b2b_cpo" in page_modals %}<template id="modal-template-b2b_cpo">
   <form class="space-y-4" data-ui-form data-form-tag="B2B/contract-request">
     <input type="hidden" name="formTag" value="B2B/contract-request" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -455,8 +476,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-b2b_price_stock">
+{% if not page_modals or "b2b_price_stock" in page_modals %}<template id="modal-template-b2b_price_stock">
   <form class="space-y-4" data-ui-form data-form-tag="B2B/price-stock">
     <input type="hidden" name="formTag" value="B2B/price-stock" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -503,8 +525,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-b2b_project_calc">
+{% if not page_modals or "b2b_project_calc" in page_modals %}<template id="modal-template-b2b_project_calc">
   <form class="space-y-4" data-ui-form data-form-tag="B2B/project-calc">
     <input type="hidden" name="formTag" value="B2B/project-calc" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -538,8 +561,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-b2b_care_reglement">
+{% if not page_modals or "b2b_care_reglement" in page_modals %}<template id="modal-template-b2b_care_reglement">
   <form class="space-y-4" data-ui-form data-form-tag="B2B/reglement-uhoda">
     <input type="hidden" name="formTag" value="B2B/reglement-uhoda" />
     <div class="grid grid-cols-1 gap-3">
@@ -565,8 +589,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-b2b_payment_question">
+{% if not page_modals or "b2b_payment_question" in page_modals %}<template id="modal-template-b2b_payment_question">
   <form class="space-y-4" data-ui-form data-form-tag="B2B/payment-question">
     <input type="hidden" name="formTag" value="B2B/payment-question" />
     <p class="text-sm text-slate-600">
@@ -591,8 +616,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-gazon_price_list">
+{% if not page_modals or "gazon_price_list" in page_modals %}<template id="modal-template-gazon_price_list">
   <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-price-list">
     <input type="hidden" name="formTag" value="Gas/gazon-price-list" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -621,8 +647,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-gazon_price_download">
+{% if not page_modals or "gazon_price_download" in page_modals %}<template id="modal-template-gazon_price_download">
   <div class="mb-4 flex items-start gap-3 rounded-2xl border border-brand/20 bg-brand/5 p-4">
     <i data-lucide="download" class="mt-0.5 h-5 w-5 shrink-0 text-brand"></i>
     <p class="text-sm leading-snug text-slate-700">
@@ -648,8 +675,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-gazon_cpo">
+{% if not page_modals or "gazon_cpo" in page_modals %}<template id="modal-template-gazon_cpo">
   <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-cpo" data-ui-action="none">
     <input type="hidden" name="formTag" value="Gas/gazon-cpo" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -678,8 +706,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-gazon_checklist">
+{% if not page_modals or "gazon_checklist" in page_modals %}<template id="modal-template-gazon_checklist">
   <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-checklist" data-ui-action="download_gazon_checklist">
     <input type="hidden" name="formTag" value="Gas/gazon-checklist" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -697,8 +726,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-gazon_open_day">
+{% if not page_modals or "gazon_open_day" in page_modals %}<template id="modal-template-gazon_open_day">
   <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-open-day">
     <input type="hidden" name="formTag" value="Gas/gazon-open-day" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -724,8 +754,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-home_gazon_excursion">
+{% if not page_modals or "home_gazon_excursion" in page_modals %}<template id="modal-template-home_gazon_excursion">
   <form class="space-y-4" data-ui-form data-form-tag="Gas/home-gazon-excursion">
     <input type="hidden" name="formTag" value="Gas/home-gazon-excursion" />
     <div class="rounded-2xl border border-brand/20 bg-brand/5 px-4 py-3 text-sm text-slate-700">
@@ -758,8 +789,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-gazon_logistics">
+{% if not page_modals or "gazon_logistics" in page_modals %}<template id="modal-template-gazon_logistics">
   <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-logistics">
     <input type="hidden" name="formTag" value="Gas/gazon-logistics" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -789,8 +821,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-gazon_presentation">
+{% if not page_modals or "gazon_presentation" in page_modals %}<template id="modal-template-gazon_presentation">
   <form class="space-y-4" data-ui-form data-form-tag="Gas/gazon-presentation">
     <input type="hidden" name="formTag" value="Gas/gazon-presentation" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -808,8 +841,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-gazon_calc">
+{% if not page_modals or "gazon_calc" in page_modals %}<template id="modal-template-gazon_calc">
   <form id="gazonCalculatorModal" class="space-y-4" data-ui-form data-form-tag="Gas/gazon-calc" data-ui-action="none" data-consent-gated="1">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label class="text-sm font-medium text-slate-700">
@@ -866,8 +900,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-home_private_buy">
+{% if not page_modals or "home_private_buy" in page_modals %}<template id="modal-template-home_private_buy">
   <form class="space-y-4" data-ui-form data-form-tag="B2C/home-private-buy" data-consent-gated="1">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label class="text-sm font-medium text-slate-700">
@@ -930,8 +965,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-home_b2b_buy">
+{% if not page_modals or "home_b2b_buy" in page_modals %}<template id="modal-template-home_b2b_buy">
   <form class="space-y-4" data-ui-form data-form-tag="B2B/home-b2b-buy" data-consent-gated="1">
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
       <label class="text-sm font-medium text-slate-700">
@@ -995,9 +1031,10 @@
     </button>
   </form>
 </template>
+{% endif %}
 
 <!-- ozelenenie-b2c templates -->
-<template id="modal-template-ozelenenie-ready_project">
+{% if not page_modals or "ozelenenie-ready_project" in page_modals %}<template id="modal-template-ozelenenie-ready_project">
   <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-ready-project">
     <input type="hidden" name="formTag" value="B2C/ozelenenie-ready-project" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1030,8 +1067,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-ozelenenie-mini_project">
+{% if not page_modals or "ozelenenie-mini_project" in page_modals %}<template id="modal-template-ozelenenie-mini_project">
   <form class="space-y-4" data-ui-form data-form-tag="B2C/mini-project">
     <input type="hidden" name="formTag" value="B2C/mini-project" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1078,8 +1116,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-ozelenenie-audit_plan">
+{% if not page_modals or "ozelenenie-audit_plan" in page_modals %}<template id="modal-template-ozelenenie-audit_plan">
   <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-audit-plan">
     <input type="hidden" name="formTag" value="B2C/ozelenenie-audit-plan" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1109,8 +1148,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-ozelenenie-assess_upload">
+{% if not page_modals or "ozelenenie-assess_upload" in page_modals %}<template id="modal-template-ozelenenie-assess_upload">
   <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-assess-upload">
     <input type="hidden" name="formTag" value="B2C/ozelenenie-assess-upload" />
     <label class="text-sm font-medium text-slate-700">
@@ -1140,8 +1180,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-ozelenenie-send_project">
+{% if not page_modals or "ozelenenie-send_project" in page_modals %}<template id="modal-template-ozelenenie-send_project">
   <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-send-project">
     <input type="hidden" name="formTag" value="B2C/ozelenenie-send-project" />
     <label class="text-sm font-medium text-slate-700">
@@ -1171,8 +1212,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-ozelenenie-materials_scheme">
+{% if not page_modals or "ozelenenie-materials_scheme" in page_modals %}<template id="modal-template-ozelenenie-materials_scheme">
   <form class="space-y-4" data-ui-form data-form-tag="B2C/ozelenenie-materials-scheme">
     <input type="hidden" name="formTag" value="B2C/ozelenenie-materials-scheme" />
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -1202,8 +1244,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-pitomnik_presentation">
+{% if not page_modals or "pitomnik_presentation" in page_modals %}<template id="modal-template-pitomnik_presentation">
   <form class="space-y-4" data-ui-form data-form-tag="B2C/pitomnik-presentation">
     <input type="hidden" name="formTag" value="B2C/pitomnik-presentation" />
     <p class="text-sm text-slate-600">
@@ -1232,8 +1275,9 @@
     </button>
   </form>
 </template>
+{% endif %}
 
-<template id="modal-template-pitomnik_open_day_signup">
+{% if not page_modals or "pitomnik_open_day_signup" in page_modals %}<template id="modal-template-pitomnik_open_day_signup">
   <form class="space-y-5" data-ui-form data-form-tag="B2C/pitomnik-open-day-signup" data-consent-gated="1">
     <input type="hidden" name="formTag" value="B2C/pitomnik-open-day-signup" />
     <label class="text-sm font-medium text-slate-700">
@@ -1276,9 +1320,10 @@
     </button>
   </form>
 </template>
+{% endif %}
 
 <!-- Садовые центры: заявка на цифровую карту -->
-<template id="modal-template-sadovye_digital_card">
+{% if not page_modals or "sadovye_digital_card" in page_modals %}<template id="modal-template-sadovye_digital_card">
   <form class="space-y-4" data-ui-form data-form-tag="SadovyeCentr/digital-card" data-consent-gated="1">
     <p class="text-sm leading-snug text-slate-600">
       Оставьте ФИО и номер телефона. По нему мы узнаем вас на кассе садового центра и применим скидку.
@@ -1310,9 +1355,10 @@
     </button>
   </form>
 </template>
+{% endif %}
 
 <!-- Садовые центры: новинки (тексты можно править под сезон) -->
-<template id="modal-template-sadovye_novinka_1">
+{% if not page_modals or "sadovye_novinka_1" in page_modals %}<template id="modal-template-sadovye_novinka_1">
   <div class="space-y-3 text-sm leading-relaxed text-slate-600">
     <p>
       Лантана камара <strong>Gem Compact Rose Quartz</strong> (кашпо 4 л) - современный компактный сорт для
@@ -1329,8 +1375,9 @@
     </p>
   </div>
 </template>
+{% endif %}
 
-<template id="modal-template-sadovye_novinka_2">
+{% if not page_modals or "sadovye_novinka_2" in page_modals %}<template id="modal-template-sadovye_novinka_2">
   <div class="space-y-3 text-sm leading-relaxed text-slate-600">
     <p>
       <strong>Штокроза "Spring Celebrities Crimson"</strong> (Alcea rosea, C2/3) - яркая новинка 2026 года для
@@ -1347,8 +1394,9 @@
     </p>
   </div>
 </template>
+{% endif %}
 
-<template id="modal-template-sadovye_novinka_3">
+{% if not page_modals or "sadovye_novinka_3" in page_modals %}<template id="modal-template-sadovye_novinka_3">
   <div class="space-y-3 text-sm leading-relaxed text-slate-600">
     <p>
       <strong>Платикодон крупноцветковый "Mariesii"</strong> (Platycodon grandiflorus, C2/3) - новинка 2026 и
@@ -1365,8 +1413,9 @@
     </p>
   </div>
 </template>
+{% endif %}
 
-<template id="modal-template-sadovye_novinka_4">
+{% if not page_modals or "sadovye_novinka_4" in page_modals %}<template id="modal-template-sadovye_novinka_4">
   <div class="space-y-4 text-sm leading-relaxed text-slate-600">
     <p>
       <strong>Гортензия метельчатая «Metallica»</strong> (Hydrangea paniculata, h 40–60 см, C2/3) — компактный густой
@@ -1401,9 +1450,10 @@
     </p>
   </div>
 </template>
+{% endif %}
 
 <!-- Success state -->
-<template id="modal-template-success">
+{% if not page_modals or "success" in page_modals %}<template id="modal-template-success">
   <div class="space-y-3">
     <div class="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-brand/5 px-4 py-3 text-sm">
       <i data-lucide="check-circle-2" class="h-5 w-5 text-brand"></i>
@@ -1417,8 +1467,9 @@
     </button>
   </div>
 </template>
+{% endif %}
 
-<template id="modal-template-success-predzakaz">
+{% if not page_modals or "success-predzakaz" in page_modals %}<template id="modal-template-success-predzakaz">
   <div class="space-y-3">
     <div class="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-brand/5 px-4 py-3 text-sm">
       <i data-lucide="check-circle-2" class="h-5 w-5 text-brand"></i>
@@ -1432,8 +1483,9 @@
     </button>
   </div>
 </template>
+{% endif %}
 
-<template id="modal-template-success-care">
+{% if not page_modals or "success-care" in page_modals %}<template id="modal-template-success-care">
   <div class="space-y-4">
     <div class="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-brand/5 px-4 py-3 text-sm">
       <i data-lucide="check-circle-2" class="h-5 w-5 text-brand"></i>
@@ -1489,8 +1541,9 @@
     </button>
   </div>
 </template>
+{% endif %}
 
-<template id="modal-template-success-digital-card">
+{% if not page_modals or "success-digital-card" in page_modals %}<template id="modal-template-success-digital-card">
   <div class="space-y-4">
     <div class="inline-flex items-center gap-2 rounded-2xl border border-black/10 bg-brand/5 px-4 py-3 text-sm">
       <i data-lucide="check-circle-2" class="h-5 w-5 text-brand"></i>
@@ -1529,4 +1582,5 @@
     </button>
   </div>
 </template>
+{% endif %}
 
