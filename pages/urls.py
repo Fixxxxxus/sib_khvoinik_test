@@ -33,12 +33,15 @@ urlpatterns = [
         r"^services/.*$",
         RedirectView.as_view(url="/ozelenenie-b2c/", permanent=True),
     ),
+    # Короткий /ozelenenie/ отдавал 404, хотя по нему есть спрос и внешние ссылки.
+    path("ozelenenie/", RedirectView.as_view(url="/ozelenenie-b2c/", permanent=True)),
     re_path(r"^advice/.*$", RedirectView.as_view(url="/stati/", permanent=True)),
     # 301 со старых URL каталога /product/<категория>/<товар>/ на актуальные /catalog/.
     re_path(r"^product/", views.legacy_product_redirect),
     path("", views.home, name="home"),
     path("gazon/", views.gazon, name="gazon"),
     path("prais-rulonnyy-gazon/", views.roll_lawn_price, name="roll_lawn_price"),
+    path("ukladka-rulonnogo-gazona/", views.ukladka, name="ukladka"),
     path("ozelenenie-b2c/", views.ozelenenie_b2c, name="ozelenenie_b2c"),
     path("b2b/", views.b2b, name="b2b"),
     path("pitomnik/", views.pitomnik, name="pitomnik"),

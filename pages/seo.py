@@ -119,6 +119,80 @@ def product_jsonld(plant: dict[str, Any], canonical_path: str) -> str | None:
     return jsonld(data)
 
 
+def roll_lawn_offer_jsonld(
+    price_rows: list[dict[str, Any]],
+    canonical_path: str,
+    name: str = "Рулонный газон (мятлик луговой)",
+) -> str | None:
+    """Product + AggregateOffer для прайса рулонного газона.
+
+    Цены берём из живой таблицы прайса (ROLL_LAWN_PRICE_PAGE['price_rows']),
+    чтобы разметка не разъезжалась с тем, что видит человек на странице.
+    """
+    prices = sorted({int(p) for p in (price_number(r.get("price")) for r in price_rows) if p})
+    if not prices:
+        return None
+    return jsonld({
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": name,
+        "brand": {"@type": "Brand", "name": "Сибирские газоны"},
+        "url": absolute(canonical_path),
+        "offers": {
+            "@type": "AggregateOffer",
+            "priceCurrency": "RUB",
+            "lowPrice": str(prices[0]),
+            "highPrice": str(prices[-1]),
+            "offerCount": str(len(price_rows)),
+            "unitText": "м²",
+            "availability": "https://schema.org/InStock",
+            "areaServed": "Новосибирск и Новосибирская область",
+            "url": absolute(canonical_path),
+        },
+    })
+
+
+def service_jsonld(
+    name: str,
+    description: str,
+    canonical_path: str,
+    service_type: str = "",
+    area_served: str = "Новосибирск и Новосибирская область",
+    price_from: int | None = None,
+    price_unit: str = "м²",
+) -> str:
+    """Service для страницы услуги (укладка газона и т. п.).
+
+    price_from = None - цена ещё не утверждена, блок offers не выводим:
+    пустая или выдуманная цена в разметке хуже её отсутствия.
+    """
+    data: dict[str, Any] = {
+        "@context": "https://schema.org",
+        "@type": "Service",
+        "name": name,
+        "description": description,
+        "serviceType": service_type or name,
+        "url": absolute(canonical_path),
+        "areaServed": area_served,
+        "provider": {"@id": f"{SITE_ORIGIN}/#organization"},
+    }
+    if price_from:
+        data["offers"] = {
+            "@type": "Offer",
+            "priceCurrency": "RUB",
+            "price": str(price_from),
+            "availability": "https://schema.org/InStock",
+            "url": absolute(canonical_path),
+            "priceSpecification": {
+                "@type": "UnitPriceSpecification",
+                "priceCurrency": "RUB",
+                "price": str(price_from),
+                "unitText": price_unit,
+            },
+        }
+    return jsonld(data)
+
+
 def article_jsonld(article: dict[str, Any], canonical_path: str) -> str:
     data: dict[str, Any] = {
         "@context": "https://schema.org",
@@ -215,6 +289,7 @@ _STATIC_SITEMAP_META: dict[str, tuple[float, str]] = {
     "home": (1.0, "weekly"),
     "gazon": (0.9, "weekly"),
     "roll_lawn_price": (0.9, "weekly"),
+    "ukladka": (0.9, "weekly"),
     "catalog": (0.9, "weekly"),
     "pitomnik": (0.8, "monthly"),
     "predzakaz": (0.7, "weekly"),
@@ -329,6 +404,7 @@ LLMS_TXT = """# Сибирские газоны
 
 - [Рулонный газон](https://gazony.ru/gazon/): производство, укладка, уход; FAQ по укладке и срокам
 - [Прайс на рулонный газон](https://gazony.ru/prais-rulonnyy-gazon/): актуальные розничные цены за м², характеристики рулона
+- [Укладка рулонного газона](https://gazony.ru/ukladka-rulonnogo-gazona/): состав работ, сроки, смета по фото участка, FAQ по укладке и поливу
 - [Питомник](https://gazony.ru/pitomnik/): выращивание деревьев и кустарников, адаптированных к климату Сибири
 - [Каталог растений](https://gazony.ru/catalog/): около 900 позиций с ценами и наличием
 - [Озеленение частных участков](https://gazony.ru/ozelenenie-b2c/): проектирование и реализация под ключ
