@@ -1,3 +1,72 @@
 @tailwind base;
 @tailwind components;
+
+/* Компонентные классы каталога.
+   Длинные наборы утилит повторяются на странице категории сотни раз (карточка
+   товара, ссылка в дереве разделов), и в HTML это десятки килобайт. Здесь они
+   свёрнуты в один класс: разметка та же, вес страницы меньше.
+   Правило: имена меняем только вместе с шаблонами
+   templates/pages/catalog-category.html, partials/catalog_nav.html,
+   partials/plant_catalog_title.html. */
+@layer components {
+  /* ── Дерево разделов каталога (partials/catalog_nav.html) ── */
+  .cnav-s {
+    /* `group` в @apply не сворачивается - остаётся в разметке рядом с .cnav-s. */
+    @apply flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-semibold transition hover:bg-brand/[0.06];
+  }
+  .cnav-si {
+    @apply flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand;
+  }
+  .cnav-l {
+    @apply flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition;
+  }
+  .cnav-l-a {
+    @apply -ml-[2px] border-l-2 border-brand bg-brand/[0.07] pl-[6px] font-semibold text-slate-900;
+  }
+  .cnav-l-i {
+    @apply text-slate-600 hover:bg-brand/[0.06] hover:text-brand;
+  }
+  .cnav-ci {
+    @apply mt-0.5 h-3 w-3 shrink-0 text-brand/40;
+  }
+  .cnav-t {
+    @apply min-w-0 flex-1 truncate;
+  }
+
+  /* ── Карточка товара в сетке категории (templates/pages/catalog-category.html) ── */
+  .pc {
+    @apply flex h-full min-h-0 flex-col rounded-3xl border border-black/5 bg-white p-6 transition hover:shadow-glow;
+  }
+  .pc-img {
+    @apply aspect-[4/3] overflow-hidden rounded-2xl bg-slate-50;
+  }
+  .pc-t {
+    @apply font-semibold leading-snug text-slate-900 line-clamp-3;
+  }
+  .pc-lat {
+    @apply mt-0.5 text-xs font-normal leading-snug text-slate-600 line-clamp-2;
+  }
+  .pc-cap {
+    @apply text-xs text-slate-500;
+  }
+  .pc-price {
+    @apply mt-1 text-sm font-semibold text-brand;
+  }
+  .pc-tara {
+    @apply mt-1 flex flex-wrap items-center gap-x-1 text-xs text-slate-600;
+  }
+  .pc-i {
+    @apply inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-brand/85 hover:bg-brand/10 hover:text-brand focus:outline-none focus-visible:ring-2 focus-visible:ring-brand/30;
+  }
+  .pc-ig {
+    @apply select-none text-[11px] font-semibold leading-none;
+  }
+  .pc-more {
+    @apply inline-flex flex-1 items-center justify-center rounded-xl border border-black/10 px-4 py-2.5 text-sm font-semibold transition hover:bg-black/5;
+  }
+  .pc-add {
+    @apply relative inline-flex flex-1 items-center justify-center overflow-visible rounded-xl bg-gradient-to-r from-brand to-brand2 px-4 py-2.5 text-sm font-semibold text-white shadow-glow transition hover:brightness-105;
+  }
+}
+
 @tailwind utilities;

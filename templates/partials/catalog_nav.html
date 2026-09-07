@@ -35,12 +35,12 @@
             <div data-accordion-item>
               <button
                 type="button"
-                class="group flex w-full items-center justify-between gap-2 rounded-xl px-2.5 py-2 text-left text-sm font-semibold transition hover:bg-brand/[0.06] {% if section.nav_parent_active %}border-l-[3px] border-brand bg-brand/[0.06] pl-2{% else %}border-l-[3px] border-transparent pl-2{% endif %}"
+                class="group cnav-s {% if section.nav_parent_active %}border-l-[3px] border-brand bg-brand/[0.06] pl-2{% else %}border-l-[3px] border-transparent pl-2{% endif %}"
                 data-accordion-toggle
                 aria-expanded="{% if section.nav_expanded %}true{% else %}false{% endif %}"
               >
                 <span class="flex min-w-0 items-center gap-2.5">
-                  <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand">
+                  <span class="cnav-si">
                     <i data-lucide="{{ section.icon }}" class="h-3.5 w-3.5" aria-hidden="true"></i>
                   </span>
                   <span class="truncate {% if section.nav_parent_active %}text-slate-900{% else %}text-slate-800{% endif %}">{{ section.label }}</span>
@@ -62,12 +62,12 @@
                       {% else %}
                         <a
                           href="{{ child.href }}"
-                          class="flex items-start gap-1.5 rounded-lg px-2 py-1.5 text-[13px] leading-snug transition {% if child.nav_active %}border-l-2 border-brand bg-brand/[0.07] font-semibold text-slate-900 -ml-[2px] pl-[6px]{% else %}text-slate-600 hover:bg-brand/[0.06] hover:text-brand{% endif %}"
+                          class="cnav-l {% if child.nav_active %}cnav-l-a{% else %}cnav-l-i{% endif %}"
                         >
                           {% if not child.nav_active %}
-                            <i data-lucide="chevron-right" class="mt-0.5 h-3 w-3 shrink-0 text-brand/40" aria-hidden="true"></i>
+                            <i data-lucide="chevron-right" class="cnav-ci" aria-hidden="true"></i>
                           {% endif %}
-                          <span class="min-w-0 flex-1 truncate">{{ child.label }}</span>
+                          <span class="cnav-t">{{ child.label }}</span>
                         </a>
                       {% endif %}
                     </li>
@@ -88,7 +88,7 @@
               class="group flex items-center justify-between gap-2 rounded-xl border-l-[3px] px-2.5 py-2 text-sm font-semibold transition hover:bg-brand/[0.06] {% if section.nav_active %}border-brand bg-brand/[0.06] text-slate-900{% else %}border-transparent text-slate-800{% endif %}"
             >
               <span class="flex min-w-0 items-center gap-2.5">
-                <span class="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-brand/15 to-brand2/10 text-brand group-hover:from-brand/20 group-hover:to-brand2/15">
+                <span class="cnav-si group-hover:from-brand/20 group-hover:to-brand2/15">
                   <i data-lucide="{{ section.icon }}" class="h-3.5 w-3.5" aria-hidden="true"></i>
                 </span>
                 <span class="truncate">{{ section.label }}</span>
