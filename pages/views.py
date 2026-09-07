@@ -33,6 +33,7 @@ from .data import (
     PROMO_SALE50_SITE_PAGE,
     PROMO_SALE50_DIRECT_PAGE,
     KOTTEDZHI_DIRECT_PAGE,
+    OZELENENIE_SEASON_END_PAGE,
     REVIEWS_DATA,
 )
 
@@ -453,6 +454,16 @@ def kottedzhi_direct(request):
     в sitemap.xml не попадает, в robots.txt закрыта.
     """
     return render(request, "pages/kottedzhi_direct.html", KOTTEDZHI_DIRECT_PAGE)
+
+
+def ozelenenie_season_end(request):
+    """Скрытая посадочная «Озеленение · финал сезона» под Яндекс.Директ, noindex.
+
+    Живёт только на платном трафике: ссылок с сайта нет, в sitemap.xml не попадает,
+    в robots.txt закрыта. Заявка уходит в POST /api/lead/ (pages/landing_leads.py),
+    чтобы вместе с контактом сохранились landing_id, UTM и yclid.
+    """
+    return render(request, "pages/ozelenenie_season_end.html", OZELENENIE_SEASON_END_PAGE)
 
 
 def predzakaz(request):

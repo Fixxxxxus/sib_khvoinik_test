@@ -155,6 +155,7 @@ Disallow: /api/
 Disallow: /zayavka-direct/
 Disallow: /direct-50/
 Disallow: /kottedzhi-direct/
+Disallow: /ozelenenie-season-end/
 Disallow: /discount/
 
 # AI-краулеры: доступ открыт явно

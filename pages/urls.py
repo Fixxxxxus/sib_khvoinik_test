@@ -1,10 +1,13 @@
 from django.urls import path, re_path
 from django.views.generic import RedirectView
 
-from . import articles_api, loyalty, promo, seo, views
+from . import articles_api, landing_leads, loyalty, promo, seo, views
 
 urlpatterns = [
     path("api/loyalty/card/", loyalty.loyalty_card, name="loyalty_card"),
+    # Заявки с рекламных посадочных (Яндекс.Директ): лид + UTM + yclid.
+    path("api/lead/", landing_leads.landing_lead, name="landing_lead"),
+    path("api/health/", landing_leads.landing_health, name="landing_health"),
     # Публикация статей из контент-фабрики (siberian-cursor), авторизация X-Api-Token.
     path("api/articles/", articles_api.articles_upsert, name="articles_upsert"),
     path("api/articles/list/", articles_api.articles_list, name="articles_list"),
@@ -58,5 +61,10 @@ urlpatterns = [
     path("akciya-hvoynye-50/", views.akciya_hvoynye_50, name="akciya_hvoynye_50"),
     path("direct-50/", views.direct_50, name="direct_50"),
     path("kottedzhi-direct/", views.kottedzhi_direct, name="kottedzhi_direct"),
+    path(
+        "ozelenenie-season-end/",
+        views.ozelenenie_season_end,
+        name="ozelenenie_season_end",
+    ),
     path("predzakaz/", views.predzakaz, name="predzakaz"),
 ]

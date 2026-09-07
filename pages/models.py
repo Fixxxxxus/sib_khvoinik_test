@@ -867,3 +867,47 @@ class Article(models.Model):
                 today = timezone.localdate()
             return bool(self.date_published and self.date_published <= today)
         return False
+
+
+class LandingLead(models.Model):
+    """Заявка с рекламной посадочной (POST /api/lead/).
+
+    Пишем лид в БД в первую очередь: это единственное хранилище, которое мы
+    контролируем. Битрикс24 и Telegram - best-effort поверх записи, их сбой не
+    должен стоить нам оплаченного клика.
+    """
+
+    lead_id = models.CharField("lead_id", max_length=32, unique=True, db_index=True)
+    landing_id = models.CharField("Посадочная", max_length=100, db_index=True)
+
+    name = models.CharField("Имя", max_length=200)
+    phone = models.CharField("Телефон", max_length=20, help_text="Нормализован к 7XXXXXXXXXX.")
+    comment = models.TextField("Комментарий", blank=True)
+    consent = models.BooleanField("Согласие на обработку ПДн", default=False)
+
+    source = models.CharField("Источник", max_length=100, blank=True)
+    service_label = models.CharField("Услуга", max_length=200, blank=True)
+    area_label = models.CharField("Объём", max_length=100, blank=True)
+
+    landing_url = models.URLField("Адрес страницы", max_length=500, blank=True)
+    page_path = models.CharField("Путь страницы", max_length=300, blank=True)
+    referrer = models.CharField("Referrer", max_length=500, blank=True)
+
+    utm_source = models.CharField("utm_source", max_length=200, blank=True)
+    utm_medium = models.CharField("utm_medium", max_length=200, blank=True)
+    utm_campaign = models.CharField("utm_campaign", max_length=300, blank=True)
+    utm_content = models.CharField("utm_content", max_length=300, blank=True)
+    utm_term = models.CharField("utm_term", max_length=300, blank=True)
+    yclid = models.CharField("yclid", max_length=100, blank=True)
+
+    b24_lead_id = models.IntegerField("ID лида в Б24", null=True, blank=True)
+    ip = models.CharField("IP", max_length=64, blank=True)
+    created_at = models.DateTimeField("Создана", auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+        verbose_name = "заявка с посадочной"
+        verbose_name_plural = "заявки с посадочных"
+
+    def __str__(self) -> str:
+        return f"{self.landing_id}: {self.name} {self.phone} ({self.lead_id})"
