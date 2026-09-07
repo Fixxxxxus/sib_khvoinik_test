@@ -17179,8 +17179,6 @@ OZELENENIE_SEASON_END_PAGE = {
     "noindex": True,
     # Режим посадочной: без навбара сайта, без промо-попапа и виджета садовых центров.
     "landing_mode": True,
-    # Подвал сайта тоже убираем: у лендинга свой минимальный подвал по ТЗ.
-    "hide_footer": True,
     "landing_id": LANDING_OZELENENIE_SEASON_END_ID,
     "service_label": "Озеленение · получить предложение",
     "area_label": "от 100 м²",
@@ -17195,9 +17193,9 @@ OZELENENIE_SEASON_END_PAGE = {
             "и дадим предложение под финал сезона."
         ),
         "meta": "Новосибирск и область · от 100 м² · финал сезона",
-        # TODO: заменить на фото объектов от маркетолога (ТЗ §10), пока лучшее из архива.
-        "image": "media/images/cases/ozelenenie-b2c-case-01.png",
-        "image_alt": "Ухоженный участок частного дома с рулонным газоном и посадками",
+        # Фото объектов от маркетолога (07.09.2026), исходники 4000x2250.
+        "image": "media/images/landing/ozelenenie-season-end/hero-house-lawn.webp",
+        "image_alt": "Деревянный дом с уложенным рулонным газоном и дорожками после озеленения",
     },
     "form": {
         "title": "Получить предложение",
@@ -17226,22 +17224,22 @@ OZELENENIE_SEASON_END_PAGE = {
     ],
     "gallery_title": "Участок мечты",
     "gallery_sub": "Так выглядят объекты, которые мы вели от материала до готового вида.",
-    # TODO: заменить на фото объектов от маркетолога (ТЗ §10).
+    # Фото объектов от маркетолога (07.09.2026).
     "gallery": [
         {
-            "image": "media/images/cases/ozelenenie-b2c-case-02.png",
+            "image": "media/images/landing/ozelenenie-season-end/gallery-fence-lawn.webp",
             "caption": "Ухоженный газон",
-            "alt": "Ровный рулонный газон на участке частного дома",
+            "alt": "Свежеуложенный рулонный газон вдоль забора на участке частного дома",
         },
         {
-            "image": "media/images/cases/ozelenenie-b2c-case-03.png",
+            "image": "media/images/landing/ozelenenie-season-end/gallery-pines-lawn.webp",
             "caption": "Посадки и композиции",
-            "alt": "Хвойные и кустарники в композиции на участке",
+            "alt": "Газон под соснами во дворе с кирпичным забором",
         },
         {
-            "image": "media/images/cases/cottage-yard.webp",
+            "image": "media/images/landing/ozelenenie-season-end/gallery-paved-yard.webp",
             "caption": "Место, куда зовут гостей",
-            "alt": "Зона отдыха на озеленённом участке коттеджа",
+            "alt": "Двор с газоном, мощёными дорожками и грядками у дома",
         },
     ],
     "includes_title": "Что входит",

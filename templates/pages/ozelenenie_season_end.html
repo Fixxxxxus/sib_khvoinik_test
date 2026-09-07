@@ -276,22 +276,3 @@
     </div>
   </section>
 {% endblock %}
-
-{% block footer %}
-  <footer class="bg-slate-900 py-8 text-white">
-    <div class="mx-auto flex max-w-6xl flex-col items-start gap-4 px-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-      <a href="https://gazony.ru" class="inline-flex items-center gap-3">
-        <img
-          src="{% static 'media/branding/logo-main.webp' %}"
-          alt="{{ brand }}"
-          width="168" height="48"
-          class="h-9 w-auto rounded-lg bg-white px-2 py-1"
-          draggable="false"
-        />
-        <span class="text-sm font-semibold text-white/90">gazony.ru</span>
-      </a>
-      <a href="tel:{{ phone_tel }}" class="text-lg font-bold text-white">{{ phone_label }}</a>
-    </div>
-    <p class="mx-auto mt-4 max-w-6xl px-4 text-xs text-white/60 sm:px-6">{{ footer_note }}</p>
-  </footer>
-{% endblock %}

@@ -101,13 +101,13 @@ class CatalogCategoryMarkupTest(TestCase):
         До правок карточка весила ~4.6 КБ, после - ~2.6 КБ; порог с запасом.
         """
         html = self.html("hvoynye-derevya")
-        grid = re.search(
-            r'<div class="[^"]*grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">.*?\n      </div>',
-            html,
-            re.S,
-        )
-        self.assertIsNotNone(grid)
-        per_card = len(grid.group(0).encode()) / CARDS_BEFORE["hvoynye-derevya"]
+        # Ответ проходит через минификатор пробелов (config.middleware), поэтому
+        # сетку ищем по разметке карточек, а не по отступам исходного шаблона.
+        start = html.find('grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch')
+        self.assertGreater(start, 0)
+        end = html.find("</section>", start)
+        self.assertGreater(end, start)
+        per_card = len(html[start:end].encode()) / CARDS_BEFORE["hvoynye-derevya"]
         self.assertLess(per_card, 3200, f"{per_card:.0f} байт на карточку")
 
     def test_long_tailwind_class_strings_are_folded(self):

@@ -36,6 +36,12 @@ urlpatterns = [
     # Короткий /ozelenenie/ отдавал 404, хотя по нему есть спрос и внешние ссылки.
     path("ozelenenie/", RedirectView.as_view(url="/ozelenenie-b2c/", permanent=True)),
     re_path(r"^advice/.*$", RedirectView.as_view(url="/stati/", permanent=True)),
+    # Склейка статей-каннибалов по данным Вебмастера (07.09.2026): у /stati/kak-ukladyvat-gazon/
+    # 7150 показов за месяц против заметно меньших у дубля, дубль уходит 301 на основную.
+    path(
+        "stati/kak-ulozhit-rulonnyy-gazon/",
+        RedirectView.as_view(url="/stati/kak-ukladyvat-gazon/", permanent=True),
+    ),
     # 301 со старых URL каталога /product/<категория>/<товар>/ на актуальные /catalog/.
     re_path(r"^product/", views.legacy_product_redirect),
     path("", views.home, name="home"),

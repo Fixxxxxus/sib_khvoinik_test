@@ -172,7 +172,8 @@ class InboundLinksTest(TestCase):
 
 @render_pages
 class LinkUkladkaArticlesCommandTest(TestCase):
-    SLUG = "kak-ulozhit-rulonnyy-gazon"
+    # kak-ulozhit-rulonnyy-gazon теперь 301 на основную статью, берём другой слаг из списка.
+    SLUG = "podgotovka-uchastka-pod-rulonnyy-gazon"
 
     def setUp(self):
         self.article = Article.objects.create(
@@ -210,7 +211,7 @@ class LinkUkladkaArticlesCommandTest(TestCase):
         call_command("link_ukladka_articles")
         html = Client().get("/stati/%s/" % self.SLUG).content.decode("utf-8")
         self.assertIn('href="%s"' % UKLADKA_URL, html)
-        self.assertIn("заказать укладку рулонного газона", html)
+        self.assertIn("аудит основания перед укладкой", html)
 
 
 class CatalogSeoFormulaTest(TestCase):
