@@ -90,8 +90,11 @@
   function formatPhone(value) {
     var digits = digitsOf(value);
     if (!digits) return '';
-    if (digits[0] === '8' || digits[0] === '7') digits = digits.slice(1);
-    else if (digits.length > 10) digits = digits.slice(digits.length - 10);
+    // Вставка «+7 913...» поверх подставленного «+7 » даёт две семёрки подряд:
+    // срезаем префиксы 7/8, пока цифр больше десяти, остаток - сам номер.
+    if (digits.length <= 10 && (digits[0] === '8' || digits[0] === '7')) digits = digits.slice(1);
+    while (digits.length > 10 && (digits[0] === '8' || digits[0] === '7')) digits = digits.slice(1);
+    if (digits.length > 10) digits = digits.slice(digits.length - 10);
     digits = digits.slice(0, 10);
     var out = '+7';
     if (digits.length) out += ' (' + digits.slice(0, 3);
