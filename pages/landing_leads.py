@@ -17,8 +17,10 @@ from __future__ import annotations
 import json
 import logging
 import os
+import time
 from uuid import uuid4
 
+import requests
 from django.http import HttpRequest, HttpResponseBadRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
@@ -46,6 +48,29 @@ UTM_KEYS = ("utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term
 # падаем обратно на chat id администратора промо.
 TG_CHAT_ID_ENV = "LANDING_LEAD_TG_CHAT_ID"
 TG_CHAT_ID_FALLBACK_ENV = "CARE_PROMO_ADMIN_CHAT_ID"
+
+# ---------------------------------------------------------------------------
+# Серверная конверсия в Яндекс.Метрику (Measurement Protocol).
+#
+# Зачем: счётчик на сайте поднимается только после «Принять все» в cookie-баннере
+# (152-ФЗ), поэтому часть заявок Директ не видит вообще - кампания оптимизируется
+# по нулевому CR. Здесь мы досылаем ту же цель lead_submit с сервера.
+#
+# Формат запроса - по документации Метрики (yandex.ru/dev/metrika/ru/data-import/
+# measurement-upload): GET на https://mc.yandex.ru/collect/ с обязательными
+# tid (номер счётчика), cid (ClientID), t=event, ms (секретный токен); ea -
+# идентификатор JS-цели, et - время события, dl - URL страницы, params - JSON
+# с параметрами визита. Успех - HTTP 200 и тело «<!-- OK -->».
+#
+# Ограничение протокола: событие можно записать только в визит, начатый не более
+# 12 часов назад, и нужен настоящий ClientID. Поэтому без ym_client_id из формы
+# отправка не имеет смысла и пропускается.
+# ---------------------------------------------------------------------------
+METRIKA_MP_URL = "https://mc.yandex.ru/collect/"
+METRIKA_COUNTER_ID = "108722541"
+METRIKA_MP_TOKEN_ENV = "METRIKA_MP_TOKEN"
+METRIKA_LEAD_GOAL = "lead_submit"
+METRIKA_TIMEOUT = 5
 
 
 def _tg_chat_id() -> str:
@@ -169,6 +194,70 @@ def _notify_telegram(lead: LandingLead, utm: dict) -> None:
         logger.warning("landing_lead %s: Telegram не принял алерт: %s", lead.lead_id, res.get("error"))
 
 
+def _send_metrika_goal(lead: LandingLead, utm: dict, client_id: str) -> None:
+    """Best-effort цель lead_submit в Метрику через Measurement Protocol.
+
+    Молча пропускаем, если не задан токен или клиент не отдал ClientID: заявка
+    уже сохранена, и падать из-за аналитики нельзя.
+    """
+    token = os.environ.get(METRIKA_MP_TOKEN_ENV, "").strip()
+    if not token:
+        logger.info(
+            "landing_lead %s: %s не задан, серверная цель в Метрику пропущена",
+            lead.lead_id,
+            METRIKA_MP_TOKEN_ENV,
+        )
+        return
+    client_id = "".join(ch for ch in str(client_id or "") if ch.isdigit())
+    if not client_id:
+        logger.info(
+            "landing_lead %s: ClientID Метрики не пришёл, серверная цель пропущена",
+            lead.lead_id,
+        )
+        return
+
+    # Параметры цели - те же, что уходят с клиента в reachGoal('lead_submit').
+    goal_params = {
+        "landing_id": lead.landing_id,
+        "lead_id": lead.lead_id,
+        "utm_campaign": utm.get("utm_campaign", ""),
+        "utm_content": utm.get("utm_content", ""),
+    }
+    if lead.yclid:
+        goal_params["yclid"] = lead.yclid
+
+    query = {
+        "tid": METRIKA_COUNTER_ID,
+        "cid": client_id,
+        "t": "event",
+        "ea": METRIKA_LEAD_GOAL,
+        "et": int(time.time()),
+        "ms": token,
+        "dl": lead.landing_url or f"https://gazony.ru{lead.page_path}",
+        "params": json.dumps(goal_params, ensure_ascii=False),
+    }
+    if lead.referrer:
+        query["dr"] = lead.referrer
+
+    try:
+        res = requests.get(METRIKA_MP_URL, params=query, timeout=METRIKA_TIMEOUT)
+    except requests.RequestException as e:
+        logger.warning("landing_lead %s: Метрика недоступна: %s", lead.lead_id, e)
+        return
+    except Exception:  # noqa: BLE001 - аналитика не должна ронять приём заявки
+        logger.exception("landing_lead %s: неожиданная ошибка Метрики", lead.lead_id)
+        return
+    if res.status_code != 200:
+        logger.warning(
+            "landing_lead %s: Метрика не приняла цель (HTTP %s): %s",
+            lead.lead_id,
+            res.status_code,
+            res.text[:300],
+        )
+        return
+    logger.info("landing_lead %s: цель %s отправлена в Метрику", lead.lead_id, METRIKA_LEAD_GOAL)
+
+
 @csrf_exempt
 @require_POST
 def landing_lead(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest:
@@ -239,6 +328,7 @@ def landing_lead(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest:
 
     _send_to_bitrix(lead, utm)
     _notify_telegram(lead, utm)
+    _send_metrika_goal(lead, utm, str(payload.get("ym_client_id") or "").strip()[:64])
 
     return JsonResponse({"ok": True, "lead_id": lead.lead_id})
 
@@ -251,5 +341,6 @@ def landing_health(request: HttpRequest) -> JsonResponse:
             "ok": True,
             "landing_id": DEFAULT_LANDING_ID,
             "telegram_notify": bool(_tg_chat_id() and TelegramBotClient().token),
+            "metrika_mp": bool(os.environ.get(METRIKA_MP_TOKEN_ENV, "").strip()),
         }
     )

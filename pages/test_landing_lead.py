@@ -7,6 +7,7 @@
 from __future__ import annotations
 
 import json
+import os
 from unittest.mock import patch
 
 from django.core.cache import cache
@@ -119,6 +120,55 @@ class LandingLeadApiTest(TestCase):
     def test_get_not_allowed(self):
         self.assertEqual(self.client.get("/api/lead/").status_code, 405)
 
+    def test_metrika_goal_sent_when_token_and_client_id_present(self):
+        with override_settings(), patch("pages.landing_leads.requests.get") as http_get, patch.dict(
+            os.environ, {"METRIKA_MP_TOKEN": "secret-token"}
+        ):
+            http_get.return_value.status_code = 200
+            http_get.return_value.text = "<!-- OK -->"
+            res = self._post(_payload(ym_client_id="1710232430899999999"))
+
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(http_get.call_count, 1)
+        url, kwargs = http_get.call_args[0][0], http_get.call_args[1]
+        self.assertEqual(url, "https://mc.yandex.ru/collect/")
+        query = kwargs["params"]
+        self.assertEqual(query["tid"], "108722541")
+        self.assertEqual(query["cid"], "1710232430899999999")
+        self.assertEqual(query["t"], "event")
+        self.assertEqual(query["ea"], "lead_submit")
+        self.assertEqual(query["ms"], "secret-token")
+        goal_params = json.loads(query["params"])
+        self.assertEqual(goal_params["landing_id"], "ozelenenie-season-end")
+        self.assertEqual(goal_params["utm_campaign"], "ozelenenie-final")
+        self.assertEqual(goal_params["yclid"], "9876543210")
+
+    def test_metrika_goal_skipped_without_token(self):
+        env = {k: v for k, v in os.environ.items() if k != "METRIKA_MP_TOKEN"}
+        with patch("pages.landing_leads.requests.get") as http_get, patch.dict(
+            os.environ, env, clear=True
+        ):
+            res = self._post(_payload(ym_client_id="1710232430899999999"))
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(http_get.call_count, 0)
+
+    def test_metrika_goal_skipped_without_client_id(self):
+        with patch("pages.landing_leads.requests.get") as http_get, patch.dict(
+            os.environ, {"METRIKA_MP_TOKEN": "secret-token"}
+        ):
+            res = self._post(_payload())
+        self.assertEqual(res.status_code, 200)
+        self.assertEqual(http_get.call_count, 0)
+
+    def test_broken_metrika_does_not_break_response(self):
+        with patch(
+            "pages.landing_leads.requests.get", side_effect=RuntimeError("metrika down")
+        ), patch.dict(os.environ, {"METRIKA_MP_TOKEN": "secret-token"}):
+            res = self._post(_payload(ym_client_id="17102324308"))
+        self.assertEqual(res.status_code, 200)
+        self.assertTrue(res.json()["ok"])
+        self.assertEqual(LandingLead.objects.count(), 1)
+
     def test_broken_bitrix_does_not_break_response(self):
         patch.stopall()
         patch("pages.landing_leads._notify_telegram").start()
@@ -191,6 +241,61 @@ class LandingPageTest(TestCase):
         body = html.split("<main>")[1].split("</main>")[0]
         for forbidden in ("₽", "-10%", "-50%", "промокод", "Промокод", "скидк", "Скидк"):
             self.assertNotIn(forbidden, body)
+
+    def test_single_phone_on_the_page(self):
+        """Одна витрина - один номер (аудит маркетолога, п.7).
+
+        Телефон отдела продаж сайта и Organization-граф с ним на посадочной
+        под Директ не должны появляться ни в футере, ни в JSON-LD.
+        """
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        self.assertIn("tel:+73833830060", html)
+        self.assertNotIn("201-06-00", html)
+        self.assertNotIn("+73832010600", html)
+
+    def test_no_organization_jsonld(self):
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        self.assertNotIn("#organization", html)
+        self.assertNotIn("Organization", html)
+
+    def test_hero_eyebrow_without_area_filter(self):
+        """«от 100 м²» не в первом экране, но осталось мелко под формой (п.6)."""
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        # HTML-комментарии на выдаче срезает минификатор, поэтому границу первого
+        # экрана ищем по разметке: всё до H1 - это eyebrow, всё до второй секции - hero.
+        eyebrow = html.split('id="hero"')[1].split("<h1")[0]
+        self.assertNotIn("100 м²", eyebrow)
+        self.assertIn("Новосибирск и область · финал сезона", eyebrow)
+        # Первый абзац после H1 - лид hero: фильтра по метражу в нём тоже нет.
+        hero_lead = html.split("</h1>")[1].split("</p>")[0]
+        self.assertNotIn("100 м²", hero_lead)
+        # Мелкая строка под кнопкой на месте, area_label в лиде не тронут.
+        self.assertIn("Берём объекты от 100 м²", html)
+
+    def test_reviews_block_rendered_with_jsonld_rating(self):
+        from pages.data import REVIEWS_DATA
+
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        self.assertIn("Что говорят клиенты", html)
+        self.assertIn(REVIEWS_DATA["aggregate"]["rating_value"], html)
+        self.assertIn(str(REVIEWS_DATA["aggregate"]["rating_count"]), html)
+        # Цитаты - реальные тексты из REVIEWS_DATA, не второй набор текстов.
+        quoted = [r for r in REVIEWS_DATA["items"] if r["author"] == "Igor Baikalov"][0]
+        self.assertIn(quoted["text"][:40], html)
+
+    def test_before_after_cases_rendered(self):
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        self.assertIn("Примеры работ: до и после", html)
+        self.assertIn("cases/case-house.webp", html)
+        self.assertIn("cases/case-office-yard.webp", html)
+        # Ленивая загрузка обязательна: пять карточек по ~200 КБ.
+        cases = html.split('id="cases"')[1].split("</section>")[0]
+        self.assertEqual(cases.count('loading="lazy"'), 5)
+
+    def test_sticky_mobile_cta_sits_above_cookie_banner(self):
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        self.assertIn('id="stickyCta"', html)
+        self.assertIn("--sg-cookie-banner-h", html)
 
     def test_robots_closes_the_landing(self):
         robots = self.client.get("/robots.txt").content.decode()

@@ -101,8 +101,14 @@
     />
     <div class="absolute inset-0 -z-10 bg-gradient-to-b from-slate-950/80 via-slate-900/65 to-slate-950/85 lg:bg-gradient-to-r lg:from-slate-950/85 lg:via-slate-900/60 lg:to-slate-900/35"></div>
 
-    <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-5 px-4 py-5 sm:px-6 sm:py-10 lg:grid-cols-2 lg:gap-12 lg:py-16">
-      <div class="max-w-xl text-white">
+    {% comment %}
+      Порядок на мобиле (аудит маркетолога, п.1): сначала карточка формы, потом
+      заголовок и лид. На 375x667 кнопка «Получить предложение» обязана быть
+      видна без скролла, а высокий текстовый блок над формой это ломал.
+      От lg возвращаем привычный порядок: текст слева, форма справа.
+    {% endcomment %}
+    <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-4 px-4 py-4 sm:gap-5 sm:px-6 sm:py-10 lg:grid-cols-2 lg:gap-12 lg:py-16">
+      <div class="order-2 max-w-xl text-white lg:order-1">
         <p class="text-[13px] font-semibold uppercase tracking-wide text-accent sm:text-sm">{{ hero.meta }}</p>
         <h1 class="mt-2 text-[26px] font-extrabold leading-[1.1] sm:text-4xl lg:text-5xl">
           {{ hero.h1 }}
@@ -112,7 +118,7 @@
         </p>
       </div>
 
-      <div id="lead-hero" class="rounded-2xl bg-white p-4 shadow-soft sm:rounded-3xl sm:p-6">
+      <div id="lead-hero" class="order-1 rounded-2xl bg-white p-3.5 shadow-soft sm:rounded-3xl sm:p-6 lg:order-2">
         <div data-lead-form-wrap>
           <h2 class="text-lg font-bold text-slate-900 sm:text-xl">{{ form.title }}</h2>
           <p class="mt-1 text-[13px] text-slate-500 sm:text-sm">{{ form.sub }}</p>
@@ -157,8 +163,37 @@
     </div>
   </section>
 
-  <!-- УЧАСТОК МЕЧТЫ -->
+  {% comment %}
+    ОТЗЫВЫ. Рейтинг и цитаты берём из REVIEWS_DATA (pages/data.py) - того же
+    источника, из которого считается AggregateRating в JSON-LD. Ссылки на карты
+    здесь нет: готовых URL карточек в данных нет, а выдумывать их нельзя.
+  {% endcomment %}
   <section class="bg-slate-50 py-10 sm:py-14">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+        <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">{{ reviews_title }}</h2>
+        <p class="text-[15px] text-slate-600">
+          <span class="font-bold text-slate-900">{{ reviews_rating }}</span>
+          на основе {{ reviews_count }} оценок
+        </p>
+      </div>
+      <p class="mt-1 text-sm text-slate-500">{{ reviews_note }}</p>
+      <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
+        {% for review in reviews %}
+          <figure class="rounded-2xl border border-black/5 bg-white p-5 shadow-soft">
+            <div class="flex items-center gap-1 text-accent" aria-label="Оценка {{ review.rating }} из 5">
+              {% for _ in "12345" %}<i data-lucide="star" class="h-4 w-4 fill-current"></i>{% endfor %}
+            </div>
+            <blockquote class="mt-3 text-[15px] leading-relaxed text-slate-700">{{ review.text }}</blockquote>
+            <figcaption class="mt-3 text-sm text-slate-500">{{ review.author }} · {{ review.source }}</figcaption>
+          </figure>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <!-- УЧАСТОК МЕЧТЫ -->
+  <section class="bg-white py-10 sm:py-14">
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
       <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">{{ gallery_title }}</h2>
       <p class="mt-2 text-[15px] text-slate-600">{{ gallery_sub }}</p>
@@ -180,7 +215,7 @@
   </section>
 
   <!-- ЧТО ВХОДИТ -->
-  <section class="bg-white py-10 sm:py-14">
+  <section class="bg-slate-50 py-10 sm:py-14">
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
       <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">{{ includes_title }}</h2>
       <ul class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -202,7 +237,7 @@
   </section>
 
   <!-- КАК ПРОХОДИТ -->
-  <section class="bg-slate-50 py-10 sm:py-14">
+  <section class="bg-white py-10 sm:py-14">
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
       <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">{{ steps_title }}</h2>
       <ol class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
@@ -215,6 +250,39 @@
           </li>
         {% endfor %}
       </ol>
+    </div>
+  </section>
+
+  {% comment %}
+    ПРИМЕРЫ РАБОТ «ДО И ПОСЛЕ». Карточки собраны маркетологом заранее, каждая -
+    одна картинка с обеими половинами, поэтому слайдер не нужен: на десктопе
+    обычная сетка, на мобиле горизонтальная прокрутка со snap на чистом CSS.
+    Меньше JS - меньше шансов, что блок не покажется на медленном 3G.
+  {% endcomment %}
+  <section id="cases" class="bg-slate-50 py-10 sm:py-14">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">{{ cases_title }}</h2>
+      <p class="mt-2 text-[15px] text-slate-600">{{ cases_sub }}</p>
+    </div>
+    <div
+      class="mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:px-6 lg:mx-auto lg:max-w-6xl lg:grid lg:grid-cols-2 lg:overflow-visible lg:pb-0 xl:grid-cols-3"
+      role="list"
+    >
+      {% for case in cases %}
+        <figure
+          role="listitem"
+          class="w-[85vw] max-w-sm shrink-0 snap-center overflow-hidden rounded-2xl border border-black/5 bg-white shadow-soft sm:w-[70vw] lg:w-auto lg:max-w-none lg:shrink"
+        >
+          <img
+            src="{% static case.image %}"
+            alt="{{ case.alt }}"
+            width="1400" height="788"
+            loading="lazy" decoding="async"
+            class="w-full"
+          />
+          <figcaption class="px-4 py-3 text-sm font-semibold text-slate-700">{{ case.caption }}</figcaption>
+        </figure>
+      {% endfor %}
     </div>
   </section>
 
@@ -275,4 +343,69 @@
       </div>
     </div>
   </section>
+
+  {% comment %}
+    ЛИПКИЙ CTA НА МОБИЛЕ (аудит маркетолога, п.4). Появляется, когда hero-форма
+    ушла вверх, и прячется обратно, когда она снова в кадре или когда заявка уже
+    отправлена (этим занимается landing-ozelenenie.js).
+
+    Полоска садится над cookie-баннером: его высоту app.js держит в CSS-переменной
+    --sg-cookie-banner-h (syncFloatingUiAboveCookieBanner), той же, что поднимает
+    виджет Битрикс24. Пока баннера нет, переменная равна 0 и полоска стоит внизу.
+  {% endcomment %}
+  <div
+    id="stickyCta"
+    hidden
+    class="fixed inset-x-0 bottom-[var(--sg-cookie-banner-h,0px)] z-50 border-t border-black/10 bg-white/95 px-3 py-2.5 shadow-[0_-6px_20px_rgba(15,23,42,0.12)] backdrop-blur lg:hidden"
+    style="padding-bottom: calc(0.625rem + env(safe-area-inset-bottom))"
+  >
+    <div class="flex items-center gap-2.5">
+      <a
+        href="#lead-hero"
+        data-sticky-cta
+        class="flex min-h-[48px] flex-1 items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 text-base font-bold text-white shadow-glow"
+      >
+        {{ cta_label }}
+      </a>
+      <a
+        href="tel:{{ phone_tel }}"
+        aria-label="Позвонить {{ phone_label }}"
+        class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-brand/30 text-brand"
+      >
+        <i data-lucide="phone" class="h-5 w-5"></i>
+      </a>
+    </div>
+  </div>
+{% endblock %}
+
+{% comment %}
+  Короткий подвал вместо общего (аудит маркетолога, п.7-8): в сайтовом футере
+  стоит другой телефон отдела продаж и десяток чужих ссылок, а на посадочной
+  под Директ номер должен быть один и уводить со страницы нечем. Оформление -
+  как у partials/footer.html: белый фон, border-top, та же типографика.
+{% endcomment %}
+{% block footer %}
+  <footer class="border-t border-black/5 bg-white pb-24 pt-10 lg:pb-10">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
+        <img
+          src="{% static 'media/branding/logo-main.webp' %}"
+          alt="{{ brand }}"
+          width="168" height="48"
+          class="h-10 w-auto"
+          loading="lazy" decoding="async"
+        />
+        <div class="text-sm text-slate-700">
+          Тел:
+          <a href="tel:{{ phone_tel }}" class="whitespace-nowrap font-semibold hover:text-brand transition">{{ phone_label }}</a>
+        </div>
+      </div>
+      <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
+        <span>© <span id="year"></span> ООО «Сибирский хвойник»</span>
+        <a href="{% url 'privacy' %}" class="hover:text-brand transition">Политика конфиденциальности</a>
+        <a href="{% url 'consent' %}" class="hover:text-brand transition">Согласие на обработку ПД</a>
+      </div>
+      <p class="mt-4 text-[13px] text-slate-500">{{ footer_note }}</p>
+    </div>
+  </footer>
 {% endblock %}

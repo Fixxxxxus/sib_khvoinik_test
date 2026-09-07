@@ -68,20 +68,25 @@
     <input id="lead-company-{{ form_id }}" type="text" name="company_site" tabindex="-1" autocomplete="off" />
   </div>
 
+  {% comment %}
+    Согласие (аудит маркетолога, п.9): одна короткая строка вместо двух формулировок,
+    ссылки на те же документы. Чекбокс 24x24 - зона тапа не меньше требуемой,
+    и весь label кликабельный, так что попасть можно и по тексту.
+  {% endcomment %}
   <div>
-    <label class="flex cursor-pointer items-start gap-2.5 text-[13px] leading-snug text-slate-600">
+    <label for="lead-consent-{{ form_id }}" class="flex cursor-pointer items-start gap-2.5 text-[13px] leading-snug text-slate-600">
       <input
         id="lead-consent-{{ form_id }}"
         type="checkbox"
         name="consent"
         value="1"
         required
-        class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-brand focus:ring-brand/30"
+        class="h-6 w-6 shrink-0 rounded border-slate-300 text-brand focus:ring-brand/30"
       />
-      <span>
+      <span class="pt-0.5">
         Согласен на
-        <a href="{% url 'consent' %}" target="_blank" rel="noopener noreferrer" class="text-brand underline underline-offset-2">обработку персональных данных</a>
-        и принимаю
+        <a href="{% url 'consent' %}" target="_blank" rel="noopener noreferrer" class="text-brand underline underline-offset-2">обработку данных</a>
+        и
         <a href="{% url 'privacy' %}" target="_blank" rel="noopener noreferrer" class="text-brand underline underline-offset-2">политику конфиденциальности</a>
       </span>
     </label>
@@ -98,4 +103,9 @@
     {{ cta_label }}
   </button>
   <p class="text-center text-[13px] text-slate-500">{{ cta_note }}</p>
+  {% comment %}
+    Фильтр по объёму (аудит, п.6) переехал сюда из hero: мелко под кнопкой,
+    когда желание уже сформировано, а не в первой строке страницы.
+  {% endcomment %}
+  <p class="text-center text-[12px] text-slate-400">{{ form_fine }}</p>
 </form>

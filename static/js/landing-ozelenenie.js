@@ -29,13 +29,65 @@
   var AREA_LABEL = 'от 100 м²';
 
   // ── Метрика ────────────────────────────────────────────────────────────────
-  function reachGoal(goal, params) {
-    if (!window.ym) return; // счётчик грузится только после согласия в cookie-баннере
+  // Счётчик поднимается из app.js только после «Принять все» в cookie-баннере, а
+  // человек успевает нажать CTA и отправить заявку раньше. Раньше в этот момент
+  // цель просто терялась и Директ не видел конверсию (аудит маркетолога, п.2).
+  // Теперь цели складываются в очередь и досылаются, как только появится window.ym.
+  var goalQueue = [];
+  var metrikaReady = false;
+  var ymClientId = '';
+
+  function sendGoal(goal, params) {
     try {
-      if (params) ym(METRIKA_ID, 'reachGoal', goal, params);
-      else ym(METRIKA_ID, 'reachGoal', goal);
+      if (params) window.ym(METRIKA_ID, 'reachGoal', goal, params);
+      else window.ym(METRIKA_ID, 'reachGoal', goal);
     } catch (e) { /* noop */ }
   }
+
+  function reachGoal(goal, params) {
+    if (metrikaReady && window.ym) {
+      sendGoal(goal, params);
+      return;
+    }
+    // Очередь ограничена: если согласия так и не будет, память не растёт.
+    if (goalQueue.length < 20) goalQueue.push([goal, params]);
+  }
+
+  function captureClientId() {
+    try {
+      window.ym(METRIKA_ID, 'getClientID', function (id) {
+        if (id) ymClientId = String(id);
+      });
+    } catch (e) { /* noop */ }
+  }
+
+  function onMetrikaReady() {
+    if (metrikaReady) return;
+    metrikaReady = true;
+    captureClientId();
+    var queued = goalQueue.splice(0, goalQueue.length);
+    queued.forEach(function (item) { sendGoal(item[0], item[1]); });
+  }
+
+  // Хука «Метрика загрузилась» в app.js нет, поэтому просто ждём появления ym.
+  // Опрос дешёвый и сам останавливается: либо счётчик появился, либо человек
+  // так и не дал согласия за отведённые 15 минут.
+  (function waitForMetrika() {
+    if (window.ym) {
+      onMetrikaReady();
+      return;
+    }
+    var attempts = 0;
+    var timer = setInterval(function () {
+      attempts += 1;
+      if (window.ym) {
+        clearInterval(timer);
+        onMetrikaReady();
+      } else if (attempts > 1800) {
+        clearInterval(timer);
+      }
+    }, 500);
+  })();
 
   // ── Атрибуция ──────────────────────────────────────────────────────────────
   function readStored() {
@@ -155,7 +207,12 @@
   }
 
   // ── Отправка ───────────────────────────────────────────────────────────────
+  var leadSent = false;
+
   function showSuccess() {
+    leadSent = true;
+    var sticky = document.getElementById('stickyCta');
+    if (sticky) sticky.hidden = true;
     // Форма есть в двух местах: после успеха меняем на экран успеха обе,
     // чтобы человек не отправил заявку второй раз со второго блока.
     document.querySelectorAll('[data-lead-form-wrap]').forEach(function (wrap) {
@@ -201,7 +258,11 @@
       service_label: SERVICE_LABEL,
       area_label: AREA_LABEL,
       utm: utmPayload(),
-      referrer: document.referrer || ''
+      referrer: document.referrer || '',
+      // ClientID Метрики: по нему бэкенд досылает цель через Measurement Protocol,
+      // если клиентский счётчик так и не поднялся (отказ от cookie, блокировщик).
+      // Пустая строка - счётчика на странице не было, серверная отправка пропускается.
+      ym_client_id: ymClientId
     };
 
     if (button) {
@@ -256,9 +317,39 @@
 
     var button = form.querySelector('[data-lead-submit]');
     if (button) {
-      button.addEventListener('click', function () { reachGoal('lead_cta_click'); });
+      button.addEventListener('click', ctaClick);
     }
   });
+
+  // lead_cta_click шлём один раз за визит: кнопок-CTA на странице теперь три
+  // (две формы плюс липкая полоска), и без дедупликации в Метрике будет тройной счёт.
+  var ctaClicked = false;
+  function ctaClick() {
+    if (ctaClicked) return;
+    ctaClicked = true;
+    reachGoal('lead_cta_click', { landing_id: LANDING_ID });
+  }
+
+  // ── Липкий CTA на мобиле ───────────────────────────────────────────────────
+  // Показываем, когда hero-форма ушла из кадра, и прячем, когда она вернулась,
+  // чтобы полоска не накрывала собственную кнопку отправки. После успешной
+  // заявки полоска не нужна - её гасит showSuccess().
+  var stickyCta = document.getElementById('stickyCta');
+  if (stickyCta) {
+    var heroCard = document.getElementById('lead-hero');
+    var stickyLink = stickyCta.querySelector('[data-sticky-cta]');
+    if (stickyLink) stickyLink.addEventListener('click', ctaClick);
+
+    if (heroCard && window.IntersectionObserver) {
+      new IntersectionObserver(function (entries) {
+        entries.forEach(function (entry) {
+          stickyCta.hidden = entry.isIntersecting || leadSent;
+        });
+      }, { threshold: [0] }).observe(heroCard);
+    } else {
+      stickyCta.hidden = false;
+    }
+  }
 
   // ── lead_form_view: форма в hero показалась хотя бы наполовину ──────────────
   (function () {

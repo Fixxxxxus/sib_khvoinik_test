@@ -17167,6 +17167,17 @@ REVIEWS_DATA = {
 
 LANDING_OZELENENIE_SEASON_END_ID = "ozelenenie-season-end"
 
+# Отзывы для блока социального доказательства (аудит маркетолога, п.5). Берём
+# реальные тексты из REVIEWS_DATA по автору, а не копируем их сюда второй раз:
+# рейтинг и цитаты на странице обязаны совпадать с AggregateRating в JSON-LD.
+_LANDING_REVIEW_AUTHORS = ("Igor Baikalov", "Николай Nik")
+_LANDING_REVIEWS = [
+    review
+    for author in _LANDING_REVIEW_AUTHORS
+    for review in REVIEWS_DATA["items"]
+    if review["author"] == author
+]
+
 OZELENENIE_SEASON_END_PAGE = {
     **BASE,
     "title": "Озеленение участка · получить предложение",
@@ -17179,20 +17190,32 @@ OZELENENIE_SEASON_END_PAGE = {
     "noindex": True,
     # Режим посадочной: без навбара сайта, без промо-попапа и виджета садовых центров.
     "landing_mode": True,
+    # Свой короткий подвал вместо общего: в общем стоит другой телефон отдела продаж,
+    # а на посадочной под Директ номер должен быть один (аудит маркетолога, п.7).
+    "hide_footer": True,
+    # Общий Organization-граф несёт телефон +7 (383) 201-06-00 - на этой витрине он лишний.
+    "skip_schema_org": True,
+    # Белый список модалок: на посадочной не открывается ни одна, но пустой список
+    # шаблон трактует как «фильтра нет», поэтому кладём заведомо несуществующий ключ.
+    "page_modals": ["__none__"],
     "landing_id": LANDING_OZELENENIE_SEASON_END_ID,
     "service_label": "Озеленение · получить предложение",
+    # area_label уходит в лид и в Telegram менеджеру - его не трогаем, даже когда
+    # «от 100 м²» убрали из первого экрана (аудит, п.6).
     "area_label": "от 100 м²",
     "phone_label": "+7 (383) 383-00-60",
     "phone_tel": "+73833830060",
     "cta_label": "Получить предложение",
-    "cta_note": "Перезвоним в рабочее время",
+    "cta_note": "Обычно перезваниваем в течение рабочего дня · без спама",
+    # Мелкая строка под формой: фильтр по объёму остаётся, но не в первом абзаце.
+    "form_fine": "Берём объекты от 100 м²",
     "hero": {
         "h1": "Участок, куда хочется возвращаться",
         "lead": (
-            "Озеленение под ключ от 100 м². Оставьте заявку - посчитаем объект "
-            "и дадим предложение под финал сезона."
+            "Оставьте заявку - посчитаем объект и дадим предложение "
+            "под финал сезона."
         ),
-        "meta": "Новосибирск и область · от 100 м² · финал сезона",
+        "meta": "Новосибирск и область · финал сезона",
         # Фото объектов от маркетолога (07.09.2026), исходники 4000x2250.
         "image": "media/images/landing/ozelenenie-season-end/hero-house-lawn.webp",
         "image_alt": "Деревянный дом с уложенным рулонным газоном и дорожками после озеленения",
@@ -17234,7 +17257,7 @@ OZELENENIE_SEASON_END_PAGE = {
         {
             "image": "media/images/landing/ozelenenie-season-end/gallery-house-plantings.webp",
             "caption": "Посадки и композиции",
-            "alt": "Деревянный дом с газоном, дорожками и цветущими посадками у крыльца",
+            "alt": "Деревянный дом, мощёная площадка и молодые хвойные посадки вдоль ограды",
         },
         {
             "image": "media/images/landing/ozelenenie-season-end/gallery-paved-yard.webp",
@@ -17262,6 +17285,44 @@ OZELENENIE_SEASON_END_PAGE = {
         {"num": "3", "text": "Согласование объёма"},
         {"num": "4", "text": "Выполнение работ"},
     ],
+    # Блок «до и после»: готовые карточки-кейсы от маркетолога (07.09.2026),
+    # исходники PNG 1672x941, на странице - webp шириной 1400.
+    "cases_title": "Примеры работ: до и после",
+    "cases_sub": "Один и тот же участок до выезда бригады и после сдачи объекта.",
+    "cases": [
+        {
+            "image": "media/images/landing/ozelenenie-season-end/cases/case-house.webp",
+            "alt": "Двор частного дома до озеленения и после: рулонный газон, дорожки и цветники",
+            "caption": "Двор частного дома: газон, дорожки, цветники",
+        },
+        {
+            "image": "media/images/landing/ozelenenie-season-end/cases/case-pines.webp",
+            "alt": "Участок под соснами до озеленения и после укладки рулонного газона",
+            "caption": "Участок под соснами: газон в тени деревьев",
+        },
+        {
+            "image": "media/images/landing/ozelenenie-season-end/cases/case-fence.webp",
+            "alt": "Полоса вдоль забора до озеленения и после: ровный рулонный газон с бордюром",
+            "caption": "Полоса вдоль забора: ровный газон с бордюром",
+        },
+        {
+            "image": "media/images/landing/ozelenenie-season-end/cases/case-office-pond.webp",
+            "alt": "Территория у офисного здания до благоустройства и после: газон и водоём",
+            "caption": "Территория у офиса: газон и водоём",
+        },
+        {
+            "image": "media/images/landing/ozelenenie-season-end/cases/case-office-yard.webp",
+            "alt": "Внутренний двор здания до благоустройства и после: газон и цветущие гортензии",
+            "caption": "Внутренний двор: газон и гортензии",
+        },
+    ],
+    # Социальное доказательство: рейтинг и цитаты - те же данные, что уходят
+    # в AggregateRating (REVIEWS_DATA), без второго набора цифр.
+    "reviews_title": "Что говорят клиенты",
+    "reviews_rating": REVIEWS_DATA["aggregate"]["rating_value"],
+    "reviews_count": REVIEWS_DATA["aggregate"]["rating_count"],
+    "reviews_note": "Средняя оценка компании на картах",
+    "reviews": _LANDING_REVIEWS,
     "objections_title": "Частые сомнения",
     "objections": [
         {
