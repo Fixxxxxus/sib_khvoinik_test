@@ -43,6 +43,11 @@ from .data import (
 BRAND_SUFFIX = "Сибирские газоны"
 CITY_SUFFIX = "купить в Новосибирске"
 
+# Белый список модалок для страницы категории каталога (см. partials/modals.html).
+# Ключи должны совпадать с data-open-modal на самой странице; success - экран,
+# который app.js подставляет после успешной отправки формы.
+CATALOG_CATEGORY_MODALS = ("contact_zaboty", "success")
+
 
 def _plant_display_name(plant: dict) -> str:
     return (plant.get("catalog_display_name") or plant.get("name") or "").strip()
@@ -460,6 +465,10 @@ def catalog_item(request, slug):
                 (ctx["category_label"], f"/catalog/{slug}/"),
             ])
         ]
+        # Страница категории открывает ровно одну модалку («Уточнить наличие»),
+        # плюс общий success-экран после отправки формы. Остальные 42 шаблона из
+        # partials/modals.html на ней не нужны и весят под 95 КБ HTML.
+        ctx["page_modals"] = CATALOG_CATEGORY_MODALS
         return render(request, "pages/catalog-category.html", enrich_catalog_context(ctx))
     # redirects уже получены выше: не собираем каталог второй раз через resolve_catalog_plant_slug.
     canon = redirects.get(slug, slug)

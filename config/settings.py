@@ -94,7 +94,13 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    # Последним в списке: на фазе ответа отрабатывает первым, поэтому всё, что
+    # выше (в т.ч. будущий GZipMiddleware), получит уже минифицированный HTML.
+    'config.middleware.HtmlMinifyMiddleware',
 ]
+
+# Минификация HTML на выдаче. HTML_MINIFY=0 отключает её для отладки вёрстки.
+HTML_MINIFY = os.environ.get('HTML_MINIFY', '1').lower() in ('1', 'true', 'yes')
 
 ROOT_URLCONF = 'config.urls'
 
