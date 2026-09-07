@@ -6,6 +6,7 @@ module.exports = {
   content: [
     './templates/**/*.html',
     './static/js/app.js',
+    './static/js/landing-ozelenenie.js',
   ],
   theme: {
     extend: {

@@ -17,6 +17,8 @@ from .data import (
     HOME_PAGE,
     GAZON_PAGE,
     ROLL_LAWN_PRICE_PAGE,
+    UKLADKA_PAGE,
+    UKLADKA_PRICE_FROM,
     OZELENENIE_B2C_PAGE,
     B2B_PAGE,
     PITOMNIK_PAGE,
@@ -33,6 +35,7 @@ from .data import (
     PROMO_SALE50_SITE_PAGE,
     PROMO_SALE50_DIRECT_PAGE,
     KOTTEDZHI_DIRECT_PAGE,
+    OZELENENIE_SEASON_END_PAGE,
     REVIEWS_DATA,
 )
 
@@ -64,39 +67,143 @@ def _plant_in_stock(plant: dict) -> bool:
     return any(v.get("in_stock") for v in (plant.get("variants") or []))
 
 
-def _trim_meta(text: str, limit: int = 160) -> str:
-    """Обрезаем мету по границе слова, не длиннее limit символов."""
-    text = re.sub(r"\s+", " ", text).strip()
-    if len(text) <= limit:
-        return text
-    cut = text[:limit]
-    if " " in cut:
-        cut = cut[: cut.rfind(" ")]
-    return cut.rstrip(" ,.-")
+def _plural_ru(n: int, one: str, few: str, many: str) -> str:
+    """Русское склонение числительных: 1 сорт, 2 сорта, 5 сортов."""
+    n = abs(int(n))
+    if n % 10 == 1 and n % 100 != 11:
+        return one
+    if 2 <= n % 10 <= 4 and not 12 <= n % 100 <= 14:
+        return few
+    return many
+
+
+def _clean_sentence(text: str) -> str:
+    """Убирает следы пустых подстановок: двойные пробелы, «( )», висячие знаки."""
+    text = re.sub(r"\(\s*\)", "", text)
+    text = re.sub(r"\s+([,.:;])", r"\1", text)
+    text = re.sub(r"([,:;])\1+", r"\1", text)
+    text = re.sub(r",\s*\.", ".", text)
+    text = re.sub(r"\s{2,}", " ", text)
+    return text.strip(" ,;:").strip()
+
+
+# Значения-заглушки в данных каталога: в мету их пускать нельзя.
+_SIZE_PLACEHOLDERS = ("выберите", "уточня", "формат")
+
+
+def _seo_category_label(label: str) -> str:
+    """«Деревья → Черёмуха» -> «Черёмуха (деревья)».
+
+    Стрелка из видимой навигации в title смотрится мусором, а голого листа
+    мало: «Лапчатка» есть и в кустарниках, и в многолетниках, а нам нужны
+    непохожие title у разных категорий.
+    """
+    parts = [p.strip() for p in label.split("→") if p.strip()]
+    if len(parts) < 2:
+        return label.strip()
+    return f"{parts[-1]} ({parts[0].lower()})"
+
+
+def _sentences_within(parts: list[str], limit: int) -> str:
+    """Собирает описание по целым предложениям, не обрезая на полуслове."""
+    text = parts[0]
+    for part in parts[1:]:
+        candidate = f"{text} {part}"
+        if len(candidate) > limit:
+            break
+        text = candidate
+    return text
+
+
+def _category_commercial_seo(label: str, plants_count: int) -> dict:
+    """title / description категории каталога по формуле SEO-ТЗ (A2).
+
+    Число сортов подставляется только когда оно реально есть: пустая категория
+    не должна получить в описание «0 сортов».
+    """
+    name = _seo_category_label(label)
+    seo_title = _clean_sentence(
+        f"{name} купить в Новосибирске: цена и наличие | {BRAND_SUFFIX}"
+    )
+    if plants_count > 0:
+        count_part = (
+            f"{plants_count} "
+            f"{_plural_ru(plants_count, 'сорт', 'сорта', 'сортов')} в наличии, "
+        )
+    else:
+        count_part = ""
+    meta = _sentences_within(
+        [
+            _clean_sentence(
+                f"{name} из собственного питомника под Новосибирском: {count_part}"
+                "адаптированы к сибирской зиме."
+            ),
+            "Цены, фото, самовывоз и доставка.",
+            "Питомник 200 га, с 1999 года.",
+        ],
+        220,
+    )
+    return {"seo_title": seo_title, "meta_description": meta}
+
+
+def _plant_size_line(plant: dict) -> str:
+    """«h 40-60, контейнер C5/7» из вариантов карточки; пусто, если данных нет."""
+    def usable(value: str) -> str:
+        value = (value or "").strip()
+        low = value.lower()
+        if not value or any(bad in low for bad in _SIZE_PLACEHOLDERS):
+            return ""
+        return value
+
+    variants = plant.get("variants") or []
+    height = usable(plant.get("height"))
+    if not height:
+        height = next((h for h in (usable(v.get("height")) for v in variants) if h), "")
+    container = usable(plant.get("catalog_container_line"))
+    if not container:
+        container = next(
+            (c for c in (usable(v.get("container")) for v in variants) if c), ""
+        )
+    parts = [p for p in (height, f"контейнер {container}" if container else "") if p]
+    return ", ".join(parts)
 
 
 def _plant_commercial_seo(plant: dict) -> dict:
     """title / h1_suffix / meta_description карточки товара (коммерческий интент)."""
-    name = _plant_display_name(plant)
-    seo_title = f"{name} {CITY_SUFFIX} - цена, наличие | {BRAND_SUFFIX}"
+    # Формула A2: название + латынь в title, размер/контейнер в описании.
+    # Пустая подстановка (нет латыни, нет высоты) даёт пустую строку, а не «0».
+    name = (plant.get("title_ru") or "").strip() or _plant_display_name(plant)
+    latin = (plant.get("title_latin") or "").strip()
+    latin_part = f" ({latin})" if latin else ""
+    seo_title = _clean_sentence(
+        f"{name}{latin_part} {CITY_SUFFIX} - саженцы из питомника | {BRAND_SUFFIX}"
+    )
     # Гео-суффикс держим только в title / og / мете: в видимом H1 он смотрится
     # навязчиво для живого посетителя, на ранжирование по гео это не влияет.
     h1_suffix = ""
 
+    size_line = _plant_size_line(plant)
+    size_part = f"{size_line}, " if size_line else ""
     price_line = _plant_min_price_line(plant)
-    if price_line:
-        price_part = f"Цена от {price_line}"
-    else:
-        price_part = "Цену и наличие уточняйте"
-    stock_part = "есть в наличии" if _plant_in_stock(plant) else "поставка под заказ"
-    meta = (
-        f"{name} - {CITY_SUFFIX} в питомнике «{BRAND_SUFFIX}». {price_part}, {stock_part}. "
-        "Доставка по Новосибирску и области, растения адаптированы к сибирскому климату."
+    price_part = f"цена от {price_line}" if price_line else "цена по запросу"
+    stock_part = "Есть в наличии" if _plant_in_stock(plant) else "Поставка под заказ"
+    # В описании берём витринное имя целиком (с сортом): у одного вида бывает
+    # два десятка сортов, и по короткому имени описания склеились бы в дубли.
+    full_name = _plant_display_name(plant) or name
+    meta = _sentences_within(
+        [
+            _clean_sentence(
+                f"Саженцы {full_name} в Новосибирске: {size_part}зимостойкость, {price_part}."
+            ),
+            f"{stock_part}, самовывоз в Кольцово.",
+            "Выращены в нашем питомнике, не привозной импорт.",
+        ],
+        220,
     )
     return {
         "seo_title": seo_title,
         "plant_h1_suffix": h1_suffix,
-        "meta_description": _trim_meta(meta),
+        "meta_description": meta,
     }
 
 
@@ -170,8 +277,33 @@ def _reviews_items(centers=None):
     return items
 
 
+def _catalog_positions_note(default: str = "1000+ растений") -> str:
+    """Подпись карточки каталога на главной из реального размера каталога.
+
+    Округляем вниз до сотни: обещать точное число позиций нельзя, оно меняется
+    с каждой выгрузкой, а «700+» остаётся правдой между обновлениями.
+    """
+    try:
+        plants, _ = get_merged_catalog_plants()
+        count = len(plants)
+    except Exception:
+        return default
+    if count < 100:
+        return default
+    return f"{count // 100 * 100}+ позиций"
+
+
+def _home_main_directions() -> list[dict]:
+    items = [dict(item) for item in HOME_PAGE.get("main_directions") or []]
+    for item in items:
+        if item.get("href") == "/catalog/":
+            item["note"] = _catalog_positions_note(item.get("note") or "")
+    return items
+
+
 def home(request):
     ctx = dict(HOME_PAGE)
+    ctx["main_directions"] = _home_main_directions()
     ctx["reviews_aggregate"] = REVIEWS_DATA["aggregate"]
     # Компактный блок на главной: 6 отзывов (брендовые запросы + rich-сниппет).
     ctx["reviews_items"] = _reviews_items()[:6]
@@ -203,7 +335,47 @@ def roll_lawn_price(request):
     """Прайс рулонного газона: пункт «Рулонные газоны» в боковом меню каталога."""
     ctx = dict(ROLL_LAWN_PRICE_PAGE)
     ctx["active_catalog_nav_route"] = "roll_lawn_price"
+    blocks = []
+    offer = seo.roll_lawn_offer_jsonld(
+        ROLL_LAWN_PRICE_PAGE["price_rows"], "/prais-rulonnyy-gazon/"
+    )
+    if offer:
+        blocks.append(offer)
+    blocks.append(
+        seo.breadcrumbs_jsonld([
+            ("Главная", "/"),
+            ("Рулонный газон", "/gazon/"),
+            ("Прайс на рулонный газон", "/prais-rulonnyy-gazon/"),
+        ])
+    )
+    ctx["jsonld_blocks"] = blocks
     return render(request, "pages/roll-lawn-price.html", enrich_catalog_context(ctx))
+
+
+def ukladka(request):
+    """Лендинг «Укладка рулонного газона»: отдельная посадочная под кластер «укладка».
+
+    Цена укладки живёт в UKLADKA_PRICE_FROM (pages/data.py). Пока она None,
+    в Service-разметке блока offers нет: цену в микроразметку не выдумываем.
+    """
+    ctx = dict(UKLADKA_PAGE)
+    canonical = UKLADKA_PAGE["canonical_path"]
+    ctx["jsonld_blocks"] = [
+        seo.service_jsonld(
+            name="Укладка рулонного газона",
+            description=UKLADKA_PAGE["meta_description"],
+            canonical_path=canonical,
+            service_type="Укладка рулонного газона",
+            price_from=UKLADKA_PRICE_FROM,
+        ),
+        seo.faq_jsonld(UKLADKA_PAGE["faq"]),
+        seo.breadcrumbs_jsonld([
+            ("Главная", "/"),
+            ("Рулонный газон", "/gazon/"),
+            ("Укладка рулонного газона", canonical),
+        ]),
+    ]
+    return render(request, "pages/ukladka.html", ctx)
 
 
 def ozelenenie_b2c(request):
@@ -277,14 +449,10 @@ def catalog_item(request, slug):
         ctx["plants"] = [p for p in merged_plants if plant_belongs_to_category(p, slug)]
         ctx["canonical_path"] = f"/catalog/{slug}/"
         label = ctx["category_label"]
-        ctx["seo_title"] = (
-            f"{label} - {CITY_SUFFIX}, цена в питомнике | {BRAND_SUFFIX}"
-        )
+        category_seo = _category_commercial_seo(label, len(ctx["plants"]))
+        ctx["seo_title"] = category_seo["seo_title"]
         ctx["og_title"] = f"{label} {CITY_SUFFIX}"
-        ctx["meta_description"] = _trim_meta(
-            f"{label} {CITY_SUFFIX} в питомнике «{BRAND_SUFFIX}»: актуальные цены, наличие "
-            "и доставка по области. Растения адаптированы к сибирскому климату."
-        )
+        ctx["meta_description"] = category_seo["meta_description"]
         ctx["jsonld_blocks"] = [
             seo.breadcrumbs_jsonld([
                 ("Главная", "/"),
@@ -453,6 +621,16 @@ def kottedzhi_direct(request):
     в sitemap.xml не попадает, в robots.txt закрыта.
     """
     return render(request, "pages/kottedzhi_direct.html", KOTTEDZHI_DIRECT_PAGE)
+
+
+def ozelenenie_season_end(request):
+    """Скрытая посадочная «Озеленение · финал сезона» под Яндекс.Директ, noindex.
+
+    Живёт только на платном трафике: ссылок с сайта нет, в sitemap.xml не попадает,
+    в robots.txt закрыта. Заявка уходит в POST /api/lead/ (pages/landing_leads.py),
+    чтобы вместе с контактом сохранились landing_id, UTM и yclid.
+    """
+    return render(request, "pages/ozelenenie_season_end.html", OZELENENIE_SEASON_END_PAGE)
 
 
 def predzakaz(request):

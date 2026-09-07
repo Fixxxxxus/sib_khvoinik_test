@@ -21,6 +21,7 @@ from pages.models import (
     CareCalendarSeasonRecommendation,
     CatalogCategory,
     CatalogSubcategory,
+    LandingLead,
     Plant,
     PlantGalleryImage,
     PlantVariant,
@@ -584,3 +585,37 @@ class ArticleAdmin(admin.ModelAdmin):
 admin.site.site_header = "Сибирские газоны - администрирование"
 admin.site.site_title = "Каталог и контент"
 admin.site.index_title = "Панель управления"
+
+
+@admin.register(LandingLead)
+class LandingLeadAdmin(admin.ModelAdmin):
+    """Журнал заявок с рекламных посадочных: только чтение.
+
+    Заявки создаёт API (POST /api/lead/), руками их заводить и править незачем -
+    менеджер работает с лидом в Битрикс24, здесь смотрят исходные данные и UTM,
+    когда лид до Б24 не доехал.
+    """
+
+    list_display = (
+        "created_at",
+        "landing_id",
+        "name",
+        "phone",
+        "utm_campaign",
+        "utm_content",
+        "b24_lead_id",
+        "lead_id",
+    )
+    list_filter = ("landing_id", "source", "created_at")
+    search_fields = ("name", "phone", "lead_id", "utm_campaign", "utm_content", "yclid")
+    date_hierarchy = "created_at"
+    ordering = ("-created_at",)
+
+    def get_readonly_fields(self, request, obj=None):
+        return [f.name for f in self.model._meta.fields]
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False

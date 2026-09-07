@@ -1,0 +1,101 @@
+{% comment %}
+  Форма заявки посадочной «Озеленение · финал сезона». Подключается дважды
+  (в hero и в повторном блоке внизу), поэтому все id уникализируются суффиксом
+  form_id: {% include 'partials/landing_lead_form.html' with form_id="hero" %}
+
+  Отправка - static/js/landing-ozelenenie.js на POST /api/lead/. Атрибут
+  data-landing-form нужен скрипту, чтобы найти обе формы.
+{% endcomment %}
+<form
+  class="space-y-3"
+  data-landing-form
+  data-form-id="{{ form_id }}"
+  novalidate
+>
+  <div>
+    <label for="lead-name-{{ form_id }}" class="block text-sm font-medium text-slate-700">
+      {{ form.name_label }}
+    </label>
+    <input
+      id="lead-name-{{ form_id }}"
+      name="name"
+      type="text"
+      required
+      autocomplete="name"
+      placeholder="{{ form.name_placeholder }}"
+      aria-describedby="lead-name-error-{{ form_id }}"
+      class="mt-1 w-full min-h-[48px] rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-900 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25"
+    />
+    <p id="lead-name-error-{{ form_id }}" data-error-for="name" class="mt-1 hidden text-sm text-red-600"></p>
+  </div>
+
+  <div>
+    <label for="lead-phone-{{ form_id }}" class="block text-sm font-medium text-slate-700">
+      {{ form.phone_label }}
+    </label>
+    <input
+      id="lead-phone-{{ form_id }}"
+      name="phone"
+      type="tel"
+      inputmode="tel"
+      required
+      autocomplete="tel"
+      placeholder="{{ form.phone_placeholder }}"
+      aria-describedby="lead-phone-error-{{ form_id }}"
+      class="mt-1 w-full min-h-[48px] rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-900 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25"
+    />
+    <p id="lead-phone-error-{{ form_id }}" data-error-for="phone" class="mt-1 hidden text-sm text-red-600"></p>
+  </div>
+
+  {% if with_comment %}
+    <div>
+      <label for="lead-comment-{{ form_id }}" class="block text-sm font-medium text-slate-700">
+        {{ form.comment_label }}
+      </label>
+      <input
+        id="lead-comment-{{ form_id }}"
+        name="comment"
+        type="text"
+        placeholder="{{ form.comment_placeholder }}"
+        class="mt-1 w-full min-h-[48px] rounded-2xl border border-slate-200 bg-white px-4 py-3 text-base text-slate-900 outline-none transition focus:border-brand focus:ring-2 focus:ring-brand/25"
+      />
+    </div>
+  {% endif %}
+
+  {% comment %}Honeypot: людям поле не видно, заполняют его только боты.{% endcomment %}
+  <div aria-hidden="true" class="pointer-events-none absolute left-[-9999px] h-0 w-0 overflow-hidden" style="opacity:0">
+    <label for="lead-company-{{ form_id }}">Не заполняйте это поле</label>
+    <input id="lead-company-{{ form_id }}" type="text" name="company_site" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div>
+    <label class="flex cursor-pointer items-start gap-2.5 text-[13px] leading-snug text-slate-600">
+      <input
+        id="lead-consent-{{ form_id }}"
+        type="checkbox"
+        name="consent"
+        value="1"
+        required
+        class="mt-0.5 h-4 w-4 shrink-0 rounded border-slate-300 text-brand focus:ring-brand/30"
+      />
+      <span>
+        Согласен на
+        <a href="{% url 'consent' %}" target="_blank" rel="noopener noreferrer" class="text-brand underline underline-offset-2">обработку персональных данных</a>
+        и принимаю
+        <a href="{% url 'privacy' %}" target="_blank" rel="noopener noreferrer" class="text-brand underline underline-offset-2">политику конфиденциальности</a>
+      </span>
+    </label>
+    <p data-error-for="consent" class="mt-1 hidden text-sm text-red-600"></p>
+  </div>
+
+  <p data-error-for="form" role="alert" class="hidden rounded-xl bg-red-50 px-3 py-2 text-sm text-red-700"></p>
+
+  <button
+    type="submit"
+    data-lead-submit
+    class="w-full min-h-[52px] rounded-2xl bg-gradient-to-r from-brand to-brand2 px-6 text-base font-bold text-white shadow-glow transition hover:brightness-105 disabled:cursor-not-allowed disabled:opacity-70"
+  >
+    {{ cta_label }}
+  </button>
+  <p class="text-center text-[13px] text-slate-500">{{ cta_note }}</p>
+</form>
