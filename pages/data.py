@@ -17255,9 +17255,9 @@ OZELENENIE_SEASON_END_PAGE = {
             "alt": "Свежеуложенный рулонный газон под двумя соснами во дворе",
         },
         {
-            "image": "media/images/landing/ozelenenie-season-end/gallery-house-plantings.webp",
+            "image": "media/images/landing/ozelenenie-season-end/gallery-house-lawn.webp",
             "caption": "Посадки и композиции",
-            "alt": "Деревянный дом, мощёная площадка и молодые хвойные посадки вдоль ограды",
+            "alt": "Деревянный дом с уложенным газоном, мощёной дорожкой и цветником из гортензий",
         },
         {
             "image": "media/images/landing/ozelenenie-season-end/gallery-paved-yard.webp",
