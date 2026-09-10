@@ -70,7 +70,7 @@
                 <p class="truncate text-sm font-medium text-slate-900">{{ variant.title }}</p>
                 <p class="text-xs text-slate-500">
                   {% if variant.stock %}Осталось {{ variant.stock }} {{ item.unit }}{% else %}Нет в наличии{% endif %}
-                  {% if variant.price %} · {{ variant.effective_price|floatformat:0 }} ₽{% endif %}
+                  {% if variant.price %} · {{ variant.effective_price_text }} ₽{% endif %}
                 </p>
               </div>
               <div class="flex shrink-0 items-center rounded-lg border border-slate-300"

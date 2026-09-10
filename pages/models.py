@@ -1045,6 +1045,19 @@ class WholesaleItem(models.Model):
 
         return wholesale_pricing.wholesale_price(self.price)
 
+    @property
+    def wholesale_price_text(self):
+        """«9 520»: разряды через пробел, как в прайсе и на карточке."""
+        from . import wholesale_pricing
+
+        return wholesale_pricing.format_amount(self.wholesale_price)
+
+    @property
+    def price_text(self):
+        from . import wholesale_pricing
+
+        return wholesale_pricing.format_amount(self.price)
+
 
 class WholesaleItemVariant(models.Model):
     """Вариант позиции: цвет, сорт, партия. Свой остаток и свой степпер в карточке.
@@ -1098,6 +1111,12 @@ class WholesaleItemVariant(models.Model):
     def effective_price(self):
         """Цена варианта: своя, если задана, иначе цена позиции."""
         return self.price if self.price is not None else self.item.price
+
+    @property
+    def effective_price_text(self):
+        from . import wholesale_pricing
+
+        return wholesale_pricing.format_amount(self.effective_price)
 
     def price_ladder(self) -> list[dict]:
         from . import wholesale_pricing
