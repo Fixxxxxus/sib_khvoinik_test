@@ -55,35 +55,26 @@ def _base_context(request: HttpRequest) -> dict:
         "discount_approved": wholesale_pricing.DISCOUNT_TIERS_APPROVED,
         "discount_disclaimer": wholesale_pricing.DISCOUNT_DISCLAIMER,
         "discount_basis": wholesale_pricing.DISCOUNT_BASIS,
-        # Деления полосы прогресса: ноль плюс пороги сетки. Заполнение считает JS,
-        # разметку делений отдаём сразу, чтобы полоса не прыгала после загрузки.
+        "discount_entry_percent": wholesale_pricing.entry_percent(),
+        "discount_individual_text": wholesale_pricing.INDIVIDUAL_TIER_TEXT,
+        # Деления полосы прогресса: по одному на ступень сетки. Заполнение считает
+        # JS, разметку делений отдаём сразу, чтобы полоса не прыгала после загрузки.
         "progress_marks": _progress_marks(),
         "progress_hint_default": wholesale_pricing.progress_hint(Decimal(0), 0),
         "min_order": wholesale_pricing.min_order_for_display(),
     }
 
 
-def _short_mark(value: int) -> str:
-    """Подпись деления: 4000 -> «4к», 1500000 -> «1,5 млн». Как на референсе."""
-    if value >= 1_000_000:
-        millions = value / 1_000_000
-        text = f"{millions:.1f}".rstrip("0").rstrip(".").replace(".", ",")
-        return f"{text} млн"
-    if value >= 1000:
-        thousands = value / 1000
-        text = f"{thousands:.1f}".rstrip("0").rstrip(".").replace(".", ",")
-        return f"{text}к"
-    return str(value)
-
-
 def _progress_marks() -> list[dict]:
-    marks = [{"value": 0, "label": "0", "percent": 0}]
+    """Подписи делений полосы: по ступеням сетки, в порядке выгодности."""
+    marks = [{"key": "start", "label": "0", "percent": 0, "individual": False}]
     for tier in wholesale_pricing.tiers_for_frontend()["tiers"]:
         marks.append(
             {
-                "value": tier["threshold"],
-                "label": _short_mark(tier["threshold"]),
+                "key": tier["key"],
+                "label": tier["short"] or tier["label"],
                 "percent": tier["percent"],
+                "individual": tier["individual"],
             }
         )
     return marks

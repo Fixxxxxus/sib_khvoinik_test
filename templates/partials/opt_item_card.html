@@ -24,10 +24,8 @@
     {% if item.size %}<p class="text-sm text-slate-600">Размер: {{ item.size }}</p>{% endif %}
     {% if item.availability %}<p class="text-sm text-slate-500">{{ item.availability }}</p>{% endif %}
     <div class="mt-auto">
-      <p class="text-lg font-semibold text-slate-900">{{ item.price|floatformat:0 }} ₽<span class="text-sm font-normal text-slate-500">/{{ item.unit }}</span></p>
-      {% with best=item.price_ladder|last %}
-        {% if best.percent %}<p class="text-xs text-slate-500">Оптом от {{ best.price_text }} ({{ best.label }})</p>{% endif %}
-      {% endwith %}
+      <p class="text-lg font-semibold text-slate-900">{{ item.wholesale_price|floatformat:0 }} ₽<span class="text-sm font-normal text-slate-500">/{{ item.unit }}</span></p>
+      <p class="text-xs text-slate-500">Опт с первой позиции. Розница {{ item.price|floatformat:0 }} ₽</p>
     </div>
     {% if item.active_variants %}
       <a href="{{ item.get_absolute_url }}"

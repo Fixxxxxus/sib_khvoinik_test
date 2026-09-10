@@ -208,6 +208,10 @@ def build_order_text(order: WholesaleOrder, lines: list[dict], utm: dict) -> str
     parts.append(f"Скидка: {order.discount_percent}% ({order.discount_amount} ₽)")
     if not wholesale_pricing.DISCOUNT_TIERS_APPROVED:
         parts.append(f"Внимание: {wholesale_pricing.DISCOUNT_DISCLAIMER}")
+    # Верхняя ступень сетки - не процент, а индивидуальное предложение: менеджер
+    # должен подтвердить цену руками, показанный итог предварительный.
+    if wholesale_pricing.is_individual(order.subtotal, order.total_quantity):
+        parts.append(f"Внимание: {wholesale_pricing.INDIVIDUAL_TIER_TEXT}")
     parts.append(f"Итого: {order.total} ₽")
     if order.comment:
         parts.append(f"Комментарий: {order.comment}")

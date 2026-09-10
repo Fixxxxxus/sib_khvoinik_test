@@ -18,15 +18,34 @@
 
   var config = readConfig();
 
+  /* Насколько «одинаково близкими» считаем ступени по разным осям.
+     Та же константа, что в pages/wholesale_pricing.HINT_TOLERANCE. */
+  var HINT_TOLERANCE = 0.1;
+
   function readConfig() {
     var node = document.getElementById('opt-discount-config');
-    var fallback = { basis: 'amount', tiers: [], approved: false, disclaimer: '', min_order: 0 };
+    var fallback = {
+      basis: 'hybrid',
+      tiers: [],
+      approved: false,
+      disclaimer: '',
+      entry_percent: 0,
+      individual_text: '',
+      individual_price_text: '',
+      min_order: 0
+    };
     if (!node) return fallback;
     try {
       var parsed = JSON.parse(node.textContent || '{}');
       parsed.tiers = Array.isArray(parsed.tiers) ? parsed.tiers.slice() : [];
-      parsed.tiers.sort(function (a, b) { return a.threshold - b.threshold; });
+      /* Порядок ступеней: проценты по возрастанию, индивидуальная - последней. */
+      parsed.tiers.sort(function (a, b) {
+        var ra = [a.individual ? 1 : 0, a.percent || 0];
+        var rb = [b.individual ? 1 : 0, b.percent || 0];
+        return ra[0] - rb[0] || ra[1] - rb[1];
+      });
       parsed.min_order = Number(parsed.min_order || 0);
+      parsed.entry_percent = Number(parsed.entry_percent || 0);
       return parsed;
     } catch (e) {
       return fallback;
@@ -67,9 +86,45 @@
     return amount(value) + ' ₽';
   }
 
-  /* База скидки словами: рубли или штуки, смотря что стоит в конфиге. */
-  function formatBase(value) {
-    return config.basis === 'quantity' ? amount(value) + ' шт' : money(value);
+  /* Остаток словами: по штукам или по рублям, смотря какая ось ступени. */
+  function formatAxis(axis, value) {
+    return axis === 'quantity' ? amount(value) + ' шт' : money(value);
+  }
+
+  /* Оси ступени: количество, чек или обе. */
+  function tierAxes(tier) {
+    var axes = [];
+    if (tier.min_quantity) axes.push({ axis: 'quantity', threshold: Number(tier.min_quantity) });
+    if (tier.min_amount) axes.push({ axis: 'amount', threshold: Number(tier.min_amount) });
+    return axes;
+  }
+
+  /* Ступень взята, если выполнена ЛЮБАЯ из её осей. */
+  function tierReached(tier, subtotal, quantity) {
+    return tierAxes(tier).some(function (ax) {
+      var value = ax.axis === 'quantity' ? quantity : subtotal;
+      return value >= ax.threshold;
+    });
+  }
+
+  /* Ближайшая ось ступени: по какой из них добрать меньше в долях порога. */
+  function tierGap(tier, subtotal, quantity) {
+    var best = null;
+    tierAxes(tier).forEach(function (ax) {
+      var value = ax.axis === 'quantity' ? quantity : subtotal;
+      var remaining = Math.max(0, ax.threshold - value);
+      var relative = ax.threshold ? remaining / ax.threshold : 0;
+      if (!best || relative < best.relative) {
+        best = {
+          axis: ax.axis,
+          threshold: ax.threshold,
+          remaining: remaining,
+          remainingText: formatAxis(ax.axis, remaining),
+          relative: relative
+        };
+      }
+    });
+    return best;
   }
 
   function totals(lines) {
@@ -79,25 +134,69 @@
       subtotal += Number(line.price) * Number(line.qty);
       quantity += Number(line.qty);
     });
-    var base = config.basis === 'quantity' ? quantity : subtotal;
+
     var percent = 0;
-    var next = null;
+    var individual = false;
+    var tierKey = 'retail';
+    var state = [];
     config.tiers.forEach(function (tier) {
-      if (base >= tier.threshold) {
-        percent = tier.percent;
-      } else if (next === null) {
-        next = { threshold: tier.threshold, percent: tier.percent, remaining: tier.threshold - base };
+      var reached = tierReached(tier, subtotal, quantity);
+      var gap = tierGap(tier, subtotal, quantity);
+      state.push({
+        key: tier.key,
+        reached: reached,
+        fill: reached ? 100 : gap ? Math.max(0, Math.min(100, (1 - gap.relative) * 100)) : 0
+      });
+      if (!reached) return;
+      tierKey = tier.key;
+      if (tier.individual) {
+        individual = true;
+      } else {
+        percent = Math.max(percent, Number(tier.percent || 0));
       }
     });
+
+    /* Ближайшая невзятая ступень по обеим осям, а не следующая по списку.
+       Если оси примерно одинаково далеко, ведём к нижней ступени лестницы:
+       та же логика, что в pages/wholesale_pricing.next_tier_for. */
+    var candidates = [];
+    config.tiers.forEach(function (tier, index) {
+      if (tierReached(tier, subtotal, quantity)) return;
+      if (tier.individual ? individual : Number(tier.percent || 0) <= percent) return;
+      var gap = tierGap(tier, subtotal, quantity);
+      if (!gap) return;
+      candidates.push({
+        key: tier.key,
+        label: tier.label,
+        percent: tier.percent,
+        individual: !!tier.individual,
+        axis: gap.axis,
+        remaining: gap.remaining,
+        remainingText: gap.remainingText,
+        relative: gap.relative,
+        rank: index
+      });
+    });
+    var next = null;
+    if (candidates.length) {
+      var closest = Math.min.apply(null, candidates.map(function (c) { return c.relative; }));
+      candidates.forEach(function (c) {
+        if (c.relative > closest + HINT_TOLERANCE) return;
+        if (!next || c.rank < next.rank) next = c;
+      });
+    }
+
     var discount = Math.round(subtotal * percent) / 100;
     return {
       subtotal: subtotal,
       quantity: quantity,
       percent: percent,
+      individual: individual,
+      tierKey: tierKey,
+      tierState: state,
       discount: discount,
       total: subtotal - discount,
       next: next,
-      base: base,
       minOrderLeft: Math.max(0, config.min_order - subtotal),
       minOrderOk: subtotal >= config.min_order
     };
@@ -106,11 +205,15 @@
   /* Подсказка под полосой: те же формулировки, что и на сервере. */
   function progressHint(sums) {
     if (!config.tiers.length) return '';
-    if (!sums.next) return 'Максимальная скидка ' + sums.percent + '%';
-    if (sums.percent === 0) {
-      return 'Добавьте товаров на ' + formatBase(sums.next.remaining) + ', чтобы получить первую скидку';
+    if (sums.individual) return config.individual_text;
+    if (sums.quantity <= 0 && sums.subtotal <= 0) {
+      return 'Оптовая скидка ' + config.entry_percent + '% включается с первой штуки';
     }
-    return 'До скидки ' + sums.next.percent + '% осталось ' + formatBase(sums.next.remaining);
+    if (!sums.next) return 'Максимальная скидка ' + sums.percent + '%';
+    if (sums.next.individual) {
+      return 'До индивидуальных условий осталось ' + sums.next.remainingText;
+    }
+    return 'До скидки ' + sums.next.percent + '% осталось ' + sums.next.remainingText;
   }
 
   function addQty(data, delta) {
@@ -202,25 +305,20 @@
     });
   }
 
-  /* Полоса прогресса: сегмент между соседними порогами заливается пропорционально. */
+  /* Полоса прогресса: у каждой ступени своё деление, заливка - по её лучшей оси. */
   function renderProgress(sums) {
     document.querySelectorAll('[data-opt-progress-percent]').forEach(function (node) {
-      node.textContent = 'Скидка ' + sums.percent + '%';
+      node.textContent = sums.individual ? config.individual_price_text : 'Скидка ' + sums.percent + '%';
     });
     document.querySelectorAll('[data-opt-progress-hint]').forEach(function (node) {
       node.textContent = progressHint(sums);
     });
 
-    var marks = [0].concat(config.tiers.map(function (tier) { return tier.threshold; }));
+    var fills = {};
+    sums.tierState.forEach(function (row) { fills[row.key] = row.fill; });
     document.querySelectorAll('[data-opt-progress-seg]').forEach(function (node) {
-      var index = parseInt(node.getAttribute('data-opt-progress-seg'), 10);
-      var from = marks[index - 1];
-      var to = marks[index];
-      var width = 0;
-      if (to > from) {
-        width = Math.min(1, Math.max(0, (sums.base - from) / (to - from))) * 100;
-      }
-      node.style.width = width + '%';
+      var key = node.getAttribute('data-opt-progress-seg');
+      node.style.width = (fills[key] || 0) + '%';
     });
 
     var warning = document.querySelector('[data-opt-min-order-warning]');
@@ -238,8 +336,7 @@
   /* Активная ступень лестницы цен на карточке. */
   function renderLadder(sums) {
     document.querySelectorAll('[data-opt-tier-step]').forEach(function (node) {
-      var percent = Number(node.getAttribute('data-percent'));
-      var active = percent === sums.percent;
+      var active = node.getAttribute('data-tier') === sums.tierKey;
       node.classList.toggle('bg-brand/10', active);
       node.classList.toggle('ring-1', active);
       node.classList.toggle('ring-brand', active);
@@ -299,7 +396,13 @@
     setText('[data-opt-subtotal]', money(sums.subtotal));
     setText('[data-opt-discount]', sums.percent ? '-' + money(sums.discount) + ' (' + sums.percent + '%)' : 'пока нет');
     setText('[data-opt-total]', money(sums.total));
-    setText('[data-opt-next-tier]', progressHint(sums));
+    var note = document.querySelector('[data-opt-individual-note]');
+    if (note) {
+      note.textContent = sums.individual ? config.individual_text : '';
+      note.hidden = !sums.individual;
+    }
+    /* На индивидуальной ступени подсказку не дублируем: ниже стоит та же строка. */
+    setText('[data-opt-next-tier]', sums.individual ? '' : progressHint(sums));
   }
 
   function escapeHtml(value) {

@@ -28,13 +28,14 @@
 
       <div class="mt-3 flex flex-wrap items-start gap-x-6 gap-y-3" data-opt-ladder>
         {% for step in price_ladder %}
-          <div data-opt-tier-step data-percent="{{ step.percent }}"
-               class="rounded-lg px-2 py-1 {% if step.is_retail %}bg-brand/10{% endif %}">
-            <p class="whitespace-nowrap text-xl font-bold sm:text-2xl {% if step.is_retail %}text-brand{% else %}text-slate-900{% endif %}">{{ step.price_text }}</p>
+          <div data-opt-tier-step data-tier="{{ step.key }}" data-percent="{{ step.percent|default_if_none:'' }}"
+               class="rounded-lg px-2 py-1 {% if step.key == 'entry' %}bg-brand/10{% endif %}">
+            <p class="whitespace-nowrap text-xl font-bold sm:text-2xl {% if step.individual %}text-slate-700{% elif step.key == 'entry' %}text-brand{% else %}text-slate-900{% endif %}">{{ step.price_text }}</p>
             <p class="text-xs text-slate-400">{{ step.label }}</p>
           </div>
         {% endfor %}
       </div>
+      <p class="mt-2 text-xs text-slate-500">{{ discount_individual_text }}.</p>
 
       <h1 class="mt-4 text-2xl font-semibold text-slate-900 sm:text-3xl">{{ item.title }}</h1>
 
@@ -123,7 +124,7 @@
       </div>
 
       <p class="mt-4 text-xs text-slate-500">
-        Количество меняется прямо здесь: позиция сразу попадает в корзину, а скидка пересчитывается по сумме.
+        Количество меняется прямо здесь: позиция сразу попадает в корзину. Скидка считается и по штукам, и по чеку - применяем ту ступень, что выгоднее вам.
       </p>
     </div>
   </div>

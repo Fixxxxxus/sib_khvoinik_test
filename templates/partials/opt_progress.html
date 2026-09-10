@@ -19,7 +19,7 @@
   <div class="mt-2 flex gap-1">
     {% for mark in progress_marks %}{% if not forloop.first %}
       <div class="h-1.5 flex-1 overflow-hidden rounded-full bg-slate-200">
-        <div data-opt-progress-seg="{{ forloop.counter0 }}" class="h-full rounded-full bg-brand transition-all" style="width:0%"></div>
+        <div data-opt-progress-seg="{{ mark.key }}" class="h-full rounded-full {% if mark.individual %}bg-accent{% else %}bg-brand{% endif %} transition-all" style="width:0%"></div>
       </div>
     {% endif %}{% endfor %}
   </div>

@@ -46,39 +46,74 @@ def make_catalog() -> tuple[WholesaleSection, WholesaleItem, WholesaleItem]:
 
 
 class DiscountGridTest(TestCase):
-    """Сетка скидок: пороги живут в одном конфиге, логика их не знает в лицо."""
+    """Гибридная сетка заказчика: ступени и по количеству, и по чеку."""
 
-    def test_no_discount_below_first_threshold(self):
-        totals = wholesale_pricing.calculate_totals(Decimal("50000"), 10)
+    def test_entry_discount_works_from_the_first_position(self):
+        """Входные 20% включаются с первой штуки, а не с какого-то порога."""
+        totals = wholesale_pricing.calculate_totals(Decimal("490"), 1)
+        self.assertEqual(totals["discount_percent"], 20)
+        self.assertEqual(totals["discount_amount"], Decimal("98.00"))
+        self.assertEqual(totals["total"], Decimal("392.00"))
+        self.assertFalse(totals["individual"])
+
+    def test_empty_cart_has_no_discount(self):
+        totals = wholesale_pricing.calculate_totals(Decimal("0"), 0)
         self.assertEqual(totals["discount_percent"], 0)
-        self.assertEqual(totals["discount_amount"], Decimal("0.00"))
-        self.assertEqual(totals["total"], Decimal("50000.00"))
 
-    def test_takes_highest_reached_tier(self):
-        with patch.object(
-            wholesale_pricing, "DISCOUNT_TIERS", ((100_000, 3), (300_000, 5), (500_000, 8))
-        ):
-            self.assertEqual(wholesale_pricing.discount_percent_for(Decimal("99999"), 1), 0)
-            self.assertEqual(wholesale_pricing.discount_percent_for(Decimal("100000"), 1), 3)
-            self.assertEqual(wholesale_pricing.discount_percent_for(Decimal("350000"), 1), 5)
-            self.assertEqual(wholesale_pricing.discount_percent_for(Decimal("900000"), 1), 8)
+    def test_quantity_tier_beats_amount_tier(self):
+        """50 дешёвых штук дают 30%, хотя по чеку взята только входная ступень."""
+        percent = wholesale_pricing.discount_percent_for(Decimal("30000"), 50)
+        self.assertEqual(percent, 30)
+        self.assertEqual(wholesale_pricing.discount_percent_for(Decimal("30000"), 30), 25)
+        self.assertEqual(wholesale_pricing.discount_percent_for(Decimal("30000"), 29), 20)
 
-    def test_amount_math(self):
-        with patch.object(wholesale_pricing, "DISCOUNT_TIERS", ((100_000, 10),)):
-            totals = wholesale_pricing.calculate_totals(Decimal("200000"), 5)
-        self.assertEqual(totals["discount_percent"], 10)
-        self.assertEqual(totals["discount_amount"], Decimal("20000.00"))
-        self.assertEqual(totals["total"], Decimal("180000.00"))
+    def test_amount_tier_beats_quantity_tier(self):
+        """Десять крупномеров - это 35% по чеку, хотя штук меньше тридцати."""
+        percent = wholesale_pricing.discount_percent_for(Decimal("115000"), 10)
+        self.assertEqual(percent, 35)
+        totals = wholesale_pricing.calculate_totals(Decimal("115000"), 10)
+        self.assertEqual(totals["discount_amount"], Decimal("40250.00"))
+        self.assertEqual(totals["total"], Decimal("74750.00"))
 
-    def test_rule_switches_to_quantity_without_touching_logic(self):
-        """Смена правила на «по штукам» - это одна константа, а не правка формул."""
-        with patch.object(wholesale_pricing, "DISCOUNT_BASIS", "quantity"), patch.object(
-            wholesale_pricing, "DISCOUNT_TIERS", ((100, 7),)
-        ):
-            self.assertEqual(wholesale_pricing.discount_percent_for(Decimal("1000000"), 99), 0)
-            totals = wholesale_pricing.calculate_totals(Decimal("50000"), 100)
-        self.assertEqual(totals["discount_percent"], 7)
-        self.assertEqual(totals["total"], Decimal("46500.00"))
+    def test_best_axis_wins_when_both_are_reached(self):
+        """Взяты обе оси - применяем ту ступень, что выгоднее клиенту."""
+        self.assertEqual(wholesale_pricing.discount_percent_for(Decimal("150000"), 60), 35)
+
+    def test_top_tier_is_individual_without_a_percent(self):
+        """Верхняя ступень - не процент, а текст: менеджер подтверждает цену."""
+        totals = wholesale_pricing.calculate_totals(Decimal("250000"), 60)
+        self.assertTrue(totals["individual"])
+        # Никаких выдуманных процентов сверх последней числовой ступени.
+        self.assertEqual(totals["discount_percent"], 35)
+        self.assertEqual(totals["individual_note"], wholesale_pricing.INDIVIDUAL_TIER_TEXT)
+        self.assertIn("индивидуально", totals["individual_note"].lower())
+
+    def test_grid_is_marked_as_confirmed_by_the_customer(self):
+        self.assertTrue(wholesale_pricing.DISCOUNT_TIERS_APPROVED)
+        self.assertEqual(wholesale_pricing.DISCOUNT_TIERS_RECEIVED, "10.09.2026")
+        self.assertTrue(wholesale_pricing.INDIVIDUAL_TIER_NEEDS_MANUAL_APPROVAL)
+        self.assertTrue(wholesale_pricing.MIN_ORDER_APPROVED)
+        self.assertEqual(wholesale_pricing.MIN_ORDER_AMOUNT, 15_000)
+
+    def test_individual_tier_starts_at_hundred_pieces(self):
+        """Заказчик переопределил порог по количеству: 100 штук, не 50."""
+        self.assertEqual(wholesale_pricing.INDIVIDUAL_TIER_MIN_QUANTITY, 100)
+        self.assertFalse(wholesale_pricing.is_individual(Decimal("30000"), 99))
+        self.assertTrue(wholesale_pricing.is_individual(Decimal("30000"), 100))
+        # На 99 штуках работает обычная ступень 30%, а не индивидуальная.
+        self.assertEqual(wholesale_pricing.discount_percent_for(Decimal("30000"), 99), 30)
+
+    def test_cheap_thirty_pieces_and_big_check_pick_the_better_branch(self):
+        """Проверка заказчика: 30 дешёвых штук - 25%, чек 100 000 при 5 штуках - 35%."""
+        self.assertEqual(wholesale_pricing.discount_percent_for(Decimal("14700"), 30), 25)
+        self.assertEqual(wholesale_pricing.discount_percent_for(Decimal("100000"), 5), 35)
+
+    def test_tiers_for_display_show_text_instead_of_percent_on_top(self):
+        rows = wholesale_pricing.tiers_for_display()
+        self.assertEqual(rows[0]["percent"], 20)
+        self.assertTrue(rows[-1]["individual"])
+        self.assertIsNone(rows[-1]["percent"])
+        self.assertEqual(rows[-1]["value_text"], wholesale_pricing.INDIVIDUAL_TIER_PRICE_TEXT)
 
 
 class OptPagesTest(TestCase):
@@ -111,8 +146,10 @@ class OptPagesTest(TestCase):
         html = self.client.get(f"/opt/{self.section.slug}/{self.tree.slug}/").content.decode()
         self.assertIn("Липа тестовая", html)
         self.assertIn("высота 3 м", html)
-        self.assertIn("Без скидки", html)
+        self.assertIn("Розница", html)
         self.assertIn("6 500 ₽", html)
+        # Опт-цена с первой позиции: 6500 минус входные 20%.
+        self.assertIn("5 200 ₽", html)
         self.assertIn("data-opt-tier-step", html)
         self.assertIn("data-opt-stepper", html)
         self.assertIn("data-opt-progress", html)
@@ -275,70 +312,91 @@ class PriceLadderTest(TestCase):
     """Ценовая лестница карточки: ступени считаются из розницы и сетки скидок."""
 
     def test_steps_are_derived_from_retail_and_grid(self):
-        with patch.object(wholesale_pricing, "DISCOUNT_TIERS", ((4_000, 10), (15_000, 20), (45_000, 21))):
-            ladder = wholesale_pricing.price_ladder(Decimal("10650.00"))
-        self.assertEqual(len(ladder), 4)
-        self.assertEqual(ladder[0]["label"], "Без скидки")
-        self.assertEqual(ladder[0]["price"], Decimal("10650.00"))
-        self.assertEqual([step["price"] for step in ladder[1:]],
-                         [Decimal("9585.00"), Decimal("8520.00"), Decimal("8413.50")])
-        self.assertEqual([step["label"] for step in ladder[1:]],
-                         ["от 4 000 ₽", "от 15 000 ₽", "от 45 000 ₽"])
+        ladder = wholesale_pricing.price_ladder(Decimal("1000.00"))
+        self.assertEqual(ladder[0]["label"], "Розница")
+        self.assertEqual(ladder[0]["price"], Decimal("1000.00"))
+        self.assertEqual([step["percent"] for step in ladder[1:]], [20, 25, 30, 35, None])
+        self.assertEqual(
+            [step["price"] for step in ladder[1:-1]],
+            [Decimal("800.00"), Decimal("750.00"), Decimal("700.00"), Decimal("650.00")],
+        )
+
+    def test_entry_step_is_the_default_wholesale_price(self):
+        """Оптовая цена по умолчанию - розница минус входные 20%."""
+        self.assertEqual(wholesale_pricing.entry_percent(), 20)
+        self.assertEqual(wholesale_pricing.wholesale_price(Decimal("490.00")), Decimal("392.00"))
+
+    def test_individual_step_has_text_instead_of_price(self):
+        ladder = wholesale_pricing.price_ladder(Decimal("11900.00"))
+        top = ladder[-1]
+        self.assertTrue(top["individual"])
+        self.assertIsNone(top["price"])
+        self.assertIsNone(top["percent"])
+        self.assertEqual(top["price_text"], wholesale_pricing.INDIVIDUAL_TIER_PRICE_TEXT)
+        self.assertEqual(top["note"], wholesale_pricing.INDIVIDUAL_TIER_TEXT)
 
     def test_grid_change_moves_the_whole_ladder(self):
         """Отдельного поля под ступень нет: поменяли сетку - лестница поехала следом."""
-        with patch.object(wholesale_pricing, "DISCOUNT_TIERS", ((10_000, 50),)):
+        grid = (
+            {"key": "entry", "label": "Входная", "percent": 50, "min_quantity": 1,
+             "min_amount": None, "individual": False},
+        )
+        with patch.object(wholesale_pricing, "DISCOUNT_TIERS", grid):
             ladder = wholesale_pricing.price_ladder(Decimal("1000.00"))
         self.assertEqual(ladder[1]["price"], Decimal("500.00"))
 
-    def test_ladder_labels_follow_quantity_basis(self):
-        with patch.object(wholesale_pricing, "DISCOUNT_BASIS", "quantity"), patch.object(
-            wholesale_pricing, "DISCOUNT_TIERS", ((100, 5),)
-        ):
-            ladder = wholesale_pricing.price_ladder(Decimal("200.00"))
-        self.assertEqual(ladder[1]["label"], "от 100 шт")
-
 
 class ProgressHintTest(TestCase):
-    """Подсказка «сколько добрать» под полосой прогресса."""
+    """Подсказка «сколько добрать»: ведёт к ближайшей ступени по обеим осям."""
 
-    def setUp(self):
-        self.grid = patch.object(
-            wholesale_pricing, "DISCOUNT_TIERS", ((4_000, 10), (15_000, 20), (45_000, 21))
-        )
-        self.grid.start()
-        self.addCleanup(self.grid.stop)
-
-    def test_empty_cart_asks_for_first_discount(self):
+    def test_empty_cart_promises_the_entry_discount(self):
         self.assertEqual(
             wholesale_pricing.progress_hint(Decimal("0"), 0),
-            "Добавьте товаров на 4 000 ₽, чтобы получить первую скидку",
+            "Оптовая скидка 20% включается с первой штуки",
         )
 
-    def test_partway_to_first_tier(self):
+    def test_hint_counts_positions_when_quantity_is_closer(self):
+        """До 30 позиций осталось 20 штук, до чека - далеко: ведём по штукам."""
         self.assertEqual(
-            wholesale_pricing.progress_hint(Decimal("1500"), 3),
-            "Добавьте товаров на 2 500 ₽, чтобы получить первую скидку",
+            wholesale_pricing.progress_hint(Decimal("20000"), 10),
+            "До скидки 25% осталось 20 шт",
         )
 
-    def test_between_tiers_counts_to_the_next_one(self):
+    def test_hint_counts_money_when_the_check_is_closer(self):
+        """До чека 100 000 ₽ осталось 10 000 ₽, до 30 позиций - две трети корзины."""
         self.assertEqual(
-            wholesale_pricing.progress_hint(Decimal("5000"), 5),
-            "До скидки 20% осталось 10 000 ₽",
+            wholesale_pricing.progress_hint(Decimal("90000"), 10),
+            "До скидки 35% осталось 10 000 ₽",
         )
 
-    def test_top_tier_says_maximum(self):
+    def test_next_tier_switches_axis(self):
+        by_quantity = wholesale_pricing.next_tier_for(Decimal("20000"), 10)
+        self.assertEqual(by_quantity["axis"], "quantity")
+        self.assertEqual(by_quantity["remaining"], Decimal("20"))
+        by_amount = wholesale_pricing.next_tier_for(Decimal("90000"), 10)
+        self.assertEqual(by_amount["axis"], "amount")
+        self.assertEqual(by_amount["remaining"], Decimal("10000"))
+
+    def test_hint_leads_to_individual_tier(self):
         self.assertEqual(
-            wholesale_pricing.progress_hint(Decimal("50000"), 9),
-            "Максимальная скидка 21%",
+            wholesale_pricing.progress_hint(Decimal("180000"), 55),
+            "До индивидуальных условий осталось 20 000 ₽",
         )
 
-    def test_progress_state_carries_min_order(self):
+    def test_individual_tier_says_text_not_percent(self):
+        hint = wholesale_pricing.progress_hint(Decimal("250000"), 60)
+        self.assertEqual(hint, wholesale_pricing.INDIVIDUAL_TIER_TEXT)
+        self.assertNotIn("%", hint)
+
+    def test_progress_state_carries_tiers_and_min_order(self):
         with patch.object(wholesale_pricing, "MIN_ORDER_AMOUNT", 3_000):
             state = wholesale_pricing.progress_state(Decimal("1000"), 2)
-        self.assertEqual(state["percent"], 0)
+        self.assertEqual(state["percent"], 20)
         self.assertFalse(state["min_order_reached"])
         self.assertEqual(state["min_order_remaining"], Decimal("2000.00"))
+        self.assertEqual(len(state["tiers"]), len(wholesale_pricing.DISCOUNT_TIERS))
+        self.assertTrue(state["tiers"][0]["reached"])
+        self.assertEqual(state["tiers"][0]["fill"], 100.0)
 
 
 class MinOrderTest(TestCase):

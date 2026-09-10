@@ -1038,6 +1038,13 @@ class WholesaleItem(models.Model):
 
         return wholesale_pricing.price_ladder(self.price)
 
+    @property
+    def wholesale_price(self):
+        """Оптовая цена по умолчанию: розница минус входная скидка сетки."""
+        from . import wholesale_pricing
+
+        return wholesale_pricing.wholesale_price(self.price)
+
 
 class WholesaleItemVariant(models.Model):
     """Вариант позиции: цвет, сорт, партия. Свой остаток и свой степпер в карточке.
