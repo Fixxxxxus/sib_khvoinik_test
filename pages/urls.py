@@ -1,7 +1,16 @@
 from django.urls import path, re_path
 from django.views.generic import RedirectView
 
-from . import articles_api, landing_leads, loyalty, promo, seo, views
+from . import (
+    articles_api,
+    landing_leads,
+    loyalty,
+    promo,
+    seo,
+    views,
+    wholesale,
+    wholesale_orders,
+)
 
 urlpatterns = [
     path("api/loyalty/card/", loyalty.loyalty_card, name="loyalty_card"),
@@ -13,6 +22,8 @@ urlpatterns = [
     path("api/articles/list/", articles_api.articles_list, name="articles_list"),
     path("api/articles/<slug:slug>/image/", articles_api.articles_image, name="articles_image"),
     path("api/promo/sale50/", promo.promo_sale50, name="promo_sale50"),
+    # Оптовый заказ из скрытого каталога /opt/: цены и скидка считаются на сервере.
+    path("api/opt/order/", wholesale_orders.opt_order, name="opt_order"),
     # SEO/GEO-инфраструктура: всё через Django, не через docs/ (конвенция проекта).
     path("robots.txt", seo.robots_txt, name="robots_txt"),
     path("sitemap.xml", seo.sitemap_xml, name="sitemap_xml"),
@@ -76,4 +87,9 @@ urlpatterns = [
         name="ozelenenie_season_end",
     ),
     path("predzakaz/", views.predzakaz, name="predzakaz"),
+    # Скрытый оптовый каталог под Яндекс.Директ. Контур URL стабилен: на него
+    # ведут объявления, менять слаги после запуска рекламы нельзя.
+    path("opt/", wholesale.opt_index, name="opt_index"),
+    path("opt/<slug:section_slug>/", wholesale.opt_section, name="opt_section"),
+    path("opt/<slug:section_slug>/<slug:item_slug>/", wholesale.opt_item, name="opt_item"),
 ]

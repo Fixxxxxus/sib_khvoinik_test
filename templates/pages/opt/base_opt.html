@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+{% load static %}
+{% comment %}
+  Каркас скрытого оптового каталога /opt/.
+
+  Своя шапка и подвал: каталог не светится в навигации сайта (landing_mode
+  выключает общий навбар, hide_footer - общий футер). Тон оптовый: цена, размер,
+  наличие и действие, без розничного сторителлинга, отзывов и лайфстайла.
+{% endcomment %}
+
+{% block title %}{{ seo_title|default:'Оптовый каталог' }}{% endblock %}
+
+{% block extra_head %}
+  <script id="opt-discount-config" type="application/json">{{ discount_config_json|safe }}</script>
+  <script src="{% static 'js/opt.js' %}?v=3" defer></script>
+{% endblock %}
+
+{% block header %}
+  <header class="border-b border-slate-200 bg-white">
+    <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-4 px-4 py-4">
+      <a href="/opt/" class="text-lg font-semibold text-brand">{{ brand }} · опт</a>
+      <div class="ml-auto flex items-center gap-3">
+        <a href="tel:{{ opt_phone_href }}" class="hidden text-sm font-medium text-slate-700 hover:text-brand sm:block">{{ opt_phone }}</a>
+        <button type="button" data-opt-cart-open
+                class="inline-flex items-center gap-2 rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand2">
+          Корзина
+          <span data-opt-cart-count class="rounded-full bg-white/20 px-2 py-0.5 text-xs">0</span>
+        </button>
+      </div>
+    </div>
+  </header>
+{% endblock %}
+
+{% block content %}
+  <div class="mx-auto max-w-6xl px-4 py-8">
+    {% if breadcrumbs %}
+      <nav class="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+        {% for crumb in breadcrumbs %}
+          <a href="{{ crumb.1 }}" class="hover:text-brand">{{ crumb.0 }}</a>
+          <span>/</span>
+        {% endfor %}
+      </nav>
+    {% endif %}
+    {% block opt_content %}{% endblock %}
+  </div>
+  {% include 'partials/opt_cart.html' %}
+{% endblock %}
+
+{% block footer %}
+  <footer class="mt-12 border-t border-slate-200 bg-slate-50">
+    <div class="mx-auto max-w-6xl px-4 py-8 text-sm text-slate-600">
+      <p class="font-medium text-slate-800">{{ brand }}: оптовые поставки</p>
+      <p class="mt-2">Отдел продаж: <a href="tel:{{ opt_phone_href }}" class="text-brand hover:underline">{{ opt_phone }}</a></p>
+      <p class="mt-2 text-xs text-slate-500">Цены в каталоге оптовые и действуют при отгрузке партией. Раздел работает по прямым ссылкам.</p>
+    </div>
+  </footer>
+{% endblock %}

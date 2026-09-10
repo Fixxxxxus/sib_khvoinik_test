@@ -1,0 +1,63 @@
+{% comment %}
+  Корзина оптового каталога. Состав живёт в localStorage (static/js/opt.js),
+  скидка пересчитывается прямо здесь при изменении количества. При отправке
+  сервер заново считает цены и итог по данным БД: цене из браузера не верим.
+
+  Поле «Сайт компании» - honeypot: скрыто от людей, заполняют его только боты.
+{% endcomment %}
+<div data-opt-cart hidden class="fixed inset-0 z-50">
+  <div class="absolute inset-0 bg-slate-900/50" data-opt-cart-close></div>
+  <aside class="absolute right-0 top-0 flex h-full w-full max-w-lg flex-col bg-white shadow-xl">
+    <header class="flex items-center justify-between border-b border-slate-200 px-5 py-4">
+      <h2 class="text-lg font-semibold text-slate-900">Заказ</h2>
+      <button type="button" data-opt-cart-close class="text-sm text-slate-500 hover:text-slate-900">Закрыть</button>
+    </header>
+
+    <div class="flex-1 overflow-y-auto px-5 py-4">
+      <p data-opt-cart-empty class="text-sm text-slate-600">Корзина пуста. Добавьте позиции из каталога.</p>
+      <ul data-opt-cart-lines class="grid gap-3"></ul>
+
+      <div class="mt-5">{% include 'partials/opt_progress.html' %}</div>
+
+      <dl data-opt-cart-totals hidden class="mt-5 grid gap-2 border-t border-slate-200 pt-4 text-sm">
+        <div class="flex justify-between"><dt class="text-slate-600">Позиций</dt><dd data-opt-total-qty class="font-medium text-slate-800">0</dd></div>
+        <div class="flex justify-between"><dt class="text-slate-600">Сумма</dt><dd data-opt-subtotal class="font-medium text-slate-800">0 ₽</dd></div>
+        <div class="flex justify-between"><dt class="text-slate-600">Скидка за объём</dt><dd data-opt-discount class="font-medium text-brand">0 ₽</dd></div>
+        <div class="flex justify-between text-base"><dt class="font-semibold text-slate-900">Итого</dt><dd data-opt-total class="font-semibold text-slate-900">0 ₽</dd></div>
+        <p data-opt-next-tier class="text-xs text-slate-500"></p>
+        <p data-opt-individual-note hidden class="text-xs text-slate-600"></p>
+        {% if not discount_approved %}<p class="text-xs text-slate-500">{{ discount_disclaimer }}</p>{% endif %}
+      </dl>
+
+      <form data-opt-form class="mt-6 grid gap-3" novalidate>
+        <label class="grid gap-1 text-sm">
+          <span class="text-slate-600">Имя или компания</span>
+          <input type="text" name="name" required class="rounded-lg border border-slate-300 px-3 py-2" />
+        </label>
+        <label class="grid gap-1 text-sm">
+          <span class="text-slate-600">Телефон</span>
+          <input type="tel" name="phone" required class="rounded-lg border border-slate-300 px-3 py-2" />
+        </label>
+        <label class="grid gap-1 text-sm">
+          <span class="text-slate-600">Email, если нужно КП</span>
+          <input type="email" name="email" class="rounded-lg border border-slate-300 px-3 py-2" />
+        </label>
+        <label class="grid gap-1 text-sm">
+          <span class="text-slate-600">Комментарий: доставка, сроки, уточнения</span>
+          <textarea name="comment" rows="3" class="rounded-lg border border-slate-300 px-3 py-2"></textarea>
+        </label>
+        <div class="hidden" aria-hidden="true">
+          <label>Сайт компании<input type="text" name="company_site" tabindex="-1" autocomplete="off" /></label>
+        </div>
+        <p data-opt-form-error hidden class="text-sm text-red-600"></p>
+        <p data-opt-min-order-warning hidden class="rounded-lg bg-amber-50 px-3 py-2 text-sm text-amber-800"></p>
+        <button type="submit" data-opt-submit class="rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-white hover:bg-brand2 disabled:cursor-not-allowed disabled:opacity-60">Отправить заказ</button>
+        <p class="text-xs text-slate-500">Отправляя заказ, вы соглашаетесь на обработку персональных данных.</p>
+      </form>
+
+      <div data-opt-success hidden class="mt-6 rounded-lg bg-brand/10 p-4 text-sm text-slate-800">
+        Заказ принят, свяжемся с вами.
+      </div>
+    </div>
+  </aside>
+</div>
