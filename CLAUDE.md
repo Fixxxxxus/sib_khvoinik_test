@@ -93,7 +93,7 @@ Tailwind is compiled to `static/css/tailwind.css` with the standalone CLI (no no
 - Модели: `WholesaleSection`, `WholesaleItem`, `WholesaleOrder`, `WholesaleOrderLine` (`pages/models.py`). Наполнение - Django admin, разделы «оптовый каталог: …». Заказы только на чтение.
 - Сетка скидок за объём - единственное место `pages/wholesale_pricing.py`: `DISCOUNT_TIERS` (пороги и проценты), `DISCOUNT_BASIS` (`amount` или `quantity`), `DISCOUNT_TIERS_APPROVED`. Тот же конфиг уезжает в JS корзины через `<script id="opt-discount-config">`.
 - Корзина - `static/js/opt.js`, состав в localStorage. При отправке `POST /api/opt/order/` (`pages/wholesale_orders.py`) сервер заново берёт цены из БД и пересчитывает скидку: цене из браузера не верим. Honeypot `company_site` и rate-limit по IP - как в `/api/lead/`. Уведомление менеджеру: Битрикс24 + Telegram, chat id из `WHOLESALE_ORDER_TG_CHAT_ID` (пусто - алерт молча пропускается).
-- Демо-данные каркаса заводит миграция `0014_seed_wholesale_demo` с флагом `is_demo`. Цены и остатки там выдуманы, перед запуском рекламы демо-записи удаляют.
+- Демо-данные каркаса заводит команда `python manage.py seed_wholesale_demo` (снимает их `--remove`), записи помечаются флагом `is_demo`. Цены и остатки там выдуманы, на проде команду не запускают: каталог наполняют реальными позициями через админку.
 
 ### Client-side (`static/js/app.js`)
 

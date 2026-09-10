@@ -4,15 +4,20 @@
 особенно ЦЕНЫ выдуманы и не являются офертой. Реальный список позиций текущего
 плана продаж, оптовые цены и фотографии заказчик передаёт следующим слоем.
 
-Каждая запись помечена is_demo=True: в админке видна колонка «Демо», на витрине
-у карточки стоит бейдж «демо». Перед запуском рекламы демо-записи удаляют или
-переводят в is_active=False.
+Команда запускается руками только в разработке:
 
-Откат миграции удаляет ровно эти записи (по слагу и признаку is_demo), реальные
-позиции не трогает.
+    python manage.py seed_wholesale_demo
+    python manage.py seed_wholesale_demo --remove
+
+На проде её не запускают: каталог наполняется реальными позициями через админку.
+Каждая запись помечена is_demo=True, в админке видна колонка «Демо», на витрине
+у карточки стоит бейдж «демо».
 """
 
-from django.db import migrations
+from django.core.management.base import BaseCommand
+
+from pages.models import WholesaleItem, WholesaleSection
+
 
 DEMO_SECTIONS = [
     {
@@ -92,11 +97,9 @@ DEMO_SECTIONS = [
 ]
 
 
-def seed_demo(apps, schema_editor):
-    Section = apps.get_model("pages", "WholesaleSection")
-    Item = apps.get_model("pages", "WholesaleItem")
+def seed_demo():
     for order, block in enumerate(DEMO_SECTIONS):
-        section, _ = Section.objects.get_or_create(
+        section, _ = WholesaleSection.objects.get_or_create(
             slug=block["slug"],
             defaults={
                 "title": block["title"],
@@ -107,7 +110,7 @@ def seed_demo(apps, schema_editor):
             },
         )
         for item_order, item in enumerate(block["items"]):
-            Item.objects.get_or_create(
+            WholesaleItem.objects.get_or_create(
                 section=section,
                 slug=item["slug"],
                 defaults={
@@ -125,22 +128,28 @@ def seed_demo(apps, schema_editor):
             )
 
 
-def unseed_demo(apps, schema_editor):
-    Section = apps.get_model("pages", "WholesaleSection")
-    Item = apps.get_model("pages", "WholesaleItem")
+def unseed_demo():
     slugs = [item["slug"] for block in DEMO_SECTIONS for item in block["items"]]
-    Item.objects.filter(slug__in=slugs, is_demo=True).delete()
-    Section.objects.filter(
+    WholesaleItem.objects.filter(slug__in=slugs, is_demo=True).delete()
+    WholesaleSection.objects.filter(
         slug__in=[block["slug"] for block in DEMO_SECTIONS], is_demo=True
     ).delete()
 
 
-class Migration(migrations.Migration):
+class Command(BaseCommand):
+    help = "Наполняет оптовый каталог /opt/ демо-позициями (только для разработки)."
 
-    dependencies = [
-        ("pages", "0013_wholesaleitem_wholesaleorder_wholesalesection_and_more"),
-    ]
+    def add_arguments(self, parser):
+        parser.add_argument(
+            "--remove",
+            action="store_true",
+            help="Удалить демо-позиции вместо создания.",
+        )
 
-    operations = [
-        migrations.RunPython(seed_demo, unseed_demo),
-    ]
+    def handle(self, *args, **options):
+        if options["remove"]:
+            unseed_demo()
+            self.stdout.write(self.style.SUCCESS("Демо-позиции оптового каталога удалены."))
+            return
+        seed_demo()
+        self.stdout.write(self.style.SUCCESS("Демо-позиции оптового каталога созданы."))
