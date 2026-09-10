@@ -25,10 +25,10 @@
               <img src="{{ photo.image.url }}" alt="{{ photo.alt }}"
                    {% if not forloop.first %}loading="lazy"{% endif %}
                    data-opt-gallery-slide data-index="{{ forloop.counter0 }}"
-                   class="aspect-[4/3] w-full object-cover{% if not forloop.first %} hidden{% endif %}" />
+                   class="mx-auto max-h-[70vh] w-full object-contain{% if not forloop.first %} hidden{% endif %}" />
             {% endfor %}
           {% elif item.image %}
-            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="aspect-[4/3] w-full object-cover" />
+            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="mx-auto max-h-[70vh] w-full object-contain" />
           {% else %}
             <div class="flex aspect-[4/3] items-center justify-center text-sm text-slate-400">фото готовим</div>
           {% endif %}

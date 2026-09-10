@@ -6,13 +6,13 @@
   отправке заказа сервер берёт цену из БД.
 {% endcomment %}
 <article class="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white">
-  <a href="{{ item.get_absolute_url }}" class="relative block aspect-[4/3] w-full overflow-hidden bg-slate-100">
+  <a href="{{ item.get_absolute_url }}" class="relative block aspect-[4/3] w-full overflow-hidden bg-slate-100 p-2">
     {% comment %}
       Обложка: первый снимок галереи, а если галереи нет - старое поле image.
       Логика в WholesaleItem.cover_url, шаблон её не дублирует.
     {% endcomment %}
     {% if item.cover_url %}
-      <img src="{{ item.cover_url }}" alt="{{ item.title }}" loading="lazy" class="h-full w-full object-cover" />
+      <img src="{{ item.cover_url }}" alt="{{ item.title }}" loading="lazy" class="h-full w-full object-contain" />
     {% else %}
       <span class="flex h-full w-full items-center justify-center text-xs text-slate-400">фото готовим</span>
     {% endif %}
