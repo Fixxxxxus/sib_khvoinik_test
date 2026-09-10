@@ -273,16 +273,63 @@ class LandingPageTest(TestCase):
         # Мелкая строка под кнопкой на месте, area_label в лиде не тронут.
         self.assertIn("Берём объекты от 100 м²", html)
 
-    def test_reviews_block_rendered_with_jsonld_rating(self):
+    def test_reviews_block_removed(self):
+        """Блок отзывов снят с посадочной (правка маркетолога, 10.09.2026).
+
+        Сами данные REVIEWS_DATA остаются: их использует AggregateRating
+        на остальных страницах сайта.
+        """
         from pages.data import REVIEWS_DATA
 
         html = self.client.get("/ozelenenie-season-end/").content.decode()
-        self.assertIn("Что говорят клиенты", html)
-        self.assertIn(REVIEWS_DATA["aggregate"]["rating_value"], html)
-        self.assertIn(str(REVIEWS_DATA["aggregate"]["rating_count"]), html)
-        # Цитаты - реальные тексты из REVIEWS_DATA, не второй набор текстов.
+        self.assertNotIn("Что говорят клиенты", html)
+        self.assertNotIn("Средняя оценка компании на картах", html)
+        self.assertNotIn("на основе %s оценок" % REVIEWS_DATA["aggregate"]["rating_count"], html)
         quoted = [r for r in REVIEWS_DATA["items"] if r["author"] == "Igor Baikalov"][0]
-        self.assertIn(quoted["text"][:40], html)
+        self.assertNotIn(quoted["text"][:40], html)
+
+    def test_dream_gallery_block_removed(self):
+        """Блок «Участок мечты» снят: по вебвизору люди тапали по статичным фото."""
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        self.assertNotIn("Участок мечты", html)
+        self.assertNotIn("Так выглядят объекты", html)
+        for shot in ("gallery-pines-lawn", "gallery-house-lawn", "gallery-paved-yard"):
+            self.assertNotIn(shot, html)
+
+    def test_hero_background_is_ai_shot(self):
+        """Реальное фото в hero заменено на AI-кадр из кейса «Коттедж»."""
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        hero = html.split('id="hero"')[1].split("</section>")[0]
+        self.assertIn("cases/cottage-03-after.webp", hero)
+        self.assertNotIn("hero-house-lawn.webp", html)
+
+    def test_section_order_matches_marketing_brief(self):
+        """Порядок секций: кейсы с «до/после» идут раньше текстовых блоков."""
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        anchors = (
+            'id="hero"',
+            "Почему сейчас",
+            'id="cases"',
+            "Хочу такой результат на своём участке",
+            "Что входит",
+            "Как проходит",
+            "Частые сомнения",
+            'id="lead-bottom"',
+            "<footer",
+        )
+        positions = []
+        for anchor in anchors:
+            pos = html.find(anchor)
+            self.assertNotEqual(pos, -1, "не найден якорь секции: %s" % anchor)
+            positions.append(pos)
+        self.assertEqual(positions, sorted(positions), "порядок секций не совпал с ТЗ")
+
+    def test_landing_uses_marketing_palette(self):
+        """Палитра лендинга - именованные токены land-* из tailwind.config.js."""
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        for token in ("bg-land-sheet", "text-land-heading", "bg-land-green", "border-land-line"):
+            self.assertIn(token, html)
+        self.assertIn("background: #eef1ec", html)
 
     def test_cases_rendered_as_three_tabs(self):
         html = self.client.get("/ozelenenie-season-end/").content.decode()
@@ -326,13 +373,34 @@ class LandingPageTest(TestCase):
         self.assertIn('href="#lead-bottom"', cases)
         self.assertIn("data-cases-cta", cases)
 
-    def test_case_compare_is_interactive(self):
-        """Сравнение «до/после» - шторка на десктопе и переключатель на мобиле."""
+    def test_case_compare_is_two_shots_side_by_side(self):
+        """Шторки нет: в каждом кейсе два снимка рядом с подписями «До» и «После»."""
         html = self.client.get("/ozelenenie-season-end/").content.decode()
         cases = html.split('id="cases"')[1].split("</section>")[0]
-        self.assertEqual(cases.count("data-case-compare-range"), 3)
-        self.assertEqual(cases.count("data-case-compare-toggle"), 3)
-        self.assertEqual(cases.count('data-case-compare-side="before"'), 3)
+        # Мёртвой разметки шторки не осталось.
+        for legacy in (
+            "data-case-compare-range",
+            "data-case-compare-toggle",
+            "data-case-compare-side",
+            "data-case-compare-overlay",
+            "data-before-after-start",
+        ):
+            self.assertNotIn(legacy, cases)
+        # Три кейса, в каждом пара снимков с подписями.
+        self.assertEqual(cases.count('data-case-compare="'), 3)
+        self.assertEqual(cases.count("<figcaption"), 12)
+        self.assertEqual(cases.count(">До<"), 3)
+        self.assertEqual(cases.count(">После<"), 3)
+
+    def test_case_shots_open_in_lightbox(self):
+        """Каждый кадр кейса кликабелен и открывается крупно в своём просмотрщике."""
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        cases = html.split('id="cases"')[1].split("</section>")[0]
+        # По четыре кадра на кейс: до, после, «в работе», деталь.
+        self.assertEqual(cases.count("data-case-zoom-src"), 12)
+        self.assertIn('id="caseLightbox"', html)
+        self.assertIn("data-case-lightbox-image", html)
+        self.assertIn("data-case-lightbox-close", html)
 
     def test_why_now_cards_have_short_titles(self):
         html = self.client.get("/ozelenenie-season-end/").content.decode()

@@ -10,6 +10,15 @@
 
   По ТЗ маркетолога здесь НЕТ цен, вилок, процентов скидки и промокодов: оффер
   закрывается разговором с менеджером.
+
+  Палитра (правки маркетолога, 10.09.2026) заведена в tailwind.config.js под ключом
+  `land`: land-bg, land-sheet, land-card, land-heading, land-text, land-muted,
+  land-line, land-green, land-green-dark, land-green-soft. Она живёт только тут,
+  остальные страницы сайта остаются на brand/brand2/accent.
+
+  Порядок секций фиксирован: hero с формой, «Почему сейчас», кейсы с CTA-полосой,
+  «Что входит», «Как проходит», «Частые сомнения», нижняя форма, футер. Кейсы стоят
+  высоко намеренно: сравнение «до/после» должно попасться на глаза раньше текста.
 {% endcomment %}
 {% block title %}{{ seo_title }} | {{ brand }}{% endblock %}
 
@@ -41,8 +50,12 @@
       font-style: normal;
       font-display: swap;
     }
+    /* Фон страницы. Классом на body не поставить: body лежит в base.html и общий
+       для всего сайта, поэтому единственное место, где цвет land.bg повторён
+       вручную. Значение обязано совпадать с colors.land.bg в tailwind.config.js. */
     body {
       font-family: 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+      background: #eef1ec;
     }
     /* Виджет чата Битрикс24 (грузится из app.js на всех страницах) на мобиле
        садится ровно на кнопку «Получить предложение». На платном трафике у
@@ -62,7 +75,7 @@
 {% endblock %}
 
 {% block header %}
-  <header class="border-b border-black/5 bg-white">
+  <header class="border-b border-land-line bg-land-card">
     <div class="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-2.5 sm:px-6 sm:py-3">
       <a href="https://gazony.ru" class="inline-flex items-center" aria-label="{{ brand }} - на главную">
         <img
@@ -75,7 +88,7 @@
       </a>
       <a
         href="tel:{{ phone_tel }}"
-        class="inline-flex min-h-[40px] items-center gap-2 rounded-full bg-gradient-to-r from-brand to-brand2 px-4 text-sm font-bold text-white transition hover:brightness-105"
+        class="inline-flex min-h-[40px] items-center gap-2 rounded-full bg-land-green px-4 text-sm font-bold text-white transition hover:bg-land-green-dark"
       >
         <i data-lucide="phone" class="h-4 w-4"></i>
         Позвонить
@@ -90,16 +103,19 @@
     фото - edge-to-edge. Поэтому фото уходит в фон секции, а контент лежит поверх
     в плотной колонке. Никаких отступов «на глаз»: сетка сжимается на мобиле и
     разъезжается в две колонки от lg.
+
+    Кадр фона - AI-рендер из набора кейсов (правка 10.09.2026): реальные фото со
+    страницы убраны, визуал держим однородным.
   {% endcomment %}
-  <section id="hero" class="relative isolate overflow-hidden bg-slate-900">
+  <section id="hero" class="relative isolate overflow-hidden bg-land-heading">
     <img
       src="{% static hero.image %}"
       alt="{{ hero.image_alt }}"
       class="absolute inset-0 -z-20 h-full w-full object-cover"
-      width="1600" height="1067"
+      width="1440" height="804"
       fetchpriority="high" decoding="async"
     />
-    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-slate-950/80 via-slate-900/65 to-slate-950/85 lg:bg-gradient-to-r lg:from-slate-950/85 lg:via-slate-900/60 lg:to-slate-900/35"></div>
+    <div class="absolute inset-0 -z-10 bg-gradient-to-b from-land-heading/60 via-land-heading/70 to-land-heading/85 lg:bg-gradient-to-r lg:from-land-heading/85 lg:via-land-heading/65 lg:to-land-heading/35"></div>
 
     {% comment %}
       Порядок на мобиле (аудит маркетолога, п.1): сначала карточка формы, потом
@@ -109,19 +125,24 @@
     {% endcomment %}
     <div class="mx-auto grid max-w-6xl grid-cols-1 items-center gap-4 px-4 py-4 sm:gap-5 sm:px-6 sm:py-10 lg:grid-cols-2 lg:gap-12 lg:py-16">
       <div class="order-2 max-w-xl text-white lg:order-1">
-        <p class="text-[13px] font-semibold uppercase tracking-wide text-accent sm:text-sm">{{ hero.meta }}</p>
-        <h1 class="mt-2 text-[26px] font-extrabold leading-[1.1] sm:text-4xl lg:text-5xl">
+        {% comment %}
+          Отступы вокруг H1 плотные по правке маркетолога от 10.09.2026:
+          6px сверху от строки «Новосибирск и область · финал сезона» и 8px снизу
+          до лида, без раздувания на десктопе.
+        {% endcomment %}
+        <p class="text-[13px] font-semibold uppercase tracking-wide text-white/85 sm:text-sm">{{ hero.meta }}</p>
+        <h1 class="mt-1.5 text-[26px] font-extrabold leading-[1.05] tracking-[-0.02em] sm:text-4xl lg:text-5xl">
           {{ hero.h1 }}
         </h1>
-        <p class="mt-2.5 text-[15px] leading-snug text-white/90 sm:mt-4 sm:text-lg">
+        <p class="mt-2 text-[15px] leading-snug text-white/90 sm:text-lg">
           {{ hero.lead }}
         </p>
       </div>
 
-      <div id="lead-hero" class="order-1 rounded-2xl bg-white p-3.5 shadow-soft sm:rounded-3xl sm:p-6 lg:order-2">
+      <div id="lead-hero" class="order-1 rounded-2xl bg-land-card p-3.5 shadow-soft sm:rounded-3xl sm:p-6 lg:order-2">
         <div data-lead-form-wrap>
-          <h2 class="text-lg font-bold text-slate-900 sm:text-xl">{{ form.title }}</h2>
-          <p class="mt-1 text-[13px] text-slate-500 sm:text-sm">{{ form.sub }}</p>
+          <h2 class="text-lg font-bold text-land-heading sm:text-xl">{{ form.title }}</h2>
+          <p class="mt-1 text-[13px] text-land-muted sm:text-sm">{{ form.sub }}</p>
           <div class="mt-3">
             {% include 'partials/landing_lead_form.html' with form_id="hero" with_comment=False %}
           </div>
@@ -129,14 +150,14 @@
 
         {% comment %}Экран успеха: JS прячет форму и показывает этот блок.{% endcomment %}
         <div data-lead-success hidden class="text-center">
-          <span class="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand/10 text-brand">
+          <span class="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-land-green-soft text-land-green-dark">
             <i data-lucide="check" class="h-6 w-6"></i>
           </span>
-          <h2 class="mt-3 text-lg font-bold text-slate-900 sm:text-xl">{{ success_title }}</h2>
-          <p class="mt-2 text-sm text-slate-600">{{ success_sub }}</p>
+          <h2 class="mt-3 text-lg font-bold text-land-heading sm:text-xl">{{ success_title }}</h2>
+          <p class="mt-2 text-sm text-land-text">{{ success_sub }}</p>
           <a
             href="tel:{{ phone_tel }}"
-            class="mt-4 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-brand/30 px-5 text-base font-bold text-brand transition hover:bg-brand/5"
+            class="mt-4 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-land-line px-5 text-base font-bold text-land-green transition hover:bg-land-green-soft"
           >
             <i data-lucide="phone" class="h-4 w-4"></i>
             {{ phone_label }}
@@ -147,112 +168,22 @@
   </section>
 
   <!-- ПОЧЕМУ СЕЙЧАС -->
-  <section class="bg-white py-10 sm:py-14">
+  <section class="bg-land-card py-10 sm:py-14">
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
-      <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">{{ why_title }}</h2>
+      <h2 class="text-2xl font-bold text-land-heading sm:text-3xl">{{ why_title }}</h2>
       <ul class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
         {% for point in why_points %}
-          <li class="flex items-start gap-3 rounded-2xl border border-black/5 bg-slate-50/80 p-5 shadow-soft">
-            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
+          <li class="flex items-start gap-3 rounded-2xl border border-land-line bg-land-sheet p-5">
+            <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-land-green-soft text-land-green-dark">
               <i data-lucide="{{ point.icon }}" class="h-5 w-5"></i>
             </span>
             <div>
-              <p class="text-[15px] font-bold leading-snug text-slate-900">{{ point.title }}</p>
-              <p class="mt-1 text-[15px] leading-snug text-slate-700">{{ point.text }}</p>
+              <p class="text-[15px] font-bold leading-snug text-land-heading">{{ point.title }}</p>
+              <p class="mt-1 text-[15px] leading-snug text-land-text">{{ point.text }}</p>
             </div>
           </li>
         {% endfor %}
       </ul>
-    </div>
-  </section>
-
-  {% comment %}
-    ОТЗЫВЫ. Рейтинг и цитаты берём из REVIEWS_DATA (pages/data.py) - того же
-    источника, из которого считается AggregateRating в JSON-LD. Ссылки на карты
-    здесь нет: готовых URL карточек в данных нет, а выдумывать их нельзя.
-  {% endcomment %}
-  <section class="bg-slate-50 py-10 sm:py-14">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6">
-      <div class="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-        <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">{{ reviews_title }}</h2>
-        <p class="text-[15px] text-slate-600">
-          <span class="font-bold text-slate-900">{{ reviews_rating }}</span>
-          на основе {{ reviews_count }} оценок
-        </p>
-      </div>
-      <p class="mt-1 text-sm text-slate-500">{{ reviews_note }}</p>
-      <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {% for review in reviews %}
-          <figure class="rounded-2xl border border-black/5 bg-white p-5 shadow-soft">
-            <div class="flex items-center gap-1 text-accent" aria-label="Оценка {{ review.rating }} из 5">
-              {% for _ in "12345" %}<i data-lucide="star" class="h-4 w-4 fill-current"></i>{% endfor %}
-            </div>
-            <blockquote class="mt-3 text-[15px] leading-relaxed text-slate-700">{{ review.text }}</blockquote>
-            <figcaption class="mt-3 text-sm text-slate-500">{{ review.author }} · {{ review.source }}</figcaption>
-          </figure>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-
-  <!-- УЧАСТОК МЕЧТЫ -->
-  <section class="bg-white py-10 sm:py-14">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6">
-      <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">{{ gallery_title }}</h2>
-      <p class="mt-2 text-[15px] text-slate-600">{{ gallery_sub }}</p>
-      <div class="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        {% for shot in gallery %}
-          <figure class="overflow-hidden rounded-2xl bg-white shadow-soft">
-            <img
-              src="{% static shot.image %}"
-              alt="{{ shot.alt }}"
-              width="800" height="600"
-              loading="lazy" decoding="async"
-              class="h-52 w-full object-cover sm:h-48"
-            />
-            <figcaption class="px-4 py-3 text-sm font-semibold text-slate-700">{{ shot.caption }}</figcaption>
-          </figure>
-        {% endfor %}
-      </div>
-    </div>
-  </section>
-
-  <!-- ЧТО ВХОДИТ -->
-  <section class="bg-slate-50 py-10 sm:py-14">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6">
-      <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">{{ includes_title }}</h2>
-      <ul class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {% for item in includes %}
-          <li class="flex items-start gap-3 text-[15px] leading-snug text-slate-700">
-            <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand/10 text-brand">
-              <i data-lucide="check" class="h-3.5 w-3.5"></i>
-            </span>
-            {{ item }}
-          </li>
-        {% endfor %}
-      </ul>
-      <p class="mt-6 inline-flex items-center gap-2 rounded-2xl bg-brand/5 px-4 py-3 text-[15px] font-bold text-brand">
-        <i data-lucide="ruler" class="h-4 w-4"></i>
-        {{ includes_note }}
-      </p>
-      <p class="mt-3 text-sm text-slate-500">{{ includes_fine }}</p>
-    </div>
-  </section>
-
-  <!-- КАК ПРОХОДИТ -->
-  <section class="bg-white py-10 sm:py-14">
-    <div class="mx-auto max-w-6xl px-4 sm:px-6">
-      <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">{{ steps_title }}</h2>
-      <ol class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {% for step in steps %}
-          <li class="rounded-2xl border border-black/5 bg-white p-5 shadow-soft">
-            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-brand text-sm font-bold text-white">
-              {{ step.num }}
-            </span>
-            <p class="mt-3 text-[15px] leading-snug text-slate-700">{{ step.text }}</p>
-          </li>
-        {% endfor %}
-      </ol>
     </div>
   </section>
 
@@ -260,19 +191,19 @@
     ПРИМЕРЫ РАБОТ. Три типовых объекта в табах: дача, частный дом, коттедж.
     Внутри панели - сравнение «до/после», этапы работ и два кадра из процесса.
 
-    Сравнение интерактивное: на десктопе шторка тем же способом, что и на
-    /ozelenenie-b2c/ (input[type=range] поверх картинки, data-before-after-*),
-    на мобиле - переключатель «До / После» тапом, потому что тащить шторку
-    пальцем на 375px неудобно и мешает вертикальному скроллу.
+    Сравнение - два снимка рядом, без шторки (правка маркетолога, 10.09.2026):
+    при перетаскивании было видно, что кадры «до» и «после» - одна и та же
+    картинка, переписанная нейросетью.
 
-    Табы и шторку ведёт static/js/landing-ozelenenie.js. Без JS видна первая
-    панель со всеми картинками: у остальных стоит hidden, у первой - нет.
+    Табы и просмотрщик снимков ведёт static/js/landing-ozelenenie.js. Без JS видна
+    первая панель со всеми картинками: у остальных стоит hidden, у первой - нет,
+    а снимки просто не открываются крупно.
   {% endcomment %}
-  <section id="cases" class="bg-slate-50 py-10 sm:py-14">
+  <section id="cases" class="bg-land-sheet py-10 sm:py-14">
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
-      <p class="text-[13px] font-semibold uppercase tracking-wide text-brand">{{ cases_kicker }}</p>
-      <h2 class="mt-1 text-2xl font-bold text-slate-900 sm:text-3xl">{{ cases_title }}</h2>
-      <p class="mt-2 text-[15px] text-slate-600">{{ cases_sub }}</p>
+      <p class="text-[13px] font-semibold uppercase tracking-wide text-land-green">{{ cases_kicker }}</p>
+      <h2 class="mt-1 text-2xl font-bold text-land-heading sm:text-3xl">{{ cases_title }}</h2>
+      <p class="mt-2 text-[15px] text-land-text">{{ cases_sub }}</p>
 
       <div
         class="mt-6 flex gap-2 overflow-x-auto pb-1"
@@ -289,7 +220,7 @@
             aria-controls="case-panel-{{ case.key }}"
             aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
             tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
-            class="min-h-[44px] shrink-0 rounded-full border px-4 text-[15px] font-bold transition aria-selected:border-transparent aria-selected:bg-gradient-to-r aria-selected:from-brand aria-selected:to-brand2 aria-selected:text-white border-black/10 bg-white text-slate-700 hover:border-brand/40 hover:text-brand"
+            class="min-h-[44px] shrink-0 rounded-full border px-4 text-[15px] font-bold transition aria-selected:border-transparent aria-selected:bg-land-green aria-selected:text-white border-land-line bg-land-card text-land-text hover:border-land-green hover:text-land-green"
           >
             {{ case.tab }}
           </button>
@@ -304,90 +235,77 @@
           aria-labelledby="case-tab-{{ case.key }}"
           tabindex="0"
           {% if not forloop.first %}hidden{% endif %}
-          class="mt-5 rounded-2xl border border-black/5 bg-white p-4 shadow-soft sm:p-6"
+          class="mt-5 rounded-2xl border border-land-line bg-land-card p-4 shadow-soft sm:p-6"
         >
-          <p class="text-[13px] font-semibold uppercase tracking-wide text-slate-500">{{ case.type }}</p>
-          <h3 class="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{{ case.title }}</h3>
-          <ul class="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-[15px] text-slate-700">
+          <p class="text-[13px] font-semibold uppercase tracking-wide text-land-muted">{{ case.type }}</p>
+          <h3 class="mt-1 text-xl font-bold text-land-heading sm:text-2xl">{{ case.title }}</h3>
+          <ul class="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-[15px] text-land-text">
             {% for fact in case.facts %}
               <li class="flex items-center gap-1.5">
-                {% if fact.value %}<span class="font-bold text-slate-900">{{ fact.value }}</span>{% endif %}
+                {% if fact.value %}<span class="font-bold text-land-heading">{{ fact.value }}</span>{% endif %}
                 {{ fact.text }}
               </li>
             {% endfor %}
           </ul>
 
           {% comment %}
-            Сравнение «до/после». Одна и та же разметка обслуживает оба режима:
-            на мобиле показываем только слой «До» либо «После» (кнопки ниже),
-            от sm включается шторка с ползунком.
+            Сравнение «до/после» - два снимка рядом (правка маркетолога, 10.09.2026).
+            Шторку сняли: при перетаскивании было видно, что оба кадра - один и тот же
+            снимок, переписанный нейросетью. Когда снимки лежат рядом, глаз за это не
+            цепляется. Кликабельность сохранили: тап по снимку открывает его крупно
+            (просмотрщик #caseLightbox, код в static/js/landing-ozelenenie.js).
+            На узком экране снимки встают друг под друга, подписи остаются.
           {% endcomment %}
-          <div
-            class="relative mt-5 select-none overflow-hidden rounded-2xl border border-black/5"
-            data-case-compare="{{ case.key }}"
-            data-before-after-start="50"
-          >
-            <img
-              src="{% static case.after.image %}"
-              alt="{{ case.after.alt }}"
-              width="1400" height="788"
-              loading="lazy" decoding="async"
-              class="pointer-events-none block h-56 w-full object-cover sm:h-72 lg:h-96"
-            />
-            <div class="absolute inset-0" data-case-compare-overlay>
-              <img
-                src="{% static case.before.image %}"
-                alt="{{ case.before.alt }}"
-                width="1400" height="788"
-                loading="lazy" decoding="async"
-                class="pointer-events-none block h-56 w-full object-cover sm:h-72 lg:h-96"
-              />
-            </div>
-            <span class="pointer-events-none absolute left-3 top-3 rounded-xl bg-black/45 px-2.5 py-1 text-xs font-semibold text-white">До</span>
-            <span class="pointer-events-none absolute right-3 top-3 rounded-xl bg-black/45 px-2.5 py-1 text-xs font-semibold text-white">После</span>
-
-            {% comment %}Шторка: только от sm, на мобиле её место занимает переключатель.{% endcomment %}
-            <div class="pointer-events-none absolute inset-y-0 z-20 hidden w-0.5 bg-white/95 shadow-[0_0_0_1px_rgba(0,0,0,0.18)] sm:block" data-case-compare-divider></div>
-            <div class="pointer-events-none absolute top-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-white p-2 shadow-soft sm:block" data-case-compare-handle>
-              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-700" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                <path d="M8.5 4.5L2 11l6.5 6.5L10 16l-5-5 5-5-1.5-1.5zM15.5 4.5L14 6l5 5-5 5 1.5 1.5L22 11l-6.5-6.5z"/>
-              </svg>
-            </div>
-            <input
-              type="range" min="0" max="100" value="50"
-              class="absolute inset-0 z-30 hidden h-full w-full cursor-ew-resize opacity-0 sm:block"
-              data-case-compare-range
-              aria-label="Сравнение до и после: {{ case.tab }}"
-            />
-          </div>
-
-          {% comment %}Мобильный переключатель слоёв: тап вместо перетаскивания шторки.{% endcomment %}
-          <div class="mt-3 grid grid-cols-2 gap-2 sm:hidden" data-case-compare-toggle="{{ case.key }}">
-            <button
-              type="button"
-              data-case-compare-side="before"
-              aria-pressed="true"
-              class="min-h-[44px] rounded-xl border border-black/10 bg-white text-[15px] font-bold text-slate-700 transition aria-pressed:border-transparent aria-pressed:bg-brand aria-pressed:text-white"
-            >
-              До
-            </button>
-            <button
-              type="button"
-              data-case-compare-side="after"
-              aria-pressed="false"
-              class="min-h-[44px] rounded-xl border border-black/10 bg-white text-[15px] font-bold text-slate-700 transition aria-pressed:border-transparent aria-pressed:bg-brand aria-pressed:text-white"
-            >
-              После
-            </button>
+          <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2" data-case-compare="{{ case.key }}">
+            <figure class="relative overflow-hidden rounded-2xl border border-land-line">
+              <button
+                type="button"
+                class="block w-full cursor-zoom-in"
+                data-case-zoom
+                data-case-zoom-case="{{ case.key }}"
+                data-case-zoom-src="{% static case.before.image %}"
+                data-case-zoom-alt="{{ case.before.alt }}"
+                aria-label="Открыть крупно: {{ case.before.alt }}"
+              >
+                <img
+                  src="{% static case.before.image %}"
+                  alt="{{ case.before.alt }}"
+                  width="1400" height="788"
+                  loading="lazy" decoding="async"
+                  class="block h-56 w-full object-cover sm:h-64 lg:h-72"
+                />
+              </button>
+              <figcaption class="pointer-events-none absolute left-3 top-3 rounded-xl bg-black/45 px-2.5 py-1 text-xs font-semibold text-white">До</figcaption>
+            </figure>
+            <figure class="relative overflow-hidden rounded-2xl border border-land-line">
+              <button
+                type="button"
+                class="block w-full cursor-zoom-in"
+                data-case-zoom
+                data-case-zoom-case="{{ case.key }}"
+                data-case-zoom-src="{% static case.after.image %}"
+                data-case-zoom-alt="{{ case.after.alt }}"
+                aria-label="Открыть крупно: {{ case.after.alt }}"
+              >
+                <img
+                  src="{% static case.after.image %}"
+                  alt="{{ case.after.alt }}"
+                  width="1400" height="788"
+                  loading="lazy" decoding="async"
+                  class="block h-56 w-full object-cover sm:h-64 lg:h-72"
+                />
+              </button>
+              <figcaption class="pointer-events-none absolute left-3 top-3 rounded-xl bg-black/45 px-2.5 py-1 text-xs font-semibold text-white">После</figcaption>
+            </figure>
           </div>
 
           <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
             <div>
-              <h4 class="text-base font-bold text-slate-900">{{ cases_stages_title }}</h4>
+              <h4 class="text-base font-bold text-land-heading">{{ cases_stages_title }}</h4>
               <ol class="mt-3 space-y-2.5">
                 {% for stage in case.stages %}
-                  <li class="flex items-start gap-3 text-[15px] leading-snug text-slate-700">
-                    <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand/10 text-xs font-bold text-brand">
+                  <li class="flex items-start gap-3 text-[15px] leading-snug text-land-text">
+                    <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-land-green-soft text-xs font-bold text-land-green-dark">
                       {{ forloop.counter|stringformat:"02d" }}
                     </span>
                     {{ stage }}
@@ -397,25 +315,45 @@
             </div>
 
             <div class="grid grid-cols-2 gap-3">
-              <figure class="overflow-hidden rounded-2xl border border-black/5">
-                <img
-                  src="{% static case.process.image %}"
-                  alt="{{ case.process.alt }}"
-                  width="1400" height="788"
-                  loading="lazy" decoding="async"
-                  class="h-32 w-full object-cover sm:h-40"
-                />
-                <figcaption class="px-3 py-2 text-[13px] font-semibold text-slate-600">В работе</figcaption>
+              <figure class="overflow-hidden rounded-2xl border border-land-line">
+                <button
+                  type="button"
+                  class="block w-full cursor-zoom-in"
+                  data-case-zoom
+                  data-case-zoom-case="{{ case.key }}"
+                  data-case-zoom-src="{% static case.process.image %}"
+                  data-case-zoom-alt="{{ case.process.alt }}"
+                  aria-label="Открыть крупно: {{ case.process.alt }}"
+                >
+                  <img
+                    src="{% static case.process.image %}"
+                    alt="{{ case.process.alt }}"
+                    width="1400" height="788"
+                    loading="lazy" decoding="async"
+                    class="block h-32 w-full object-cover sm:h-40"
+                  />
+                </button>
+                <figcaption class="px-3 py-2 text-[13px] font-semibold text-land-muted">В работе</figcaption>
               </figure>
-              <figure class="overflow-hidden rounded-2xl border border-black/5">
-                <img
-                  src="{% static case.detail.image %}"
-                  alt="{{ case.detail.alt }}"
-                  width="1400" height="788"
-                  loading="lazy" decoding="async"
-                  class="h-32 w-full object-cover sm:h-40"
-                />
-                <figcaption class="px-3 py-2 text-[13px] font-semibold text-slate-600">Деталь результата</figcaption>
+              <figure class="overflow-hidden rounded-2xl border border-land-line">
+                <button
+                  type="button"
+                  class="block w-full cursor-zoom-in"
+                  data-case-zoom
+                  data-case-zoom-case="{{ case.key }}"
+                  data-case-zoom-src="{% static case.detail.image %}"
+                  data-case-zoom-alt="{{ case.detail.alt }}"
+                  aria-label="Открыть крупно: {{ case.detail.alt }}"
+                >
+                  <img
+                    src="{% static case.detail.image %}"
+                    alt="{{ case.detail.alt }}"
+                    width="1400" height="788"
+                    loading="lazy" decoding="async"
+                    class="block h-32 w-full object-cover sm:h-40"
+                  />
+                </button>
+                <figcaption class="px-3 py-2 text-[13px] font-semibold text-land-muted">Деталь результата</figcaption>
               </figure>
             </div>
           </div>
@@ -423,11 +361,11 @@
       {% endfor %}
 
       {% comment %}CTA-полоса сразу после кейсов: человек посмотрел объекты - ведём к нижней форме.{% endcomment %}
-      <div id="casesCta" class="mt-6 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-5 py-5 text-center shadow-soft">
+      <div id="casesCta" class="mt-6 rounded-2xl bg-land-green px-5 py-5 text-center shadow-soft">
         <a
           href="#lead-bottom"
           data-cases-cta
-          class="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-white px-6 text-base font-bold text-brand transition hover:brightness-95"
+          class="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-white px-6 text-base font-bold text-land-green-dark transition hover:brightness-95"
         >
           {{ cases_cta }}
         </a>
@@ -435,18 +373,57 @@
     </div>
   </section>
 
+  <!-- ЧТО ВХОДИТ -->
+  <section class="bg-land-card py-10 sm:py-14">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <h2 class="text-2xl font-bold text-land-heading sm:text-3xl">{{ includes_title }}</h2>
+      <ul class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {% for item in includes %}
+          <li class="flex items-start gap-3 text-[15px] leading-snug text-land-text">
+            <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-land-green-soft text-land-green-dark">
+              <i data-lucide="check" class="h-3.5 w-3.5"></i>
+            </span>
+            {{ item }}
+          </li>
+        {% endfor %}
+      </ul>
+      <p class="mt-6 inline-flex items-center gap-2 rounded-2xl bg-land-green-soft px-4 py-3 text-[15px] font-bold text-land-green-dark">
+        <i data-lucide="ruler" class="h-4 w-4"></i>
+        {{ includes_note }}
+      </p>
+      <p class="mt-3 text-sm text-land-muted">{{ includes_fine }}</p>
+    </div>
+  </section>
+
+  <!-- КАК ПРОХОДИТ -->
+  <section class="bg-land-sheet py-10 sm:py-14">
+    <div class="mx-auto max-w-6xl px-4 sm:px-6">
+      <h2 class="text-2xl font-bold text-land-heading sm:text-3xl">{{ steps_title }}</h2>
+      <ol class="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {% for step in steps %}
+          <li class="rounded-2xl border border-land-line bg-land-card p-5">
+            <span class="inline-flex h-8 w-8 items-center justify-center rounded-full bg-land-green text-sm font-bold text-white">
+              {{ step.num }}
+            </span>
+            <p class="mt-3 text-[15px] leading-snug text-land-text">{{ step.text }}</p>
+          </li>
+        {% endfor %}
+      </ol>
+    </div>
+  </section>
+
   <!-- ВОЗРАЖЕНИЯ -->
-  <section class="bg-white py-10 sm:py-14">
+  <section class="bg-land-card py-10 sm:py-14">
     <div class="mx-auto max-w-3xl px-4 sm:px-6">
-      <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">{{ objections_title }}</h2>
+      <h2 class="text-2xl font-bold text-land-heading sm:text-3xl">{{ objections_title }}</h2>
       <div class="mt-6 space-y-3">
         {% for item in objections %}
-          <details class="group rounded-2xl border border-black/5 bg-slate-50/80 px-5 py-4 shadow-soft">
-            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-slate-900">
+          <details class="group rounded-2xl border border-land-line bg-land-sheet px-5 py-4">
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 text-base font-semibold text-land-heading">
               {{ item.q }}
-              <i data-lucide="chevron-down" class="h-5 w-5 shrink-0 text-slate-400 transition group-open:rotate-180"></i>
+              <i data-lucide="chevron-down" class="h-5 w-5 shrink-0 text-land-muted transition group-open:rotate-180"></i>
             </summary>
-            <p class="mt-3 text-[15px] leading-relaxed text-slate-600">{{ item.a }}</p>
+            <p class="mt-3 text-[15px] leading-relaxed text-land-text">{{ item.a }}</p>
           </details>
         {% endfor %}
       </div>
@@ -454,7 +431,7 @@
   </section>
 
   <!-- ПОВТОР ФОРМЫ -->
-  <section id="lead-bottom" class="bg-gradient-to-br from-brand to-brand2 py-10 sm:py-14">
+  <section id="lead-bottom" class="bg-gradient-to-br from-land-green to-land-green-dark py-10 sm:py-14">
     <div class="mx-auto grid max-w-5xl grid-cols-1 gap-6 px-4 sm:px-6 lg:grid-cols-2 lg:items-center lg:gap-10">
       <div class="text-white">
         <h2 class="text-2xl font-extrabold leading-tight sm:text-3xl">{{ final_title }}</h2>
@@ -467,23 +444,23 @@
           {{ phone_label }}
         </a>
       </div>
-      <div class="rounded-2xl bg-white p-4 shadow-soft sm:rounded-3xl sm:p-6">
+      <div class="rounded-2xl bg-land-card p-4 shadow-soft sm:rounded-3xl sm:p-6">
         <div data-lead-form-wrap>
-          <h3 class="text-lg font-bold text-slate-900 sm:text-xl">{{ form.title }}</h3>
-          <p class="mt-1 text-[13px] text-slate-500 sm:text-sm">{{ form.sub }}</p>
+          <h3 class="text-lg font-bold text-land-heading sm:text-xl">{{ form.title }}</h3>
+          <p class="mt-1 text-[13px] text-land-muted sm:text-sm">{{ form.sub }}</p>
           <div class="mt-3">
             {% include 'partials/landing_lead_form.html' with form_id="bottom" with_comment=True %}
           </div>
         </div>
         <div data-lead-success hidden class="text-center">
-          <span class="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-brand/10 text-brand">
+          <span class="mx-auto inline-flex h-12 w-12 items-center justify-center rounded-full bg-land-green-soft text-land-green-dark">
             <i data-lucide="check" class="h-6 w-6"></i>
           </span>
-          <h3 class="mt-3 text-lg font-bold text-slate-900 sm:text-xl">{{ success_title }}</h3>
-          <p class="mt-2 text-sm text-slate-600">{{ success_sub }}</p>
+          <h3 class="mt-3 text-lg font-bold text-land-heading sm:text-xl">{{ success_title }}</h3>
+          <p class="mt-2 text-sm text-land-text">{{ success_sub }}</p>
           <a
             href="tel:{{ phone_tel }}"
-            class="mt-4 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-brand/30 px-5 text-base font-bold text-brand transition hover:bg-brand/5"
+            class="mt-4 inline-flex min-h-[48px] items-center justify-center gap-2 rounded-2xl border border-land-line px-5 text-base font-bold text-land-green transition hover:bg-land-green-soft"
           >
             <i data-lucide="phone" class="h-4 w-4"></i>
             {{ phone_label }}
@@ -492,6 +469,42 @@
       </div>
     </div>
   </section>
+
+  {% comment %}
+    ПРОСМОТРЩИК СНИМКОВ. Свой минимальный: сторонние библиотеки на посадочной под
+    Директ - лишние килобайты и лишняя точка отказа. Открывается по клику на любой
+    кадр кейса, закрывается кликом мимо, крестиком и Escape, фокус возвращается на
+    снимок, с которого открыли. Ведёт landing-ozelenenie.js.
+  {% endcomment %}
+  <div
+    id="caseLightbox"
+    hidden
+    data-case-lightbox
+    role="dialog"
+    aria-modal="true"
+    aria-label="Просмотр снимка"
+    {% comment %}
+      display задан вариантом [&:not([hidden])]:flex, а не голым flex: утилита
+      .flex в Tailwind перебивает preflight-правило [hidden]{display:none}, и
+      просмотрщик висел бы поверх страницы с самого открытия.
+    {% endcomment %}
+    class="fixed inset-0 z-[60] items-center justify-center bg-land-heading/90 p-4 [&:not([hidden])]:flex"
+  >
+    <button
+      type="button"
+      data-case-lightbox-close
+      aria-label="Закрыть просмотр"
+      class="absolute right-3 top-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-land-heading shadow-soft"
+    >
+      <i data-lucide="x" class="h-5 w-5"></i>
+    </button>
+    <img
+      data-case-lightbox-image
+      src=""
+      alt=""
+      class="max-h-[85vh] w-auto max-w-full rounded-2xl object-contain shadow-soft"
+    />
+  </div>
 
   {% comment %}
     ЛИПКИЙ CTA НА МОБИЛЕ (аудит маркетолога, п.4). Появляется, когда hero-форма
@@ -505,21 +518,21 @@
   <div
     id="stickyCta"
     hidden
-    class="fixed inset-x-0 bottom-[var(--sg-cookie-banner-h,0px)] z-50 border-t border-black/10 bg-white/95 px-3 py-2.5 shadow-[0_-6px_20px_rgba(15,23,42,0.12)] backdrop-blur lg:hidden"
+    class="fixed inset-x-0 bottom-[var(--sg-cookie-banner-h,0px)] z-50 border-t border-land-line bg-white/95 px-3 py-2.5 shadow-[0_-6px_20px_rgba(22,48,26,0.12)] backdrop-blur lg:hidden"
     style="padding-bottom: calc(0.625rem + env(safe-area-inset-bottom))"
   >
     <div class="flex items-center gap-2.5">
       <a
         href="#lead-hero"
         data-sticky-cta
-        class="flex min-h-[48px] flex-1 items-center justify-center rounded-2xl bg-gradient-to-r from-brand to-brand2 px-4 text-base font-bold text-white shadow-glow"
+        class="flex min-h-[48px] flex-1 items-center justify-center rounded-2xl bg-land-green px-4 text-base font-bold text-white shadow-soft"
       >
         {{ cta_label }}
       </a>
       <a
         href="tel:{{ phone_tel }}"
         aria-label="Позвонить {{ phone_label }}"
-        class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-brand/30 text-brand"
+        class="inline-flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-land-line text-land-green"
       >
         <i data-lucide="phone" class="h-5 w-5"></i>
       </a>
@@ -534,7 +547,7 @@
   как у partials/footer.html: белый фон, border-top, та же типографика.
 {% endcomment %}
 {% block footer %}
-  <footer class="border-t border-black/5 bg-white pb-24 pt-10 lg:pb-10">
+  <footer class="border-t border-land-line bg-land-card pb-24 pt-10 lg:pb-10">
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
       <div class="flex flex-col gap-6 sm:flex-row sm:items-center sm:justify-between">
         <img
@@ -544,17 +557,17 @@
           class="h-10 w-auto"
           loading="lazy" decoding="async"
         />
-        <div class="text-sm text-slate-700">
+        <div class="text-sm text-land-text">
           Тел:
-          <a href="tel:{{ phone_tel }}" class="whitespace-nowrap font-semibold hover:text-brand transition">{{ phone_label }}</a>
+          <a href="tel:{{ phone_tel }}" class="whitespace-nowrap font-semibold hover:text-land-green transition">{{ phone_label }}</a>
         </div>
       </div>
-      <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-600">
+      <div class="mt-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-land-text">
         <span>© <span id="year"></span> ООО «Сибирский хвойник»</span>
-        <a href="{% url 'privacy' %}" class="hover:text-brand transition">Политика конфиденциальности</a>
-        <a href="{% url 'consent' %}" class="hover:text-brand transition">Согласие на обработку ПД</a>
+        <a href="{% url 'privacy' %}" class="hover:text-land-green transition">Политика конфиденциальности</a>
+        <a href="{% url 'consent' %}" class="hover:text-land-green transition">Согласие на обработку ПД</a>
       </div>
-      <p class="mt-4 text-[13px] text-slate-500">{{ footer_note }}</p>
+      <p class="mt-4 text-[13px] text-land-muted">{{ footer_note }}</p>
     </div>
   </footer>
 {% endblock %}

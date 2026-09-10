@@ -17167,17 +17167,6 @@ REVIEWS_DATA = {
 
 LANDING_OZELENENIE_SEASON_END_ID = "ozelenenie-season-end"
 
-# Отзывы для блока социального доказательства (аудит маркетолога, п.5). Берём
-# реальные тексты из REVIEWS_DATA по автору, а не копируем их сюда второй раз:
-# рейтинг и цитаты на странице обязаны совпадать с AggregateRating в JSON-LD.
-_LANDING_REVIEW_AUTHORS = ("Igor Baikalov", "Николай Nik")
-_LANDING_REVIEWS = [
-    review
-    for author in _LANDING_REVIEW_AUTHORS
-    for review in REVIEWS_DATA["items"]
-    if review["author"] == author
-]
-
 OZELENENIE_SEASON_END_PAGE = {
     **BASE,
     "title": "Озеленение участка · получить предложение",
@@ -17216,9 +17205,11 @@ OZELENENIE_SEASON_END_PAGE = {
             "и дадим предложение под финал сезона."
         ),
         "meta": "Новосибирск и область · финал сезона",
-        # Фото объектов от маркетолога (07.09.2026), исходники 4000x2250.
-        "image": "media/images/landing/ozelenenie-season-end/hero-house-lawn.webp",
-        "image_alt": "Деревянный дом с уложенным рулонным газоном и дорожками после озеленения",
+        # Правка маркетолога 10.09.2026: реальные фото со страницы убраны, визуал
+        # держим однородным - в hero тот же AI-кадр, что и в кейсе «Коттедж».
+        # Файл hero-house-lawn.webp остаётся в репозитории для отката.
+        "image": "media/images/landing/ozelenenie-season-end/cases/cottage-03-after.webp",
+        "image_alt": "Участок коттеджа после озеленения: газон, посадки и дорожки",
     },
     "form": {
         "title": "Получить предложение",
@@ -17246,26 +17237,6 @@ OZELENENIE_SEASON_END_PAGE = {
             "icon": "layers",
             "title": "Один подрядчик",
             "text": "Один подрядчик: материал и работы в одном цикле, меньше переделок",
-        },
-    ],
-    "gallery_title": "Участок мечты",
-    "gallery_sub": "Так выглядят объекты, которые мы вели от материала до готового вида.",
-    # Фото объектов от маркетолога (07.09.2026).
-    "gallery": [
-        {
-            "image": "media/images/landing/ozelenenie-season-end/gallery-pines-lawn.webp",
-            "caption": "Ухоженный газон",
-            "alt": "Свежеуложенный рулонный газон под двумя соснами во дворе",
-        },
-        {
-            "image": "media/images/landing/ozelenenie-season-end/gallery-house-lawn.webp",
-            "caption": "Посадки и композиции",
-            "alt": "Деревянный дом с уложенным газоном, мощёной дорожкой и цветником из гортензий",
-        },
-        {
-            "image": "media/images/landing/ozelenenie-season-end/gallery-paved-yard.webp",
-            "caption": "Место, куда зовут гостей",
-            "alt": "Двор с газоном, мощёными дорожками и грядками у дома",
         },
     ],
     "includes_title": "Что входит",
@@ -17403,13 +17374,6 @@ OZELENENIE_SEASON_END_PAGE = {
             },
         },
     ],
-    # Социальное доказательство: рейтинг и цитаты - те же данные, что уходят
-    # в AggregateRating (REVIEWS_DATA), без второго набора цифр.
-    "reviews_title": "Что говорят клиенты",
-    "reviews_rating": REVIEWS_DATA["aggregate"]["rating_value"],
-    "reviews_count": REVIEWS_DATA["aggregate"]["rating_count"],
-    "reviews_note": "Средняя оценка компании на картах",
-    "reviews": _LANDING_REVIEWS,
     "objections_title": "Частые сомнения",
     "objections": [
         {

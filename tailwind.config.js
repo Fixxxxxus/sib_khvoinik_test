@@ -14,6 +14,21 @@ module.exports = {
         brand: '#2D6A4F',
         brand2: '#40916C',
         accent: '#E9C46A',
+        // Палитра посадочной «Озеленение · финал сезона» (правки маркетолога,
+        // 10.09.2026). Используется ТОЛЬКО на этом лендинге: остальные страницы
+        // сайта остаются на brand/brand2/accent.
+        land: {
+          bg: '#eef1ec',
+          sheet: '#f3f5f1',
+          card: '#ffffff',
+          heading: '#16301a',
+          text: '#3d4f42',
+          muted: '#6b7b70',
+          line: '#dde5da',
+          green: '#2e7d32',
+          'green-dark': '#1b5e20',
+          'green-soft': '#e8f3e9',
+        },
       },
       boxShadow: {
         soft: '0 10px 30px rgba(0,0,0,0.08)',

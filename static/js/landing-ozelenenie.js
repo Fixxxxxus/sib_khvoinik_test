@@ -10,7 +10,7 @@
  *    уйти на политику и вернуться уже без меток в URL);
  *  - валидирует и нормализует телефон на клиенте, показывает ошибки у полей;
  *  - шлёт заявку и показывает экран успеха;
- *  - ведёт табы и шторку «до/после» в блоке кейсов;
+ *  - ведёт табы в блоке кейсов и просмотрщик снимков (клик по кадру - крупно);
  *  - шлёт цели Метрики: lead_form_view, lead_cta_click, lead_submit, phone_click,
  *    case_tab_click, case_compare_interact.
  */
@@ -394,9 +394,11 @@
     setTimeout(function () { observer.disconnect(); }, 30000);
   })();
 
-  // ── Кейсы: табы и сравнение «до/после» ─────────────────────────────────────
+  // ── Кейсы: табы и просмотрщик снимков ──────────────────────────────────────
   // Без JS видна первая панель (у остальных hidden в шаблоне), поэтому здесь
-  // только улучшение: переключение табов, клавиатура и интерактивная шторка.
+  // только улучшение: переключение табов, клавиатура и открытие снимка крупно.
+  // Шторку «до/после» сняли 10.09.2026 по правке маркетолога: при перетаскивании
+  // было видно, что кадры - одна и та же картинка, переписанная нейросетью.
   (function () {
     var tablist = document.querySelector('[data-cases-tablist]');
     if (!tablist) return;
@@ -444,60 +446,65 @@
     });
 
     // case_compare_interact шлём один раз на кейс за сессию: иначе каждое
-    // движение шторкой уедет в Метрику отдельной конверсией.
+    // открытие снимка уедет в Метрику отдельной конверсией.
     var comparedCases = {};
     function markCompared(key) {
-      if (comparedCases[key]) return;
+      if (!key || comparedCases[key]) return;
       comparedCases[key] = true;
       reachGoal('case_compare_interact', { landing_id: LANDING_ID, case: key });
     }
 
-    function clamp(n) {
-      return Math.min(100, Math.max(0, Number(n) || 0));
-    }
+    // Просмотрщик снимков: свой минимальный, без сторонних библиотек.
+    // Закрытие - клик мимо картинки, крестик и Escape; фокус возвращается на кадр,
+    // с которого открыли.
+    (function initLightbox() {
+      var box = document.getElementById('caseLightbox');
+      if (!box) return;
+      var image = box.querySelector('[data-case-lightbox-image]');
+      var closeButton = box.querySelector('[data-case-lightbox-close]');
+      if (!image || !closeButton) return;
 
-    document.querySelectorAll('[data-case-compare]').forEach(function (root) {
-      var key = root.getAttribute('data-case-compare');
-      var overlay = root.querySelector('[data-case-compare-overlay]');
-      var divider = root.querySelector('[data-case-compare-divider]');
-      var handle = root.querySelector('[data-case-compare-handle]');
-      var range = root.querySelector('[data-case-compare-range]');
-      if (!overlay || !divider || !handle || !range) return;
+      var lastOpener = null;
 
-      // Тот же приём, что и у слайдеров в app.js (initBeforeAfterSliders):
-      // верхний слой обрезается clip-path, ползунок лежит поверх прозрачным.
-      function update(value) {
-        var pct = clamp(value);
-        overlay.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
-        divider.style.left = pct + '%';
-        handle.style.left = pct + '%';
-        range.value = String(pct);
+      function close() {
+        if (box.hidden) return;
+        box.hidden = true;
+        image.setAttribute('src', '');
+        image.setAttribute('alt', '');
+        document.body.style.removeProperty('overflow');
+        if (lastOpener) {
+          try { lastOpener.focus(); } catch (e) { /* noop */ }
+          lastOpener = null;
+        }
       }
 
-      update(root.getAttribute('data-before-after-start') || range.value || 50);
-      range.addEventListener('input', function () {
-        update(range.value);
-        markCompared(key);
-      });
-      range.addEventListener('change', function () { update(range.value); });
+      function open(trigger) {
+        var src = trigger.getAttribute('data-case-zoom-src');
+        if (!src) return;
+        lastOpener = trigger;
+        image.setAttribute('src', src);
+        image.setAttribute('alt', trigger.getAttribute('data-case-zoom-alt') || '');
+        box.hidden = false;
+        // Пока снимок открыт, страница под ним не скроллится.
+        document.body.style.setProperty('overflow', 'hidden');
+        try { closeButton.focus(); } catch (e) { /* noop */ }
+        markCompared(trigger.getAttribute('data-case-zoom-case'));
+      }
 
-      // Мобильный переключатель: шторки нет, слой «До» либо целиком, либо совсем.
-      var toggle = document.querySelector('[data-case-compare-toggle="' + key + '"]');
-      if (!toggle) return;
-      var sideButtons = Array.prototype.slice.call(toggle.querySelectorAll('[data-case-compare-side]'));
-      sideButtons.forEach(function (button) {
-        button.addEventListener('click', function () {
-          var side = button.getAttribute('data-case-compare-side');
-          sideButtons.forEach(function (other) {
-            other.setAttribute('aria-pressed', other === button ? 'true' : 'false');
-          });
-          update(side === 'before' ? 100 : 0);
-          markCompared(key);
-        });
+      document.querySelectorAll('[data-case-zoom]').forEach(function (trigger) {
+        trigger.addEventListener('click', function () { open(trigger); });
       });
-      // На мобиле стартуем с «До»: шторка на 50% там не видна как переключатель.
-      if (window.matchMedia && window.matchMedia('(max-width: 639px)').matches) update(100);
-    });
+
+      closeButton.addEventListener('click', close);
+      // Клик мимо снимка: сам снимок клик не закрывает.
+      box.addEventListener('click', function (e) {
+        if (e.target === image || closeButton.contains(e.target)) return;
+        close();
+      });
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' || e.key === 'Esc') close();
+      });
+    })();
 
     // CTA-полоса под кейсами ведёт к нижней форме и дёргает общую цель CTA.
     var casesCta = document.querySelector('[data-cases-cta]');
