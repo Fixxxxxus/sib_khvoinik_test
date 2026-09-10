@@ -82,12 +82,12 @@ def _progress_marks() -> list[dict]:
 
 def _active_sections():
     return WholesaleSection.objects.filter(is_active=True).prefetch_related(
-        "items", "items__variants"
+        "items", "items__variants", "items__photos"
     )
 
 
 def _section_items(section: WholesaleSection):
-    return section.items.filter(is_active=True).prefetch_related("variants")
+    return section.items.filter(is_active=True).prefetch_related("variants", "photos")
 
 
 def opt_index(request: HttpRequest) -> HttpResponse:
@@ -147,7 +147,7 @@ def opt_section(request: HttpRequest, section_slug: str) -> HttpResponse:
 def opt_item(request: HttpRequest, section_slug: str, item_slug: str) -> HttpResponse:
     """GET /opt/<раздел>/<позиция>/ - карточка позиции с кнопкой «В корзину»."""
     try:
-        item = WholesaleItem.objects.select_related("section").get(
+        item = WholesaleItem.objects.select_related("section").prefetch_related("photos").get(
             slug=item_slug,
             section__slug=section_slug,
             is_active=True,

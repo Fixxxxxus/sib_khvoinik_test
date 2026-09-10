@@ -994,7 +994,10 @@ class WholesaleItem(models.Model):
         "Фото",
         upload_to="wholesale/",
         blank=True,
-        help_text="Только реальное актуальное фото товара, который отгружаем сейчас.",
+        help_text=(
+            "Обложка-запаска. Если у позиции есть галерея, обложкой становится её "
+            "первый снимок, а это поле остаётся про запас."
+        ),
     )
     availability = models.CharField(
         "Наличие",
@@ -1032,6 +1035,37 @@ class WholesaleItem(models.Model):
         """Активные варианты позиции. Пусто - карточка работает одним степпером."""
         return list(self.variants.filter(is_active=True))
 
+    def gallery_photos(self) -> list["WholesaleItemPhoto"]:
+        """Активные снимки галереи по порядку. Пусто - карточка живёт на поле image."""
+        return list(self.photos.filter(is_active=True))
+
+    def cover_photo(self):
+        """Первый снимок галереи. Он же обложка, если галерея не пуста."""
+        photos = self.gallery_photos()
+        return photos[0] if photos else None
+
+    @property
+    def cover_url(self) -> str:
+        """URL обложки: первый снимок галереи, иначе старое поле image, иначе пусто."""
+        photo = self.cover_photo()
+        if photo is not None:
+            try:
+                return photo.image.url
+            except ValueError:
+                pass
+        try:
+            return self.image.url if self.image else ""
+        except ValueError:
+            return ""
+
+    @property
+    def photos_count(self) -> int:
+        """Сколько снимков показываем: галерея, иначе одно фото-запаска."""
+        count = len(self.gallery_photos())
+        if count:
+            return count
+        return 1 if self.image else 0
+
     def price_ladder(self) -> list[dict]:
         """Ценовая лестница карточки. Считается из розничной цены и сетки скидок."""
         from . import wholesale_pricing
@@ -1057,6 +1091,85 @@ class WholesaleItem(models.Model):
         from . import wholesale_pricing
 
         return wholesale_pricing.format_amount(self.price)
+
+
+def wholesale_photo_path(instance, filename: str) -> str:
+    """Путь снимка: своя папка на позицию, имя файла сохраняем как есть.
+
+    Имя нужно неизменным: команда import_wholesale_photos сверяет по нему, что
+    снимок уже залит, и при повторном прогоне не плодит дубли. Папка на позицию
+    убирает случайные совпадения имён («01.webp» есть в каждой партии).
+    """
+    slug = getattr(instance.item, "slug", "") or "item"
+    return f"wholesale/gallery/{slug}/{filename.rsplit('/', 1)[-1]}"
+
+
+class WholesaleItemPhoto(models.Model):
+    """Снимок позиции для галереи карточки /opt/<раздел>/<позиция>/.
+
+    Заказчик присылает по 4-7 кадров на позицию, снятых на телефон. Поле
+    WholesaleItem.image остаётся обложкой-запаской: если галерея пуста, карточка
+    показывает его; если снимки есть, обложкой становится первый из них.
+    """
+
+    item = models.ForeignKey(
+        WholesaleItem,
+        verbose_name="Позиция",
+        related_name="photos",
+        on_delete=models.CASCADE,
+    )
+    image = models.ImageField(
+        "Снимок",
+        upload_to=wholesale_photo_path,
+        help_text="Живое фото товара, который отгружаем сейчас. Лучше webp.",
+    )
+    caption = models.CharField(
+        "Подпись",
+        max_length=200,
+        blank=True,
+        help_text="Необязательно: что именно на кадре («ком», «крона», «лист»).",
+    )
+    source_name = models.CharField(
+        "Имя исходного файла",
+        max_length=255,
+        blank=True,
+        help_text=(
+            "Заполняет команда import_wholesale_photos. По нему повторный прогон "
+            "понимает, что снимок уже залит, и не плодит дубли. Руками не трогать."
+        ),
+    )
+    sort_order = models.IntegerField(
+        "Порядок",
+        default=100,
+        help_text="Первый снимок по порядку становится обложкой позиции.",
+    )
+    is_active = models.BooleanField("Активен", default=True)
+
+    class Meta:
+        ordering = ["sort_order", "pk"]
+        verbose_name = "фото позиции"
+        verbose_name_plural = "оптовый каталог: фото позиций"
+
+    def __str__(self) -> str:
+        return f"{self.item.title}: {self.caption or self.file_name}"
+
+    @property
+    def file_name(self) -> str:
+        """Имя файла без папок.
+
+        Исходное имя из папки заказчика, если снимок пришёл импортом: хранилище
+        могло приписать к файлу суффикс при совпадении имён. Иначе - имя того
+        файла, что лежит в media.
+        """
+        if self.source_name:
+            return self.source_name
+        name = self.image.name or ""
+        return name.rsplit("/", 1)[-1]
+
+    @property
+    def alt(self) -> str:
+        """Alt для тега img: подпись, если есть, иначе название позиции."""
+        return self.caption or self.item.title
 
 
 class WholesaleItemVariant(models.Model):

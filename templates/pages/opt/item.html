@@ -12,13 +12,45 @@
 
 {% block opt_content %}
   <div class="grid gap-8 lg:grid-cols-2">
-    <div class="overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-      {% if item.image %}
-        <img src="{{ item.image.url }}" alt="{{ item.title }}" class="h-full w-full object-cover" />
-      {% else %}
-        <div class="flex aspect-[4/3] items-center justify-center text-sm text-slate-400">фото готовим</div>
-      {% endif %}
-    </div>
+    {% with gallery=item.gallery_photos %}
+      {% comment %}
+        Галерея позиции: крупный кадр и лента миниатюр. Приближения и модалок тут
+        осознанно нет - заказчик просил такое убрать. Один снимок - ленты нет.
+        Пустая галерея - показываем старое поле image как обложку-запаску.
+      {% endcomment %}
+      <div data-opt-gallery>
+        <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100" data-opt-gallery-frame>
+          {% if gallery %}
+            {% for photo in gallery %}
+              <img src="{{ photo.image.url }}" alt="{{ photo.alt }}"
+                   {% if not forloop.first %}loading="lazy"{% endif %}
+                   data-opt-gallery-slide data-index="{{ forloop.counter0 }}"
+                   class="aspect-[4/3] w-full object-cover{% if not forloop.first %} hidden{% endif %}" />
+            {% endfor %}
+          {% elif item.image %}
+            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="aspect-[4/3] w-full object-cover" />
+          {% else %}
+            <div class="flex aspect-[4/3] items-center justify-center text-sm text-slate-400">фото готовим</div>
+          {% endif %}
+        </div>
+
+        {% if gallery|length > 1 %}
+          <div class="mt-3 flex gap-2 overflow-x-auto pb-1" role="group" aria-label="Кадры позиции" data-opt-gallery-thumbs>
+            {% for photo in gallery %}
+              <button type="button" data-opt-gallery-thumb data-index="{{ forloop.counter0 }}"
+                      aria-label="Кадр {{ forloop.counter }} из {{ gallery|length }}"
+                      {% if forloop.first %}aria-current="true"{% endif %}
+                      class="h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 {% if forloop.first %}border-brand{% else %}border-transparent{% endif %} bg-slate-100">
+                <img src="{{ photo.image.url }}" alt="{{ photo.alt }}" loading="lazy" class="h-full w-full object-cover" />
+              </button>
+            {% endfor %}
+          </div>
+          <p class="mt-2 text-xs text-slate-500">
+            Кадр <span data-opt-gallery-current>1</span> из {{ gallery|length }}. Листайте стрелками или свайпом.
+          </p>
+        {% endif %}
+      </div>
+    {% endwith %}
 
     <div>
       <div class="flex flex-wrap gap-2">
@@ -62,8 +94,8 @@
               <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-slate-100">
                 {% if variant.image %}
                   <img src="{{ variant.image.url }}" alt="{{ variant.title }}" loading="lazy" class="h-full w-full object-cover" />
-                {% elif item.image %}
-                  <img src="{{ item.image.url }}" alt="{{ variant.title }}" loading="lazy" class="h-full w-full object-cover" />
+                {% elif item.cover_url %}
+                  <img src="{{ item.cover_url }}" alt="{{ variant.title }}" loading="lazy" class="h-full w-full object-cover" />
                 {% endif %}
               </div>
               <div class="min-w-0 flex-1">

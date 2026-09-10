@@ -29,6 +29,7 @@ from pages.models import (
     PreorderPlant,
     PreorderSettings,
     WholesaleItem,
+    WholesaleItemPhoto,
     WholesaleItemVariant,
     WholesaleOrder,
     WholesaleOrderLine,
@@ -668,6 +669,28 @@ class WholesaleSectionAdmin(admin.ModelAdmin):
         return obj.items.count()
 
 
+class WholesaleItemPhotoInline(admin.TabularInline):
+    """Галерея позиции: 4-7 кадров с телефона. Первый по порядку - обложка."""
+
+    model = WholesaleItemPhoto
+    extra = 0
+    fields = ("sort_order", "image", "thumb", "caption", "is_active")
+    readonly_fields = ("thumb",)
+    ordering = ("sort_order", "pk")
+
+    @admin.display(description="Превью")
+    def thumb(self, obj: WholesaleItemPhoto) -> str:
+        try:
+            if obj.image:
+                return format_html(
+                    '<img src="{}" style="max-height:90px;border-radius:6px;object-fit:cover" alt="" />',
+                    obj.image.url,
+                )
+        except ValueError:
+            pass
+        return "-"
+
+
 class WholesaleItemVariantInline(admin.TabularInline):
     """Варианты позиции: цвет, сорт, партия. Пусто - карточка работает без выбора."""
 
@@ -698,7 +721,7 @@ class WholesaleItemAdmin(admin.ModelAdmin):
     list_filter = ("section", "is_active", "is_highlighted", "is_demo")
     search_fields = ("title", "slug", "size", "availability")
     prepopulated_fields = {"slug": ("title",)}
-    inlines = [WholesaleItemVariantInline]
+    inlines = [WholesaleItemPhotoInline, WholesaleItemVariantInline]
     readonly_fields = ("preview",)
     fields = (
         "section",

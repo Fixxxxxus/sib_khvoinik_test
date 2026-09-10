@@ -585,5 +585,90 @@
     submitOrder(form);
   });
 
+  /* ------------------------------------------------------------------
+     Галерея карточки позиции: крупный кадр и лента миниатюр.
+     Без сторонних библиотек, без зума и без модалок - заказчик просил такое
+     убрать. Переключение: клик по миниатюре, стрелки влево-вправо, свайп.
+     ------------------------------------------------------------------ */
+
+  var SWIPE_MIN = 40; /* короче - это тап или дрожание руки, не свайп */
+
+  function galleryNode() {
+    return document.querySelector('[data-opt-gallery]');
+  }
+
+  function gallerySlides(root) {
+    return Array.prototype.slice.call(root.querySelectorAll('[data-opt-gallery-slide]'));
+  }
+
+  function showSlide(root, index) {
+    var slides = gallerySlides(root);
+    if (slides.length < 2) return;
+    var next = (index + slides.length) % slides.length;
+    slides.forEach(function (slide, i) {
+      slide.classList.toggle('hidden', i !== next);
+    });
+    var thumbs = root.querySelectorAll('[data-opt-gallery-thumb]');
+    Array.prototype.forEach.call(thumbs, function (thumb, i) {
+      var active = i === next;
+      thumb.classList.toggle('border-brand', active);
+      thumb.classList.toggle('border-transparent', !active);
+      if (active) {
+        thumb.setAttribute('aria-current', 'true');
+      } else {
+        thumb.removeAttribute('aria-current');
+      }
+    });
+    var counter = root.querySelector('[data-opt-gallery-current]');
+    if (counter) counter.textContent = String(next + 1);
+    root.setAttribute('data-opt-gallery-index', String(next));
+  }
+
+  function currentSlide(root) {
+    var index = parseInt(root.getAttribute('data-opt-gallery-index'), 10);
+    return isNaN(index) ? 0 : index;
+  }
+
+  document.addEventListener('click', function (event) {
+    var thumb = event.target.closest('[data-opt-gallery-thumb]');
+    if (!thumb) return;
+    var root = thumb.closest('[data-opt-gallery]');
+    if (!root) return;
+    showSlide(root, parseInt(thumb.getAttribute('data-index'), 10) || 0);
+  });
+
+  document.addEventListener('keydown', function (event) {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    /* В полях ввода стрелки двигают курсор и количество - галерею не трогаем. */
+    var active = document.activeElement;
+    if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA' || active.tagName === 'SELECT')) return;
+    var root = galleryNode();
+    if (!root || gallerySlides(root).length < 2) return;
+    showSlide(root, currentSlide(root) + (event.key === 'ArrowRight' ? 1 : -1));
+    event.preventDefault();
+  });
+
+  var swipeStartX = 0;
+  var swipeStartY = 0;
+
+  document.addEventListener('touchstart', function (event) {
+    var frame = event.target.closest('[data-opt-gallery-frame]');
+    if (!frame || !event.touches.length) return;
+    swipeStartX = event.touches[0].clientX;
+    swipeStartY = event.touches[0].clientY;
+  }, { passive: true });
+
+  document.addEventListener('touchend', function (event) {
+    var frame = event.target.closest('[data-opt-gallery-frame]');
+    if (!frame || !event.changedTouches.length) return;
+    var root = frame.closest('[data-opt-gallery]');
+    if (!root || gallerySlides(root).length < 2) return;
+    var dx = event.changedTouches[0].clientX - swipeStartX;
+    var dy = event.changedTouches[0].clientY - swipeStartY;
+    /* Вертикальный жест - это скролл страницы, а не листание. */
+    if (Math.abs(dx) < SWIPE_MIN || Math.abs(dx) < Math.abs(dy)) return;
+    showSlide(root, currentSlide(root) + (dx < 0 ? 1 : -1));
+  }, { passive: true });
+
   document.addEventListener('DOMContentLoaded', render);
 })();
