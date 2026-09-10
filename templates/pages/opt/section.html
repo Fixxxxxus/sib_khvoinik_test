@@ -1,0 +1,15 @@
+{% extends 'pages/opt/base_opt.html' %}
+
+{% block opt_content %}
+  <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">{{ section.title }} оптом</h1>
+  {% if section.intro %}<p class="mt-3 max-w-3xl text-slate-600">{{ section.intro }}</p>{% endif %}
+  <p class="mt-2 text-sm text-slate-500">Позиций в разделе: {{ items|length }}. Цены оптовые, за {{ items.0.unit|default:'шт' }}.</p>
+
+  {% if items %}
+    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {% for item in items %}{% include 'partials/opt_item_card.html' %}{% endfor %}
+    </div>
+  {% else %}
+    <p class="mt-6 text-slate-600">В этом разделе пока нет активных позиций.</p>
+  {% endif %}
+{% endblock %}

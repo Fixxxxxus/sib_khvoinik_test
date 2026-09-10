@@ -911,3 +911,194 @@ class LandingLead(models.Model):
 
     def __str__(self) -> str:
         return f"{self.landing_id}: {self.name} {self.phone} ({self.lead_id})"
+
+
+# ---------------------------------------------------------------------------
+# Скрытый оптовый каталог /opt/ (рекламный контур под Яндекс.Директ).
+#
+# Отдельные модели, а не расширение публичного каталога: ассортимент здесь -
+# только позиции текущего плана продаж, цены оптовые, страницы noindex и не
+# видны в навигации сайта. Публичный /catalog/ эти модели не трогают.
+# ---------------------------------------------------------------------------
+
+class WholesaleSection(models.Model):
+    """Раздел оптового каталога: деревья, кустарники и прочие группы плана."""
+
+    title = models.CharField("Название", max_length=200)
+    slug = models.SlugField(
+        "Слаг",
+        max_length=200,
+        unique=True,
+        help_text="Часть URL: /opt/<слаг>/. Менять после запуска рекламы нельзя.",
+    )
+    intro = models.TextField("Короткое описание", blank=True)
+    sort_order = models.IntegerField("Порядок", default=100)
+    is_active = models.BooleanField("Активен", default=True)
+    is_demo = models.BooleanField(
+        "Демо-данные",
+        default=False,
+        help_text="Заглушка каркаса. Снять после заливки реального плана продаж.",
+    )
+
+    class Meta:
+        ordering = ["sort_order", "title"]
+        verbose_name = "раздел оптового каталога"
+        verbose_name_plural = "оптовый каталог: разделы"
+
+    def __str__(self) -> str:
+        return f"{self.title}{' (демо)' if self.is_demo else ''}"
+
+    def get_absolute_url(self) -> str:
+        return f"/opt/{self.slug}/"
+
+
+class WholesaleItem(models.Model):
+    """Позиция оптового каталога: размер, оптовая цена, живое фото."""
+
+    section = models.ForeignKey(
+        WholesaleSection,
+        verbose_name="Раздел",
+        related_name="items",
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField("Название", max_length=250)
+    slug = models.SlugField(
+        "Слаг",
+        max_length=250,
+        help_text="Часть URL: /opt/<раздел>/<слаг>/. Менять после запуска рекламы нельзя.",
+    )
+    size = models.CharField(
+        "Размер",
+        max_length=200,
+        blank=True,
+        help_text="Высота, объём кома или контейнер - как принято в плане продаж.",
+    )
+    price = models.DecimalField(
+        "Оптовая цена, ₽",
+        max_digits=10,
+        decimal_places=2,
+        default=0,
+        help_text="Цена за единицу. Единственный источник цены: из браузера цену не берём.",
+    )
+    unit = models.CharField("Единица", max_length=20, default="шт")
+    short_description = models.TextField(
+        "Кратко о позиции",
+        blank=True,
+        help_text="Что это, для кого партия, условия отгрузки. Без розничного сторителлинга.",
+    )
+    image = models.ImageField(
+        "Фото",
+        upload_to="wholesale/",
+        blank=True,
+        help_text="Только реальное актуальное фото товара, который отгружаем сейчас.",
+    )
+    availability = models.CharField(
+        "Наличие",
+        max_length=200,
+        blank=True,
+        help_text="Например: «в наличии 120 шт» или «под заказ, отгрузка 5 дней».",
+    )
+    is_highlighted = models.BooleanField(
+        "Акцент",
+        default=False,
+        help_text="Позиция, которую двигаем в первую очередь: поднимается в списке.",
+    )
+    sort_order = models.IntegerField("Порядок", default=100)
+    is_active = models.BooleanField("Активна", default=True)
+    is_demo = models.BooleanField(
+        "Демо-данные",
+        default=False,
+        help_text="Заглушка каркаса: название, размер и цена выдуманы. Снять после заливки плана.",
+    )
+
+    class Meta:
+        ordering = ["-is_highlighted", "sort_order", "title"]
+        unique_together = [("section", "slug")]
+        verbose_name = "позиция оптового каталога"
+        verbose_name_plural = "оптовый каталог: позиции"
+
+    def __str__(self) -> str:
+        size = f", {self.size}" if self.size else ""
+        return f"{self.title}{size}{' (демо)' if self.is_demo else ''}"
+
+    def get_absolute_url(self) -> str:
+        return f"/opt/{self.section.slug}/{self.slug}/"
+
+
+class WholesaleOrder(models.Model):
+    """Оптовый заказ из корзины /opt/ (POST /api/opt/order/).
+
+    Пишем в БД первым делом: Битрикс24 и Telegram - best-effort поверх записи,
+    их сбой не должен стоить заказа. Суммы считает сервер по ценам из БД.
+    """
+
+    order_id = models.CharField("order_id", max_length=32, unique=True, db_index=True)
+
+    name = models.CharField("Имя / компания", max_length=200)
+    company = models.CharField("Компания", max_length=200, blank=True)
+    phone = models.CharField("Телефон", max_length=20, help_text="Нормализован к 7XXXXXXXXXX.")
+    email = models.EmailField("Email", blank=True)
+    comment = models.TextField("Комментарий", blank=True)
+
+    subtotal = models.DecimalField("Сумма без скидки, ₽", max_digits=12, decimal_places=2, default=0)
+    discount_percent = models.IntegerField("Скидка, %", default=0)
+    discount_amount = models.DecimalField("Скидка, ₽", max_digits=12, decimal_places=2, default=0)
+    total = models.DecimalField("Итого, ₽", max_digits=12, decimal_places=2, default=0)
+    total_quantity = models.IntegerField("Всего единиц", default=0)
+    discount_basis = models.CharField("База скидки", max_length=20, blank=True)
+
+    source = models.CharField("Источник", max_length=100, blank=True)
+    page_path = models.CharField("Путь страницы", max_length=300, blank=True)
+    referrer = models.CharField("Referrer", max_length=500, blank=True)
+    utm_source = models.CharField("utm_source", max_length=200, blank=True)
+    utm_medium = models.CharField("utm_medium", max_length=200, blank=True)
+    utm_campaign = models.CharField("utm_campaign", max_length=300, blank=True)
+    utm_content = models.CharField("utm_content", max_length=300, blank=True)
+    utm_term = models.CharField("utm_term", max_length=300, blank=True)
+    yclid = models.CharField("yclid", max_length=100, blank=True)
+
+    b24_lead_id = models.IntegerField("ID лида в Б24", null=True, blank=True)
+    ip = models.CharField("IP", max_length=64, blank=True)
+    created_at = models.DateTimeField("Создан", auto_now_add=True, db_index=True)
+
+    class Meta:
+        ordering = ["-created_at", "-pk"]
+        verbose_name = "оптовый заказ"
+        verbose_name_plural = "оптовый каталог: заказы"
+
+    def __str__(self) -> str:
+        return f"Заказ {self.order_id}: {self.name}, {self.total} ₽"
+
+
+class WholesaleOrderLine(models.Model):
+    """Строка заказа. Название, размер и цена копируются на момент заказа:
+    прайс потом поменяют, а заказ должен остаться таким, каким его отправили."""
+
+    order = models.ForeignKey(
+        WholesaleOrder,
+        verbose_name="Заказ",
+        related_name="lines",
+        on_delete=models.CASCADE,
+    )
+    item = models.ForeignKey(
+        WholesaleItem,
+        verbose_name="Позиция",
+        related_name="order_lines",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
+    title = models.CharField("Название", max_length=250)
+    size = models.CharField("Размер", max_length=200, blank=True)
+    unit = models.CharField("Единица", max_length=20, default="шт")
+    price = models.DecimalField("Цена за единицу, ₽", max_digits=10, decimal_places=2, default=0)
+    quantity = models.IntegerField("Количество", default=0)
+    line_total = models.DecimalField("Сумма строки, ₽", max_digits=12, decimal_places=2, default=0)
+
+    class Meta:
+        ordering = ["pk"]
+        verbose_name = "строка оптового заказа"
+        verbose_name_plural = "строки оптового заказа"
+
+    def __str__(self) -> str:
+        return f"{self.title} x {self.quantity}"

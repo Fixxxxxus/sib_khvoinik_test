@@ -28,6 +28,10 @@ from pages.models import (
     PreorderGroup,
     PreorderPlant,
     PreorderSettings,
+    WholesaleItem,
+    WholesaleOrder,
+    WholesaleOrderLine,
+    WholesaleSection,
 )
 from django.templatetags.static import static as static_url
 
@@ -618,4 +622,149 @@ class LandingLeadAdmin(admin.ModelAdmin):
         return False
 
     def has_change_permission(self, request, obj=None):
+        return False
+
+
+# ---------------------------------------------------------------------------
+# Скрытый оптовый каталог /opt/ (рекламный контур под Яндекс.Директ).
+# ---------------------------------------------------------------------------
+
+class WholesaleItemInline(admin.TabularInline):
+    model = WholesaleItem
+    extra = 0
+    fields = (
+        "sort_order",
+        "title",
+        "slug",
+        "size",
+        "price",
+        "unit",
+        "availability",
+        "is_highlighted",
+        "is_active",
+        "is_demo",
+    )
+    prepopulated_fields = {"slug": ("title",)}
+    show_change_link = True
+
+
+@admin.register(WholesaleSection)
+class WholesaleSectionAdmin(admin.ModelAdmin):
+    """Разделы оптового каталога.
+
+    URL /opt/<слаг>/ уходит в объявления Директа, поэтому слаг после запуска
+    рекламы менять нельзя: сломаются ссылки в объявлениях и статистика.
+    """
+
+    list_display = ("title", "slug", "items_count", "sort_order", "is_active", "is_demo")
+    list_filter = ("is_active", "is_demo")
+    search_fields = ("title", "slug")
+    prepopulated_fields = {"slug": ("title",)}
+    inlines = [WholesaleItemInline]
+
+    @admin.display(description="Позиций")
+    def items_count(self, obj: WholesaleSection) -> int:
+        return obj.items.count()
+
+
+@admin.register(WholesaleItem)
+class WholesaleItemAdmin(admin.ModelAdmin):
+    """Позиции оптового каталога.
+
+    Цена отсюда - единственная, которой верит сервер при оформлении заказа:
+    значение, пришедшее из браузера, игнорируется.
+    """
+
+    list_display = (
+        "title",
+        "section",
+        "size",
+        "price",
+        "unit",
+        "availability",
+        "is_highlighted",
+        "is_active",
+        "is_demo",
+    )
+    list_filter = ("section", "is_active", "is_highlighted", "is_demo")
+    search_fields = ("title", "slug", "size", "availability")
+    prepopulated_fields = {"slug": ("title",)}
+    readonly_fields = ("preview",)
+    fields = (
+        "section",
+        "title",
+        "slug",
+        "size",
+        "price",
+        "unit",
+        "availability",
+        "short_description",
+        "image",
+        "preview",
+        "is_highlighted",
+        "sort_order",
+        "is_active",
+        "is_demo",
+    )
+
+    @admin.display(description="Предпросмотр")
+    def preview(self, obj: WholesaleItem) -> str:
+        try:
+            if obj.image:
+                return format_html(
+                    '<img src="{}" style="max-height:120px;border-radius:8px;object-fit:cover" alt="" />',
+                    obj.image.url,
+                )
+        except ValueError:
+            pass
+        return "-"
+
+
+class WholesaleOrderLineInline(admin.TabularInline):
+    """Состав заказа только на чтение: заказ - документ на момент отправки."""
+
+    model = WholesaleOrderLine
+    extra = 0
+    can_delete = False
+    fields = ("title", "size", "price", "quantity", "unit", "line_total")
+    readonly_fields = fields
+
+    def has_add_permission(self, request, obj=None) -> bool:
+        return False
+
+
+@admin.register(WholesaleOrder)
+class WholesaleOrderAdmin(admin.ModelAdmin):
+    """Журнал оптовых заказов: только чтение.
+
+    Заказы создаёт API (POST /api/opt/order/), менеджер работает с лидом в Б24.
+    Здесь смотрят исходный состав корзины, применённую скидку и итог.
+    """
+
+    list_display = (
+        "created_at",
+        "order_id",
+        "name",
+        "company",
+        "phone",
+        "total_quantity",
+        "subtotal",
+        "discount_percent",
+        "total",
+        "b24_lead_id",
+    )
+    list_filter = ("created_at", "discount_percent", "source")
+    search_fields = ("order_id", "name", "company", "phone", "email", "utm_campaign", "yclid")
+    date_hierarchy = "created_at"
+    ordering = ("-created_at",)
+    inlines = [WholesaleOrderLineInline]
+
+    def get_readonly_fields(self, request, obj=None):
+        return [field.name for field in WholesaleOrder._meta.fields]
+
+    def has_add_permission(self, request) -> bool:
+        return False
+
+    def has_change_permission(self, request, obj=None) -> bool:
+        # Просмотр карточки остаётся (view permission), правки - нет.
         return False

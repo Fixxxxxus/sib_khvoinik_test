@@ -231,6 +231,10 @@ Disallow: /direct-50/
 Disallow: /kottedzhi-direct/
 Disallow: /ozelenenie-season-end/
 Disallow: /discount/
+# Скрытый оптовый каталог под Директ: рекламный контур, не дубль публичного
+# /catalog/. Страницы дополнительно отдаются с meta noindex и не попадают
+# ни в sitemap.xml, ни в llms.txt.
+Disallow: /opt/
 
 # AI-краулеры: доступ открыт явно
 User-agent: GPTBot
@@ -334,6 +338,8 @@ def sitemap_xml(request):
     from .data import CALENDAR_PAGE, STATI_PAGE
 
     # (path, priority, changefreq, lastmod|None)
+    # Скрытый оптовый каталог /opt/ сюда сознательно не попадает: это рекламный
+    # контур под Директ, он живёт на платном трафике и отдаётся с noindex.
     entries: list[tuple[str, float, str, str | None]] = list(_static_sitemap_entries())
 
     # Каталог: категории + карточки растений (на проде - из БД). Приоритет 0.7.

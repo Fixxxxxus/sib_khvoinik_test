@@ -1,0 +1,67 @@
+{% extends 'pages/opt/base_opt.html' %}
+
+{% block opt_content %}
+  <div class="grid gap-8 lg:grid-cols-2">
+    <div class="overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
+      {% if item.image %}
+        <img src="{{ item.image.url }}" alt="{{ item.title }}" class="h-full w-full object-cover" />
+      {% else %}
+        <div class="flex aspect-[4/3] items-center justify-center text-sm text-slate-400">фото готовим</div>
+      {% endif %}
+    </div>
+
+    <div>
+      <div class="flex flex-wrap gap-2">
+        {% if item.is_highlighted %}<span class="rounded bg-accent/20 px-2 py-0.5 text-xs font-medium text-slate-700">В приоритете</span>{% endif %}
+        {% if item.is_demo %}<span class="rounded bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600">демо-позиция</span>{% endif %}
+      </div>
+      <h1 class="mt-2 text-2xl font-semibold text-slate-900 sm:text-3xl">{{ item.title }}</h1>
+
+      <dl class="mt-5 grid gap-2 text-sm">
+        {% if item.size %}
+          <div class="flex gap-2"><dt class="w-36 text-slate-500">Размер</dt><dd class="font-medium text-slate-800">{{ item.size }}</dd></div>
+        {% endif %}
+        <div class="flex gap-2"><dt class="w-36 text-slate-500">Оптовая цена</dt><dd class="font-medium text-slate-800">{{ item.price|floatformat:0 }} ₽ за {{ item.unit }}</dd></div>
+        {% if item.availability %}
+          <div class="flex gap-2"><dt class="w-36 text-slate-500">Наличие</dt><dd class="font-medium text-slate-800">{{ item.availability }}</dd></div>
+        {% endif %}
+        <div class="flex gap-2"><dt class="w-36 text-slate-500">Раздел</dt><dd><a href="{{ section.get_absolute_url }}" class="text-brand hover:underline">{{ section.title }}</a></dd></div>
+      </dl>
+
+      {% if item.short_description %}
+        <p class="mt-5 max-w-xl text-slate-700">{{ item.short_description }}</p>
+      {% endif %}
+
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <label class="flex items-center gap-2 text-sm text-slate-600">
+          Количество
+          <input type="number" min="1" value="1" data-opt-qty-input
+                 class="w-24 rounded-lg border border-slate-300 px-3 py-2 text-sm" />
+        </label>
+        <button type="button"
+                class="rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-white hover:bg-brand2"
+                data-opt-add
+                data-slug="{{ item.slug }}"
+                data-section="{{ item.section.slug }}"
+                data-title="{{ item.title }}"
+                data-size="{{ item.size }}"
+                data-unit="{{ item.unit }}"
+                data-price="{{ item.price|floatformat:2 }}">В корзину</button>
+        <button type="button" data-opt-cart-open class="rounded-lg border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 hover:border-brand">Открыть корзину</button>
+      </div>
+
+      <p class="mt-4 text-xs text-slate-500">
+        Скидка за объём считается в корзине.{% if not discount_approved %} {{ discount_disclaimer }}{% endif %}
+      </p>
+    </div>
+  </div>
+
+  {% if same_section %}
+    <section class="mt-12">
+      <h2 class="text-xl font-semibold text-slate-900">Ещё из раздела «{{ section.title }}»</h2>
+      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {% for item in same_section %}{% include 'partials/opt_item_card.html' %}{% endfor %}
+      </div>
+    </section>
+  {% endif %}
+{% endblock %}
