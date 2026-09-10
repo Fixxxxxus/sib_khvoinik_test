@@ -10,7 +10,9 @@
  *    уйти на политику и вернуться уже без меток в URL);
  *  - валидирует и нормализует телефон на клиенте, показывает ошибки у полей;
  *  - шлёт заявку и показывает экран успеха;
- *  - шлёт цели Метрики: lead_form_view, lead_cta_click, lead_submit, phone_click.
+ *  - ведёт табы и шторку «до/после» в блоке кейсов;
+ *  - шлёт цели Метрики: lead_form_view, lead_cta_click, lead_submit, phone_click,
+ *    case_tab_click, case_compare_interact.
  */
 (function () {
   'use strict';
@@ -390,6 +392,116 @@
     observer.observe(document.body, { childList: true, subtree: true });
     // Виджет может так и не подгрузиться (блокировщик, нет сети) - не наблюдаем вечно.
     setTimeout(function () { observer.disconnect(); }, 30000);
+  })();
+
+  // ── Кейсы: табы и сравнение «до/после» ─────────────────────────────────────
+  // Без JS видна первая панель (у остальных hidden в шаблоне), поэтому здесь
+  // только улучшение: переключение табов, клавиатура и интерактивная шторка.
+  (function () {
+    var tablist = document.querySelector('[data-cases-tablist]');
+    if (!tablist) return;
+
+    var tabs = Array.prototype.slice.call(tablist.querySelectorAll('[data-case-tab]'));
+    if (!tabs.length) return;
+
+    function panelFor(key) {
+      return document.querySelector('[data-case-panel="' + key + '"]');
+    }
+
+    function activate(key, focusTab) {
+      tabs.forEach(function (tab) {
+        var isActive = tab.getAttribute('data-case-tab') === key;
+        tab.setAttribute('aria-selected', isActive ? 'true' : 'false');
+        tab.tabIndex = isActive ? 0 : -1;
+        var panel = panelFor(tab.getAttribute('data-case-tab'));
+        if (panel) panel.hidden = !isActive;
+        if (isActive && focusTab) tab.focus();
+      });
+    }
+
+    tabs.forEach(function (tab, index) {
+      var key = tab.getAttribute('data-case-tab');
+
+      tab.addEventListener('click', function () {
+        if (tab.getAttribute('aria-selected') === 'true') return;
+        activate(key, false);
+        reachGoal('case_tab_click', { landing_id: LANDING_ID, case: key });
+      });
+
+      tab.addEventListener('keydown', function (e) {
+        var step = 0;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') step = 1;
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') step = -1;
+        else if (e.key === 'Home') step = -index;
+        else if (e.key === 'End') step = tabs.length - 1 - index;
+        else return;
+        e.preventDefault();
+        var next = tabs[(index + step + tabs.length) % tabs.length];
+        var nextKey = next.getAttribute('data-case-tab');
+        activate(nextKey, true);
+        reachGoal('case_tab_click', { landing_id: LANDING_ID, case: nextKey });
+      });
+    });
+
+    // case_compare_interact шлём один раз на кейс за сессию: иначе каждое
+    // движение шторкой уедет в Метрику отдельной конверсией.
+    var comparedCases = {};
+    function markCompared(key) {
+      if (comparedCases[key]) return;
+      comparedCases[key] = true;
+      reachGoal('case_compare_interact', { landing_id: LANDING_ID, case: key });
+    }
+
+    function clamp(n) {
+      return Math.min(100, Math.max(0, Number(n) || 0));
+    }
+
+    document.querySelectorAll('[data-case-compare]').forEach(function (root) {
+      var key = root.getAttribute('data-case-compare');
+      var overlay = root.querySelector('[data-case-compare-overlay]');
+      var divider = root.querySelector('[data-case-compare-divider]');
+      var handle = root.querySelector('[data-case-compare-handle]');
+      var range = root.querySelector('[data-case-compare-range]');
+      if (!overlay || !divider || !handle || !range) return;
+
+      // Тот же приём, что и у слайдеров в app.js (initBeforeAfterSliders):
+      // верхний слой обрезается clip-path, ползунок лежит поверх прозрачным.
+      function update(value) {
+        var pct = clamp(value);
+        overlay.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+        divider.style.left = pct + '%';
+        handle.style.left = pct + '%';
+        range.value = String(pct);
+      }
+
+      update(root.getAttribute('data-before-after-start') || range.value || 50);
+      range.addEventListener('input', function () {
+        update(range.value);
+        markCompared(key);
+      });
+      range.addEventListener('change', function () { update(range.value); });
+
+      // Мобильный переключатель: шторки нет, слой «До» либо целиком, либо совсем.
+      var toggle = document.querySelector('[data-case-compare-toggle="' + key + '"]');
+      if (!toggle) return;
+      var sideButtons = Array.prototype.slice.call(toggle.querySelectorAll('[data-case-compare-side]'));
+      sideButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+          var side = button.getAttribute('data-case-compare-side');
+          sideButtons.forEach(function (other) {
+            other.setAttribute('aria-pressed', other === button ? 'true' : 'false');
+          });
+          update(side === 'before' ? 100 : 0);
+          markCompared(key);
+        });
+      });
+      // На мобиле стартуем с «До»: шторка на 50% там не видна как переключатель.
+      if (window.matchMedia && window.matchMedia('(max-width: 639px)').matches) update(100);
+    });
+
+    // CTA-полоса под кейсами ведёт к нижней форме и дёргает общую цель CTA.
+    var casesCta = document.querySelector('[data-cases-cta]');
+    if (casesCta) casesCta.addEventListener('click', ctaClick);
   })();
 
   // ── phone_click ────────────────────────────────────────────────────────────

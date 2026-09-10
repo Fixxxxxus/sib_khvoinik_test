@@ -266,9 +266,10 @@ class LandingPageTest(TestCase):
         eyebrow = html.split('id="hero"')[1].split("<h1")[0]
         self.assertNotIn("100 м²", eyebrow)
         self.assertIn("Новосибирск и область · финал сезона", eyebrow)
-        # Первый абзац после H1 - лид hero: фильтра по метражу в нём тоже нет.
+        # Лид hero, наоборот, объём называет: правка маркетолога от 10.09.2026
+        # вернула «от 100 м²» в подзаголовок, но не в eyebrow над H1.
         hero_lead = html.split("</h1>")[1].split("</p>")[0]
-        self.assertNotIn("100 м²", hero_lead)
+        self.assertIn("Озеленение под ключ от 100 м²", hero_lead)
         # Мелкая строка под кнопкой на месте, area_label в лиде не тронут.
         self.assertIn("Берём объекты от 100 м²", html)
 
@@ -283,14 +284,60 @@ class LandingPageTest(TestCase):
         quoted = [r for r in REVIEWS_DATA["items"] if r["author"] == "Igor Baikalov"][0]
         self.assertIn(quoted["text"][:40], html)
 
-    def test_before_after_cases_rendered(self):
+    def test_cases_rendered_as_three_tabs(self):
         html = self.client.get("/ozelenenie-season-end/").content.decode()
-        self.assertIn("Примеры работ: до и после", html)
-        self.assertIn("cases/case-house.webp", html)
-        self.assertIn("cases/case-office-yard.webp", html)
-        # Ленивая загрузка обязательна: пять карточек по ~200 КБ.
+        self.assertIn("Как участок из стройки становится садом", html)
         cases = html.split('id="cases"')[1].split("</section>")[0]
-        self.assertEqual(cases.count('loading="lazy"'), 5)
+
+        # Три таба и три панели: дача, частный дом, коттедж.
+        for key, tab in (("dacha", "Дача"), ("house", "Частный дом"), ("cottage", "Коттедж")):
+            self.assertIn('id="case-tab-%s"' % key, cases)
+            self.assertIn('id="case-panel-%s"' % key, cases)
+            self.assertIn(tab, cases)
+        self.assertEqual(cases.count('role="tabpanel"'), 3)
+        self.assertEqual(cases.count('role="tab"'), 3)
+
+    def test_cases_have_all_twelve_photos(self):
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        cases = html.split('id="cases"')[1].split("</section>")[0]
+        for key in ("dacha", "house", "cottage"):
+            for shot in ("01-before", "02-process", "03-after", "04-detail"):
+                self.assertIn("cases/%s-%s.webp" % (key, shot), cases)
+        # Ленивая загрузка обязательна: двенадцать кадров по ~200 КБ.
+        self.assertEqual(cases.count('loading="lazy"'), 12)
+
+    def test_first_case_panel_is_open_without_js(self):
+        """Без JS должна быть видна первая панель, остальные - скрыты."""
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        cases = html.split('id="cases"')[1].split("</section>")[0]
+        dacha = cases.split('id="case-panel-dacha"')[1].split(">")[0]
+        self.assertNotIn("hidden", dacha)
+        for key in ("house", "cottage"):
+            panel = cases.split('id="case-panel-%s"' % key)[1].split(">")[0]
+            self.assertIn("hidden", panel)
+        # Активен только первый таб.
+        self.assertEqual(cases.count('aria-selected="true"'), 1)
+        self.assertEqual(cases.count('aria-selected="false"'), 2)
+
+    def test_cases_cta_leads_to_bottom_form(self):
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        cases = html.split('id="cases"')[1].split("</section>")[0]
+        self.assertIn("Хочу такой результат на своём участке", cases)
+        self.assertIn('href="#lead-bottom"', cases)
+        self.assertIn("data-cases-cta", cases)
+
+    def test_case_compare_is_interactive(self):
+        """Сравнение «до/после» - шторка на десктопе и переключатель на мобиле."""
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        cases = html.split('id="cases"')[1].split("</section>")[0]
+        self.assertEqual(cases.count("data-case-compare-range"), 3)
+        self.assertEqual(cases.count("data-case-compare-toggle"), 3)
+        self.assertEqual(cases.count('data-case-compare-side="before"'), 3)
+
+    def test_why_now_cards_have_short_titles(self):
+        html = self.client.get("/ozelenenie-season-end/").content.decode()
+        for title in ("Окна в графике бригады", "Предложение по вашей заявке", "Один подрядчик"):
+            self.assertIn(title, html)
 
     def test_sticky_mobile_cta_sits_above_cookie_banner(self):
         html = self.client.get("/ozelenenie-season-end/").content.decode()

@@ -58,7 +58,7 @@
     Логика формы и цели Метрики живут в отдельном файле, а не в общем app.js:
     посадочная шлёт заявку в свой /api/lead/ и не должна зависеть от системы форм сайта.
   {% endcomment %}
-  <script src="{% static 'js/landing-ozelenenie.js' %}?v=1" defer></script>
+  <script src="{% static 'js/landing-ozelenenie.js' %}?v=2" defer></script>
 {% endblock %}
 
 {% block header %}
@@ -156,7 +156,10 @@
             <span class="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand/10 text-brand">
               <i data-lucide="{{ point.icon }}" class="h-5 w-5"></i>
             </span>
-            <p class="text-[15px] leading-snug text-slate-700">{{ point.text }}</p>
+            <div>
+              <p class="text-[15px] font-bold leading-snug text-slate-900">{{ point.title }}</p>
+              <p class="mt-1 text-[15px] leading-snug text-slate-700">{{ point.text }}</p>
+            </div>
           </li>
         {% endfor %}
       </ul>
@@ -254,35 +257,181 @@
   </section>
 
   {% comment %}
-    ПРИМЕРЫ РАБОТ «ДО И ПОСЛЕ». Карточки собраны маркетологом заранее, каждая -
-    одна картинка с обеими половинами, поэтому слайдер не нужен: на десктопе
-    обычная сетка, на мобиле горизонтальная прокрутка со snap на чистом CSS.
-    Меньше JS - меньше шансов, что блок не покажется на медленном 3G.
+    ПРИМЕРЫ РАБОТ. Три типовых объекта в табах: дача, частный дом, коттедж.
+    Внутри панели - сравнение «до/после», этапы работ и два кадра из процесса.
+
+    Сравнение интерактивное: на десктопе шторка тем же способом, что и на
+    /ozelenenie-b2c/ (input[type=range] поверх картинки, data-before-after-*),
+    на мобиле - переключатель «До / После» тапом, потому что тащить шторку
+    пальцем на 375px неудобно и мешает вертикальному скроллу.
+
+    Табы и шторку ведёт static/js/landing-ozelenenie.js. Без JS видна первая
+    панель со всеми картинками: у остальных стоит hidden, у первой - нет.
   {% endcomment %}
   <section id="cases" class="bg-slate-50 py-10 sm:py-14">
     <div class="mx-auto max-w-6xl px-4 sm:px-6">
-      <h2 class="text-2xl font-bold text-slate-900 sm:text-3xl">{{ cases_title }}</h2>
+      <p class="text-[13px] font-semibold uppercase tracking-wide text-brand">{{ cases_kicker }}</p>
+      <h2 class="mt-1 text-2xl font-bold text-slate-900 sm:text-3xl">{{ cases_title }}</h2>
       <p class="mt-2 text-[15px] text-slate-600">{{ cases_sub }}</p>
-    </div>
-    <div
-      class="mt-6 flex snap-x snap-mandatory gap-4 overflow-x-auto px-4 pb-2 sm:px-6 lg:mx-auto lg:max-w-6xl lg:grid lg:grid-cols-2 lg:overflow-visible lg:pb-0 xl:grid-cols-3"
-      role="list"
-    >
+
+      <div
+        class="mt-6 flex gap-2 overflow-x-auto pb-1"
+        role="tablist"
+        aria-label="Типы участков"
+        data-cases-tablist
+      >
+        {% for case in cases %}
+          <button
+            type="button"
+            role="tab"
+            id="case-tab-{{ case.key }}"
+            data-case-tab="{{ case.key }}"
+            aria-controls="case-panel-{{ case.key }}"
+            aria-selected="{% if forloop.first %}true{% else %}false{% endif %}"
+            tabindex="{% if forloop.first %}0{% else %}-1{% endif %}"
+            class="min-h-[44px] shrink-0 rounded-full border px-4 text-[15px] font-bold transition aria-selected:border-transparent aria-selected:bg-gradient-to-r aria-selected:from-brand aria-selected:to-brand2 aria-selected:text-white border-black/10 bg-white text-slate-700 hover:border-brand/40 hover:text-brand"
+          >
+            {{ case.tab }}
+          </button>
+        {% endfor %}
+      </div>
+
       {% for case in cases %}
-        <figure
-          role="listitem"
-          class="w-[85vw] max-w-sm shrink-0 snap-center overflow-hidden rounded-2xl border border-black/5 bg-white shadow-soft sm:w-[70vw] lg:w-auto lg:max-w-none lg:shrink"
+        <article
+          role="tabpanel"
+          id="case-panel-{{ case.key }}"
+          data-case-panel="{{ case.key }}"
+          aria-labelledby="case-tab-{{ case.key }}"
+          tabindex="0"
+          {% if not forloop.first %}hidden{% endif %}
+          class="mt-5 rounded-2xl border border-black/5 bg-white p-4 shadow-soft sm:p-6"
         >
-          <img
-            src="{% static case.image %}"
-            alt="{{ case.alt }}"
-            width="1400" height="788"
-            loading="lazy" decoding="async"
-            class="w-full"
-          />
-          <figcaption class="px-4 py-3 text-sm font-semibold text-slate-700">{{ case.caption }}</figcaption>
-        </figure>
+          <p class="text-[13px] font-semibold uppercase tracking-wide text-slate-500">{{ case.type }}</p>
+          <h3 class="mt-1 text-xl font-bold text-slate-900 sm:text-2xl">{{ case.title }}</h3>
+          <ul class="mt-3 flex flex-wrap gap-x-5 gap-y-2 text-[15px] text-slate-700">
+            {% for fact in case.facts %}
+              <li class="flex items-center gap-1.5">
+                {% if fact.value %}<span class="font-bold text-slate-900">{{ fact.value }}</span>{% endif %}
+                {{ fact.text }}
+              </li>
+            {% endfor %}
+          </ul>
+
+          {% comment %}
+            Сравнение «до/после». Одна и та же разметка обслуживает оба режима:
+            на мобиле показываем только слой «До» либо «После» (кнопки ниже),
+            от sm включается шторка с ползунком.
+          {% endcomment %}
+          <div
+            class="relative mt-5 select-none overflow-hidden rounded-2xl border border-black/5"
+            data-case-compare="{{ case.key }}"
+            data-before-after-start="50"
+          >
+            <img
+              src="{% static case.after.image %}"
+              alt="{{ case.after.alt }}"
+              width="1400" height="788"
+              loading="lazy" decoding="async"
+              class="pointer-events-none block h-56 w-full object-cover sm:h-72 lg:h-96"
+            />
+            <div class="absolute inset-0" data-case-compare-overlay>
+              <img
+                src="{% static case.before.image %}"
+                alt="{{ case.before.alt }}"
+                width="1400" height="788"
+                loading="lazy" decoding="async"
+                class="pointer-events-none block h-56 w-full object-cover sm:h-72 lg:h-96"
+              />
+            </div>
+            <span class="pointer-events-none absolute left-3 top-3 rounded-xl bg-black/45 px-2.5 py-1 text-xs font-semibold text-white">До</span>
+            <span class="pointer-events-none absolute right-3 top-3 rounded-xl bg-black/45 px-2.5 py-1 text-xs font-semibold text-white">После</span>
+
+            {% comment %}Шторка: только от sm, на мобиле её место занимает переключатель.{% endcomment %}
+            <div class="pointer-events-none absolute inset-y-0 z-20 hidden w-0.5 bg-white/95 shadow-[0_0_0_1px_rgba(0,0,0,0.18)] sm:block" data-case-compare-divider></div>
+            <div class="pointer-events-none absolute top-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 rounded-full border border-white bg-white p-2 shadow-soft sm:block" data-case-compare-handle>
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-slate-700" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M8.5 4.5L2 11l6.5 6.5L10 16l-5-5 5-5-1.5-1.5zM15.5 4.5L14 6l5 5-5 5 1.5 1.5L22 11l-6.5-6.5z"/>
+              </svg>
+            </div>
+            <input
+              type="range" min="0" max="100" value="50"
+              class="absolute inset-0 z-30 hidden h-full w-full cursor-ew-resize opacity-0 sm:block"
+              data-case-compare-range
+              aria-label="Сравнение до и после: {{ case.tab }}"
+            />
+          </div>
+
+          {% comment %}Мобильный переключатель слоёв: тап вместо перетаскивания шторки.{% endcomment %}
+          <div class="mt-3 grid grid-cols-2 gap-2 sm:hidden" data-case-compare-toggle="{{ case.key }}">
+            <button
+              type="button"
+              data-case-compare-side="before"
+              aria-pressed="true"
+              class="min-h-[44px] rounded-xl border border-black/10 bg-white text-[15px] font-bold text-slate-700 transition aria-pressed:border-transparent aria-pressed:bg-brand aria-pressed:text-white"
+            >
+              До
+            </button>
+            <button
+              type="button"
+              data-case-compare-side="after"
+              aria-pressed="false"
+              class="min-h-[44px] rounded-xl border border-black/10 bg-white text-[15px] font-bold text-slate-700 transition aria-pressed:border-transparent aria-pressed:bg-brand aria-pressed:text-white"
+            >
+              После
+            </button>
+          </div>
+
+          <div class="mt-6 grid grid-cols-1 gap-6 lg:grid-cols-2">
+            <div>
+              <h4 class="text-base font-bold text-slate-900">{{ cases_stages_title }}</h4>
+              <ol class="mt-3 space-y-2.5">
+                {% for stage in case.stages %}
+                  <li class="flex items-start gap-3 text-[15px] leading-snug text-slate-700">
+                    <span class="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-brand/10 text-xs font-bold text-brand">
+                      {{ forloop.counter|stringformat:"02d" }}
+                    </span>
+                    {{ stage }}
+                  </li>
+                {% endfor %}
+              </ol>
+            </div>
+
+            <div class="grid grid-cols-2 gap-3">
+              <figure class="overflow-hidden rounded-2xl border border-black/5">
+                <img
+                  src="{% static case.process.image %}"
+                  alt="{{ case.process.alt }}"
+                  width="1400" height="788"
+                  loading="lazy" decoding="async"
+                  class="h-32 w-full object-cover sm:h-40"
+                />
+                <figcaption class="px-3 py-2 text-[13px] font-semibold text-slate-600">В работе</figcaption>
+              </figure>
+              <figure class="overflow-hidden rounded-2xl border border-black/5">
+                <img
+                  src="{% static case.detail.image %}"
+                  alt="{{ case.detail.alt }}"
+                  width="1400" height="788"
+                  loading="lazy" decoding="async"
+                  class="h-32 w-full object-cover sm:h-40"
+                />
+                <figcaption class="px-3 py-2 text-[13px] font-semibold text-slate-600">Деталь результата</figcaption>
+              </figure>
+            </div>
+          </div>
+        </article>
       {% endfor %}
+
+      {% comment %}CTA-полоса сразу после кейсов: человек посмотрел объекты - ведём к нижней форме.{% endcomment %}
+      <div id="casesCta" class="mt-6 rounded-2xl bg-gradient-to-r from-brand to-brand2 px-5 py-5 text-center shadow-soft">
+        <a
+          href="#lead-bottom"
+          data-cases-cta
+          class="inline-flex min-h-[48px] items-center justify-center rounded-2xl bg-white px-6 text-base font-bold text-brand transition hover:brightness-95"
+        >
+          {{ cases_cta }}
+        </a>
+      </div>
     </div>
   </section>
 
