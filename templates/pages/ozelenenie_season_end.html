@@ -252,49 +252,29 @@
             Сравнение «до/после» - два снимка рядом (правка маркетолога, 10.09.2026).
             Шторку сняли: при перетаскивании было видно, что оба кадра - один и тот же
             снимок, переписанный нейросетью. Когда снимки лежат рядом, глаз за это не
-            цепляется. Кликабельность сохранили: тап по снимку открывает его крупно
-            (просмотрщик #caseLightbox, код в static/js/landing-ozelenenie.js).
+            цепляется. Приближение снимков тоже убрали (правка от 10.09.2026): в крупном
+            виде генерация читается сразу.
             На узком экране снимки встают друг под друга, подписи остаются.
           {% endcomment %}
           <div class="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2" data-case-compare="{{ case.key }}">
             <figure class="relative overflow-hidden rounded-2xl border border-land-line">
-              <button
-                type="button"
-                class="block w-full cursor-zoom-in"
-                data-case-zoom
-                data-case-zoom-case="{{ case.key }}"
-                data-case-zoom-src="{% static case.before.image %}"
-                data-case-zoom-alt="{{ case.before.alt }}"
-                aria-label="Открыть крупно: {{ case.before.alt }}"
-              >
-                <img
+              <img
                   src="{% static case.before.image %}"
                   alt="{{ case.before.alt }}"
                   width="1400" height="788"
                   loading="lazy" decoding="async"
                   class="block h-56 w-full object-cover sm:h-64 lg:h-72"
                 />
-              </button>
               <figcaption class="pointer-events-none absolute left-3 top-3 rounded-xl bg-black/45 px-2.5 py-1 text-xs font-semibold text-white">До</figcaption>
             </figure>
             <figure class="relative overflow-hidden rounded-2xl border border-land-line">
-              <button
-                type="button"
-                class="block w-full cursor-zoom-in"
-                data-case-zoom
-                data-case-zoom-case="{{ case.key }}"
-                data-case-zoom-src="{% static case.after.image %}"
-                data-case-zoom-alt="{{ case.after.alt }}"
-                aria-label="Открыть крупно: {{ case.after.alt }}"
-              >
-                <img
+              <img
                   src="{% static case.after.image %}"
                   alt="{{ case.after.alt }}"
                   width="1400" height="788"
                   loading="lazy" decoding="async"
                   class="block h-56 w-full object-cover sm:h-64 lg:h-72"
                 />
-              </button>
               <figcaption class="pointer-events-none absolute left-3 top-3 rounded-xl bg-black/45 px-2.5 py-1 text-xs font-semibold text-white">После</figcaption>
             </figure>
           </div>
@@ -316,43 +296,23 @@
 
             <div class="grid grid-cols-2 gap-3">
               <figure class="overflow-hidden rounded-2xl border border-land-line">
-                <button
-                  type="button"
-                  class="block w-full cursor-zoom-in"
-                  data-case-zoom
-                  data-case-zoom-case="{{ case.key }}"
-                  data-case-zoom-src="{% static case.process.image %}"
-                  data-case-zoom-alt="{{ case.process.alt }}"
-                  aria-label="Открыть крупно: {{ case.process.alt }}"
-                >
-                  <img
+                <img
                     src="{% static case.process.image %}"
                     alt="{{ case.process.alt }}"
                     width="1400" height="788"
                     loading="lazy" decoding="async"
                     class="block h-32 w-full object-cover sm:h-40"
                   />
-                </button>
                 <figcaption class="px-3 py-2 text-[13px] font-semibold text-land-muted">В работе</figcaption>
               </figure>
               <figure class="overflow-hidden rounded-2xl border border-land-line">
-                <button
-                  type="button"
-                  class="block w-full cursor-zoom-in"
-                  data-case-zoom
-                  data-case-zoom-case="{{ case.key }}"
-                  data-case-zoom-src="{% static case.detail.image %}"
-                  data-case-zoom-alt="{{ case.detail.alt }}"
-                  aria-label="Открыть крупно: {{ case.detail.alt }}"
-                >
-                  <img
+                <img
                     src="{% static case.detail.image %}"
                     alt="{{ case.detail.alt }}"
                     width="1400" height="788"
                     loading="lazy" decoding="async"
                     class="block h-32 w-full object-cover sm:h-40"
                   />
-                </button>
                 <figcaption class="px-3 py-2 text-[13px] font-semibold text-land-muted">Деталь результата</figcaption>
               </figure>
             </div>
@@ -470,43 +430,7 @@
     </div>
   </section>
 
-  {% comment %}
-    ПРОСМОТРЩИК СНИМКОВ. Свой минимальный: сторонние библиотеки на посадочной под
-    Директ - лишние килобайты и лишняя точка отказа. Открывается по клику на любой
-    кадр кейса, закрывается кликом мимо, крестиком и Escape, фокус возвращается на
-    снимок, с которого открыли. Ведёт landing-ozelenenie.js.
-  {% endcomment %}
-  <div
-    id="caseLightbox"
-    hidden
-    data-case-lightbox
-    role="dialog"
-    aria-modal="true"
-    aria-label="Просмотр снимка"
     {% comment %}
-      display задан вариантом [&:not([hidden])]:flex, а не голым flex: утилита
-      .flex в Tailwind перебивает preflight-правило [hidden]{display:none}, и
-      просмотрщик висел бы поверх страницы с самого открытия.
-    {% endcomment %}
-    class="fixed inset-0 z-[60] items-center justify-center bg-land-heading/90 p-4 [&:not([hidden])]:flex"
-  >
-    <button
-      type="button"
-      data-case-lightbox-close
-      aria-label="Закрыть просмотр"
-      class="absolute right-3 top-3 inline-flex h-11 w-11 items-center justify-center rounded-full bg-white/95 text-land-heading shadow-soft"
-    >
-      <i data-lucide="x" class="h-5 w-5"></i>
-    </button>
-    <img
-      data-case-lightbox-image
-      src=""
-      alt=""
-      class="max-h-[85vh] w-auto max-w-full rounded-2xl object-contain shadow-soft"
-    />
-  </div>
-
-  {% comment %}
     ЛИПКИЙ CTA НА МОБИЛЕ (аудит маркетолога, п.4). Появляется, когда hero-форма
     ушла вверх, и прячется обратно, когда она снова в кадре или когда заявка уже
     отправлена (этим занимается landing-ozelenenie.js).

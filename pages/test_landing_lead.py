@@ -392,15 +392,14 @@ class LandingPageTest(TestCase):
         self.assertEqual(cases.count(">До<"), 3)
         self.assertEqual(cases.count(">После<"), 3)
 
-    def test_case_shots_open_in_lightbox(self):
-        """Каждый кадр кейса кликабелен и открывается крупно в своём просмотрщике."""
+    def test_case_shots_are_not_zoomable(self):
+        """Приближение снимков убрано: в крупном виде читается генерация."""
         html = self.client.get("/ozelenenie-season-end/").content.decode()
         cases = html.split('id="cases"')[1].split("</section>")[0]
         # По четыре кадра на кейс: до, после, «в работе», деталь.
-        self.assertEqual(cases.count("data-case-zoom-src"), 12)
-        self.assertIn('id="caseLightbox"', html)
-        self.assertIn("data-case-lightbox-image", html)
-        self.assertIn("data-case-lightbox-close", html)
+        self.assertEqual(cases.count("<img"), 12)
+        for legacy in ("data-case-zoom", "cursor-zoom-in", "caseLightbox", "data-case-lightbox"):
+            self.assertNotIn(legacy, html)
 
     def test_why_now_cards_have_short_titles(self):
         html = self.client.get("/ozelenenie-season-end/").content.decode()

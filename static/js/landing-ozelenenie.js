@@ -12,7 +12,7 @@
  *  - шлёт заявку и показывает экран успеха;
  *  - ведёт табы в блоке кейсов и просмотрщик снимков (клик по кадру - крупно);
  *  - шлёт цели Метрики: lead_form_view, lead_cta_click, lead_submit, phone_click,
- *    case_tab_click, case_compare_interact.
+ *    case_tab_click.
  */
 (function () {
   'use strict';
@@ -444,67 +444,6 @@
         reachGoal('case_tab_click', { landing_id: LANDING_ID, case: nextKey });
       });
     });
-
-    // case_compare_interact шлём один раз на кейс за сессию: иначе каждое
-    // открытие снимка уедет в Метрику отдельной конверсией.
-    var comparedCases = {};
-    function markCompared(key) {
-      if (!key || comparedCases[key]) return;
-      comparedCases[key] = true;
-      reachGoal('case_compare_interact', { landing_id: LANDING_ID, case: key });
-    }
-
-    // Просмотрщик снимков: свой минимальный, без сторонних библиотек.
-    // Закрытие - клик мимо картинки, крестик и Escape; фокус возвращается на кадр,
-    // с которого открыли.
-    (function initLightbox() {
-      var box = document.getElementById('caseLightbox');
-      if (!box) return;
-      var image = box.querySelector('[data-case-lightbox-image]');
-      var closeButton = box.querySelector('[data-case-lightbox-close]');
-      if (!image || !closeButton) return;
-
-      var lastOpener = null;
-
-      function close() {
-        if (box.hidden) return;
-        box.hidden = true;
-        image.setAttribute('src', '');
-        image.setAttribute('alt', '');
-        document.body.style.removeProperty('overflow');
-        if (lastOpener) {
-          try { lastOpener.focus(); } catch (e) { /* noop */ }
-          lastOpener = null;
-        }
-      }
-
-      function open(trigger) {
-        var src = trigger.getAttribute('data-case-zoom-src');
-        if (!src) return;
-        lastOpener = trigger;
-        image.setAttribute('src', src);
-        image.setAttribute('alt', trigger.getAttribute('data-case-zoom-alt') || '');
-        box.hidden = false;
-        // Пока снимок открыт, страница под ним не скроллится.
-        document.body.style.setProperty('overflow', 'hidden');
-        try { closeButton.focus(); } catch (e) { /* noop */ }
-        markCompared(trigger.getAttribute('data-case-zoom-case'));
-      }
-
-      document.querySelectorAll('[data-case-zoom]').forEach(function (trigger) {
-        trigger.addEventListener('click', function () { open(trigger); });
-      });
-
-      closeButton.addEventListener('click', close);
-      // Клик мимо снимка: сам снимок клик не закрывает.
-      box.addEventListener('click', function (e) {
-        if (e.target === image || closeButton.contains(e.target)) return;
-        close();
-      });
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' || e.key === 'Esc') close();
-      });
-    })();
 
     // CTA-полоса под кейсами ведёт к нижней форме и дёргает общую цель CTA.
     var casesCta = document.querySelector('[data-cases-cta]');
