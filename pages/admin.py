@@ -29,6 +29,7 @@ from pages.models import (
     PreorderPlant,
     PreorderSettings,
     WholesaleItem,
+    WholesaleItemVariant,
     WholesaleOrder,
     WholesaleOrderLine,
     WholesaleSection,
@@ -667,6 +668,14 @@ class WholesaleSectionAdmin(admin.ModelAdmin):
         return obj.items.count()
 
 
+class WholesaleItemVariantInline(admin.TabularInline):
+    """Варианты позиции: цвет, сорт, партия. Пусто - карточка работает без выбора."""
+
+    model = WholesaleItemVariant
+    extra = 0
+    fields = ("title", "stock", "price", "image", "sort_order", "is_active")
+
+
 @admin.register(WholesaleItem)
 class WholesaleItemAdmin(admin.ModelAdmin):
     """Позиции оптового каталога.
@@ -689,6 +698,7 @@ class WholesaleItemAdmin(admin.ModelAdmin):
     list_filter = ("section", "is_active", "is_highlighted", "is_demo")
     search_fields = ("title", "slug", "size", "availability")
     prepopulated_fields = {"slug": ("title",)}
+    inlines = [WholesaleItemVariantInline]
     readonly_fields = ("preview",)
     fields = (
         "section",
@@ -726,7 +736,7 @@ class WholesaleOrderLineInline(admin.TabularInline):
     model = WholesaleOrderLine
     extra = 0
     can_delete = False
-    fields = ("title", "size", "price", "quantity", "unit", "line_total")
+    fields = ("title", "variant_title", "size", "price", "quantity", "unit", "line_total")
     readonly_fields = fields
 
     def has_add_permission(self, request, obj=None) -> bool:

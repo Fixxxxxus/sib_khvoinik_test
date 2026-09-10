@@ -13,6 +13,7 @@
 from __future__ import annotations
 
 import json
+from decimal import Decimal
 
 from django.http import Http404, HttpRequest, HttpResponse
 from django.shortcuts import render
@@ -54,15 +55,48 @@ def _base_context(request: HttpRequest) -> dict:
         "discount_approved": wholesale_pricing.DISCOUNT_TIERS_APPROVED,
         "discount_disclaimer": wholesale_pricing.DISCOUNT_DISCLAIMER,
         "discount_basis": wholesale_pricing.DISCOUNT_BASIS,
+        # Деления полосы прогресса: ноль плюс пороги сетки. Заполнение считает JS,
+        # разметку делений отдаём сразу, чтобы полоса не прыгала после загрузки.
+        "progress_marks": _progress_marks(),
+        "progress_hint_default": wholesale_pricing.progress_hint(Decimal(0), 0),
+        "min_order": wholesale_pricing.min_order_for_display(),
     }
 
 
+def _short_mark(value: int) -> str:
+    """Подпись деления: 4000 -> «4к», 1500000 -> «1,5 млн». Как на референсе."""
+    if value >= 1_000_000:
+        millions = value / 1_000_000
+        text = f"{millions:.1f}".rstrip("0").rstrip(".").replace(".", ",")
+        return f"{text} млн"
+    if value >= 1000:
+        thousands = value / 1000
+        text = f"{thousands:.1f}".rstrip("0").rstrip(".").replace(".", ",")
+        return f"{text}к"
+    return str(value)
+
+
+def _progress_marks() -> list[dict]:
+    marks = [{"value": 0, "label": "0", "percent": 0}]
+    for tier in wholesale_pricing.tiers_for_frontend()["tiers"]:
+        marks.append(
+            {
+                "value": tier["threshold"],
+                "label": _short_mark(tier["threshold"]),
+                "percent": tier["percent"],
+            }
+        )
+    return marks
+
+
 def _active_sections():
-    return WholesaleSection.objects.filter(is_active=True).prefetch_related("items")
+    return WholesaleSection.objects.filter(is_active=True).prefetch_related(
+        "items", "items__variants"
+    )
 
 
 def _section_items(section: WholesaleSection):
-    return section.items.filter(is_active=True)
+    return section.items.filter(is_active=True).prefetch_related("variants")
 
 
 def opt_index(request: HttpRequest) -> HttpResponse:
@@ -143,6 +177,8 @@ def opt_item(request: HttpRequest, section_slug: str, item_slug: str) -> HttpRes
             "seo_title": f"{item.title} оптом · {OPT_BRAND}",
             "meta_description": (item.short_description or OPT_INTRO)[:300],
             "item": item,
+            "price_ladder": item.price_ladder(),
+            "variants": item.active_variants(),
             "section": item.section,
             "same_section": same_section,
             "breadcrumbs": [(OPT_TITLE, "/opt/"), (item.section.title, item.section.get_absolute_url())],

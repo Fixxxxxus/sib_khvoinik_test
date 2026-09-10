@@ -974,11 +974,15 @@ class WholesaleItem(models.Model):
         help_text="Высота, объём кома или контейнер - как принято в плане продаж.",
     )
     price = models.DecimalField(
-        "Оптовая цена, ₽",
+        "Розничная цена (без скидки), ₽",
         max_digits=10,
         decimal_places=2,
         default=0,
-        help_text="Цена за единицу. Единственный источник цены: из браузера цену не берём.",
+        help_text=(
+            "Цена за единицу без скидки. От неё считаются все оптовые ступени "
+            "по сетке из pages/wholesale_pricing.py - отдельных полей под ступени нет. "
+            "Единственный источник цены: из браузера цену не берём."
+        ),
     )
     unit = models.CharField("Единица", max_length=20, default="шт")
     short_description = models.TextField(
@@ -1023,6 +1027,75 @@ class WholesaleItem(models.Model):
 
     def get_absolute_url(self) -> str:
         return f"/opt/{self.section.slug}/{self.slug}/"
+
+    def active_variants(self) -> list["WholesaleItemVariant"]:
+        """Активные варианты позиции. Пусто - карточка работает одним степпером."""
+        return list(self.variants.filter(is_active=True))
+
+    def price_ladder(self) -> list[dict]:
+        """Ценовая лестница карточки. Считается из розничной цены и сетки скидок."""
+        from . import wholesale_pricing
+
+        return wholesale_pricing.price_ladder(self.price)
+
+
+class WholesaleItemVariant(models.Model):
+    """Вариант позиции: цвет, сорт, партия. Свой остаток и свой степпер в карточке.
+
+    Цена необязательная: пустая - берём цену позиции. Так у большинства вариантов
+    цена не дублируется и не разъезжается при правке прайса.
+    """
+
+    item = models.ForeignKey(
+        WholesaleItem,
+        verbose_name="Позиция",
+        related_name="variants",
+        on_delete=models.CASCADE,
+    )
+    title = models.CharField(
+        "Название варианта",
+        max_length=200,
+        help_text="Например: «Синий цвет», «Ком 60 см», «Партия из теплицы №2».",
+    )
+    stock = models.PositiveIntegerField(
+        "Остаток",
+        default=0,
+        help_text="Сколько единиц этого варианта можно отгрузить. 0 - вариант не заказать.",
+    )
+    price = models.DecimalField(
+        "Своя розничная цена, ₽",
+        max_digits=10,
+        decimal_places=2,
+        null=True,
+        blank=True,
+        help_text="Пусто - берём цену позиции. Заполнять только если вариант дороже или дешевле.",
+    )
+    image = models.ImageField(
+        "Фото варианта",
+        upload_to="wholesale/",
+        blank=True,
+        help_text="Пусто - показываем фото позиции.",
+    )
+    sort_order = models.IntegerField("Порядок", default=100)
+    is_active = models.BooleanField("Активен", default=True)
+
+    class Meta:
+        ordering = ["sort_order", "pk"]
+        verbose_name = "вариант позиции"
+        verbose_name_plural = "оптовый каталог: варианты позиций"
+
+    def __str__(self) -> str:
+        return f"{self.item.title}: {self.title}"
+
+    @property
+    def effective_price(self):
+        """Цена варианта: своя, если задана, иначе цена позиции."""
+        return self.price if self.price is not None else self.item.price
+
+    def price_ladder(self) -> list[dict]:
+        from . import wholesale_pricing
+
+        return wholesale_pricing.price_ladder(self.effective_price)
 
 
 class WholesaleOrder(models.Model):
@@ -1088,7 +1161,16 @@ class WholesaleOrderLine(models.Model):
         blank=True,
         on_delete=models.SET_NULL,
     )
+    variant = models.ForeignKey(
+        "WholesaleItemVariant",
+        verbose_name="Вариант",
+        related_name="order_lines",
+        null=True,
+        blank=True,
+        on_delete=models.SET_NULL,
+    )
     title = models.CharField("Название", max_length=250)
+    variant_title = models.CharField("Вариант", max_length=200, blank=True)
     size = models.CharField("Размер", max_length=200, blank=True)
     unit = models.CharField("Единица", max_length=20, default="шт")
     price = models.DecimalField("Цена за единицу, ₽", max_digits=10, decimal_places=2, default=0)
@@ -1101,4 +1183,5 @@ class WholesaleOrderLine(models.Model):
         verbose_name_plural = "строки оптового заказа"
 
     def __str__(self) -> str:
-        return f"{self.title} x {self.quantity}"
+        variant = f" ({self.variant_title})" if self.variant_title else ""
+        return f"{self.title}{variant} x {self.quantity}"

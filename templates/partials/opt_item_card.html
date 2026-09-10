@@ -1,3 +1,4 @@
+{% load l10n %}
 {% comment %}
   Карточка позиции оптового каталога в списке. Ждёт переменную item
   (pages.models.WholesaleItem). Кнопка «В корзину» отдаёт данные в static/js/opt.js
@@ -22,15 +23,25 @@
     </h3>
     {% if item.size %}<p class="text-sm text-slate-600">Размер: {{ item.size }}</p>{% endif %}
     {% if item.availability %}<p class="text-sm text-slate-500">{{ item.availability }}</p>{% endif %}
-    <p class="mt-auto text-lg font-semibold text-slate-900">{{ item.price|floatformat:0 }} ₽<span class="text-sm font-normal text-slate-500">/{{ item.unit }}</span></p>
-    <button type="button"
-            class="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand2"
-            data-opt-add
-            data-slug="{{ item.slug }}"
-            data-section="{{ item.section.slug }}"
-            data-title="{{ item.title }}"
-            data-size="{{ item.size }}"
-            data-unit="{{ item.unit }}"
-            data-price="{{ item.price|floatformat:2 }}">В корзину</button>
+    <div class="mt-auto">
+      <p class="text-lg font-semibold text-slate-900">{{ item.price|floatformat:0 }} ₽<span class="text-sm font-normal text-slate-500">/{{ item.unit }}</span></p>
+      {% with best=item.price_ladder|last %}
+        {% if best.percent %}<p class="text-xs text-slate-500">Оптом от {{ best.price_text }} ({{ best.label }})</p>{% endif %}
+      {% endwith %}
+    </div>
+    {% if item.active_variants %}
+      <a href="{{ item.get_absolute_url }}"
+         class="rounded-lg bg-brand px-4 py-2 text-center text-sm font-semibold text-white hover:bg-brand2">Выбрать вариант</a>
+    {% else %}
+      <button type="button"
+              class="rounded-lg bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand2"
+              data-opt-add
+              data-slug="{{ item.slug }}"
+              data-section="{{ item.section.slug }}"
+              data-title="{{ item.title }}"
+              data-size="{{ item.size }}"
+              data-unit="{{ item.unit }}"
+              data-price="{{ item.price|unlocalize }}">В корзину</button>
+    {% endif %}
   </div>
 </article>

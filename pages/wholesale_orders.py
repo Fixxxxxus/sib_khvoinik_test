@@ -27,7 +27,7 @@ from care_notifications.telegram_bot import TelegramBotClient
 from . import wholesale_pricing
 from .landing_leads import UTM_KEYS, format_phone, normalize_phone
 from .loyalty import _client_ip, _is_rate_limited
-from .models import WholesaleItem, WholesaleOrder, WholesaleOrderLine
+from .models import WholesaleItem, WholesaleItemVariant, WholesaleOrder, WholesaleOrderLine
 
 logger = logging.getLogger(__name__)
 
@@ -75,41 +75,60 @@ def _parse_quantity(raw) -> int:
     return min(qty, MAX_QUANTITY)
 
 
+def _parse_variant_id(raw) -> int | None:
+    try:
+        variant_id = int(raw)
+    except (TypeError, ValueError):
+        return None
+    return variant_id if variant_id > 0 else None
+
+
 def build_order_lines(raw_items) -> tuple[list[dict], Decimal, int]:
     """Строки заказа по данным из БД. Возвращает (строки, сумма, всего единиц).
 
-    Из запроса берём только слаг позиции и количество. Всё остальное - название,
-    размер, единицу и цену - читаем из БД: клиент цену не задаёт.
+    Из запроса берём только слаг позиции, id варианта и количество. Всё
+    остальное - название, размер, единицу, остаток и цену - читаем из БД:
+    клиент цену не задаёт. Количество сверху ограничено остатком варианта.
     """
     if not isinstance(raw_items, list):
         return [], Decimal(0), 0
 
-    wanted: list[tuple[str, str, int]] = []
+    wanted: list[tuple[str, str, int | None, int]] = []
     for raw in raw_items[:MAX_LINES]:
         if not isinstance(raw, dict):
             continue
         slug = str(raw.get("slug") or "").strip()[:250]
         section_slug = str(raw.get("section") or "").strip()[:200]
+        variant_id = _parse_variant_id(raw.get("variant") or raw.get("variant_id"))
         qty = _parse_quantity(raw.get("qty") or raw.get("quantity"))
         if slug and qty:
-            wanted.append((section_slug, slug, qty))
+            wanted.append((section_slug, slug, variant_id, qty))
     if not wanted:
         return [], Decimal(0), 0
 
     items = {
         (item.section.slug, item.slug): item
-        for item in WholesaleItem.objects.select_related("section").filter(
-            slug__in=[slug for _, slug, _ in wanted],
+        for item in WholesaleItem.objects.select_related("section")
+        .prefetch_related("variants")
+        .filter(
+            slug__in=[slug for _, slug, _, _ in wanted],
             is_active=True,
             section__is_active=True,
+        )
+    }
+    variant_ids = [vid for _, _, vid, _ in wanted if vid]
+    variants = {
+        variant.pk: variant
+        for variant in WholesaleItemVariant.objects.select_related("item").filter(
+            pk__in=variant_ids, is_active=True
         )
     }
 
     lines: list[dict] = []
     subtotal = Decimal(0)
     total_quantity = 0
-    seen: set[tuple[str, str]] = set()
-    for section_slug, slug, qty in wanted:
+    seen: set[tuple[str, str, int | None]] = set()
+    for section_slug, slug, variant_id, qty in wanted:
         item = items.get((section_slug, slug))
         if item is None:
             # Раздел мог не приехать или приехать неверным: ищем по слагу позиции,
@@ -119,20 +138,44 @@ def build_order_lines(raw_items) -> tuple[list[dict], Decimal, int]:
                 logger.info("opt order: позиция %r/%r не найдена, строка пропущена", section_slug, slug)
                 continue
             item = candidates[0]
-        key = (item.section.slug, item.slug)
+
+        item_variants = [v for v in item.variants.all() if v.is_active]
+        variant = None
+        if variant_id is not None:
+            variant = variants.get(variant_id)
+            if variant is None or variant.item_id != item.pk:
+                logger.info("opt order: вариант %r у позиции %r не найден, строка пропущена", variant_id, slug)
+                continue
+        elif item_variants:
+            # У позиции есть варианты, а браузер не сказал какой: остаток и цена
+            # неоднозначны, угадывать за клиента нельзя.
+            logger.info("opt order: позиция %r требует выбора варианта, строка пропущена", slug)
+            continue
+
+        key = (item.section.slug, item.slug, variant.pk if variant else None)
         if key in seen:
             continue
         seen.add(key)
-        line_total = wholesale_pricing.money(item.price * qty)
+
+        price = wholesale_pricing.money(variant.effective_price if variant else item.price)
+        if variant is not None:
+            if variant.stock <= 0:
+                logger.info("opt order: вариант %r распродан, строка пропущена", variant.pk)
+                continue
+            qty = min(qty, variant.stock)
+
+        line_total = wholesale_pricing.money(price * qty)
         subtotal += line_total
         total_quantity += qty
         lines.append(
             {
                 "item": item,
+                "variant": variant,
                 "title": item.title,
+                "variant_title": variant.title if variant else "",
                 "size": item.size,
                 "unit": item.unit,
-                "price": wholesale_pricing.money(item.price),
+                "price": price,
                 "quantity": qty,
                 "line_total": line_total,
             }
@@ -144,6 +187,7 @@ def build_order_text(order: WholesaleOrder, lines: list[dict], utm: dict) -> str
     """Текст уведомления менеджеру: состав заказа, скидка, итог, контакты."""
     rows = [
         f"- {line['title']}"
+        + (f", {line['variant_title']}" if line.get("variant_title") else "")
         + (f" ({line['size']})" if line["size"] else "")
         + f": {line['quantity']} {line['unit']} x {line['price']} ₽ = {line['line_total']} ₽"
         for line in lines
@@ -253,6 +297,19 @@ def opt_order(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest:
             status=400,
         )
 
+    # Минимальную сумму заказа проверяем на сервере: на фронте кнопка заблокирована,
+    # но запрос отправляют и мимо неё.
+    if not wholesale_pricing.min_order_reached(subtotal):
+        return JsonResponse(
+            {
+                "ok": False,
+                "error": wholesale_pricing.min_order_error(subtotal),
+                "field": "items",
+                "min_order": wholesale_pricing.MIN_ORDER_AMOUNT,
+            },
+            status=400,
+        )
+
     if _is_rate_limited(request):
         logger.warning("opt order: rate limit для IP %s", _client_ip(request))
         return JsonResponse(
@@ -292,7 +349,9 @@ def opt_order(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest:
             WholesaleOrderLine(
                 order=order,
                 item=line["item"],
+                variant=line.get("variant"),
                 title=line["title"],
+                variant_title=line.get("variant_title", ""),
                 size=line["size"],
                 unit=line["unit"],
                 price=line["price"],

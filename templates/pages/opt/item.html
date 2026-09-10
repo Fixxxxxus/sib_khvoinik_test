@@ -1,4 +1,14 @@
 {% extends 'pages/opt/base_opt.html' %}
+{% load l10n %}
+
+{% comment %}
+  Карточка позиции оптового каталога.
+
+  Сверху ценовая лестница: розница «Без скидки» и оптовые ступени с порогами.
+  Ступени не хранятся в БД - их считает pages/wholesale_pricing.price_ladder()
+  из розничной цены и текущей сетки скидок, поэтому при смене сетки данные не
+  разъезжаются. Активную ступень подсвечивает static/js/opt.js по составу корзины.
+{% endcomment %}
 
 {% block opt_content %}
   <div class="grid gap-8 lg:grid-cols-2">
@@ -15,13 +25,23 @@
         {% if item.is_highlighted %}<span class="rounded bg-accent/20 px-2 py-0.5 text-xs font-medium text-slate-700">В приоритете</span>{% endif %}
         {% if item.is_demo %}<span class="rounded bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600">демо-позиция</span>{% endif %}
       </div>
-      <h1 class="mt-2 text-2xl font-semibold text-slate-900 sm:text-3xl">{{ item.title }}</h1>
+
+      <div class="mt-3 flex flex-wrap items-start gap-x-6 gap-y-3" data-opt-ladder>
+        {% for step in price_ladder %}
+          <div data-opt-tier-step data-percent="{{ step.percent }}"
+               class="rounded-lg px-2 py-1 {% if step.is_retail %}bg-brand/10{% endif %}">
+            <p class="whitespace-nowrap text-xl font-bold sm:text-2xl {% if step.is_retail %}text-brand{% else %}text-slate-900{% endif %}">{{ step.price_text }}</p>
+            <p class="text-xs text-slate-400">{{ step.label }}</p>
+          </div>
+        {% endfor %}
+      </div>
+
+      <h1 class="mt-4 text-2xl font-semibold text-slate-900 sm:text-3xl">{{ item.title }}</h1>
 
       <dl class="mt-5 grid gap-2 text-sm">
         {% if item.size %}
           <div class="flex gap-2"><dt class="w-36 text-slate-500">Размер</dt><dd class="font-medium text-slate-800">{{ item.size }}</dd></div>
         {% endif %}
-        <div class="flex gap-2"><dt class="w-36 text-slate-500">Оптовая цена</dt><dd class="font-medium text-slate-800">{{ item.price|floatformat:0 }} ₽ за {{ item.unit }}</dd></div>
         {% if item.availability %}
           <div class="flex gap-2"><dt class="w-36 text-slate-500">Наличие</dt><dd class="font-medium text-slate-800">{{ item.availability }}</dd></div>
         {% endif %}
@@ -32,26 +52,78 @@
         <p class="mt-5 max-w-xl text-slate-700">{{ item.short_description }}</p>
       {% endif %}
 
-      <div class="mt-6 flex flex-wrap items-center gap-3">
-        <label class="flex items-center gap-2 text-sm text-slate-600">
-          Количество
-          <input type="number" min="1" value="1" data-opt-qty-input
-                 class="w-24 rounded-lg border border-slate-300 px-3 py-2 text-sm" />
-        </label>
-        <button type="button"
-                class="rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-white hover:bg-brand2"
-                data-opt-add
-                data-slug="{{ item.slug }}"
-                data-section="{{ item.section.slug }}"
-                data-title="{{ item.title }}"
-                data-size="{{ item.size }}"
-                data-unit="{{ item.unit }}"
-                data-price="{{ item.price|floatformat:2 }}">В корзину</button>
-        <button type="button" data-opt-cart-open class="rounded-lg border border-slate-300 px-6 py-3 text-sm font-semibold text-slate-700 hover:border-brand">Открыть корзину</button>
+      <div class="mt-6">{% include 'partials/opt_progress.html' %}</div>
+
+      {% if variants %}
+        <ul class="mt-5 grid gap-3">
+          {% for variant in variants %}
+            <li class="flex items-center gap-3 rounded-xl border border-slate-200 p-3">
+              <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-slate-100">
+                {% if variant.image %}
+                  <img src="{{ variant.image.url }}" alt="{{ variant.title }}" loading="lazy" class="h-full w-full object-cover" />
+                {% elif item.image %}
+                  <img src="{{ item.image.url }}" alt="{{ variant.title }}" loading="lazy" class="h-full w-full object-cover" />
+                {% endif %}
+              </div>
+              <div class="min-w-0 flex-1">
+                <p class="truncate text-sm font-medium text-slate-900">{{ variant.title }}</p>
+                <p class="text-xs text-slate-500">
+                  {% if variant.stock %}Осталось {{ variant.stock }} {{ item.unit }}{% else %}Нет в наличии{% endif %}
+                  {% if variant.price %} · {{ variant.effective_price|floatformat:0 }} ₽{% endif %}
+                </p>
+              </div>
+              <div class="flex shrink-0 items-center rounded-lg border border-slate-300"
+                   data-opt-stepper
+                   data-slug="{{ item.slug }}"
+                   data-section="{{ item.section.slug }}"
+                   data-variant="{{ variant.pk }}"
+                   data-variant-title="{{ variant.title }}"
+                   data-title="{{ item.title }}"
+                   data-size="{{ item.size }}"
+                   data-unit="{{ item.unit }}"
+                   data-stock="{{ variant.stock|unlocalize }}"
+                   data-price="{{ variant.effective_price|unlocalize }}">
+                <button type="button" data-opt-step-dec aria-label="Меньше"
+                        class="h-10 w-10 text-lg text-slate-500 hover:text-brand disabled:opacity-40">-</button>
+                <input type="number" inputmode="numeric" min="0" max="{{ variant.stock }}" value="0" data-opt-step-input
+                       aria-label="Количество: {{ variant.title }}"
+                       class="h-10 w-14 border-x border-slate-300 text-center text-sm outline-none" />
+                <button type="button" data-opt-step-inc aria-label="Больше"
+                        class="h-10 w-10 text-lg text-slate-500 hover:text-brand disabled:opacity-40">+</button>
+              </div>
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <div class="mt-5 flex flex-wrap items-center gap-3">
+          <span class="text-sm text-slate-600">Количество</span>
+          <div class="flex items-center rounded-lg border border-slate-300"
+               data-opt-stepper
+               data-slug="{{ item.slug }}"
+               data-section="{{ item.section.slug }}"
+               data-title="{{ item.title }}"
+               data-size="{{ item.size }}"
+               data-unit="{{ item.unit }}"
+               data-price="{{ item.price|unlocalize }}">
+            <button type="button" data-opt-step-dec aria-label="Меньше"
+                    class="h-10 w-10 text-lg text-slate-500 hover:text-brand disabled:opacity-40">-</button>
+            <input type="number" inputmode="numeric" min="0" value="0" data-opt-step-input
+                   aria-label="Количество" class="h-10 w-14 border-x border-slate-300 text-center text-sm outline-none" />
+            <button type="button" data-opt-step-inc aria-label="Больше"
+                    class="h-10 w-10 text-lg text-slate-500 hover:text-brand disabled:opacity-40">+</button>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="mt-5 flex flex-wrap items-center gap-3">
+        <button type="button" data-opt-cart-open
+                class="rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-white hover:bg-brand2">
+          В корзину<span class="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-xs" data-opt-cart-count>0</span>
+        </button>
       </div>
 
       <p class="mt-4 text-xs text-slate-500">
-        Скидка за объём считается в корзине.{% if not discount_approved %} {{ discount_disclaimer }}{% endif %}
+        Количество меняется прямо здесь: позиция сразу попадает в корзину, а скидка пересчитывается по сумме.
       </p>
     </div>
   </div>

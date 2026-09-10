@@ -16,7 +16,7 @@
 
 from django.core.management.base import BaseCommand
 
-from pages.models import WholesaleItem, WholesaleSection
+from pages.models import WholesaleItem, WholesaleItemVariant, WholesaleSection
 
 
 DEMO_SECTIONS = [
@@ -34,6 +34,11 @@ DEMO_SECTIONS = [
                 "availability": "демо-остаток: 40 шт",
                 "is_highlighted": True,
                 "short_description": "Демо-позиция каркаса. Реальные размеры, остаток и цену подставит заказчик.",
+                "variants": [
+                    {"title": "Ком 60 см", "stock": 24, "sort_order": 10},
+                    {"title": "Ком 80 см", "stock": 11, "price": "7900.00", "sort_order": 20},
+                    {"title": "Контейнер C45", "stock": 0, "sort_order": 30},
+                ],
             },
             {
                 "slug": "demo-yablonya-dekorativnaya",
@@ -59,6 +64,10 @@ DEMO_SECTIONS = [
                 "availability": "демо-остаток: 800 шт",
                 "is_highlighted": True,
                 "short_description": "Демо-позиция каркаса. Реальные размеры, остаток и цену подставит заказчик.",
+                "variants": [
+                    {"title": "Высота 60-80 см", "stock": 930, "sort_order": 10},
+                    {"title": "Высота 80-100 см", "stock": 386, "price": "690.00", "sort_order": 20},
+                ],
             },
             {
                 "slug": "demo-spireya-yaponskaya",
@@ -110,7 +119,7 @@ def seed_demo():
             },
         )
         for item_order, item in enumerate(block["items"]):
-            WholesaleItem.objects.get_or_create(
+            obj, _ = WholesaleItem.objects.get_or_create(
                 section=section,
                 slug=item["slug"],
                 defaults={
@@ -126,6 +135,19 @@ def seed_demo():
                     "is_demo": True,
                 },
             )
+            # Варианты есть не у всех демо-позиций: карточка без вариантов должна
+            # работать как раньше, одним степпером.
+            for variant_order, variant in enumerate(item.get("variants", [])):
+                WholesaleItemVariant.objects.get_or_create(
+                    item=obj,
+                    title=variant["title"],
+                    defaults={
+                        "stock": variant["stock"],
+                        "price": variant.get("price"),
+                        "sort_order": variant.get("sort_order", (variant_order + 1) * 10),
+                        "is_active": True,
+                    },
+                )
 
 
 def unseed_demo():
