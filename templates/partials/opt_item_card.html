@@ -6,13 +6,19 @@
   отправке заказа сервер берёт цену из БД.
 {% endcomment %}
 <article class="flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white">
-  <a href="{{ item.get_absolute_url }}" class="relative block aspect-[4/3] w-full overflow-hidden bg-slate-100 p-2">
+  {% comment %}
+  Кадр в плитке кропается по центру и занимает рамку целиком (object-cover,
+  без полей): в списке важна ровная сетка. На карточке позиции наоборот -
+  крупный кадр идёт object-contain, чтобы у вертикальных снимков не срезало
+  горшок. Это разные места, а не противоречие.
+{% endcomment %}
+<a href="{{ item.get_absolute_url }}" class="relative block aspect-[4/3] w-full overflow-hidden bg-slate-100">
     {% comment %}
       Обложка: первый снимок галереи, а если галереи нет - старое поле image.
       Логика в WholesaleItem.cover_url, шаблон её не дублирует.
     {% endcomment %}
     {% if item.cover_url %}
-      <img src="{{ item.cover_url }}" alt="{{ item.title }}" loading="lazy" class="h-full w-full object-contain" />
+      <img src="{{ item.cover_url }}" alt="{{ item.title }}" loading="lazy" class="h-full w-full object-cover object-center" />
     {% else %}
       <span class="flex h-full w-full items-center justify-center text-xs text-slate-400">фото готовим</span>
     {% endif %}
@@ -30,6 +36,14 @@
     </h3>
     {% if item.size %}<p class="text-sm text-slate-600">Размер: {{ item.size }}</p>{% endif %}
     {% if item.availability %}<p class="text-sm text-slate-500">{{ item.availability }}</p>{% endif %}
+    {% comment %}
+      Бейдж малого остатка. Порог один на проект - LOW_STOCK_THRESHOLD в
+      pages/wholesale.py; текстовое наличие («в наличии», «уточняйте») числа
+      не несёт, у таких позиций бейджа нет.
+    {% endcomment %}
+    {% if item.low_stock_left %}
+      <p class="w-fit rounded bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">осталось {{ item.low_stock_left }} {{ item.unit }}</p>
+    {% endif %}
     <div class="mt-auto">
       <p class="text-lg font-semibold text-slate-900">{{ item.wholesale_price_text }} ₽<span class="text-sm font-normal text-slate-500">/{{ item.unit }}</span></p>
       <p class="text-xs text-slate-500">Опт с первой позиции. Розница {{ item.price_text }} ₽</p>

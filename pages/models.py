@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import re
+
 from typing import Any
 
 from django.core.exceptions import ValidationError
@@ -1057,6 +1059,28 @@ class WholesaleItem(models.Model):
             return self.image.url if self.image else ""
         except ValueError:
             return ""
+
+    @property
+    def low_stock_left(self) -> int | None:
+        """Малый остаток числом или None, если его нет.
+
+        Поле «Наличие» свободное: там бывает и «в наличии 120 шт», и просто
+        «уточняйте». Число вытаскиваем только когда оно есть, и показываем
+        бейдж, лишь когда остаток ниже порога LOW_STOCK_THRESHOLD из
+        pages/wholesale.py. Текстовое наличие остатка не несёт - бейджа нет.
+        """
+        from .wholesale import LOW_STOCK_THRESHOLD
+
+        match = re.search(r"\d[\d\s\u00a0]*", self.availability or "")
+        if match is None:
+            return None
+        digits = re.sub(r"\D", "", match.group(0))
+        if not digits:
+            return None
+        left = int(digits)
+        if left <= 0 or left >= LOW_STOCK_THRESHOLD:
+            return None
+        return left
 
     @property
     def photos_count(self) -> int:

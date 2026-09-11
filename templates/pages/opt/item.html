@@ -56,6 +56,13 @@
       <div class="flex flex-wrap gap-2">
         {% if item.is_highlighted %}<span class="rounded bg-accent/20 px-2 py-0.5 text-xs font-medium text-slate-700">В приоритете</span>{% endif %}
         {% if item.is_demo %}<span class="rounded bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600">демо-позиция</span>{% endif %}
+        {% comment %}
+          Малый остаток: порог задан один раз в LOW_STOCK_THRESHOLD
+          (pages/wholesale.py). Текстовое наличие числа не даёт - бейджа нет.
+        {% endcomment %}
+        {% if item.low_stock_left %}
+          <span class="rounded bg-amber-50 px-2 py-0.5 text-xs font-medium text-amber-700">осталось {{ item.low_stock_left }} {{ item.unit }}</span>
+        {% endif %}
       </div>
 
       <div class="mt-3 flex flex-wrap items-start gap-x-6 gap-y-3" data-opt-ladder>
@@ -148,15 +155,10 @@
         </div>
       {% endif %}
 
-      <div class="mt-5 flex flex-wrap items-center gap-3">
-        <button type="button" data-opt-cart-open
-                class="rounded-lg bg-brand px-6 py-3 text-sm font-semibold text-white hover:bg-brand2">
-          В корзину<span class="ml-2 rounded-full bg-white/20 px-2 py-0.5 text-xs" data-opt-cart-count>0</span>
-        </button>
-      </div>
+      {# Кнопка корзины живёт только в шапке: дублировать её в теле страницы незачем. #}
 
       <p class="mt-4 text-xs text-slate-500">
-        Количество меняется прямо здесь: позиция сразу попадает в корзину. Скидка считается и по штукам, и по чеку - применяем ту ступень, что выгоднее вам.
+        Количество меняется прямо здесь: позиция сразу попадает в корзину, счётчик в шапке обновляется. Скидка считается и по штукам, и по чеку - применяем ту ступень, что выгоднее вам.
       </p>
     </div>
   </div>

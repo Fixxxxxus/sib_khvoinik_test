@@ -502,3 +502,45 @@ def min_order_for_display() -> dict:
         "approved": MIN_ORDER_APPROVED,
         "disclaimer": MIN_ORDER_DISCLAIMER,
     }
+
+
+def tier_chip_label(tier: dict) -> str:
+    """Короткая подпись ступени для ленты чипов, собранная из её порогов.
+
+    Подписи не хардкодятся в шаблоне: поменяли пороги в DISCOUNT_TIERS - чипы
+    поехали следом. Нижняя ступень по количеству (берётся с первой штуки)
+    называется входной, остальные читаются по осям.
+    """
+    quantity = tier.get("min_quantity")
+    amount = tier.get("min_amount")
+    if quantity and amount:
+        return f"От {format_amount(quantity)} шт или чек {format_amount(amount)} ₽"
+    if quantity:
+        if int(quantity) <= 1:
+            return "Входная"
+        return f"От {format_amount(quantity)} шт"
+    if amount:
+        return f"Чек от {format_amount(amount)} ₽"
+    return tier_label(tier)
+
+
+def tiers_for_chips() -> list[dict]:
+    """Лента чипов «ступени скидки» для витрины: подпись плюс значение."""
+    rows = []
+    for tier in _sorted_tiers():
+        individual = bool(tier.get("individual"))
+        rows.append(
+            {
+                "key": tier["key"],
+                "label": tier_chip_label(tier),
+                "individual": individual,
+                # У индивидуальной ступени процента нет: в чип идёт её
+                # короткая подпись из сетки, длинный текст сюда не влезает.
+                "value_text": (
+                    (tier.get("short") or INDIVIDUAL_TIER_PRICE_TEXT)
+                    if individual
+                    else f"-{int(tier.get('percent') or 0)}%"
+                ),
+            }
+        )
+    return rows

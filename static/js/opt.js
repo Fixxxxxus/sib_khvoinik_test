@@ -348,6 +348,25 @@
     });
   }
 
+  /* Лента чипов «ступени скидки» на витрине: подсвечиваем взятую ступень. */
+  function renderTierChips(sums) {
+    document.querySelectorAll('[data-opt-tier-chip]').forEach(function (node) {
+      var active = node.getAttribute('data-opt-tier-chip') === sums.tierKey;
+      node.classList.toggle('bg-slate-100', !active);
+      node.classList.toggle('bg-brand/10', active);
+      node.classList.toggle('ring-1', active);
+    });
+  }
+
+  /* Липкая полоса заказа внизу мобильного экрана: живёт, пока в корзине есть позиции. */
+  function renderMobileBar(sums) {
+    var bar = document.querySelector('[data-opt-mobile-bar]');
+    if (!bar) return;
+    bar.hidden = sums.quantity <= 0;
+    var totalNode = bar.querySelector('[data-opt-mobile-total]');
+    if (totalNode) totalNode.textContent = money(sums.total);
+  }
+
   function render() {
     var lines = readCart();
     var sums = totals(lines);
@@ -358,6 +377,8 @@
 
     renderProgress(sums);
     renderLadder(sums);
+    renderTierChips(sums);
+    renderMobileBar(sums);
     syncSteppers(lines);
 
     var list = document.querySelector('[data-opt-cart-lines]');

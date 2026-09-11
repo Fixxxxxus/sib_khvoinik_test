@@ -1,25 +1,40 @@
 {% extends 'pages/opt/base_opt.html' %}
+{% load static %}
+
+{% block opt_full %}
+  {% comment %}
+    Hero только на витрине: у раздела и карточки его нет, там человек уже
+    выбирает. Фон - общий кадр питомника, а не снимок конкретной позиции:
+    витрина продаёт ассортимент, а не одно растение. Текст лежит на плотной
+    затемняющей заливке, поэтому читается и на 375, и на 1440.
+  {% endcomment %}
+  <section class="relative isolate flex min-h-[26rem] items-end overflow-hidden bg-slate-900 text-white sm:min-h-[32rem]"
+           aria-label="Оптовые поставки">
+    <img src="{% static hero_image %}" alt="" aria-hidden="true" width="1600" height="900"
+         class="absolute inset-0 -z-10 h-full w-full object-cover object-[50%_40%]" />
+    <div class="absolute inset-0 -z-10 bg-gradient-to-t from-slate-900/90 via-slate-900/70 to-slate-900/40"></div>
+    <div class="mx-auto w-full max-w-6xl px-4 pb-10 pt-16 sm:pb-14 sm:pt-24">
+      <div class="max-w-xl">
+        <p class="text-lg font-bold tracking-tight text-accent sm:text-xl">{{ hero_kicker }}</p>
+        <h1 class="mt-2 text-3xl font-extrabold leading-tight tracking-tight sm:text-5xl">{{ hero_title }}</h1>
+        <p class="mt-4 max-w-md text-base leading-relaxed text-slate-100">{{ hero_lead }}</p>
+        <div class="mt-7 flex flex-wrap gap-3">
+          <a href="#catalog"
+             class="inline-flex min-h-[2.85rem] items-center justify-center rounded-lg bg-accent px-5 py-3 text-sm font-bold text-slate-900 hover:bg-amber-300">
+            Смотреть позиции
+          </a>
+          <a href="tel:{{ opt_phone_href }}"
+             class="inline-flex min-h-[2.85rem] items-center justify-center rounded-lg border border-white/40 bg-white/10 px-5 py-3 text-sm font-bold text-white hover:bg-white/20">
+            Позвонить
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}
 
 {% block opt_content %}
-  <h1 class="text-2xl font-semibold text-slate-900 sm:text-3xl">{{ opt_title }}</h1>
-  <p class="mt-3 max-w-3xl text-slate-600">{{ opt_intro }}</p>
-
-  <section class="mt-8 rounded-xl border border-slate-200 bg-slate-50 p-5">
-    <h2 class="text-lg font-semibold text-slate-900">Скидка за объём</h2>
-    <p class="mt-1 text-sm text-slate-600">
-      Ступени считаются и по количеству, и по чеку: применяем ту, что выгоднее вам.
-      Входные {{ discount_entry_percent }}% действуют с первой штуки.
-    </p>
-    <ul class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-      {% for tier in discount_tiers %}
-        <li class="rounded-lg bg-white px-4 py-3 text-sm text-slate-700">
-          <span class="font-medium text-slate-900">{{ tier.label }}</span>
-          <span class="mt-0.5 block {% if tier.individual %}text-slate-600{% else %}text-brand{% endif %}">{{ tier.value_text }}</span>
-        </li>
-      {% endfor %}
-    </ul>
-    <p class="mt-3 text-xs text-slate-500">{{ discount_individual_text }}.</p>
-  </section>
+  {% include 'partials/opt_tiers_strip.html' %}
 
   {% if highlighted %}
     <section class="mt-10">
@@ -38,7 +53,7 @@
     остались жить: на них ведут объявления.
   {% endcomment %}
   {% if sections %}
-    <nav class="mt-10 flex flex-wrap gap-2" aria-label="Разделы каталога">
+    <nav class="mt-10 flex flex-wrap gap-2 scroll-mt-24" id="catalog" aria-label="Разделы каталога">
       {% for block in sections %}
         <a href="#section-{{ block.section.slug }}"
            class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:border-brand hover:text-brand">
@@ -63,6 +78,6 @@
       </section>
     {% endfor %}
   {% else %}
-    <p class="mt-10 text-slate-600">Каталог наполняется: список позиций текущего плана появится здесь.</p>
+    <p class="mt-10 text-slate-600" id="catalog">Каталог наполняется: список позиций текущего плана появится здесь.</p>
   {% endif %}
 {% endblock %}

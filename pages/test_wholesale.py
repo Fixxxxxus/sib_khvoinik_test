@@ -7,12 +7,13 @@ from __future__ import annotations
 
 import json
 from decimal import Decimal
-from unittest.mock import patch
+from types import SimpleNamespace
+from unittest.mock import PropertyMock, patch
 
 from django.core.cache import cache
 from django.test import Client, TestCase
 
-from pages import wholesale_pricing
+from pages import wholesale, wholesale_pricing
 from pages.models import (
     WholesaleItem,
     WholesaleItemVariant,
@@ -185,6 +186,113 @@ class OptPagesTest(TestCase):
         """Каталог не светится в навигации сайта: ни в меню, ни в футере."""
         home = self.client.get("/").content.decode()
         self.assertNotIn('href="/opt/', home)
+
+
+class OptShellTest(TestCase):
+    """Шапка, hero, лента ступеней, кроп фото, мобильная полоса и бейдж остатка."""
+
+    def setUp(self):
+        self.client = Client()
+        self.section, self.tree, self.bush = make_catalog()
+        self.urls = (
+            "/opt/",
+            f"/opt/{self.section.slug}/",
+            f"/opt/{self.section.slug}/{self.tree.slug}/",
+        )
+
+    def test_header_with_cart_is_on_every_page_type(self):
+        for url in self.urls:
+            with self.subTest(url=url):
+                html = self.client.get(url).content.decode()
+                self.assertIn("sticky top-0", html)
+                self.assertIn("logo-main.", html)
+                self.assertIn(">Опт<", html)
+                self.assertIn(f'href="tel:{wholesale.OPT_PHONE_HREF}"', html)
+                self.assertIn("data-opt-cart-open", html)
+                self.assertIn("data-opt-cart-count", html)
+
+    def test_hero_lives_only_on_the_storefront(self):
+        home = self.client.get("/opt/").content.decode()
+        self.assertIn(wholesale.OPT_HERO_TITLE, home)
+        self.assertIn("opt-hero-pitomnik.", home)
+        self.assertIn("Смотреть позиции", home)
+        self.assertIn("Позвонить", home)
+        for url in self.urls[1:]:
+            with self.subTest(url=url):
+                html = self.client.get(url).content.decode()
+                self.assertNotIn(wholesale.OPT_HERO_TITLE, html)
+                self.assertNotIn("opt-hero-pitomnik.", html)
+
+    def test_tier_chips_are_built_from_the_pricing_config(self):
+        html = self.client.get("/opt/").content.decode()
+        for chip in wholesale_pricing.tiers_for_chips():
+            with self.subTest(chip=chip["key"]):
+                self.assertIn(f'data-opt-tier-chip="{chip["key"]}"', html)
+                self.assertIn(chip["label"], html)
+                self.assertIn(chip["value_text"], html)
+
+    def test_changed_grid_changes_the_chips(self):
+        """Чипы не хардкод: подправили порог в конфиге - подпись поехала следом."""
+        grid = list(wholesale_pricing.DISCOUNT_TIERS)
+        grid[1] = dict(grid[1], min_quantity=42)
+        with patch.object(wholesale_pricing, "DISCOUNT_TIERS", tuple(grid)):
+            html = self.client.get("/opt/").content.decode()
+            # Проверяем именно чип, а не конфиг скидок в <script>.
+            self.assertIn(">От 42 шт<", html)
+            self.assertNotIn(">От 30 шт<", html)
+
+    def test_list_tile_crops_the_photo_and_card_keeps_it_whole(self):
+        with patch.object(
+            WholesaleItem, "cover_url", new_callable=PropertyMock, return_value="/media/test.webp"
+        ):
+            listing = self.client.get(f"/opt/{self.section.slug}/").content.decode()
+        # Плитка списка: кроп по центру и рамка без полей.
+        self.assertIn("object-cover object-center", listing)
+        self.assertNotIn("bg-slate-100 p-2", listing)
+
+        # Карточка позиции: крупный кадр целиком, горшок не срезается.
+        photo = SimpleNamespace(image=SimpleNamespace(url="/media/test.webp"), alt="Липа")
+        # Подменяем настоящей функцией, а не Mock: шаблонизатор Django видит у
+        # мока атрибут do_not_call_in_templates и не вызывает его.
+        with patch.object(WholesaleItem, "gallery_photos", lambda self: [photo]):
+            card = self.client.get(
+                f"/opt/{self.section.slug}/{self.tree.slug}/"
+            ).content.decode()
+        self.assertIn("object-contain", card)
+        self.assertNotIn("object-cover object-center", card.split("Ещё из раздела")[0])
+
+    def test_mobile_bar_is_rendered_hidden_and_opens_the_cart(self):
+        for url in self.urls:
+            with self.subTest(url=url):
+                html = self.client.get(url).content.decode()
+                self.assertIn("data-opt-mobile-bar", html)
+                # Полоса приходит скрытой: показывает её JS, когда корзина не пуста.
+                self.assertIn("<div data-opt-mobile-bar hidden", html)
+                self.assertIn("data-opt-mobile-total", html)
+                self.assertIn("Оформить", html)
+                # Своего механизма у полосы нет - та же кнопка открытия корзины.
+                self.assertIn("sm:hidden", html)
+
+    def test_low_stock_badge_shows_below_the_threshold(self):
+        self.assertEqual(self.tree.low_stock_left, 40)
+        listing = self.client.get(f"/opt/{self.section.slug}/").content.decode()
+        self.assertIn("осталось 40 шт", listing)
+        card = self.client.get(f"/opt/{self.section.slug}/{self.tree.slug}/").content.decode()
+        self.assertIn("осталось 40 шт", card)
+
+    def test_no_badge_above_the_threshold_or_on_text_availability(self):
+        self.tree.availability = f"в наличии {wholesale.LOW_STOCK_THRESHOLD + 10} шт"
+        self.tree.save(update_fields=["availability"])
+        self.assertIsNone(self.tree.low_stock_left)
+
+        for text in ("в наличии", "уточняйте", ""):
+            with self.subTest(text=text):
+                self.bush.availability = text
+                self.bush.save(update_fields=["availability"])
+                self.assertIsNone(self.bush.low_stock_left)
+
+        listing = self.client.get(f"/opt/{self.section.slug}/").content.decode()
+        self.assertNotIn("осталось", listing)
 
 
 class OptOrderApiTest(TestCase):

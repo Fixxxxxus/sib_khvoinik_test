@@ -35,6 +35,22 @@ OPT_INTRO = (
 OPT_PHONE = "+7 (913) 721-76-55"
 OPT_PHONE_HREF = "+79137217655"
 
+# Ниже этого остатка на плитке и в карточке загорается бейдж «осталось N шт».
+# Порог живёт здесь одним числом: разбрасывать его по шаблонам нельзя.
+# Работает только по числовому остатку из поля «Наличие»: «в наличии» и
+# «уточняйте» остатка не несут, бейджа у них нет.
+LOW_STOCK_THRESHOLD = 200
+
+# Фон hero на витрине. Осознанно общий кадр питомника, а не снимок конкретной
+# позиции из галереи: витрина продаёт ассортимент, а не одно растение.
+OPT_HERO_IMAGE = "media/images/opt/opt-hero-pitomnik.webp"
+OPT_HERO_KICKER = OPT_BRAND
+OPT_HERO_TITLE = "Опт с первой штуки. Минус 20%"
+OPT_HERO_LEAD = (
+    "Актуальный план для садовых центров и подрядчиков: деревья, кустарники, "
+    "хвойные. Соберите заказ и отправьте менеджеру."
+)
+
 
 def _base_context(request: HttpRequest) -> dict:
     """Общая обвязка страниц каталога: скрытость, корзина, конфиг скидок."""
@@ -52,6 +68,8 @@ def _base_context(request: HttpRequest) -> dict:
             wholesale_pricing.tiers_for_frontend(), ensure_ascii=False
         ),
         "discount_tiers": wholesale_pricing.tiers_for_display(),
+        # Лента чипов на витрине: подписи собираются из той же сетки скидок.
+        "discount_chips": wholesale_pricing.tiers_for_chips(),
         "discount_approved": wholesale_pricing.DISCOUNT_TIERS_APPROVED,
         "discount_disclaimer": wholesale_pricing.DISCOUNT_DISCLAIMER,
         "discount_basis": wholesale_pricing.DISCOUNT_BASIS,
@@ -113,6 +131,10 @@ def opt_index(request: HttpRequest) -> HttpResponse:
             "meta_description": OPT_INTRO,
             "opt_title": OPT_TITLE,
             "opt_intro": OPT_INTRO,
+            "hero_image": OPT_HERO_IMAGE,
+            "hero_kicker": OPT_HERO_KICKER,
+            "hero_title": OPT_HERO_TITLE,
+            "hero_lead": OPT_HERO_LEAD,
             "sections": sections,
             "highlighted": highlighted,
             "breadcrumbs": [],

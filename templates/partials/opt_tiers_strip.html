@@ -1,0 +1,26 @@
+{% comment %}
+  Ступени скидки компактной лентой чипов. Подписи и проценты приходят из
+  pages/wholesale_pricing.tiers_for_chips(), то есть из той же сетки
+  DISCOUNT_TIERS: руками в шаблоне ничего не написано, поменяли конфиг -
+  поменялись чипы. Активную ступень подсвечивает static/js/opt.js по составу
+  корзины (data-opt-tier-chip).
+{% endcomment %}
+<section class="mt-8 border-y border-slate-200 py-4" aria-labelledby="opt-tiers-title">
+  <div class="grid gap-3 lg:grid-cols-[minmax(12rem,17rem)_1fr] lg:items-center lg:gap-6">
+    <div>
+      <h2 id="opt-tiers-title" class="text-base font-bold text-slate-900">Скидка за объём</h2>
+      <p class="mt-1 text-sm text-slate-500">
+        Считаем по штукам и по чеку, берём выгоднее для вас. Входные {{ discount_entry_percent }}% уже с первой позиции.
+      </p>
+    </div>
+    <ul class="flex flex-wrap gap-2">
+      {% for chip in discount_chips %}
+        <li data-opt-tier-chip="{{ chip.key }}"
+            class="inline-flex items-baseline gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 ring-brand transition">
+          <span>{{ chip.label }}</span>
+          <strong class="{% if chip.individual %}text-slate-500{% else %}text-brand{% endif %}">{{ chip.value_text }}</strong>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+</section>
