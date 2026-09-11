@@ -30,20 +30,39 @@
     </section>
   {% endif %}
 
-  <section class="mt-10">
-    <h2 class="text-xl font-semibold text-slate-900">Разделы</h2>
-    {% if sections %}
-      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-        {% for block in sections %}
-          <a href="{{ block.section.get_absolute_url }}" class="rounded-xl border border-slate-200 bg-white p-5 hover:border-brand">
-            <span class="text-lg font-semibold text-slate-900">{{ block.section.title }}</span>
-            <span class="mt-1 block text-sm text-slate-500">{{ block.count }} позиц. в плане</span>
-            {% if block.section.intro %}<span class="mt-2 block text-sm text-slate-600">{{ block.section.intro }}</span>{% endif %}
+  {% comment %}
+    Единый каталог на витрине (просьба заказчика 11.09.2026): раньше тут были
+    только плитки разделов, и человек прыгал витрина - раздел - карточка.
+    Теперь все позиции лежат на одной странице, сгруппированные по разделам,
+    а чипы сверху прокручивают к нужной группе. Отдельные URL разделов
+    остались жить: на них ведут объявления.
+  {% endcomment %}
+  {% if sections %}
+    <nav class="mt-10 flex flex-wrap gap-2" aria-label="Разделы каталога">
+      {% for block in sections %}
+        <a href="#section-{{ block.section.slug }}"
+           class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:border-brand hover:text-brand">
+          {{ block.section.title }}
+          <span class="text-slate-400">{{ block.count }}</span>
+        </a>
+      {% endfor %}
+    </nav>
+
+    {% for block in sections %}
+      <section class="mt-10 scroll-mt-24" id="section-{{ block.section.slug }}">
+        <div class="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 class="text-xl font-semibold text-slate-900">{{ block.section.title }}</h2>
+          <a href="{{ block.section.get_absolute_url }}" class="text-sm text-brand hover:underline">
+            Открыть раздел отдельно
           </a>
-        {% endfor %}
-      </div>
-    {% else %}
-      <p class="mt-4 text-slate-600">Каталог наполняется: список позиций текущего плана появится здесь.</p>
-    {% endif %}
-  </section>
+        </div>
+        {% if block.section.intro %}<p class="mt-1 text-sm text-slate-600">{{ block.section.intro }}</p>{% endif %}
+        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {% for item in block.items %}{% include 'partials/opt_item_card.html' %}{% endfor %}
+        </div>
+      </section>
+    {% endfor %}
+  {% else %}
+    <p class="mt-10 text-slate-600">Каталог наполняется: список позиций текущего плана появится здесь.</p>
+  {% endif %}
 {% endblock %}

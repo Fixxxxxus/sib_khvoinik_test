@@ -537,3 +537,35 @@ class VariantTest(TestCase):
         self.assertEqual(line.quantity, 5)
         self.assertEqual(order.total_quantity, 10)
         self.assertEqual(order.subtotal, Decimal("72000.00"))
+
+
+class OptIndexCatalogTest(TestCase):
+    """Витрина держит весь каталог на одной странице (просьба заказчика 11.09.2026)."""
+
+    def setUp(self):
+        self.section = WholesaleSection.objects.create(
+            title="Кустарники", slug="kustarniki-test", is_active=True
+        )
+        self.other = WholesaleSection.objects.create(
+            title="Деревья", slug="derevya-test", is_active=True
+        )
+        WholesaleItem.objects.create(
+            section=self.section, title="Сирень", slug="siren-test",
+            size="h 40-60", price=Decimal("750.00"), is_active=True,
+        )
+        WholesaleItem.objects.create(
+            section=self.other, title="Липа", slug="lipa-index-test",
+            size="h 1,8-2,5", price=Decimal("5900.00"), is_active=True,
+        )
+
+    def test_index_lists_every_item_grouped_by_section(self):
+        html = self.client.get("/opt/").content.decode()
+        self.assertIn("Сирень", html)
+        self.assertIn("Липа", html)
+        self.assertIn('id="section-kustarniki-test"', html)
+        self.assertIn('id="section-derevya-test"', html)
+
+    def test_index_keeps_links_to_standalone_sections(self):
+        html = self.client.get("/opt/").content.decode()
+        self.assertIn("/opt/kustarniki-test/", html)
+        self.assertIn("#section-kustarniki-test", html)
