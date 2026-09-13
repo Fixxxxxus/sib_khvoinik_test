@@ -4,13 +4,13 @@
 {% block opt_full %}
   {% comment %}
     Hero только на витрине: у раздела и карточки его нет, там человек уже
-    выбирает. Фон - общий кадр питомника, а не снимок конкретной позиции:
-    витрина продаёт ассортимент, а не одно растение. Текст лежит на плотной
+    выбирает. Фон - сосна горная «Мугус» из макета маркетолога (файл задаёт
+    OPT_HERO_IMAGE в pages/wholesale.py). Текст лежит на плотной
     затемняющей заливке, поэтому читается и на 375, и на 1440.
   {% endcomment %}
   <section class="relative isolate flex min-h-[26rem] items-end overflow-hidden bg-slate-900 text-white sm:min-h-[32rem]"
            aria-label="Оптовые поставки">
-    <img src="{% static hero_image %}" alt="" aria-hidden="true" width="1600" height="900"
+    <img src="{% static hero_image %}" alt="" aria-hidden="true" width="1200" height="1600"
          class="absolute inset-0 -z-10 h-full w-full object-cover object-[50%_40%]" />
     <div class="absolute inset-0 -z-10 bg-gradient-to-t from-slate-900/90 via-slate-900/70 to-slate-900/40"></div>
     <div class="mx-auto w-full max-w-6xl px-4 pb-10 pt-16 sm:pb-14 sm:pt-24">

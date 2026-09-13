@@ -214,14 +214,14 @@ class OptShellTest(TestCase):
     def test_hero_lives_only_on_the_storefront(self):
         home = self.client.get("/opt/").content.decode()
         self.assertIn(wholesale.OPT_HERO_TITLE, home)
-        self.assertIn("opt-hero-pitomnik.", home)
+        self.assertIn("opt-hero-sosna-mugus.", home)
         self.assertIn("Смотреть позиции", home)
         self.assertIn("Позвонить", home)
         for url in self.urls[1:]:
             with self.subTest(url=url):
                 html = self.client.get(url).content.decode()
                 self.assertNotIn(wholesale.OPT_HERO_TITLE, html)
-                self.assertNotIn("opt-hero-pitomnik.", html)
+                self.assertNotIn("opt-hero-sosna-mugus.", html)
 
     def test_tier_chips_are_built_from_the_pricing_config(self):
         html = self.client.get("/opt/").content.decode()

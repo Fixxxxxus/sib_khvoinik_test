@@ -41,9 +41,9 @@ OPT_PHONE_HREF = "+79137217655"
 # «уточняйте» остатка не несут, бейджа у них нет.
 LOW_STOCK_THRESHOLD = 200
 
-# Фон hero на витрине. Осознанно общий кадр питомника, а не снимок конкретной
-# позиции из галереи: витрина продаёт ассортимент, а не одно растение.
-OPT_HERO_IMAGE = "media/images/opt/opt-hero-pitomnik.webp"
+# Фон hero на витрине: сосна горная «Мугус» из макета маркетолога (по его
+# просьбе от 13.09.2026). Общий кадр питомника лежит рядом в opt-hero-pitomnik.webp.
+OPT_HERO_IMAGE = "media/images/opt/opt-hero-sosna-mugus.webp"
 OPT_HERO_KICKER = OPT_BRAND
 OPT_HERO_TITLE = "Опт с первой штуки. Минус 20%"
 OPT_HERO_LEAD = (
