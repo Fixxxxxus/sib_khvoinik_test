@@ -13,7 +13,7 @@ from unittest.mock import PropertyMock, patch
 from django.core.cache import cache
 from django.test import Client, TestCase
 
-from pages import wholesale, wholesale_pricing
+from pages import wholesale, wholesale_orders, wholesale_pricing
 from pages.models import (
     WholesaleItem,
     WholesaleItemVariant,
@@ -420,6 +420,19 @@ class OptOrderApiTest(TestCase):
         self.assertEqual(len(lines), 1)
         self.assertEqual(subtotal, Decimal("6500.00"))
         self.assertEqual(quantity, 1)
+
+    def test_bitrix_lead_is_assigned_to_the_wholesale_manager(self):
+        """Лид с /opt/ уходит на ответственного из B24_ASSIGNED_BY_ID."""
+        patch.stopall()
+        patch("pages.wholesale_orders._notify_telegram").start()
+        b24 = patch("pages.wholesale_orders.Bitrix24Client").start()
+        b24.return_value.create_lead.return_value = 777
+
+        res = self._post(self._payload())
+        self.assertEqual(res.status_code, 200)
+        kwargs = b24.return_value.create_lead.call_args.kwargs
+        self.assertEqual(kwargs["extra_fields"]["ASSIGNED_BY_ID"], wholesale_orders.B24_ASSIGNED_BY_ID)
+        self.assertEqual(WholesaleOrder.objects.get().b24_lead_id, 777)
 
     def test_bitrix_failure_does_not_break_order(self):
         """Сбой Б24 не отменяет заказ: он уже в БД, менеджер увидит его в админке."""

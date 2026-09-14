@@ -38,6 +38,10 @@ TG_CHAT_ID_ENV = "WHOLESALE_ORDER_TG_CHAT_ID"
 TG_CHAT_ID_FALLBACK_ENVS = ("LANDING_LEAD_TG_CHAT_ID", "CARE_PROMO_ADMIN_CHAT_ID")
 
 B24_TITLE = "Опт: заказ из каталога /opt/"
+# Ответственный за лиды с /opt/ в Битрикс24: Игорь (менеджер опта), решение
+# Стаса 14.09.2026 по просьбе маркетолога. Без него лид падал бы на владельца
+# вебхука. None - оставить ответственного по умолчанию.
+B24_ASSIGNED_BY_ID = 1317
 
 MAX_LINES = 100  # строк в одном заказе
 MAX_QUANTITY = 100_000  # единиц в одной строке
@@ -229,7 +233,10 @@ def _send_to_bitrix(order: WholesaleOrder, lines: list[dict], utm: dict) -> None
             email=order.email,
             comments=build_order_text(order, lines, utm),
             source_id="WEB",
-            extra_fields={"SOURCE_DESCRIPTION": f"opt-catalog | {_utm_line(utm)}"[:255]},
+            extra_fields={
+                "SOURCE_DESCRIPTION": f"opt-catalog | {_utm_line(utm)}"[:255],
+                **({"ASSIGNED_BY_ID": B24_ASSIGNED_BY_ID} if B24_ASSIGNED_BY_ID else {}),
+            },
         )
     except Bitrix24Error as e:
         logger.warning("opt order %s: Bitrix24 недоступен: %s", order.order_id, e)
