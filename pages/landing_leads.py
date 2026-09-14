@@ -143,7 +143,9 @@ def _send_to_bitrix(lead: LandingLead, utm: dict) -> None:
             name=lead.name,
             phone=format_phone(lead.phone),
             comments=_b24_comments(lead, utm),
-            source_id="WEB",
+            # «WEB» в портале нет, поле «Источник» оставалось пустым; «5» -
+            # источник «Лендинг» из справочника портала (проверено 14.09.2026).
+            source_id="5",
             extra_fields={"SOURCE_DESCRIPTION": f"{lead.landing_id} | {_utm_line(utm)}"[:255]},
         )
     except Bitrix24Error as e:

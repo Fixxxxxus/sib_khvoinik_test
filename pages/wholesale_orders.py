@@ -53,6 +53,10 @@ def lead_title(order: WholesaleOrder) -> str:
 # Стаса 14.09.2026 по просьбе маркетолога. Без него лид падал бы на владельца
 # вебхука. None - оставить ответственного по умолчанию.
 B24_ASSIGNED_BY_ID = 1317
+# Источник лида. В портале нет системного «WEB» (раньше стоял он, и поле
+# «Источник» в карточке оставалось пустым): заведён свой справочник
+# crm.status SOURCE «Сайт: оптовый каталог /opt/» (ID 413) 14.09.2026.
+B24_SOURCE_ID = "UC_OPT_SITE"
 
 MAX_LINES = 100  # строк в одном заказе
 MAX_QUANTITY = 100_000  # единиц в одной строке
@@ -243,7 +247,7 @@ def _send_to_bitrix(order: WholesaleOrder, lines: list[dict], utm: dict) -> None
             phone=format_phone(order.phone),
             email=order.email,
             comments=build_order_text(order, lines, utm),
-            source_id="WEB",
+            source_id=B24_SOURCE_ID,
             extra_fields={
                 "SOURCE_DESCRIPTION": f"opt-catalog | {_utm_line(utm)}"[:255],
                 **({"ASSIGNED_BY_ID": B24_ASSIGNED_BY_ID} if B24_ASSIGNED_BY_ID else {}),

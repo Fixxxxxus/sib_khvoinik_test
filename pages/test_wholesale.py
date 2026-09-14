@@ -432,6 +432,8 @@ class OptOrderApiTest(TestCase):
         self.assertEqual(res.status_code, 200)
         kwargs = b24.return_value.create_lead.call_args.kwargs
         self.assertEqual(kwargs["extra_fields"]["ASSIGNED_BY_ID"], wholesale_orders.B24_ASSIGNED_BY_ID)
+        self.assertEqual(kwargs["source_id"], wholesale_orders.B24_SOURCE_ID)
+        self.assertNotEqual(kwargs["source_id"], "WEB")
         order = WholesaleOrder.objects.get()
         self.assertTrue(kwargs["title"].startswith("Опт: "))
         self.assertIn(f"{order.total_quantity} шт", kwargs["title"])
