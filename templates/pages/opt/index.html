@@ -27,6 +27,12 @@
              class="inline-flex min-h-[2.85rem] items-center justify-center rounded-lg border border-white/40 bg-white/10 px-5 py-3 text-sm font-bold text-white hover:bg-white/20">
             Позвонить
           </a>
+          {% if opt_max_url %}
+            <a href="{{ opt_max_url }}" target="_blank" rel="noopener noreferrer"
+               class="inline-flex min-h-[2.85rem] items-center justify-center rounded-lg border border-white/40 bg-white/10 px-5 py-3 text-sm font-bold text-white hover:bg-white/20">
+              Написать в MAX
+            </a>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -48,23 +54,15 @@
   {% comment %}
     Единый каталог на витрине (просьба заказчика 11.09.2026): раньше тут были
     только плитки разделов, и человек прыгал витрина - раздел - карточка.
-    Теперь все позиции лежат на одной странице, сгруппированные по разделам,
-    а чипы сверху прокручивают к нужной группе. Отдельные URL разделов
-    остались жить: на них ведут объявления.
+    Теперь все позиции лежат на одной странице, сгруппированные по разделам.
+    Чипов-якорей над группами нет: маркетолог попросил их убрать 14.09.2026,
+    кнопка «Смотреть позиции» из hero ведёт на первую группу. Отдельные URL
+    разделов остались жить: на них ведут объявления.
   {% endcomment %}
   {% if sections %}
-    <nav class="mt-10 flex flex-wrap gap-2 scroll-mt-24" id="catalog" aria-label="Разделы каталога">
-      {% for block in sections %}
-        <a href="#section-{{ block.section.slug }}"
-           class="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:border-brand hover:text-brand">
-          {{ block.section.title }}
-          <span class="text-slate-400">{{ block.count }}</span>
-        </a>
-      {% endfor %}
-    </nav>
-
     {% for block in sections %}
       <section class="mt-10 scroll-mt-24" id="section-{{ block.section.slug }}">
+        {% if forloop.first %}<span id="catalog" class="block scroll-mt-24"></span>{% endif %}
         <div class="flex flex-wrap items-baseline justify-between gap-2">
           <h2 class="text-xl font-semibold text-slate-900">{{ block.section.title }}</h2>
           <a href="{{ block.section.get_absolute_url }}" class="text-sm text-brand hover:underline">

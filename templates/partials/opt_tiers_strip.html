@@ -18,7 +18,12 @@
         <li data-opt-tier-chip="{{ chip.key }}"
             class="inline-flex items-baseline gap-1.5 rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 ring-brand transition">
           <span>{{ chip.label }}</span>
-          <strong class="{% if chip.individual %}text-slate-500{% else %}text-brand{% endif %}">{{ chip.value_text }}</strong>
+          {% comment %}
+            Чем выше ступень, тем заметнее процент: размер и плотность зелёного
+            растут с рангом (просьба маркетолога 14.09.2026). Классы перечислены
+            руками, чтобы Tailwind их собрал.
+          {% endcomment %}
+          <strong class="{% if chip.individual %}text-slate-500{% elif chip.rank == 0 %}text-brand/70{% elif chip.rank == 1 %}text-sm text-brand{% elif chip.rank == 2 %}text-base text-emerald-700{% else %}text-lg text-emerald-800{% endif %}">{{ chip.value_text }}</strong>
         </li>
       {% endfor %}
     </ul>

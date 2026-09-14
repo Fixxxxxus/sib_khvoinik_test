@@ -527,6 +527,7 @@ def tier_chip_label(tier: dict) -> str:
 def tiers_for_chips() -> list[dict]:
     """Лента чипов «ступени скидки» для витрины: подпись плюс значение."""
     rows = []
+    rank = 0
     for tier in _sorted_tiers():
         individual = bool(tier.get("individual"))
         rows.append(
@@ -534,6 +535,10 @@ def tiers_for_chips() -> list[dict]:
                 "key": tier["key"],
                 "label": tier_chip_label(tier),
                 "individual": individual,
+                # Порядковый номер процентной ступени снизу вверх (0 - входная).
+                # Шаблон по нему делает цифру заметнее с каждой ступенью
+                # (просьба маркетолога 14.09.2026): у индивидуальной ранга нет.
+                "rank": None if individual else rank,
                 # У индивидуальной ступени процента нет: в чип идёт её
                 # короткая подпись из сетки, длинный текст сюда не влезает.
                 "value_text": (
@@ -543,4 +548,6 @@ def tiers_for_chips() -> list[dict]:
                 ),
             }
         )
+        if not individual:
+            rank += 1
     return rows

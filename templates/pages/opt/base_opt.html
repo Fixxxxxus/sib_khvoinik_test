@@ -29,6 +29,12 @@
       </a>
       <div class="ml-auto flex shrink-0 items-center gap-3">
         <a href="tel:{{ opt_phone_href }}" class="hidden text-sm font-semibold text-slate-700 hover:text-brand sm:block">{{ opt_phone }}</a>
+        {% if opt_max_url %}
+          <a href="{{ opt_max_url }}" target="_blank" rel="noopener noreferrer"
+             class="inline-flex items-center rounded-lg border border-indigo-200 bg-indigo-50 px-3 py-2 text-sm font-semibold text-indigo-700 hover:bg-indigo-100">
+            MAX
+          </a>
+        {% endif %}
         <button type="button" data-opt-cart-open
                 class="inline-flex items-center gap-2 rounded-lg bg-brand px-3 py-2 text-sm font-semibold text-white hover:bg-brand2 sm:px-4">
           Корзина
@@ -60,7 +66,7 @@
   <footer class="mt-12 border-t border-slate-200 bg-slate-50">
     <div class="mx-auto max-w-6xl px-4 py-8 text-sm text-slate-600">
       <p class="font-medium text-slate-800">{{ brand }}: оптовые поставки</p>
-      <p class="mt-2">Отдел продаж: <a href="tel:{{ opt_phone_href }}" class="text-brand hover:underline">{{ opt_phone }}</a></p>
+      <p class="mt-2">Отдел продаж: <a href="tel:{{ opt_phone_href }}" class="text-brand hover:underline">{{ opt_phone }}</a>{% if opt_max_url %}, <a href="{{ opt_max_url }}" target="_blank" rel="noopener noreferrer" class="text-brand hover:underline">написать в MAX</a>{% endif %}</p>
       <p class="mt-2 text-xs text-slate-500">Цены в каталоге оптовые и действуют при отгрузке партией. Раздел работает по прямым ссылкам.</p>
     </div>
     {# Липкая мобильная полоса заказа: стоит последней, её распорка держит низ страницы. #}

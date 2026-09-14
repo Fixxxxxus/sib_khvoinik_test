@@ -231,6 +231,24 @@ class OptShellTest(TestCase):
                 self.assertIn(chip["label"], html)
                 self.assertIn(chip["value_text"], html)
 
+    def test_tier_chip_rank_grows_with_the_tier(self):
+        """Процент заметнее с каждой ступенью: ранг идёт 0,1,2..., у инд. его нет."""
+        chips = wholesale_pricing.tiers_for_chips()
+        ranks = [c["rank"] for c in chips if not c["individual"]]
+        self.assertEqual(ranks, list(range(len(ranks))))
+        self.assertIsNone([c for c in chips if c["individual"]][0]["rank"])
+        html = self.client.get("/opt/").content.decode()
+        self.assertIn("text-brand/70", html)
+        self.assertIn("text-emerald-800", html)
+
+    def test_max_button_only_with_a_link(self):
+        html = self.client.get("/opt/").content.decode()
+        self.assertNotIn("Написать в MAX", html)
+        with patch.object(wholesale, "OPT_MAX_URL", "https://max.ru/u/test"):
+            html = self.client.get("/opt/").content.decode()
+            self.assertIn('href="https://max.ru/u/test"', html)
+            self.assertIn("Написать в MAX", html)
+
     def test_changed_grid_changes_the_chips(self):
         """Чипы не хардкод: подправили порог в конфиге - подпись поехала следом."""
         grid = list(wholesale_pricing.DISCOUNT_TIERS)
@@ -676,4 +694,10 @@ class OptIndexCatalogTest(TestCase):
     def test_index_keeps_links_to_standalone_sections(self):
         html = self.client.get("/opt/").content.decode()
         self.assertIn("/opt/kustarniki-test/", html)
-        self.assertIn("#section-kustarniki-test", html)
+
+    def test_index_has_no_section_chips(self):
+        """Чипы-якоря над группами убраны по просьбе маркетолога 14.09.2026."""
+        html = self.client.get("/opt/").content.decode()
+        self.assertNotIn("#section-kustarniki-test", html)
+        self.assertNotIn('aria-label="Разделы каталога"', html)
+        self.assertIn('id="catalog"', html)
