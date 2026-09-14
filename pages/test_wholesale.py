@@ -242,8 +242,9 @@ class OptShellTest(TestCase):
         self.assertIn("text-emerald-800", html)
 
     def test_max_button_only_with_a_link(self):
-        html = self.client.get("/opt/").content.decode()
-        self.assertNotIn("Написать в MAX", html)
+        with patch.object(wholesale, "OPT_MAX_URL", ""):
+            html = self.client.get("/opt/").content.decode()
+            self.assertNotIn("Написать в MAX", html)
         with patch.object(wholesale, "OPT_MAX_URL", "https://max.ru/u/test"):
             html = self.client.get("/opt/").content.decode()
             self.assertIn('href="https://max.ru/u/test"', html)
