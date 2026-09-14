@@ -46,7 +46,11 @@ SIZE_PATTERNS = (
 )
 
 # Сезон отгрузки и пометка «Н/С» - это не размер, им место в описании.
-SEASON_RE = re.compile(r"\b(осень|весна|лето|зима)\s*20\d{2}", re.IGNORECASE)
+SEASON_RE = re.compile(
+    r"\b(осень|весна|лето|зима|январь|февраль|март|апрель|май|июнь|июль|август|"
+    r"сентябрь|октябрь|ноябрь|декабрь)\s*20\d{2}",
+    re.IGNORECASE,
+)
 NS_RE = re.compile(r"(?<!\w)Н\s*/\s*С(?!\w)", re.IGNORECASE)
 
 ASSORTMENT_RE = re.compile(r"в\s+ассортименте", re.IGNORECASE)
