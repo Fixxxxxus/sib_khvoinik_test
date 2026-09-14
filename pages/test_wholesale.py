@@ -432,6 +432,10 @@ class OptOrderApiTest(TestCase):
         self.assertEqual(res.status_code, 200)
         kwargs = b24.return_value.create_lead.call_args.kwargs
         self.assertEqual(kwargs["extra_fields"]["ASSIGNED_BY_ID"], wholesale_orders.B24_ASSIGNED_BY_ID)
+        order = WholesaleOrder.objects.get()
+        self.assertTrue(kwargs["title"].startswith("Опт: "))
+        self.assertIn(f"{order.total_quantity} шт", kwargs["title"])
+        self.assertNotIn(order.order_id, kwargs["title"])
         self.assertEqual(WholesaleOrder.objects.get().b24_lead_id, 777)
 
     def test_bitrix_failure_does_not_break_order(self):

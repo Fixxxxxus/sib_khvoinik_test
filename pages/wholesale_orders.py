@@ -38,6 +38,17 @@ TG_CHAT_ID_ENV = "WHOLESALE_ORDER_TG_CHAT_ID"
 TG_CHAT_ID_FALLBACK_ENVS = ("LANDING_LEAD_TG_CHAT_ID", "CARE_PROMO_ADMIN_CHAT_ID")
 
 B24_TITLE = "Опт: заказ из каталога /opt/"
+
+
+def lead_title(order: WholesaleOrder) -> str:
+    """Название лида по-человечески: кто, сколько позиций, на какую сумму.
+
+    Раньше в названии светился только hex order_id (жалоба Стаса 14.09.2026),
+    в списке лидов это ничего не говорило. Сам order_id остаётся в тексте лида.
+    """
+    who = order.company or order.name or "без имени"
+    total = f"{int(order.total):,}".replace(",", " ")
+    return f"Опт: {who}, {order.total_quantity} шт на {total} ₽"
 # Ответственный за лиды с /opt/ в Битрикс24: Игорь (менеджер опта), решение
 # Стаса 14.09.2026 по просьбе маркетолога. Без него лид падал бы на владельца
 # вебхука. None - оставить ответственного по умолчанию.
@@ -227,7 +238,7 @@ def _send_to_bitrix(order: WholesaleOrder, lines: list[dict], utm: dict) -> None
     """Лид в Б24 составом заказа. Ошибки только логируем: заказ уже в БД."""
     try:
         b24_id = Bitrix24Client().create_lead(
-            title=f"{B24_TITLE} {order.order_id}",
+            title=lead_title(order),
             name=order.company or order.name,
             phone=format_phone(order.phone),
             email=order.email,
