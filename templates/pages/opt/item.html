@@ -101,9 +101,9 @@
       <div class="mt-6">{% include 'partials/opt_progress.html' %}</div>
 
       {% if variants %}
-        <ul class="mt-5 grid gap-3">
+        <ul class="mt-5 grid grid-cols-1 gap-3">
           {% for variant in variants %}
-            <li class="flex items-center gap-3 rounded-xl border border-slate-200 p-3">
+            <li class="flex min-w-0 items-center gap-3 rounded-xl border border-slate-200 p-3">
               <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-slate-100">
                 {% if variant.image %}
                   <img src="{{ variant.image.url }}" alt="{{ variant.title }}" loading="lazy" class="h-full w-full object-cover" />
