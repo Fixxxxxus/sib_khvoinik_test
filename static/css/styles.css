@@ -737,13 +737,19 @@ body.sg-cookie-banner-open .b24-widget-button-wrapper {
 
 /* Кадр галереи на карточке: вертикальное фото кропается по центру, без белых
    полей по бокам. Высота ограничена - на мобиле кадр не занимает весь экран. */
+/* Кадр галереи как в превью маркетолога (sibgazon1/opt-catalog, 15.09.2026):
+   во всю ширину колонки, высота по пропорции снимка, без ограничения. */
 .opt-gallery-frame {
-  height: 60vh;
-  max-height: 26rem;
+  background: #0f172a;
+  line-height: 0;
 }
-@media (min-width: 768px) {
-  .opt-gallery-frame {
-    height: 70vh;
-    max-height: 34rem;
-  }
+.opt-gallery-frame [data-opt-gallery-slide] {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+  object-position: center top;
+}
+.opt-gallery-frame [data-opt-gallery-slide].hidden {
+  display: none;
 }
