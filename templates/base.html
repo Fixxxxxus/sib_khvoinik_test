@@ -47,12 +47,12 @@
     <!-- Lucide icons: self-hosted (unpkg - внешняя зависимость, бывает недоступен из РФ) -->
     <script src="{% static 'js/lucide.min.js' %}?v=1" defer></script>
 
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=23" />
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}?v=24" />
 
     {# Точка расширения head для отдельных страниц: свои meta, шрифты, инлайн-стили. #}
     {% block extra_head %}{% endblock %}
   </head>
-  <body class="bg-white text-slate-900 antialiased">
+  <body class="bg-white text-slate-900 antialiased"{% block body_attrs %}{% endblock %}>
     {% comment %}
       landing_mode: режим посадочной под рекламу. Выключает общий навбар (страница
       ставит свою шапку в блоке header), всплывающее промо и виджет садовых центров -

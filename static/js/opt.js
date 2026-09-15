@@ -14,6 +14,9 @@
   'use strict';
 
   var STORAGE_KEY = 'opt_cart_v2';
+  /* Ключ общей лестницы: всё, что не попало в отдельную группу раздела.
+     Объявлен до readConfig(): тот собирает по нему карту групп. */
+  var DEFAULT_GROUP = 'default';
   var ORDER_URL = '/api/opt/order/';
 
   var config = readConfig();
@@ -21,6 +24,15 @@
   /* Насколько «одинаково близкими» считаем ступени по разным осям.
      Та же константа, что в pages/wholesale_pricing.HINT_TOLERANCE. */
   var HINT_TOLERANCE = 0.1;
+
+  /* Ступени в порядке выгодности: проценты по возрастанию, индивидуальная - последней. */
+  function sortTiers(tiers) {
+    return (Array.isArray(tiers) ? tiers.slice() : []).sort(function (a, b) {
+      var ra = [a.individual ? 1 : 0, a.percent || 0];
+      var rb = [b.individual ? 1 : 0, b.percent || 0];
+      return ra[0] - rb[0] || ra[1] - rb[1];
+    });
+  }
 
   function readConfig() {
     var node = document.getElementById('opt-discount-config');
@@ -32,24 +44,64 @@
       entry_percent: 0,
       individual_text: '',
       individual_price_text: '',
-      min_order: 0
+      min_order: 0,
+      by_section: {}
     };
-    if (!node) return fallback;
-    try {
-      var parsed = JSON.parse(node.textContent || '{}');
-      parsed.tiers = Array.isArray(parsed.tiers) ? parsed.tiers.slice() : [];
-      /* Порядок ступеней: проценты по возрастанию, индивидуальная - последней. */
-      parsed.tiers.sort(function (a, b) {
-        var ra = [a.individual ? 1 : 0, a.percent || 0];
-        var rb = [b.individual ? 1 : 0, b.percent || 0];
-        return ra[0] - rb[0] || ra[1] - rb[1];
-      });
-      parsed.min_order = Number(parsed.min_order || 0);
-      parsed.entry_percent = Number(parsed.entry_percent || 0);
-      return parsed;
-    } catch (e) {
-      return fallback;
+    var parsed = fallback;
+    if (node) {
+      try {
+        parsed = JSON.parse(node.textContent || '{}');
+      } catch (e) {
+        parsed = fallback;
+      }
     }
+    parsed.tiers = sortTiers(parsed.tiers);
+    parsed.min_order = Number(parsed.min_order || 0);
+    parsed.entry_percent = Number(parsed.entry_percent || 0);
+
+    /* Лестницы по группам и карта «слаг раздела -> группа». Ни слагов, ни
+       русских подписей групп фронт наизусть не знает: всё приходит с сервера
+       из pages/wholesale_pricing.tiers_for_frontend(). */
+    parsed.groups = {};
+    parsed.groups[DEFAULT_GROUP] = {
+      key: DEFAULT_GROUP,
+      title: parsed.group_title || '',
+      entry_percent: parsed.entry_percent,
+      tiers: parsed.tiers
+    };
+    parsed.sectionGroups = {};
+    Object.keys(parsed.by_section || {}).forEach(function (slug) {
+      var block = parsed.by_section[slug] || {};
+      var key = block.group || slug;
+      parsed.sectionGroups[slug] = key;
+      parsed.groups[key] = {
+        key: key,
+        title: block.title || '',
+        entry_percent: Number(block.entry_percent || 0),
+        tiers: sortTiers(block.tiers)
+      };
+    });
+    /* Порядок показа: общая лестница первой, отдельные следом. */
+    parsed.groupOrder = [DEFAULT_GROUP].concat(
+      Object.keys(parsed.groups).filter(function (key) { return key !== DEFAULT_GROUP; })
+    );
+    return parsed;
+  }
+
+  /* Лестница скидок строки: деревья отдельно, всё остальное - общая. */
+  function groupKeyForSection(section) {
+    return config.sectionGroups[section] || DEFAULT_GROUP;
+  }
+
+  function configForGroup(groupKey) {
+    return config.groups[groupKey] || config.groups[DEFAULT_GROUP];
+  }
+
+  /* Группа страницы: её полосу прогресса и её подсказку показываем здесь. */
+  function pageGroup() {
+    var body = document.body;
+    var key = body ? body.getAttribute('data-opt-section-group') : '';
+    return config.groups[key] ? key : DEFAULT_GROUP;
   }
 
   function readCart() {
@@ -127,7 +179,9 @@
     return best;
   }
 
-  function totals(lines) {
+  /* Итог по ОДНОЙ группе лестницы: та же логика, что в calculate_totals на сервере. */
+  function totalsForGroup(lines, groupKey) {
+    var cfg = configForGroup(groupKey);
     var subtotal = 0;
     var quantity = 0;
     lines.forEach(function (line) {
@@ -139,7 +193,7 @@
     var individual = false;
     var tierKey = 'retail';
     var state = [];
-    config.tiers.forEach(function (tier) {
+    cfg.tiers.forEach(function (tier) {
       var reached = tierReached(tier, subtotal, quantity);
       var gap = tierGap(tier, subtotal, quantity);
       state.push({
@@ -160,7 +214,7 @@
        Если оси примерно одинаково далеко, ведём к нижней ступени лестницы:
        та же логика, что в pages/wholesale_pricing.next_tier_for. */
     var candidates = [];
-    config.tiers.forEach(function (tier, index) {
+    cfg.tiers.forEach(function (tier, index) {
       if (tierReached(tier, subtotal, quantity)) return;
       if (tier.individual ? individual : Number(tier.percent || 0) <= percent) return;
       var gap = tierGap(tier, subtotal, quantity);
@@ -174,7 +228,8 @@
         remaining: gap.remaining,
         remainingText: gap.remainingText,
         relative: gap.relative,
-        rank: index
+        rank: index,
+        group: groupKey
       });
     });
     var next = null;
@@ -188,6 +243,9 @@
 
     var discount = Math.round(subtotal * percent) / 100;
     return {
+      group: groupKey,
+      title: cfg.title,
+      entryPercent: cfg.entry_percent,
       subtotal: subtotal,
       quantity: quantity,
       percent: percent,
@@ -196,7 +254,52 @@
       tierState: state,
       discount: discount,
       total: subtotal - discount,
-      next: next,
+      next: next
+    };
+  }
+
+  /* Итог заказа: группы считаются независимо, складываются только рубли скидки.
+     Минимальный заказ один на весь заказ, по общему subtotal. */
+  function totals(lines) {
+    var buckets = {};
+    config.groupOrder.forEach(function (key) { buckets[key] = []; });
+    lines.forEach(function (line) {
+      buckets[groupKeyForSection(line.section)].push(line);
+    });
+
+    var byGroup = {};
+    var filled = [];
+    var subtotal = 0;
+    var quantity = 0;
+    var discount = 0;
+    var individual = false;
+    config.groupOrder.forEach(function (key) {
+      var sums = totalsForGroup(buckets[key], key);
+      byGroup[key] = sums;
+      if (!sums.quantity) return;
+      filled.push(sums);
+      subtotal += sums.subtotal;
+      quantity += sums.quantity;
+      discount += sums.discount;
+      if (sums.individual) individual = true;
+    });
+
+    var page = byGroup[pageGroup()];
+    return {
+      subtotal: subtotal,
+      quantity: quantity,
+      /* Процент в шапке корзины - эффективный по заказу: проценты групп не
+         усредняем по дороге, считаем из рублей, как calculate_order_totals. */
+      percent: subtotal > 0 ? Math.round((discount / subtotal) * 100) : 0,
+      individual: individual,
+      byGroup: byGroup,
+      groups: filled,
+      page: page,
+      tierKey: page.tierKey,
+      tierState: page.tierState,
+      discount: discount,
+      total: subtotal - discount,
+      next: page.next,
       minOrderLeft: Math.max(0, config.min_order - subtotal),
       minOrderOk: subtotal >= config.min_order
     };
@@ -204,16 +307,17 @@
 
   /* Подсказка под полосой: те же формулировки, что и на сервере. */
   function progressHint(sums) {
-    if (!config.tiers.length) return '';
-    if (sums.individual) return config.individual_text;
-    if (sums.quantity <= 0 && sums.subtotal <= 0) {
-      return 'Оптовая скидка ' + config.entry_percent + '% включается с первой штуки';
+    var group = sums.page;
+    if (!group || !configForGroup(group.group).tiers.length) return '';
+    if (group.individual) return config.individual_text;
+    if (group.quantity <= 0 && group.subtotal <= 0) {
+      return 'Оптовая скидка ' + group.entryPercent + '% включается с первой штуки';
     }
-    if (!sums.next) return 'Максимальная скидка ' + sums.percent + '%';
-    if (sums.next.individual) {
-      return 'До индивидуальных условий осталось ' + sums.next.remainingText;
+    if (!group.next) return 'Максимальная скидка ' + group.percent + '%';
+    if (group.next.individual) {
+      return 'До индивидуальных условий осталось ' + group.next.remainingText;
     }
-    return 'До скидки ' + sums.next.percent + '% осталось ' + sums.next.remainingText;
+    return 'До скидки ' + group.next.percent + '% осталось ' + group.next.remainingText;
   }
 
   function addQty(data, delta) {
@@ -305,17 +409,22 @@
     });
   }
 
-  /* Полоса прогресса: у каждой ступени своё деление, заливка - по её лучшей оси. */
+  /* Полоса прогресса: у каждой ступени своё деление, заливка - по её лучшей оси.
+     Полоса живёт лестницей СВОЕЙ страницы: на карточке дерева она показывает
+     лестницу деревьев, на витрине и в остальных разделах - общую. */
   function renderProgress(sums) {
+    var group = sums.page;
     document.querySelectorAll('[data-opt-progress-percent]').forEach(function (node) {
-      node.textContent = sums.individual ? config.individual_price_text : 'Скидка ' + sums.percent + '%';
+      node.textContent = group.individual
+        ? config.individual_price_text
+        : 'Скидка ' + group.percent + '%';
     });
     document.querySelectorAll('[data-opt-progress-hint]').forEach(function (node) {
       node.textContent = progressHint(sums);
     });
 
     var fills = {};
-    sums.tierState.forEach(function (row) { fills[row.key] = row.fill; });
+    group.tierState.forEach(function (row) { fills[row.key] = row.fill; });
     document.querySelectorAll('[data-opt-progress-seg]').forEach(function (node) {
       var key = node.getAttribute('data-opt-progress-seg');
       node.style.width = (fills[key] || 0) + '%';
@@ -333,10 +442,11 @@
     if (submit) submit.disabled = !sums.minOrderOk;
   }
 
-  /* Активная ступень лестницы цен на карточке. */
+  /* Активная ступень лестницы цен на карточке: лестница тут одна, своей группы. */
   function renderLadder(sums) {
+    var tierKey = sums.page.tierKey;
     document.querySelectorAll('[data-opt-tier-step]').forEach(function (node) {
-      var active = node.getAttribute('data-tier') === sums.tierKey;
+      var active = node.getAttribute('data-tier') === tierKey;
       node.classList.toggle('bg-brand/10', active);
       node.classList.toggle('ring-1', active);
       node.classList.toggle('ring-brand', active);
@@ -348,14 +458,38 @@
     });
   }
 
-  /* Лента чипов «ступени скидки» на витрине: подсвечиваем взятую ступень. */
+  /* Лента чипов «ступени скидки» на витрине: у каждой лестницы своя взятая
+     ступень, поэтому подсветку ищем по группе чипа, а не по общей корзине. */
   function renderTierChips(sums) {
     document.querySelectorAll('[data-opt-tier-chip]').forEach(function (node) {
-      var active = node.getAttribute('data-opt-tier-chip') === sums.tierKey;
+      var group = sums.byGroup[node.getAttribute('data-opt-tier-group') || DEFAULT_GROUP];
+      var active = !!group && group.quantity > 0 && node.getAttribute('data-opt-tier-chip') === group.tierKey;
       node.classList.toggle('bg-slate-100', !active);
       node.classList.toggle('bg-brand/10', active);
       node.classList.toggle('ring-1', active);
     });
+  }
+
+  /* Разбивка итога по группам: показываем только смешанный заказ, иначе строка
+     дублировала бы общий итог. */
+  function renderCartGroups(sums) {
+    var box = document.querySelector('[data-opt-cart-groups]');
+    if (!box) return;
+    var show = sums.groups.length > 1;
+    box.hidden = !show;
+    if (!show) {
+      box.innerHTML = '';
+      return;
+    }
+    box.innerHTML = sums.groups.map(function (group) {
+      var value = group.individual
+        ? config.individual_price_text
+        : 'скидка ' + group.percent + '% (' + money(group.discount) + ')';
+      return '<div class="flex flex-wrap justify-between gap-x-3">' +
+        '<span class="text-slate-600">' + escapeHtml(group.title) + '</span>' +
+        '<span class="text-slate-800">' + money(group.subtotal) + ', ' + escapeHtml(value) + '</span>' +
+        '</div>';
+    }).join('');
   }
 
   /* Липкая полоса заказа внизу мобильного экрана: живёт, пока в корзине есть позиции. */
@@ -378,6 +512,7 @@
     renderProgress(sums);
     renderLadder(sums);
     renderTierChips(sums);
+    renderCartGroups(sums);
     renderMobileBar(sums);
     syncSteppers(lines);
 
@@ -415,7 +550,10 @@
 
     setText('[data-opt-total-qty]', String(sums.quantity));
     setText('[data-opt-subtotal]', money(sums.subtotal));
-    setText('[data-opt-discount]', sums.percent ? '-' + money(sums.discount) + ' (' + sums.percent + '%)' : 'пока нет');
+    setText(
+      '[data-opt-discount]',
+      sums.discount ? '-' + money(sums.discount) + ' (' + sums.percent + '%)' : 'пока нет'
+    );
     setText('[data-opt-total]', money(sums.total));
     var note = document.querySelector('[data-opt-individual-note]');
     if (note) {

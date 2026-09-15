@@ -1097,6 +1097,17 @@ class WholesaleItem(models.Model):
 
         return wholesale_pricing.group_key_for_section(self.section.slug if self.section_id else "")
 
+    @property
+    def entry_percent(self) -> int:
+        """Входная скидка своей группы: у деревьев 5%, у остальных 20%.
+
+        Нужна плитке: на витрине рядом стоят карточки разных групп, и общий
+        discount_entry_percent страницы для них врёт.
+        """
+        from . import wholesale_pricing
+
+        return wholesale_pricing.entry_percent(self.discount_group)
+
     def price_ladder(self) -> list[dict]:
         """Ценовая лестница карточки. Считается из розничной цены и сетки скидок."""
         from . import wholesale_pricing

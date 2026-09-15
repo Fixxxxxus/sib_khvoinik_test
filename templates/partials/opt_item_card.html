@@ -46,7 +46,11 @@
     {% endif %}
     <div class="mt-auto">
       <p class="text-lg font-semibold text-slate-900">{{ item.wholesale_price_text }} ₽<span class="text-sm font-normal text-slate-500">/{{ item.unit }}</span></p>
-      <p class="text-xs text-slate-500">Опт с первой позиции. Розница {{ item.price_text }} ₽</p>
+      {% comment %}
+        Процент берём у самой позиции, а не у страницы: на витрине рядом стоят
+        карточки разных групп, и общий discount_entry_percent для них врёт.
+      {% endcomment %}
+      <p class="text-xs text-slate-500">Цена при входной скидке {{ item.entry_percent }}%. Розница {{ item.price_text }} ₽</p>
     </div>
     {% if item.active_variants %}
       <a href="{{ item.get_absolute_url }}"

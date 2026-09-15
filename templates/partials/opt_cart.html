@@ -17,6 +17,13 @@
       <p data-opt-cart-empty class="text-sm text-slate-600">Корзина пуста. Добавьте позиции из каталога.</p>
       <ul data-opt-cart-lines class="grid gap-3"></ul>
 
+      {% comment %}
+        Разбивка по группам: деревья считаются отдельно от остального, и в
+        смешанном заказе один общий процент ничего не объясняет. Блок рисует
+        static/js/opt.js и показывает только тогда, когда групп в корзине две.
+      {% endcomment %}
+      <div data-opt-cart-groups hidden class="mt-5 grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 text-sm"></div>
+
       <div class="mt-5">{% include 'partials/opt_progress.html' %}</div>
 
       <dl data-opt-cart-totals hidden class="mt-5 grid gap-2 border-t border-slate-200 pt-4 text-sm">

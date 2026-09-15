@@ -256,9 +256,11 @@ class OptShellTest(TestCase):
         grid[1] = dict(grid[1], min_quantity=42)
         with patch.object(wholesale_pricing, "DISCOUNT_TIERS", tuple(grid)):
             html = self.client.get("/opt/").content.decode()
-            # Проверяем именно чип, а не конфиг скидок в <script>.
-            self.assertIn(">От 42 шт<", html)
-            self.assertNotIn(">От 30 шт<", html)
+            # Смотрим только общую лестницу: у деревьев своя сетка, там «От 30 шт»
+            # остаётся на месте. Проверяем чип, а не конфиг скидок в <script>.
+            common = html.split('data-opt-tier-group="derevya"')[0]
+            self.assertIn(">От 42 шт<", common)
+            self.assertNotIn(">От 30 шт<", common)
 
     def test_list_tile_crops_the_photo_and_card_keeps_it_whole(self):
         with patch.object(
@@ -269,7 +271,8 @@ class OptShellTest(TestCase):
         self.assertIn("object-cover object-center", listing)
         self.assertNotIn("bg-slate-100 p-2", listing)
 
-        # Карточка позиции: крупный кадр целиком, горшок не срезается.
+        # Карточка позиции: кадр кропается по центру, без белых полей по бокам
+        # (просьба маркетолога 15.09.2026), высоту держит .opt-gallery-frame.
         photo = SimpleNamespace(image=SimpleNamespace(url="/media/test.webp"), alt="Липа")
         # Подменяем настоящей функцией, а не Mock: шаблонизатор Django видит у
         # мока атрибут do_not_call_in_templates и не вызывает его.
@@ -277,8 +280,8 @@ class OptShellTest(TestCase):
             card = self.client.get(
                 f"/opt/{self.section.slug}/{self.tree.slug}/"
             ).content.decode()
-        self.assertIn("object-contain", card)
-        self.assertNotIn("object-cover object-center", card.split("Ещё из раздела")[0])
+        self.assertNotIn("object-contain", card)
+        self.assertIn("opt-gallery-frame", card)
 
     def test_mobile_bar_is_rendered_hidden_and_opens_the_cart(self):
         for url in self.urls:
@@ -716,11 +719,26 @@ class OptIndexCatalogTest(TestCase):
         self.assertIn("/opt/kustarniki-test/", html)
 
     def test_index_has_no_section_chips(self):
-        """Чипы-якоря над группами убраны по просьбе маркетолога 14.09.2026."""
+        """Чипы-якоря над группами убраны 14.09.2026, но ссылки живут в шапке.
+
+        15.09.2026 маркетолог попросил вернуть разделы текстом рядом с логотипом:
+        якоря переехали в шапку, в теле витрины их по-прежнему нет.
+        """
         html = self.client.get("/opt/").content.decode()
-        self.assertNotIn("#section-kustarniki-test", html)
-        self.assertNotIn('aria-label="Разделы каталога"', html)
+        header, _, body = html.partition("</header>")
+        self.assertNotIn("#section-kustarniki-test", body)
+        self.assertIn("#section-kustarniki-test", header)
         self.assertIn('id="catalog"', html)
+
+    def test_header_links_to_sections(self):
+        """Разделы в шапке: на витрине якоря, на остальных страницах - путь на витрину."""
+        index = self.client.get("/opt/").content.decode()
+        self.assertIn('aria-label="Разделы оптового каталога"', index)
+        self.assertIn('href="#section-derevya-test"', index)
+        self.assertIn(">Деревья<", index)
+
+        inner = self.client.get("/opt/derevya-test/").content.decode()
+        self.assertIn('href="/opt/#section-derevya-test"', inner)
 
 
 class SectionDiscountGroupsTest(TestCase):
@@ -800,7 +818,12 @@ class SectionDiscountGroupsTest(TestCase):
         self.assertEqual(config["entry_percent"], 20)
         block = config["by_section"]["derevya"]
         self.assertEqual(block["entry_percent"], 5)
-        self.assertEqual(set(block), {"entry_percent", "tiers"})
+        # Группа и её название едут рядом с лестницей: фронт не знает наизусть
+        # ни слаги разделов, ни русские подписи групп (15.09.2026).
+        self.assertEqual(set(block), {"group", "title", "entry_percent", "tiers"})
+        self.assertEqual(block["group"], "derevya")
+        self.assertEqual(block["title"], "Деревья")
+        self.assertEqual(config["group_title"], "Кустарники и хвойные")
         self.assertEqual([tier["key"] for tier in block["tiers"]],
                          [tier["key"] for tier in config["tiers"]])
         self.assertEqual([tier["percent"] for tier in block["tiers"]], [5, 10, 15, 20, None])
@@ -847,6 +870,60 @@ class SectionLadderPagesTest(TestCase):
         self.assertTrue(ladders[1]["chips"])
         self.assertTrue(ladders[1]["tiers"])
         self.assertIn('"by_section"', ctx["discount_config_json"])
+
+    def test_storefront_shows_both_ladders(self):
+        """Витрина рисует обе лестницы чипами: свои проценты у каждой группы."""
+        html = self.client.get("/opt/").content.decode()
+        self.assertIn('data-opt-tier-group="default"', html)
+        self.assertIn('data-opt-tier-group="derevya"', html)
+        self.assertIn("Кустарники и хвойные", html)
+        self.assertIn("Входные 20% уже с первой позиции.", html)
+        self.assertIn("Входные 5% уже с первой позиции.", html)
+        common, _, trees = html.partition('data-opt-tier-group="derevya"')
+        self.assertIn(">-25%<", common)
+        self.assertIn(">-10%<", trees)
+        # Сокращения «инд.» на чипах нет: маркетолог просил слово целиком.
+        self.assertIn(">индивидуально<", html)
+
+    def test_storefront_h1_carries_both_entry_discounts(self):
+        """H1 витрины собирается из сетки, а не пишется руками."""
+        html = self.client.get("/opt/").content.decode()
+        self.assertIn("Опт с первой штуки. Кустарники и хвойные −20%, деревья −5%", html)
+
+    def test_tree_card_renders_its_own_ladder(self):
+        """Карточка дерева отдаёт лестницу 5 / 10 / 15 / 20 и группу на body."""
+        html = self.client.get(f"/opt/{self.trees.slug}/{self.maple.slug}/").content.decode()
+        self.assertIn('data-opt-section-group="derevya"', html)
+        # Розница 1000 ₽: ступени идут 950 / 900 / 850 / 800 и «индивидуально».
+        for price in ("950", "900", "850", "800"):
+            with self.subTest(price=price):
+                self.assertIn(f">{price} ₽<", html)
+        # Общая лестница (650 ₽ = 1000 минус 35%) на дерево не заезжает.
+        self.assertNotIn(">650 ₽<", html)
+
+        bush = self.client.get(f"/opt/{self.bushes.slug}/{self.spirea.slug}/").content.decode()
+        self.assertIn('data-opt-section-group="default"', bush)
+        self.assertIn(">800 ₽<", bush)
+
+    def test_tree_tile_shows_its_own_entry_discount(self):
+        """Плитка дерева считает цену по своей группе: 1000 минус 5%."""
+        html = self.client.get(f"/opt/{self.trees.slug}/").content.decode()
+        self.assertIn("950 ₽", html)
+        self.assertIn("Цена при входной скидке 5%", html)
+        bushes = self.client.get(f"/opt/{self.bushes.slug}/").content.decode()
+        self.assertIn("Цена при входной скидке 20%", bushes)
+
+    def test_back_bar_lives_on_section_and_card_only(self):
+        """Липкая плашка «К каталогу» есть у раздела и карточки, у витрины её нет."""
+        for url in (f"/opt/{self.trees.slug}/", f"/opt/{self.trees.slug}/{self.maple.slug}/"):
+            with self.subTest(url=url):
+                html = self.client.get(url).content.decode()
+                self.assertIn("opt-back-bar", html)
+                self.assertIn("К каталогу", html)
+                # Крошки без слэшей-разделителей, первая полужирная.
+                self.assertIn("opt-crumb", html)
+                self.assertNotIn("<span>/</span>", html)
+        self.assertNotIn("opt-back-bar", self.client.get("/opt/").content.decode())
 
 
 class MixedOrderApiTest(TestCase):

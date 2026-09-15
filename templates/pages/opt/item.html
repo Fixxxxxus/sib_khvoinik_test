@@ -19,18 +19,24 @@
         Пустая галерея - показываем старое поле image как обложку-запаску.
       {% endcomment %}
       <div data-opt-gallery>
-        <div class="relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100" data-opt-gallery-frame>
+        {% comment %}
+          Кадр кропается по центру и занимает рамку целиком: у вертикальных
+          снимков раньше по бокам оставались белые поля (просьба маркетолога
+          15.09.2026). Высота рамки ограничена (.opt-gallery-frame в styles.css):
+          на мобиле кадр не разъезжается на весь экран, как в его превью.
+        {% endcomment %}
+        <div class="opt-gallery-frame relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100" data-opt-gallery-frame>
           {% if gallery %}
             {% for photo in gallery %}
               <img src="{{ photo.image.url }}" alt="{{ photo.alt }}"
                    {% if not forloop.first %}loading="lazy"{% endif %}
                    data-opt-gallery-slide data-index="{{ forloop.counter0 }}"
-                   class="mx-auto max-h-[70vh] w-full object-contain{% if not forloop.first %} hidden{% endif %}" />
+                   class="h-full w-full object-cover object-center{% if not forloop.first %} hidden{% endif %}" />
             {% endfor %}
           {% elif item.image %}
-            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="mx-auto max-h-[70vh] w-full object-contain" />
+            <img src="{{ item.image.url }}" alt="{{ item.title }}" class="h-full w-full object-cover object-center" />
           {% else %}
-            <div class="flex aspect-[4/3] items-center justify-center text-sm text-slate-400">фото готовим</div>
+            <div class="flex h-full items-center justify-center text-sm text-slate-400">фото готовим</div>
           {% endif %}
         </div>
 
@@ -166,7 +172,7 @@
   {% if same_section %}
     <section class="mt-12">
       <h2 class="text-xl font-semibold text-slate-900">Ещё из раздела «{{ section.title }}»</h2>
-      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="opt-product-grid mt-4">
         {% for item in same_section %}{% include 'partials/opt_item_card.html' %}{% endfor %}
       </div>
     </section>

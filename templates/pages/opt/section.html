@@ -6,7 +6,7 @@
   <p class="mt-2 text-sm text-slate-500">Позиций в разделе: {{ items|length }}. Цены оптовые, за {{ items.0.unit|default:'шт' }}.</p>
 
   {% if items %}
-    <div class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="opt-product-grid mt-6">
       {% for item in items %}{% include 'partials/opt_item_card.html' %}{% endfor %}
     </div>
   {% else %}

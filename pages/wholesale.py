@@ -48,7 +48,25 @@ LOW_STOCK_THRESHOLD = 200
 # просьбе от 13.09.2026). Общий кадр питомника лежит рядом в opt-hero-pitomnik.webp.
 OPT_HERO_IMAGE = "media/images/opt/opt-hero-sosna-mugus.webp"
 OPT_HERO_KICKER = OPT_BRAND
-OPT_HERO_TITLE = "Опт с первой штуки. Минус 20%"
+
+
+def hero_title() -> str:
+    """H1 витрины: обе входные скидки прямо в заголовке.
+
+    Проценты берутся из сетки скидок, а не пишутся руками: поменяли лестницу -
+    заголовок поехал следом. Первая группа идёт с большой буквы, остальные
+    перечисляются через запятую строчными.
+    """
+    parts = []
+    for key in wholesale_pricing.group_keys():
+        title = wholesale_pricing.group_title(key)
+        if parts:
+            title = title.lower()
+        parts.append(f"{title} −{wholesale_pricing.entry_percent(key)}%")
+    return "Опт с первой штуки. " + ", ".join(parts)
+
+
+OPT_HERO_TITLE = hero_title()
 OPT_HERO_LEAD = (
     "Актуальный план для садовых центров и подрядчиков: деревья, кустарники, "
     "хвойные. Соберите заказ и отправьте менеджеру."
@@ -65,6 +83,10 @@ def _base_context(request: HttpRequest, group: str | None = None) -> dict:
     group = group or wholesale_pricing.DEFAULT_GROUP
     return {
         "brand": OPT_BRAND,
+        # Ссылки на разделы в шапке: строятся из активных разделов, а не
+        # прибиты к слагам. На витрине это якоря, на остальных страницах -
+        # переход на витрину к нужной группе.
+        "nav_sections": _nav_sections(request),
         "opt_phone": OPT_PHONE,
         "opt_phone_href": OPT_PHONE_HREF,
         "opt_max_url": OPT_MAX_URL,
@@ -94,6 +116,21 @@ def _base_context(request: HttpRequest, group: str | None = None) -> dict:
         "progress_hint_default": wholesale_pricing.progress_hint(Decimal(0), 0, group),
         "min_order": wholesale_pricing.min_order_for_display(),
     }
+
+
+def _nav_sections(request: HttpRequest) -> list[dict]:
+    """Разделы для шапки: заголовок и ссылка на якорь группы на витрине."""
+    on_index = request.path == "/opt/"
+    rows = []
+    sections = (
+        WholesaleSection.objects.filter(is_active=True, items__is_active=True)
+        .only("title", "slug")
+        .distinct()
+    )
+    for section in sections:
+        anchor = f"#section-{section.slug}"
+        rows.append({"title": section.title, "href": anchor if on_index else f"/opt/{anchor}"})
+    return rows
 
 
 def _discount_ladders() -> list[dict]:
@@ -167,7 +204,7 @@ def opt_index(request: HttpRequest) -> HttpResponse:
             "opt_intro": OPT_INTRO,
             "hero_image": OPT_HERO_IMAGE,
             "hero_kicker": OPT_HERO_KICKER,
-            "hero_title": OPT_HERO_TITLE,
+            "hero_title": hero_title(),
             "hero_lead": OPT_HERO_LEAD,
             "sections": sections,
             "highlighted": highlighted,

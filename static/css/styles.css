@@ -529,3 +529,221 @@ a.shadow-glow:hover {
 body.sg-cookie-banner-open .b24-widget-button-wrapper {
   bottom: calc(var(--sg-cookie-banner-h, 0px) + 16px) !important;
 }
+
+/* ==========================================================================
+   Скрытый оптовый каталог /opt/: правки маркетолога от 15.09.2026.
+   Всё, что ниже, живёт только внутри /opt/ и на публичные страницы не влияет.
+   ========================================================================== */
+
+/* Две лестницы скидок: пять чипов строго в один ряд.
+   Последняя колонка шире остальных: подпись «От 100 шт или чек 200 000 ₽
+   индивидуально» в равную пятую часть не влезала и ломалась на две строки. */
+.opt-tier-chips {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.7fr);
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.opt-tier-chips > li {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  align-content: center;
+  gap: 0.25rem 0.375rem;
+  width: 100%;
+  min-width: 0;
+  min-height: 2.75rem;
+  box-sizing: border-box;
+  text-align: center;
+  line-height: 1.2;
+}
+/* Размер шрифта у всех чипов одинаковый: разный рвал ряд по высоте.
+   Заметность ступени держится цветом, он приходит классами из шаблона. */
+.opt-tier-chips > li span,
+.opt-tier-chips > li .opt-tier-pct {
+  font-size: 0.75rem;
+  line-height: 1.2;
+}
+.opt-tier-chips > li .opt-tier-pct {
+  font-weight: 700;
+}
+@media (max-width: 767px) {
+  .opt-tier-chips {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding-bottom: 0.25rem;
+  }
+  .opt-tier-chips > li {
+    flex: 0 0 auto;
+    width: auto;
+    white-space: nowrap;
+  }
+}
+
+/* Якоря разделов на витрине: под липкой шапкой, чтобы заголовок не уезжал под неё. */
+.opt-anchor {
+  scroll-margin-top: 8.5rem;
+}
+@media (min-width: 768px) {
+  .opt-anchor {
+    scroll-margin-top: 6rem;
+  }
+}
+
+/* Шапка каталога: на мобиле лого и действия в один ряд, разделы строкой ниже.
+   На 390px телефон прячется, MAX и «Корзина» ужимаются - иначе подпись «Опт»
+   рядом с лого перекрывается кнопками. */
+.opt-header-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "logo actions"
+    "nav nav";
+  align-items: center;
+  column-gap: 0.5rem;
+  row-gap: 0.45rem;
+}
+.opt-header-logo {
+  grid-area: logo;
+  min-width: 0;
+}
+.opt-header-nav {
+  grid-area: nav;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.95rem;
+  min-width: 0;
+}
+.opt-header-actions {
+  grid-area: actions;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-shrink: 0;
+}
+.opt-header-nav a {
+  color: #16301a;
+  font-size: 0.8rem;
+  font-weight: 600;
+  line-height: 1.2;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.opt-header-nav a:hover {
+  color: #2e7d32;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+@media (max-width: 639px) {
+  .opt-header-actions a[href*="max.ru"],
+  .opt-header-actions [data-opt-cart-open] {
+    padding-left: 0.6rem;
+    padding-right: 0.6rem;
+    font-size: 0.75rem;
+  }
+}
+@media (min-width: 768px) {
+  .opt-header-inner {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    grid-template-areas: "logo nav actions";
+    column-gap: 1.1rem;
+    row-gap: 0;
+  }
+  .opt-header-nav {
+    gap: 0.7rem 1.25rem;
+  }
+  .opt-header-nav a {
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .opt-header-actions {
+    gap: 0.75rem;
+  }
+}
+
+/* Сетка карточек каталога: мобила - одна колонка во всю ширину, планшет - две,
+   десктоп - четыре. */
+.opt-product-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1rem;
+}
+.opt-product-grid > article {
+  min-width: 0;
+  width: 100%;
+}
+@media (min-width: 768px) {
+  .opt-product-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .opt-product-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+/* Липкая плашка «К каталогу» на разделе и карточке: идёт сразу под шапкой. */
+.opt-back-bar {
+  position: sticky;
+  top: 5.6rem;
+  z-index: 35;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  padding: 0.55rem 1rem;
+  border-bottom: 1px solid #e2e8f0;
+  background: rgba(255, 255, 255, 0.97);
+  backdrop-filter: blur(8px);
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.06);
+}
+.opt-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  min-height: 2.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.7rem;
+  background: #16301a;
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-decoration: none;
+  white-space: nowrap;
+  box-shadow: 0 2px 8px rgba(22, 48, 26, 0.25);
+}
+.opt-back-btn:hover {
+  background: #1f4a28;
+  color: #fff;
+}
+.opt-back-btn__arrow {
+  font-size: 1.1rem;
+  line-height: 1;
+}
+@media (min-width: 768px) {
+  .opt-back-bar {
+    top: 4.5rem;
+    padding-left: max(1rem, calc((100% - 72rem) / 2 + 1rem));
+    padding-right: max(1rem, calc((100% - 72rem) / 2 + 1rem));
+  }
+}
+
+/* Кадр галереи на карточке: вертикальное фото кропается по центру, без белых
+   полей по бокам. Высота ограничена - на мобиле кадр не занимает весь экран. */
+.opt-gallery-frame {
+  height: 60vh;
+  max-height: 26rem;
+}
+@media (min-width: 768px) {
+  .opt-gallery-frame {
+    height: 70vh;
+    max-height: 34rem;
+  }
+}

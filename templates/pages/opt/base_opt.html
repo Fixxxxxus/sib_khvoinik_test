@@ -14,20 +14,37 @@
 
 {% block title %}{{ seo_title|default:'Оптовый каталог' }}{% endblock %}
 
+{% comment %}
+  Группа лестницы скидок висит на <body>: JS по ней понимает, чью полосу
+  прогресса и чью подсказку рисовать на этой странице. Витрина - default.
+{% endcomment %}
+{% block body_attrs %} data-opt-section-group="{{ section_group }}"{% endblock %}
+
 {% block extra_head %}
   <script id="opt-discount-config" type="application/json">{{ discount_config_json|safe }}</script>
-  <script src="{% static 'js/opt.js' %}?v=4" defer></script>
+  <script src="{% static 'js/opt.js' %}?v=5" defer></script>
 {% endblock %}
 
 {% block header %}
+  {% comment %}
+    Шапка: логотип, разделы каталога текстом и действия. На десктопе всё в одну
+    строку, на мобиле разделы уезжают второй строкой под логотип, телефон
+    прячется, а MAX и «Корзина» ужимаются - иначе подпись «Опт» на 390px
+    перекрывается кнопками. Раскладку держит .opt-header-inner в styles.css.
+  {% endcomment %}
   <header class="sticky top-0 z-40 border-b border-slate-200 bg-white/95 backdrop-blur">
-    <div class="mx-auto flex max-w-6xl items-center gap-3 px-4 py-3 sm:gap-4">
-      <a href="/opt/" class="flex min-w-0 items-center gap-3">
+    <div class="opt-header-inner mx-auto max-w-6xl px-4 py-3">
+      <a href="/opt/" class="opt-header-logo flex min-w-0 items-center gap-3">
         <img src="{% static 'media/branding/logo-main.webp' %}" alt="{{ brand }}"
              width="168" height="48" class="h-8 w-auto shrink-0 sm:h-11" />
         <span class="border-l border-slate-300 pl-2.5 text-xs font-bold uppercase tracking-wide text-slate-900 sm:pl-3 sm:text-sm">Опт</span>
       </a>
-      <div class="ml-auto flex shrink-0 items-center gap-3">
+      {% if nav_sections %}
+        <nav class="opt-header-nav" aria-label="Разделы оптового каталога">
+          {% for nav in nav_sections %}<a href="{{ nav.href }}">{{ nav.title }}</a>{% endfor %}
+        </nav>
+      {% endif %}
+      <div class="opt-header-actions">
         <a href="tel:{{ opt_phone_href }}" class="hidden text-sm font-semibold text-slate-700 hover:text-brand sm:block">{{ opt_phone }}</a>
         {% if opt_max_url %}
           <a href="{{ opt_max_url }}" target="_blank" rel="noopener noreferrer"
@@ -46,17 +63,24 @@
 {% endblock %}
 
 {% block content %}
+  {% comment %}
+    Липкая плашка «К каталогу» под шапкой: её ставят раздел и карточка, витрине
+    возвращаться некуда. Крошки живут в той же плашке, без слэшей-разделителей:
+    первая крошка полужирная, остальные обычные.
+  {% endcomment %}
+  {% if breadcrumbs %}
+    <div class="opt-back-bar" data-opt-back-bar>
+      <a href="/opt/" class="opt-back-btn"><span class="opt-back-btn__arrow" aria-hidden="true">←</span> К каталогу</a>
+      <nav class="opt-crumb flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-slate-500" aria-label="Хлебные крошки">
+        {% for crumb in breadcrumbs %}
+          <a href="{{ crumb.1 }}" class="{% if forloop.first %}font-semibold text-slate-900{% endif %} hover:text-brand">{{ crumb.0 }}</a>
+        {% endfor %}
+      </nav>
+    </div>
+  {% endif %}
   {# Полноширинные блоки страницы (hero витрины) идут до контейнера. #}
   {% block opt_full %}{% endblock %}
   <div class="mx-auto max-w-6xl px-4 py-8">
-    {% if breadcrumbs %}
-      <nav class="mb-6 flex flex-wrap items-center gap-2 text-sm text-slate-500">
-        {% for crumb in breadcrumbs %}
-          <a href="{{ crumb.1 }}" class="hover:text-brand">{{ crumb.0 }}</a>
-          <span>/</span>
-        {% endfor %}
-      </nav>
-    {% endif %}
     {% block opt_content %}{% endblock %}
   </div>
   {% include 'partials/opt_cart.html' %}

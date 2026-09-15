@@ -671,6 +671,10 @@ def tiers_for_frontend() -> dict:
     """
     by_section = {
         section_slug: {
+            # Ключ группы и её название рядом с лестницей: фронту не нужно
+            # знать наизусть ни слаги разделов, ни русские подписи групп.
+            "group": group,
+            "title": group_title(group),
             "entry_percent": entry_percent(group),
             "tiers": tiers_for_json(group),
         }
@@ -678,6 +682,8 @@ def tiers_for_frontend() -> dict:
     }
     return {
         "basis": DISCOUNT_BASIS,
+        "group": DEFAULT_GROUP,
+        "group_title": group_title(DEFAULT_GROUP),
         "approved": DISCOUNT_TIERS_APPROVED,
         "disclaimer": DISCOUNT_DISCLAIMER,
         "entry_percent": entry_percent(),

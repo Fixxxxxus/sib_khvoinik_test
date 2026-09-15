@@ -45,7 +45,7 @@
   {% if highlighted %}
     <section class="mt-10">
       <h2 class="text-xl font-semibold text-slate-900">Двигаем в первую очередь</h2>
-      <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div class="opt-product-grid mt-4">
         {% for item in highlighted %}{% include 'partials/opt_item_card.html' %}{% endfor %}
       </div>
     </section>
@@ -61,8 +61,8 @@
   {% endcomment %}
   {% if sections %}
     {% for block in sections %}
-      <section class="mt-10 scroll-mt-24" id="section-{{ block.section.slug }}">
-        {% if forloop.first %}<span id="catalog" class="block scroll-mt-24"></span>{% endif %}
+      <section class="opt-anchor mt-10" id="section-{{ block.section.slug }}">
+        {% if forloop.first %}<span id="catalog" class="opt-anchor block"></span>{% endif %}
         <div class="flex flex-wrap items-baseline justify-between gap-2">
           <h2 class="text-xl font-semibold text-slate-900">{{ block.section.title }}</h2>
           <a href="{{ block.section.get_absolute_url }}" class="text-sm text-brand hover:underline">
@@ -70,7 +70,7 @@
           </a>
         </div>
         {% if block.section.intro %}<p class="mt-1 text-sm text-slate-600">{{ block.section.intro }}</p>{% endif %}
-        <div class="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <div class="opt-product-grid mt-4">
           {% for item in block.items %}{% include 'partials/opt_item_card.html' %}{% endfor %}
         </div>
       </section>
