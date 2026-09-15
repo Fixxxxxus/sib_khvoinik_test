@@ -3,17 +3,23 @@
 Единственное место, где живут пороги и проценты. Логика расчёта их не знает
 в лицо: она берёт корзину (сумма в рублях и количество единиц) и идёт по
 таблице снизу вверх. Заказчику, чтобы поменять скидки, достаточно править
-DISCOUNT_TIERS - трогать views, API и фронт не нужно.
+DISCOUNT_LADDERS - трогать views, API и фронт не нужно.
 
-Сетка гибридная: часть ступеней меряется штуками, часть чеком. Ступень
-считается взятой, если выполнена ЛЮБАЯ из её осей, а применяется та ступень,
-которая выгоднее клиенту. Одной оси (старая константа DISCOUNT_BASIS) больше
-нет: у заказчика ступени смешанные.
+Сетка гибридная по двум осям: часть ступеней меряется штуками, часть чеком.
+Ступень считается взятой, если выполнена ЛЮБАЯ из её осей, а применяется та
+ступень, которая выгоднее клиенту. Одной оси (старая константа DISCOUNT_BASIS)
+больше нет: у заказчика ступени смешанные.
 
-Источник: файл заказчика top20.xlsx, лист «Лист2», блок «Уровни скидок», плюс
-уточнения заказчика от 10.09.2026 (см. DISCOUNT_TIERS_SOURCE ниже). Ступени по
-количеству меряются ШТУКАМИ, а не наименованиями: 30 кустов одной культуры уже
-дают 25%, разнообразие не требуется.
+Сетка гибридная и по разделам: у деревьев (раздел derevya) своя лестница,
+у кустарников и хвойных общая. Группы считаются НЕЗАВИСИМО: объём деревьев не
+смешивается с остальным, у каждой группы своя сумма, своё количество и своя
+ступень. Минимальный заказ при этом один на весь заказ, по общему subtotal.
+
+Источник общей сетки: файл заказчика top20.xlsx, лист «Лист2», блок «Уровни
+скидок», плюс уточнения заказчика от 10.09.2026 (см. DISCOUNT_TIERS_SOURCE).
+Источник отдельной сетки деревьев: 15.09.2026, Саша (маркетолог), превью
+sibgazon1/opt-catalog. Ступени по количеству меряются ШТУКАМИ, а не
+наименованиями: 30 кустов одной культуры уже дают 25%, разнообразие не нужно.
 """
 
 from __future__ import annotations
@@ -99,6 +105,99 @@ DISCOUNT_TIERS: tuple[dict, ...] = (
     },
 )
 
+# Отдельная лестница раздела «Деревья» (slug derevya). Проценты ниже общих:
+# маржа по деревьям тоньше. Источник: 15.09.2026, Саша (маркетолог), превью
+# sibgazon1/opt-catalog. Пороги те же, что в общей сетке, меняются только
+# проценты - так клиенту понятнее, а подсказки работают одинаково.
+DEREVYA_TIERS: tuple[dict, ...] = (
+    {
+        "key": "entry",
+        "label": "Входная скидка",
+        "short": "старт",
+        "percent": 5,
+        "min_quantity": 1,
+        "min_amount": None,
+        "individual": False,
+    },
+    {
+        "key": "q30",
+        "label": "От 30 штук",
+        "short": "30 шт",
+        "percent": 10,
+        "min_quantity": 30,
+        "min_amount": None,
+        "individual": False,
+    },
+    {
+        "key": "q50",
+        "label": "От 50 штук",
+        "short": "50 шт",
+        "percent": 15,
+        "min_quantity": 50,
+        "min_amount": None,
+        "individual": False,
+    },
+    {
+        "key": "a100k",
+        "label": "Чек от 100 000 ₽",
+        "short": "100к ₽",
+        "percent": 20,
+        "min_quantity": None,
+        "min_amount": 100_000,
+        "individual": False,
+    },
+    {
+        "key": "individual",
+        "label": "От 100 штук или чек от 200 000 ₽",
+        "short": "инд.",
+        "percent": None,
+        "min_quantity": INDIVIDUAL_TIER_MIN_QUANTITY,
+        "min_amount": 200_000,
+        "individual": True,
+    },
+)
+
+# --- группы лестниц ---------------------------------------------------------
+
+# Ключ группы по умолчанию: всё, что не деревья.
+DEFAULT_GROUP = "default"
+DEREVYA_GROUP = "derevya"
+
+# Слаги разделов, у которых своя лестница. Раздел один, но список оставлен
+# словарём: появится вторая группа - править только здесь.
+SECTION_GROUPS: dict[str, str] = {"derevya": DEREVYA_GROUP}
+
+# Все лестницы в одном месте. Общую читаем через DISCOUNT_TIERS (её правит
+# заказчик и патчат тесты), поэтому в _ladder() для default берём модульную
+# переменную, а не слепок из этого словаря.
+DISCOUNT_LADDERS: dict[str, tuple[dict, ...]] = {
+    DEFAULT_GROUP: DISCOUNT_TIERS,
+    DEREVYA_GROUP: DEREVYA_TIERS,
+}
+
+# Как называть группу человеку: в уведомлении менеджеру и в шапке лестницы.
+GROUP_TITLES: dict[str, str] = {
+    DEFAULT_GROUP: "Кустарники и хвойные",
+    DEREVYA_GROUP: "Деревья",
+}
+
+DEREVYA_TIERS_SOURCE = "15.09.2026, Саша (маркетолог), превью sibgazon1/opt-catalog"
+
+
+def group_key_for_section(section_slug: str | None) -> str:
+    """Ключ группы лестницы по слагу раздела: деревья отдельно, остальное вместе."""
+    return SECTION_GROUPS.get(str(section_slug or "").strip(), DEFAULT_GROUP)
+
+
+def group_title(group: str = DEFAULT_GROUP) -> str:
+    return GROUP_TITLES.get(group, GROUP_TITLES[DEFAULT_GROUP])
+
+
+def group_keys() -> list[str]:
+    """Группы в порядке показа: сначала общая, потом деревья."""
+    return [DEFAULT_GROUP, DEREVYA_GROUP]
+
+
 # Текст вместо процента на индивидуальной ступени.
 INDIVIDUAL_TIER_TEXT = "Дальше считаем индивидуально, менеджер подтвердит цену"
 INDIVIDUAL_TIER_PRICE_TEXT = "индивидуально"
@@ -141,8 +240,15 @@ def _rank(tier: dict) -> tuple[int, int]:
     return (1 if tier.get("individual") else 0, tier.get("percent") or 0)
 
 
-def _sorted_tiers() -> list[dict]:
-    return sorted(DISCOUNT_TIERS, key=_rank)
+def _ladder(group: str = DEFAULT_GROUP) -> tuple[dict, ...]:
+    """Ступени нужной группы. Общая читается через DISCOUNT_TIERS: её патчат."""
+    if not group or group == DEFAULT_GROUP:
+        return DISCOUNT_TIERS
+    return DISCOUNT_LADDERS.get(group, DISCOUNT_TIERS)
+
+
+def _sorted_tiers(group: str = DEFAULT_GROUP) -> list[dict]:
+    return sorted(_ladder(group), key=_rank)
 
 
 def tier_axes(tier: dict) -> list[tuple[str, int]]:
@@ -172,47 +278,58 @@ def tier_label(tier: dict) -> str:
 # --- расчёт -----------------------------------------------------------------
 
 
-def reached_tiers(subtotal: Decimal, total_quantity: int) -> list[dict]:
+def reached_tiers(subtotal: Decimal, total_quantity: int, group: str = DEFAULT_GROUP) -> list[dict]:
     return [
         tier
-        for tier in _sorted_tiers()
+        for tier in _sorted_tiers(group)
         if tier_reached(tier, subtotal, total_quantity)
     ]
 
 
-def current_tier(subtotal: Decimal, total_quantity: int) -> dict | None:
+def current_tier(subtotal: Decimal, total_quantity: int, group: str = DEFAULT_GROUP) -> dict | None:
     """Самая выгодная взятая ступень: сравниваем обе оси, берём лучшее для клиента."""
-    reached = reached_tiers(subtotal, total_quantity)
+    reached = reached_tiers(subtotal, total_quantity, group)
     return reached[-1] if reached else None
 
 
-def discount_percent_for(subtotal: Decimal, total_quantity: int) -> int:
+def discount_percent_for(subtotal: Decimal, total_quantity: int, group: str = DEFAULT_GROUP) -> int:
     """Процент скидки. Индивидуальная ступень процента не добавляет: там цена ручная."""
     percent = 0
-    for tier in reached_tiers(subtotal, total_quantity):
+    for tier in reached_tiers(subtotal, total_quantity, group):
         if tier.get("individual"):
             continue
         percent = max(percent, int(tier.get("percent") or 0))
     return percent
 
 
-def is_individual(subtotal: Decimal, total_quantity: int) -> bool:
+def is_individual(subtotal: Decimal, total_quantity: int, group: str = DEFAULT_GROUP) -> bool:
     """Дошли ли до ступени «индивидуально под вас»."""
-    return any(tier.get("individual") for tier in reached_tiers(subtotal, total_quantity))
+    return any(
+        tier.get("individual")
+        for tier in reached_tiers(subtotal, total_quantity, group)
+    )
 
 
-def calculate_totals(subtotal: Decimal, total_quantity: int) -> dict:
-    """Сумма, процент, рубли скидки и итог. Единственный расчёт на весь проект."""
+def calculate_totals(subtotal: Decimal, total_quantity: int, group: str = DEFAULT_GROUP) -> dict:
+    """Сумма, процент, рубли скидки и итог по ОДНОЙ группе лестницы.
+
+    Заказ целиком считает calculate_order_totals(): там группы складываются.
+    """
     subtotal = money(subtotal)
-    percent = discount_percent_for(subtotal, total_quantity)
-    individual = is_individual(subtotal, total_quantity)
+    percent = discount_percent_for(subtotal, total_quantity, group)
+    individual = is_individual(subtotal, total_quantity, group)
+    tier = current_tier(subtotal, total_quantity, group)
     discount_amount = money(subtotal * Decimal(percent) / Decimal(100))
     return {
         "subtotal": subtotal,
+        "quantity": total_quantity,
         "discount_percent": percent,
         "discount_amount": discount_amount,
         "total": money(subtotal - discount_amount),
         "basis": DISCOUNT_BASIS,
+        "group": group,
+        "group_title": group_title(group),
+        "tier_key": tier["key"] if tier else "retail",
         "approved": DISCOUNT_TIERS_APPROVED,
         # На индивидуальной ступени показанный итог - предварительный: финальную
         # цену подтверждает менеджер, придумывать процент за него нельзя.
@@ -221,10 +338,91 @@ def calculate_totals(subtotal: Decimal, total_quantity: int) -> dict:
     }
 
 
+def _line_group(line) -> str:
+    """Ключ группы строки заказа: по слагу раздела, как на фронте."""
+    if isinstance(line, dict):
+        section = line.get("section") or line.get("section_slug") or ""
+    else:
+        section = getattr(line, "section", "") or ""
+    return group_key_for_section(section)
+
+
+def _line_amount(line) -> tuple[Decimal, int]:
+    """Сумма и количество строки. line_total уважаем, если он уже посчитан."""
+    if isinstance(line, dict):
+        quantity = int(line.get("quantity") or line.get("qty") or 0)
+        total = line.get("line_total")
+        price = line.get("price")
+    else:
+        quantity = int(getattr(line, "quantity", 0) or 0)
+        total = getattr(line, "line_total", None)
+        price = getattr(line, "price", None)
+    if total is None:
+        total = Decimal(str(price or 0)) * Decimal(quantity)
+    return money(total), quantity
+
+
+def calculate_order_totals(lines) -> dict:
+    """Итог заказа с независимыми группами лестниц.
+
+    Деревья считаются отдельно от всего остального: у каждой группы своя сумма,
+    своё количество и своя ступень. Складываем только рубли скидки, проценты не
+    усредняем по дороге. Общий discount_percent - эффективный процент по заказу
+    (округлённый средневзвешенный), он нужен полю WholesaleOrder.discount_percent
+    и никуда в расчёт скидки не возвращается.
+    """
+    buckets: dict[str, dict] = {}
+    for line in lines or []:
+        group = _line_group(line)
+        amount, quantity = _line_amount(line)
+        bucket = buckets.setdefault(group, {"subtotal": Decimal(0), "quantity": 0})
+        bucket["subtotal"] += amount
+        bucket["quantity"] += quantity
+
+    groups: dict[str, dict] = {}
+    subtotal = Decimal(0)
+    discount_amount = Decimal(0)
+    total_quantity = 0
+    individual = False
+    for group in group_keys():
+        bucket = buckets.get(group)
+        if not bucket:
+            continue
+        totals = calculate_totals(bucket["subtotal"], bucket["quantity"], group)
+        groups[group] = totals
+        subtotal += totals["subtotal"]
+        discount_amount += totals["discount_amount"]
+        total_quantity += bucket["quantity"]
+        individual = individual or totals["individual"]
+
+    subtotal = money(subtotal)
+    discount_amount = money(discount_amount)
+    if subtotal > 0:
+        effective = int(
+            (discount_amount / subtotal * Decimal(100)).quantize(
+                Decimal("1"), rounding=ROUND_HALF_UP
+            )
+        )
+    else:
+        effective = 0
+    return {
+        "subtotal": subtotal,
+        "quantity": total_quantity,
+        "discount_percent": effective,
+        "discount_amount": discount_amount,
+        "total": money(subtotal - discount_amount),
+        "basis": DISCOUNT_BASIS,
+        "approved": DISCOUNT_TIERS_APPROVED,
+        "individual": individual,
+        "individual_note": INDIVIDUAL_TIER_TEXT if individual else "",
+        "groups": groups,
+    }
+
+
 # --- лестница, прогресс, подсказки ------------------------------------------
 
 
-def price_ladder(retail_price: Decimal | int | float) -> list[dict]:
+def price_ladder(retail_price: Decimal | int | float, group: str = DEFAULT_GROUP) -> list[dict]:
     """Ценовая лестница карточки: розница плюс ступени по текущей сетке скидок.
 
     Отдельного поля под каждую ступень в БД нет и быть не должно: ступень - это
@@ -244,7 +442,7 @@ def price_ladder(retail_price: Decimal | int | float) -> list[dict]:
             "individual": False,
         }
     ]
-    for tier in _sorted_tiers():
+    for tier in _sorted_tiers(group):
         if tier.get("individual"):
             steps.append(
                 {
@@ -275,17 +473,17 @@ def price_ladder(retail_price: Decimal | int | float) -> list[dict]:
     return steps
 
 
-def entry_percent() -> int:
+def entry_percent(group: str = DEFAULT_GROUP) -> int:
     """Входная скидка: процент самой нижней ступени. От неё считается опт-цена."""
-    for tier in _sorted_tiers():
+    for tier in _sorted_tiers(group):
         if not tier.get("individual"):
             return int(tier.get("percent") or 0)
     return 0
 
 
-def wholesale_price(retail_price: Decimal | int | float) -> Decimal:
-    """Оптовая цена по умолчанию: розница минус входная скидка."""
-    return money(Decimal(retail_price) * Decimal(100 - entry_percent()) / Decimal(100))
+def wholesale_price(retail_price: Decimal | int | float, group: str = DEFAULT_GROUP) -> Decimal:
+    """Оптовая цена по умолчанию: розница минус входная скидка своей группы."""
+    return money(Decimal(retail_price) * Decimal(100 - entry_percent(group)) / Decimal(100))
 
 
 def _tier_gap(tier: dict, subtotal: Decimal, total_quantity: int) -> dict | None:
@@ -316,17 +514,17 @@ def _tier_gap(tier: dict, subtotal: Decimal, total_quantity: int) -> dict | None
 HINT_TOLERANCE = 0.1
 
 
-def next_tier_for(subtotal: Decimal, total_quantity: int) -> dict | None:
+def next_tier_for(subtotal: Decimal, total_quantity: int, group: str = DEFAULT_GROUP) -> dict | None:
     """Ближайшая невзятая ступень по ОБЕИМ осям: что реально добрать быстрее.
 
     Не «следующая по списку», а именно ближайшая: если до чека 100 000 ₽ осталось
     10% суммы, а до 30 позиций - половина корзины, подсказка ведёт к чеку. Когда
     обе оси примерно одинаково далеко, выигрывает нижняя ступень лестницы.
     """
-    percent = discount_percent_for(subtotal, total_quantity)
-    individual = is_individual(subtotal, total_quantity)
+    percent = discount_percent_for(subtotal, total_quantity, group)
+    individual = is_individual(subtotal, total_quantity, group)
     candidates = []
-    for tier in _sorted_tiers():
+    for tier in _sorted_tiers(group):
         if tier_reached(tier, subtotal, total_quantity):
             continue
         if tier.get("individual"):
@@ -350,6 +548,7 @@ def next_tier_for(subtotal: Decimal, total_quantity: int) -> dict | None:
                 "remaining_text": gap["remaining_text"],
                 "relative": gap["relative"],
                 "rank": _rank(tier),
+                "group": group,
             }
         )
     if not candidates:
@@ -359,18 +558,18 @@ def next_tier_for(subtotal: Decimal, total_quantity: int) -> dict | None:
     return min(near, key=lambda c: c["rank"])
 
 
-def progress_hint(subtotal: Decimal, total_quantity: int) -> str:
+def progress_hint(subtotal: Decimal, total_quantity: int, group: str = DEFAULT_GROUP) -> str:
     """Строка под полосой прогресса: сколько добрать до ближайшей ступени."""
-    tiers = _sorted_tiers()
+    tiers = _sorted_tiers(group)
     if not tiers:
         return ""
     subtotal = money(subtotal)
-    percent = discount_percent_for(subtotal, total_quantity)
-    if is_individual(subtotal, total_quantity):
+    percent = discount_percent_for(subtotal, total_quantity, group)
+    if is_individual(subtotal, total_quantity, group):
         return INDIVIDUAL_TIER_TEXT
     if total_quantity <= 0 and subtotal <= 0:
-        return f"Оптовая скидка {entry_percent()}% включается с первой штуки"
-    nxt = next_tier_for(subtotal, total_quantity)
+        return f"Оптовая скидка {entry_percent(group)}% включается с первой штуки"
+    nxt = next_tier_for(subtotal, total_quantity, group)
     if nxt is None:
         return f"Максимальная скидка {percent}%"
     if nxt["individual"]:
@@ -378,11 +577,11 @@ def progress_hint(subtotal: Decimal, total_quantity: int) -> str:
     return f"До скидки {nxt['percent']}% осталось {nxt['remaining_text']}"
 
 
-def tier_progress(subtotal: Decimal, total_quantity: int) -> list[dict]:
+def tier_progress(subtotal: Decimal, total_quantity: int, group: str = DEFAULT_GROUP) -> list[dict]:
     """Заполнение делений полосы: по каждой ступени берём лучшую из её осей."""
     subtotal = money(subtotal)
     rows = []
-    for tier in _sorted_tiers():
+    for tier in _sorted_tiers(group):
         if tier_reached(tier, subtotal, total_quantity):
             fill = 100.0
         else:
@@ -420,20 +619,21 @@ def min_order_error(subtotal: Decimal) -> str:
     )
 
 
-def progress_state(subtotal: Decimal, total_quantity: int) -> dict:
+def progress_state(subtotal: Decimal, total_quantity: int, group: str = DEFAULT_GROUP) -> dict:
     """Всё, что нужно полосе прогресса: процент, подсказка, минимальный заказ."""
     subtotal = money(subtotal)
-    nxt = next_tier_for(subtotal, total_quantity)
+    nxt = next_tier_for(subtotal, total_quantity, group)
     return {
-        "percent": discount_percent_for(subtotal, total_quantity),
-        "individual": is_individual(subtotal, total_quantity),
+        "group": group,
+        "percent": discount_percent_for(subtotal, total_quantity, group),
+        "individual": is_individual(subtotal, total_quantity, group),
         "individual_text": INDIVIDUAL_TIER_TEXT,
         "quantity": total_quantity,
         "subtotal": subtotal,
         "next_tier": nxt,
         "is_max": nxt is None,
-        "hint": progress_hint(subtotal, total_quantity),
-        "tiers": tier_progress(subtotal, total_quantity),
+        "hint": progress_hint(subtotal, total_quantity, group),
+        "tiers": tier_progress(subtotal, total_quantity, group),
         "min_order": MIN_ORDER_AMOUNT,
         "min_order_reached": min_order_reached(subtotal),
         "min_order_remaining": min_order_remaining(subtotal),
@@ -443,12 +643,39 @@ def progress_state(subtotal: Decimal, total_quantity: int) -> dict:
 # --- конфиг наружу ----------------------------------------------------------
 
 
+def tiers_for_json(group: str = DEFAULT_GROUP) -> list[dict]:
+    """Ступени группы в том виде, в каком их ждёт JS корзины."""
+    return [
+        {
+            "key": tier["key"],
+            "label": tier_label(tier),
+            "short": tier.get("short", ""),
+            "percent": tier.get("percent"),
+            "individual": bool(tier.get("individual")),
+            "min_quantity": tier.get("min_quantity"),
+            "min_amount": tier.get("min_amount"),
+        }
+        for tier in _sorted_tiers(group)
+    ]
+
+
 def tiers_for_frontend() -> dict:
     """Конфиг скидок для JS корзины: фронт считает по той же таблице, что сервер.
+
+    Верхний уровень - общая лестница (кустарники и хвойные), в by_section лежат
+    лестницы разделов со своей сеткой (сейчас только деревья). Ключ by_section -
+    слаг раздела, а не ключ группы: фронту приходит именно слаг строки корзины.
 
     Итог всё равно пересчитывается на сервере при отправке заказа - здесь только
     то, что нужно показать человеку, пока он набирает объём.
     """
+    by_section = {
+        section_slug: {
+            "entry_percent": entry_percent(group),
+            "tiers": tiers_for_json(group),
+        }
+        for section_slug, group in SECTION_GROUPS.items()
+    }
     return {
         "basis": DISCOUNT_BASIS,
         "approved": DISCOUNT_TIERS_APPROVED,
@@ -459,25 +686,15 @@ def tiers_for_frontend() -> dict:
         "min_order": MIN_ORDER_AMOUNT,
         "min_order_approved": MIN_ORDER_APPROVED,
         "min_order_disclaimer": MIN_ORDER_DISCLAIMER,
-        "tiers": [
-            {
-                "key": tier["key"],
-                "label": tier_label(tier),
-                "short": tier.get("short", ""),
-                "percent": tier.get("percent"),
-                "individual": bool(tier.get("individual")),
-                "min_quantity": tier.get("min_quantity"),
-                "min_amount": tier.get("min_amount"),
-            }
-            for tier in _sorted_tiers()
-        ],
+        "tiers": tiers_for_json(),
+        "by_section": by_section,
     }
 
 
-def tiers_for_display() -> list[dict]:
+def tiers_for_display(group: str = DEFAULT_GROUP) -> list[dict]:
     """Строки таблицы скидок для шаблона витрины."""
     rows = []
-    for tier in _sorted_tiers():
+    for tier in _sorted_tiers(group):
         rows.append(
             {
                 "key": tier["key"],
@@ -524,11 +741,11 @@ def tier_chip_label(tier: dict) -> str:
     return tier_label(tier)
 
 
-def tiers_for_chips() -> list[dict]:
+def tiers_for_chips(group: str = DEFAULT_GROUP) -> list[dict]:
     """Лента чипов «ступени скидки» для витрины: подпись плюс значение."""
     rows = []
     rank = 0
-    for tier in _sorted_tiers():
+    for tier in _sorted_tiers(group):
         individual = bool(tier.get("individual"))
         rows.append(
             {

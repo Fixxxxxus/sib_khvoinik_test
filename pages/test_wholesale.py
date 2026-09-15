@@ -721,3 +721,206 @@ class OptIndexCatalogTest(TestCase):
         self.assertNotIn("#section-kustarniki-test", html)
         self.assertNotIn('aria-label="Разделы каталога"', html)
         self.assertIn('id="catalog"', html)
+
+
+class SectionDiscountGroupsTest(TestCase):
+    """Гибридная сетка по разделам: деревья считаются отдельно от остального.
+
+    Сетка деревьев подтверждена маркетологом 15.09.2026: 5 / 10 / 15 / 20 и
+    индивидуальные условия сверху. Кустарники и хвойные остаются на 20 / 25 / 30 / 35.
+    """
+
+    def test_section_slug_picks_the_ladder(self):
+        self.assertEqual(wholesale_pricing.group_key_for_section("derevya"), "derevya")
+        self.assertEqual(wholesale_pricing.group_key_for_section("kustarniki"), "default")
+        self.assertEqual(wholesale_pricing.group_key_for_section(""), "default")
+
+    def test_thirty_pieces_give_ten_on_trees_and_twenty_five_on_bushes(self):
+        trees = wholesale_pricing.calculate_totals(Decimal("30000"), 30, "derevya")
+        bushes = wholesale_pricing.calculate_totals(Decimal("30000"), 30)
+        self.assertEqual(trees["discount_percent"], 10)
+        self.assertEqual(bushes["discount_percent"], 25)
+
+    def test_groups_do_not_share_volume(self):
+        """20 деревьев + 20 кустарников: у каждой группы своя входная ступень."""
+        totals = wholesale_pricing.calculate_order_totals(
+            [
+                {"section": "derevya", "price": Decimal("1000"), "quantity": 20},
+                {"section": "kustarniki", "price": Decimal("500"), "quantity": 20},
+            ]
+        )
+        self.assertEqual(totals["groups"]["derevya"]["discount_percent"], 5)
+        self.assertEqual(totals["groups"]["default"]["discount_percent"], 20)
+        self.assertEqual(totals["groups"]["derevya"]["tier_key"], "entry")
+        self.assertEqual(totals["groups"]["default"]["tier_key"], "entry")
+        # 40 штук в сумме, но ступень «от 30» не берёт ни одна группа.
+        self.assertEqual(totals["quantity"], 40)
+        self.assertEqual(totals["subtotal"], Decimal("30000.00"))
+        # 20 000 x 5% + 10 000 x 20% = 1000 + 2000 = 3000 ₽.
+        self.assertEqual(totals["discount_amount"], Decimal("3000.00"))
+        self.assertEqual(totals["total"], Decimal("27000.00"))
+
+    def test_check_tier_is_counted_inside_the_group(self):
+        """Деревья на 120 000 ₽ берут свои 20%, кустарники на 10 000 ₽ остаются на входных."""
+        totals = wholesale_pricing.calculate_order_totals(
+            [
+                {"section": "derevya", "price": Decimal("12000"), "quantity": 10},
+                {"section": "hvoynye", "price": Decimal("1000"), "quantity": 10},
+            ]
+        )
+        self.assertEqual(totals["groups"]["derevya"]["discount_percent"], 20)
+        self.assertEqual(totals["groups"]["derevya"]["tier_key"], "a100k")
+        self.assertEqual(totals["groups"]["default"]["discount_percent"], 20)
+        self.assertEqual(totals["groups"]["default"]["tier_key"], "entry")
+        # 120 000 x 20% + 10 000 x 20% = 26 000 ₽.
+        self.assertEqual(totals["discount_amount"], Decimal("26000.00"))
+        self.assertEqual(totals["discount_percent"], 20)
+
+    def test_individual_in_one_group_marks_the_whole_order(self):
+        totals = wholesale_pricing.calculate_order_totals(
+            [
+                {"section": "derevya", "price": Decimal("3000"), "quantity": 100},
+                {"section": "kustarniki", "price": Decimal("500"), "quantity": 2},
+            ]
+        )
+        self.assertTrue(totals["groups"]["derevya"]["individual"])
+        self.assertFalse(totals["groups"]["default"]["individual"])
+        self.assertTrue(totals["individual"])
+        self.assertEqual(totals["individual_note"], wholesale_pricing.INDIVIDUAL_TIER_TEXT)
+
+    def test_tree_price_ladder_follows_its_own_grid(self):
+        ladder = wholesale_pricing.price_ladder(Decimal("1000.00"), "derevya")
+        self.assertEqual([step["percent"] for step in ladder[1:]], [5, 10, 15, 20, None])
+        self.assertEqual(wholesale_pricing.entry_percent("derevya"), 5)
+        self.assertEqual(wholesale_pricing.wholesale_price(Decimal("1000.00"), "derevya"), Decimal("950.00"))
+
+    def test_frontend_config_carries_the_tree_ladder(self):
+        """Контракт JSON для фронта: by_section.derevya в том же формате, что tiers."""
+        config = wholesale_pricing.tiers_for_frontend()
+        self.assertEqual(config["entry_percent"], 20)
+        block = config["by_section"]["derevya"]
+        self.assertEqual(block["entry_percent"], 5)
+        self.assertEqual(set(block), {"entry_percent", "tiers"})
+        self.assertEqual([tier["key"] for tier in block["tiers"]],
+                         [tier["key"] for tier in config["tiers"]])
+        self.assertEqual([tier["percent"] for tier in block["tiers"]], [5, 10, 15, 20, None])
+        self.assertEqual(
+            set(block["tiers"][0]),
+            {"key", "label", "short", "percent", "individual", "min_quantity", "min_amount"},
+        )
+        self.assertTrue(block["tiers"][-1]["individual"])
+
+
+class SectionLadderPagesTest(TestCase):
+    """Страницы деревьев показывают свою лестницу, остальные - общую."""
+
+    def setUp(self):
+        self.trees = WholesaleSection.objects.create(title="Деревья", slug="derevya")
+        self.bushes = WholesaleSection.objects.create(title="Кустарники", slug="kustarniki")
+        self.maple = WholesaleItem.objects.create(
+            section=self.trees, title="Клён", slug="klen-test", price=Decimal("1000.00")
+        )
+        self.spirea = WholesaleItem.objects.create(
+            section=self.bushes, title="Спирея", slug="spireya-group-test", price=Decimal("1000.00")
+        )
+
+    def test_item_page_uses_the_section_ladder(self):
+        res = self.client.get(f"/opt/{self.trees.slug}/{self.maple.slug}/")
+        self.assertEqual(res.context["section_group"], "derevya")
+        self.assertEqual([s["percent"] for s in res.context["price_ladder"][1:]], [5, 10, 15, 20, None])
+        self.assertEqual(res.context["discount_entry_percent"], 5)
+
+        other = self.client.get(f"/opt/{self.bushes.slug}/{self.spirea.slug}/")
+        self.assertEqual(other.context["section_group"], "default")
+        self.assertEqual([s["percent"] for s in other.context["price_ladder"][1:]], [20, 25, 30, 35, None])
+
+    def test_section_page_carries_its_group(self):
+        self.assertEqual(self.client.get(f"/opt/{self.trees.slug}/").context["section_group"], "derevya")
+        self.assertEqual(self.client.get(f"/opt/{self.bushes.slug}/").context["section_group"], "default")
+
+    def test_context_has_both_ladders_in_order(self):
+        ctx = self.client.get("/opt/").context
+        ladders = ctx["discount_ladders"]
+        self.assertEqual([l["key"] for l in ladders], ["default", "derevya"])
+        self.assertEqual([l["title"] for l in ladders], ["Кустарники и хвойные", "Деревья"])
+        self.assertEqual([l["entry_percent"] for l in ladders], [20, 5])
+        self.assertTrue(ladders[1]["chips"])
+        self.assertTrue(ladders[1]["tiers"])
+        self.assertIn('"by_section"', ctx["discount_config_json"])
+
+
+class MixedOrderApiTest(TestCase):
+    """POST /api/opt/order/ со смешанным заказом: скидка складывается из групп."""
+
+    def setUp(self):
+        cache.clear()
+        self.client = Client()
+        self.trees = WholesaleSection.objects.create(title="Деревья", slug="derevya")
+        self.bushes = WholesaleSection.objects.create(title="Кустарники", slug="kustarniki")
+        self.tree = WholesaleItem.objects.create(
+            section=self.trees, title="Липа", slug="lipa-mix", price=Decimal("6500.00")
+        )
+        self.bush = WholesaleItem.objects.create(
+            section=self.bushes, title="Спирея", slug="spireya-mix", price=Decimal("380.00")
+        )
+        patch("pages.wholesale_orders._send_to_bitrix").start()
+        patch("pages.wholesale_orders._notify_telegram").start()
+        self.addCleanup(patch.stopall)
+
+    def _post(self, items):
+        return self.client.post(
+            "/api/opt/order/",
+            data=json.dumps({"name": "ООО Ромашка", "phone": "+7 (900) 000-00-00", "items": items}),
+            content_type="application/json",
+        )
+
+    def _mixed_items(self):
+        return [
+            {"section": "derevya", "slug": self.tree.slug, "qty": 2},
+            {"section": "kustarniki", "slug": self.bush.slug, "qty": 10},
+        ]
+
+    def test_order_stores_breakdown_by_group(self):
+        res = self._post(self._mixed_items())
+        self.assertEqual(res.status_code, 200)
+        order = WholesaleOrder.objects.get()
+        # 2 x 6500 = 13 000 ₽ деревьев (5%) + 10 x 380 = 3800 ₽ кустарников (20%).
+        self.assertEqual(order.subtotal, Decimal("16800.00"))
+        self.assertEqual(set(order.discount_breakdown), {"derevya", "default"})
+        trees = order.discount_breakdown["derevya"]
+        bushes = order.discount_breakdown["default"]
+        self.assertEqual(trees["percent"], 5)
+        self.assertEqual(trees["subtotal"], "13000.00")
+        self.assertEqual(trees["discount_amount"], "650.00")
+        self.assertEqual(trees["title"], "Деревья")
+        self.assertEqual(bushes["percent"], 20)
+        self.assertEqual(bushes["discount_amount"], "760.00")
+        # Сумма скидок групп, а не процент от общей суммы.
+        self.assertEqual(order.discount_amount, Decimal("1410.00"))
+        self.assertEqual(order.total, Decimal("15390.00"))
+        self.assertEqual(order.discount_percent, 8)
+        self.assertEqual(res.json()["groups"]["derevya"]["percent"], 5)
+
+    def test_notification_text_lists_every_group(self):
+        self._post(self._mixed_items())
+        order = WholesaleOrder.objects.get()
+        lines, _, _ = build_order_lines(self._mixed_items())
+        text = wholesale_orders.build_order_text(order, lines, {})
+        self.assertIn("Деревья: 13000.00 ₽, скидка 5% (650.00 ₽)", text)
+        self.assertIn("Кустарники и хвойные: 3800.00 ₽, скидка 20% (760.00 ₽)", text)
+        self.assertNotIn(wholesale_pricing.INDIVIDUAL_TIER_TEXT, text)
+
+    def test_minimum_order_is_checked_on_the_whole_subtotal(self):
+        """Минимум один на заказ: группы по отдельности его не добирают, вместе - да."""
+        with patch.object(wholesale_pricing, "MIN_ORDER_AMOUNT", 16_000):
+            ok = self._post(self._mixed_items())
+            self.assertEqual(ok.status_code, 200)
+            small = self._post([{"section": "derevya", "slug": self.tree.slug, "qty": 2}])
+        self.assertEqual(small.status_code, 400)
+        self.assertIn("Минимальный заказ от 16 000 ₽", small.json()["error"])
+
+    def test_order_line_knows_its_section(self):
+        lines, subtotal, quantity = build_order_lines(self._mixed_items())
+        self.assertEqual([line["section"] for line in lines], ["derevya", "kustarniki"])
+        self.assertEqual(subtotal, Decimal("16800.00"))
+        self.assertEqual(quantity, 12)

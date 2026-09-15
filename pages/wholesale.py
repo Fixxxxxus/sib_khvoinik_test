@@ -55,8 +55,14 @@ OPT_HERO_LEAD = (
 )
 
 
-def _base_context(request: HttpRequest) -> dict:
-    """Общая обвязка страниц каталога: скрытость, корзина, конфиг скидок."""
+def _base_context(request: HttpRequest, group: str | None = None) -> dict:
+    """Общая обвязка страниц каталога: скрытость, корзина, конфиг скидок.
+
+    group - ключ лестницы страницы (деревья считаются по своей). Ключи без
+    суффикса остаются лестницей группы страницы, а для витрины это default:
+    шаблоны, не знающие о группах, работают как раньше.
+    """
+    group = group or wholesale_pricing.DEFAULT_GROUP
     return {
         "brand": OPT_BRAND,
         "opt_phone": OPT_PHONE,
@@ -71,26 +77,50 @@ def _base_context(request: HttpRequest) -> dict:
         "discount_config_json": json.dumps(
             wholesale_pricing.tiers_for_frontend(), ensure_ascii=False
         ),
-        "discount_tiers": wholesale_pricing.tiers_for_display(),
+        "discount_tiers": wholesale_pricing.tiers_for_display(group),
         # Лента чипов на витрине: подписи собираются из той же сетки скидок.
-        "discount_chips": wholesale_pricing.tiers_for_chips(),
+        "discount_chips": wholesale_pricing.tiers_for_chips(group),
+        # Обе лестницы сразу: витрине надо показать и деревья, и остальное.
+        "discount_ladders": _discount_ladders(),
+        "section_group": group,
         "discount_approved": wholesale_pricing.DISCOUNT_TIERS_APPROVED,
         "discount_disclaimer": wholesale_pricing.DISCOUNT_DISCLAIMER,
         "discount_basis": wholesale_pricing.DISCOUNT_BASIS,
-        "discount_entry_percent": wholesale_pricing.entry_percent(),
+        "discount_entry_percent": wholesale_pricing.entry_percent(group),
         "discount_individual_text": wholesale_pricing.INDIVIDUAL_TIER_TEXT,
         # Деления полосы прогресса: по одному на ступень сетки. Заполнение считает
         # JS, разметку делений отдаём сразу, чтобы полоса не прыгала после загрузки.
-        "progress_marks": _progress_marks(),
-        "progress_hint_default": wholesale_pricing.progress_hint(Decimal(0), 0),
+        "progress_marks": _progress_marks(group),
+        "progress_hint_default": wholesale_pricing.progress_hint(Decimal(0), 0, group),
         "min_order": wholesale_pricing.min_order_for_display(),
     }
 
 
-def _progress_marks() -> list[dict]:
+def _discount_ladders() -> list[dict]:
+    """Обе лестницы для шаблона: общая первой, деревья второй.
+
+    Порядок фиксированный: сначала «Кустарники и хвойные», потом «Деревья».
+    Структура одна на обе, чтобы шаблон рисовал их одним циклом.
+    """
+    ladders = []
+    for key in wholesale_pricing.group_keys():
+        ladders.append(
+            {
+                "key": key,
+                "title": wholesale_pricing.group_title(key),
+                "entry_percent": wholesale_pricing.entry_percent(key),
+                "chips": wholesale_pricing.tiers_for_chips(key),
+                "tiers": wholesale_pricing.tiers_for_display(key),
+            }
+        )
+    return ladders
+
+
+def _progress_marks(group: str | None = None) -> list[dict]:
     """Подписи делений полосы: по ступеням сетки, в порядке выгодности."""
+    group = group or wholesale_pricing.DEFAULT_GROUP
     marks = [{"key": "start", "label": "0", "percent": 0, "individual": False}]
-    for tier in wholesale_pricing.tiers_for_frontend()["tiers"]:
+    for tier in wholesale_pricing.tiers_for_json(group):
         marks.append(
             {
                 "key": tier["key"],
@@ -155,7 +185,7 @@ def opt_section(request: HttpRequest, section_slug: str) -> HttpResponse:
         raise Http404("Раздел оптового каталога не найден")
 
     items = list(_section_items(section))
-    ctx = _base_context(request)
+    ctx = _base_context(request, wholesale_pricing.group_key_for_section(section.slug))
     ctx.update(
         {
             "seo_title": f"{section.title} оптом · {OPT_BRAND}",
@@ -188,7 +218,7 @@ def opt_item(request: HttpRequest, section_slug: str, item_slug: str) -> HttpRes
         if other.pk != item.pk
     ][:6]
 
-    ctx = _base_context(request)
+    ctx = _base_context(request, item.discount_group)
     ctx.update(
         {
             "seo_title": f"{item.title} оптом · {OPT_BRAND}",

@@ -190,6 +190,8 @@ def build_order_lines(raw_items) -> tuple[list[dict], Decimal, int]:
             {
                 "item": item,
                 "variant": variant,
+                # Слаг раздела нужен расчёту: у деревьев своя лестница скидок.
+                "section": item.section.slug,
                 "title": item.title,
                 "variant_title": variant.title if variant else "",
                 "size": item.size,
@@ -200,6 +202,27 @@ def build_order_lines(raw_items) -> tuple[list[dict], Decimal, int]:
             }
         )
     return lines, wholesale_pricing.money(subtotal), total_quantity
+
+
+def breakdown_for_storage(totals: dict) -> dict:
+    """Разбивка по группам в JSON-безопасном виде: деньги строками, как в ответе.
+
+    Decimal в JSONField не лезет, а float на деньгах врёт: храним строки в том же
+    формате, что и остальные суммы заказа.
+    """
+    rows = {}
+    for group, row in (totals.get("groups") or {}).items():
+        rows[group] = {
+            "title": row["group_title"],
+            "subtotal": str(row["subtotal"]),
+            "quantity": row["quantity"],
+            "percent": row["discount_percent"],
+            "discount_amount": str(row["discount_amount"]),
+            "total": str(row["total"]),
+            "individual": bool(row["individual"]),
+            "tier_key": row["tier_key"],
+        }
+    return rows
 
 
 def build_order_text(order: WholesaleOrder, lines: list[dict], utm: dict) -> str:
@@ -224,12 +247,24 @@ def build_order_text(order: WholesaleOrder, lines: list[dict], utm: dict) -> str
     parts.append("Состав:")
     parts.extend(rows)
     parts.append(f"Сумма: {order.subtotal} ₽")
+    # Группы считаются независимо, поэтому менеджеру показываем их построчно:
+    # одна общая цифра скидки без разбивки по деревьям ничего не объясняет.
+    breakdown = order.discount_breakdown or {}
+    for group, row in breakdown.items():
+        if not row or Decimal(str(row.get("subtotal") or 0)) <= 0:
+            continue
+        title = row.get("title") or wholesale_pricing.group_title(group)
+        percent = row.get("percent") or 0
+        parts.append(
+            f"{title}: {row.get('subtotal')} ₽, скидка {percent}% ({row.get('discount_amount')} ₽)"
+        )
     parts.append(f"Скидка: {order.discount_percent}% ({order.discount_amount} ₽)")
     if not wholesale_pricing.DISCOUNT_TIERS_APPROVED:
         parts.append(f"Внимание: {wholesale_pricing.DISCOUNT_DISCLAIMER}")
     # Верхняя ступень сетки - не процент, а индивидуальное предложение: менеджер
-    # должен подтвердить цену руками, показанный итог предварительный.
-    if wholesale_pricing.is_individual(order.subtotal, order.total_quantity):
+    # должен подтвердить цену руками, показанный итог предварительный. Хватает
+    # одной индивидуальной группы, чтобы весь заказ ушёл на ручное подтверждение.
+    if any(row.get("individual") for row in breakdown.values() if row):
         parts.append(f"Внимание: {wholesale_pricing.INDIVIDUAL_TIER_TEXT}")
     parts.append(f"Итого: {order.total} ₽")
     if order.comment:
@@ -343,7 +378,8 @@ def opt_order(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest:
             status=429,
         )
 
-    totals = wholesale_pricing.calculate_totals(subtotal, total_quantity)
+    totals = wholesale_pricing.calculate_order_totals(lines)
+    breakdown = breakdown_for_storage(totals)
     utm = _utm_from_payload(payload)
 
     order = WholesaleOrder.objects.create(
@@ -359,6 +395,7 @@ def opt_order(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest:
         total=totals["total"],
         total_quantity=total_quantity,
         discount_basis=totals["basis"],
+        discount_breakdown=breakdown,
         source=str(payload.get("source") or "").strip()[:100],
         page_path=str(payload.get("page_path") or "").strip()[:300],
         referrer=str(payload.get("referrer") or "").strip()[:500],
@@ -399,6 +436,7 @@ def opt_order(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest:
             "discount_percent": order.discount_percent,
             "discount_amount": str(order.discount_amount),
             "total": str(order.total),
+            "groups": breakdown,
             "message": "Заказ принят, свяжемся с вами.",
         }
     )

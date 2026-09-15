@@ -1090,18 +1090,25 @@ class WholesaleItem(models.Model):
             return count
         return 1 if self.image else 0
 
+    @property
+    def discount_group(self) -> str:
+        """Группа лестницы скидок: у деревьев своя, у остальных общая."""
+        from . import wholesale_pricing
+
+        return wholesale_pricing.group_key_for_section(self.section.slug if self.section_id else "")
+
     def price_ladder(self) -> list[dict]:
         """Ценовая лестница карточки. Считается из розничной цены и сетки скидок."""
         from . import wholesale_pricing
 
-        return wholesale_pricing.price_ladder(self.price)
+        return wholesale_pricing.price_ladder(self.price, self.discount_group)
 
     @property
     def wholesale_price(self):
-        """Оптовая цена по умолчанию: розница минус входная скидка сетки."""
+        """Оптовая цена по умолчанию: розница минус входная скидка своей группы."""
         from . import wholesale_pricing
 
-        return wholesale_pricing.wholesale_price(self.price)
+        return wholesale_pricing.wholesale_price(self.price, self.discount_group)
 
     @property
     def wholesale_price_text(self):
@@ -1258,7 +1265,7 @@ class WholesaleItemVariant(models.Model):
     def price_ladder(self) -> list[dict]:
         from . import wholesale_pricing
 
-        return wholesale_pricing.price_ladder(self.effective_price)
+        return wholesale_pricing.price_ladder(self.effective_price, self.item.discount_group)
 
 
 class WholesaleOrder(models.Model):
@@ -1282,6 +1289,12 @@ class WholesaleOrder(models.Model):
     total = models.DecimalField("Итого, ₽", max_digits=12, decimal_places=2, default=0)
     total_quantity = models.IntegerField("Всего единиц", default=0)
     discount_basis = models.CharField("База скидки", max_length=20, blank=True)
+    discount_breakdown = models.JSONField(
+        "Скидка по группам",
+        default=dict,
+        blank=True,
+        help_text="Деревья и остальное считаются независимо: у каждой группы своя ступень.",
+    )
 
     source = models.CharField("Источник", max_length=100, blank=True)
     page_path = models.CharField("Путь страницы", max_length=300, blank=True)
