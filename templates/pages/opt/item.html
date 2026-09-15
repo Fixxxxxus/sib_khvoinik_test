@@ -18,7 +18,7 @@
         осознанно нет - заказчик просил такое убрать. Один снимок - ленты нет.
         Пустая галерея - показываем старое поле image как обложку-запаску.
       {% endcomment %}
-      <div data-opt-gallery>
+      <div class="min-w-0" data-opt-gallery>
         {% comment %}
           Кадр кропается по центру и занимает рамку целиком: у вертикальных
           снимков раньше по бокам оставались белые поля (просьба маркетолога
@@ -58,7 +58,7 @@
       </div>
     {% endwith %}
 
-    <div>
+    <div class="min-w-0">
       <div class="flex flex-wrap gap-2">
         {% if item.is_highlighted %}<span class="rounded bg-accent/20 px-2 py-0.5 text-xs font-medium text-slate-700">В приоритете</span>{% endif %}
         {% if item.is_demo %}<span class="rounded bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600">демо-позиция</span>{% endif %}
