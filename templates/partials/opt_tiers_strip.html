@@ -24,7 +24,7 @@
     {% for ladder in discount_ladders %}
       <div>
         <p class="text-sm font-semibold text-slate-900">{{ ladder.title }}</p>
-        <p class="mt-1 text-xs text-slate-500">Входные {{ ladder.entry_percent }}% уже с первой позиции.</p>
+        <p class="mt-2 text-xs text-slate-500">Входные {{ ladder.entry_percent }}% уже с первой позиции.</p>
         <ul class="opt-tier-chips">
           {% for chip in ladder.chips %}
             <li data-opt-tier-group="{{ ladder.key }}" data-opt-tier-chip="{{ chip.key }}"

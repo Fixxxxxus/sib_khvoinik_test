@@ -550,7 +550,9 @@ body.sg-cookie-banner-open .b24-widget-button-wrapper {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(0, 1.7fr);
   gap: 0.625rem;
-  margin-top: 0.75rem;
+  /* Подпись «Входные N% уже с первой позиции» сливалась с рядом чипов
+     (скрин маркетолога 17.09.2026, вторая итерация): между ними целый rem. */
+  margin-top: 1.125rem;
   list-style: none;
   margin: 0;
   padding: 0;
