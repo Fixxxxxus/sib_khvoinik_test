@@ -21,6 +21,16 @@
 
   var config = readConfig();
 
+  /* Цель Метрики «заявка с оптового каталога»: шлём один раз, когда сервер
+     принял заказ и человек увидел окно «Заказ принят». Счётчик тот же, что на
+     всём сайте (app.js), и грузится он только после согласия на cookie, так
+     что без window.ym цель молча пропускается. */
+  var METRIKA_ID = 108722541;
+  function reachGoal(goal) {
+    if (!window.ym) return;
+    try { window.ym(METRIKA_ID, 'reachGoal', goal); } catch (e) { /* noop */ }
+  }
+
   /* Насколько «одинаково близкими» считаем ступени по разным осям.
      Та же константа, что в pages/wholesale_pricing.HINT_TOLERANCE. */
   var HINT_TOLERANCE = 0.1;
@@ -653,6 +663,7 @@
         writeCart([]);
         render();
         toggle(document.querySelector('[data-opt-success]'), true);
+        reachGoal('opt_order');
         toggle(form, false);
         toggle(document.querySelector('[data-opt-cart-empty]'), false);
       })

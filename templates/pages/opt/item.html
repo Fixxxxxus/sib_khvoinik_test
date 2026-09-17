@@ -27,13 +27,13 @@
         <div class="opt-gallery-frame relative overflow-hidden rounded-xl border border-slate-200 bg-slate-100" data-opt-gallery-frame>
           {% if gallery %}
             {% for photo in gallery %}
-              <img src="{{ photo.image.url }}" alt="{{ photo.alt }}"
+              <img src="{{ photo.url }}" alt="{{ photo.alt }}"
                    {% if not forloop.first %}loading="lazy"{% endif %}
                    data-opt-gallery-slide data-index="{{ forloop.counter0 }}"
                    class="h-auto w-full object-cover{% if not forloop.first %} hidden{% endif %}" />
             {% endfor %}
           {% elif item.image %}
-            <img src="{{ item.image.url }}" alt="{{ item.title }}" data-opt-gallery-slide class="h-auto w-full object-cover" />
+            <img src="{{ item.image_url }}" alt="{{ item.title }}" class="h-auto w-full object-cover" />
           {% else %}
             <div class="flex aspect-[4/3] items-center justify-center text-sm text-slate-400">фото готовим</div>
           {% endif %}
@@ -46,7 +46,7 @@
                       aria-label="Кадр {{ forloop.counter }} из {{ gallery|length }}"
                       {% if forloop.first %}aria-current="true"{% endif %}
                       class="h-16 w-16 shrink-0 overflow-hidden rounded-lg border-2 {% if forloop.first %}border-brand{% else %}border-transparent{% endif %} bg-slate-100">
-                <img src="{{ photo.image.url }}" alt="{{ photo.alt }}" loading="lazy" class="h-full w-full object-cover" />
+                <img src="{{ photo.url }}" alt="{{ photo.alt }}" loading="lazy" class="h-full w-full object-cover" />
               </button>
             {% endfor %}
           </div>
@@ -105,7 +105,7 @@
             <li class="flex min-w-0 items-center gap-3 rounded-xl border border-slate-200 p-3">
               <div class="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-slate-100">
                 {% if variant.image %}
-                  <img src="{{ variant.image.url }}" alt="{{ variant.title }}" loading="lazy" class="h-full w-full object-cover" />
+                  <img src="{{ variant.image_url }}" alt="{{ variant.title }}" loading="lazy" class="h-full w-full object-cover" />
                 {% elif item.cover_url %}
                   <img src="{{ item.cover_url }}" alt="{{ variant.title }}" loading="lazy" class="h-full w-full object-cover" />
                 {% endif %}

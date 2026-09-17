@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os
+
 import re
 
 from typing import Any
@@ -954,6 +956,27 @@ class WholesaleSection(models.Model):
         return f"/opt/{self.slug}/"
 
 
+def versioned_media_url(field) -> str:
+    """URL файла из MEDIA с меткой версии по mtime: ?v=<секунды>.
+
+    Caddy отдаёт /media/ с кешем на неделю. Когда снимок перезаливают под тем же
+    именем (обложки от маркетолога 15.09.2026), телефон клиента неделю показывает
+    старый кадр. Метка меняется вместе с файлом, и браузер тянет новый.
+    Файла нет или storage без пути - отдаём голый url, без метки.
+    """
+    if not field:
+        return ""
+    try:
+        url = field.url
+    except ValueError:
+        return ""
+    try:
+        stamp = int(os.path.getmtime(field.path))
+    except (OSError, ValueError, NotImplementedError, AttributeError):
+        return url
+    return f"{url}?v={stamp}"
+
+
 class WholesaleItem(models.Model):
     """Позиция оптового каталога: размер, оптовая цена, живое фото."""
 
@@ -1050,15 +1073,14 @@ class WholesaleItem(models.Model):
     def cover_url(self) -> str:
         """URL обложки: первый снимок галереи, иначе старое поле image, иначе пусто."""
         photo = self.cover_photo()
-        if photo is not None:
-            try:
-                return photo.image.url
-            except ValueError:
-                pass
-        try:
-            return self.image.url if self.image else ""
-        except ValueError:
-            return ""
+        if photo is not None and versioned_media_url(photo.image):
+            return versioned_media_url(photo.image)
+        return versioned_media_url(self.image)
+
+    @property
+    def image_url(self) -> str:
+        """Старое поле image с меткой версии, для галереи-запаски."""
+        return versioned_media_url(self.image)
 
     @property
     def low_stock_left(self) -> int | None:
@@ -1213,6 +1235,11 @@ class WholesaleItemPhoto(models.Model):
         """Alt для тега img: подпись, если есть, иначе название позиции."""
         return self.caption or self.item.title
 
+    @property
+    def url(self) -> str:
+        """URL снимка с меткой версии: перезалили файл - браузер увидит новый."""
+        return versioned_media_url(self.image)
+
 
 class WholesaleItemVariant(models.Model):
     """Вариант позиции: цвет, сорт, партия. Свой остаток и свой степпер в карточке.
@@ -1277,6 +1304,12 @@ class WholesaleItemVariant(models.Model):
         from . import wholesale_pricing
 
         return wholesale_pricing.price_ladder(self.effective_price, self.item.discount_group)
+
+
+    @property
+    def image_url(self) -> str:
+        """Фото варианта с меткой версии."""
+        return versioned_media_url(self.image)
 
 
 class WholesaleOrder(models.Model):

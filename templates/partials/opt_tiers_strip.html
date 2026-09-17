@@ -12,8 +12,8 @@
   равную колонку не влезала и ломалась на две строки), горизонтальный скролл на
   мобиле.
 {% endcomment %}
-<section class="mt-8 border-y border-slate-200 py-4" aria-labelledby="opt-tiers-title">
-  <div class="space-y-5">
+<section class="mt-8 border-y border-slate-200 py-6" aria-labelledby="opt-tiers-title">
+  <div class="opt-tiers-ladders">
     <div>
       <h2 id="opt-tiers-title" class="text-base font-bold text-slate-900">Скидка за объём</h2>
       <p class="mt-1 text-sm text-slate-500">
@@ -24,11 +24,11 @@
     {% for ladder in discount_ladders %}
       <div>
         <p class="text-sm font-semibold text-slate-900">{{ ladder.title }}</p>
-        <p class="mt-0.5 text-xs text-slate-500">Входные {{ ladder.entry_percent }}% уже с первой позиции.</p>
-        <ul class="opt-tier-chips mt-2">
+        <p class="mt-1 text-xs text-slate-500">Входные {{ ladder.entry_percent }}% уже с первой позиции.</p>
+        <ul class="opt-tier-chips">
           {% for chip in ladder.chips %}
             <li data-opt-tier-group="{{ ladder.key }}" data-opt-tier-chip="{{ chip.key }}"
-                class="rounded-full bg-slate-100 px-3 py-1.5 text-xs font-semibold text-slate-700 ring-brand transition">
+                class="rounded-full bg-slate-100 text-xs font-semibold text-slate-700 ring-brand transition">
               <span>{{ chip.label }}</span>
               {% comment %}
                 Чем выше ступень, тем заметнее процент: плотность зелёного растёт

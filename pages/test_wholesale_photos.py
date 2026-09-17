@@ -103,7 +103,7 @@ class GalleryRenderTest(MediaSandboxMixin, TestCase):
         add_photo(self.item, "02.png", sort_order=20)
 
         item = WholesaleItem.objects.get(pk=self.item.pk)
-        self.assertEqual(item.cover_url, first.image.url)
+        self.assertTrue(item.cover_url.startswith(first.image.url + "?v="), item.cover_url)
         self.assertEqual(item.photos_count, 2)
 
         # В списке раздела карточка показывает ту же обложку и пометку о кадрах.
