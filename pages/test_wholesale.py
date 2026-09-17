@@ -324,6 +324,7 @@ class OptOrderApiTest(TestCase):
         self.section, self.tree, self.bush = make_catalog()
         self.b24 = patch("pages.wholesale_orders._send_to_bitrix").start()
         self.tg = patch("pages.wholesale_orders._notify_telegram").start()
+        patch("pages.wholesale_orders.NOTIFY_IN_THREAD", False).start()
         self.addCleanup(patch.stopall)
 
     def _post(self, payload):
@@ -428,6 +429,7 @@ class OptOrderApiTest(TestCase):
         """Лид с /opt/ уходит на ответственного из B24_ASSIGNED_BY_ID."""
         patch.stopall()
         patch("pages.wholesale_orders._notify_telegram").start()
+        patch("pages.wholesale_orders.NOTIFY_IN_THREAD", False).start()
         b24 = patch("pages.wholesale_orders.Bitrix24Client").start()
         b24.return_value.create_lead.return_value = 777
 
@@ -447,6 +449,7 @@ class OptOrderApiTest(TestCase):
         """Сбой Б24 не отменяет заказ: он уже в БД, менеджер увидит его в админке."""
         patch.stopall()
         patch("pages.wholesale_orders._notify_telegram").start()
+        patch("pages.wholesale_orders.NOTIFY_IN_THREAD", False).start()
         b24 = patch("pages.wholesale_orders.Bitrix24Client").start()
         b24.return_value.create_lead.side_effect = RuntimeError("Б24 лежит")
 
@@ -557,6 +560,7 @@ class MinOrderTest(TestCase):
         self.section, self.tree, self.bush = make_catalog()
         patch("pages.wholesale_orders._send_to_bitrix").start()
         patch("pages.wholesale_orders._notify_telegram").start()
+        patch("pages.wholesale_orders.NOTIFY_IN_THREAD", False).start()
         self.addCleanup(patch.stopall)
 
     def _post(self, items):
@@ -609,6 +613,7 @@ class VariantTest(TestCase):
         )
         patch("pages.wholesale_orders._send_to_bitrix").start()
         patch("pages.wholesale_orders._notify_telegram").start()
+        patch("pages.wholesale_orders.NOTIFY_IN_THREAD", False).start()
         self.addCleanup(patch.stopall)
 
     def test_card_shows_variants_with_stock_and_steppers(self):
@@ -942,6 +947,7 @@ class MixedOrderApiTest(TestCase):
         )
         patch("pages.wholesale_orders._send_to_bitrix").start()
         patch("pages.wholesale_orders._notify_telegram").start()
+        patch("pages.wholesale_orders.NOTIFY_IN_THREAD", False).start()
         self.addCleanup(patch.stopall)
 
     def _post(self, items):

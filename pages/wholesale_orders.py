@@ -14,6 +14,7 @@ from __future__ import annotations
 import json
 import logging
 import os
+import threading
 from decimal import Decimal
 from uuid import uuid4
 
@@ -36,6 +37,14 @@ logger = logging.getLogger(__name__)
 # если и его нет - просто молчим (заказ всё равно в БД и в админке).
 TG_CHAT_ID_ENV = "WHOLESALE_ORDER_TG_CHAT_ID"
 TG_CHAT_ID_FALLBACK_ENVS = ("LANDING_LEAD_TG_CHAT_ID", "CARE_PROMO_ADMIN_CHAT_ID")
+
+# Уведомления менеджеру (Битрикс24 и Telegram) уходят ПОСЛЕ ответа клиенту, в
+# фоновом потоке. Причина боевая (17.09.2026): api.telegram.org с этого хостинга
+# не отвечает, запрос висит до таймаута, Б24 тоже бывает медленным, и человек
+# по 10-60 секунд смотрел на заблокированную кнопку, а при обрыве видел «Не
+# получилось отправить заказ», хотя заказ уже лежал в БД. Тесты выключают поток,
+# чтобы проверять вызовы синхронно.
+NOTIFY_IN_THREAD = True
 
 B24_TITLE = "Опт: заказ из каталога /opt/"
 
@@ -320,6 +329,24 @@ def _notify_telegram(order: WholesaleOrder, lines: list[dict], utm: dict) -> Non
         logger.warning("opt order %s: Telegram не принял алерт: %s", order.order_id, res.get("error"))
 
 
+def _run_notifications(order: WholesaleOrder, lines: list[dict], utm: dict) -> None:
+    """Обе рассылки, каждая глотает свои ошибки; общий try на случай сюрпризов в потоке."""
+    try:
+        _send_to_bitrix(order, lines, utm)
+        _notify_telegram(order, lines, utm)
+    except Exception:  # noqa: BLE001 - фон не должен шуметь трейсбеком в stderr потока
+        logger.exception("opt order %s: сбой фоновых уведомлений", order.order_id)
+
+
+def _dispatch_notifications(order: WholesaleOrder, lines: list[dict], utm: dict) -> None:
+    if not NOTIFY_IN_THREAD:
+        _run_notifications(order, lines, utm)
+        return
+    threading.Thread(
+        target=_run_notifications, args=(order, lines, utm), name=f"opt-order-notify-{order.order_id}", daemon=True
+    ).start()
+
+
 @csrf_exempt
 @require_POST
 def opt_order(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest:
@@ -425,8 +452,7 @@ def opt_order(request: HttpRequest) -> JsonResponse | HttpResponseBadRequest:
         ]
     )
 
-    _send_to_bitrix(order, lines, utm)
-    _notify_telegram(order, lines, utm)
+    _dispatch_notifications(order, lines, utm)
 
     return JsonResponse(
         {
