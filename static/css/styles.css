@@ -552,9 +552,8 @@ body.sg-cookie-banner-open .b24-widget-button-wrapper {
   gap: 0.625rem;
   /* Подпись «Входные N% уже с первой позиции» сливалась с рядом чипов
      (скрин маркетолога 17.09.2026, вторая итерация): между ними целый rem. */
-  margin-top: 1.125rem;
   list-style: none;
-  margin: 0;
+  margin: 1.125rem 0 0;
   padding: 0;
 }
 .opt-tier-chips > li {
