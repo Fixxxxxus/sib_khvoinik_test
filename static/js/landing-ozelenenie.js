@@ -74,22 +74,47 @@
   // Хука «Метрика загрузилась» в app.js нет, поэтому просто ждём появления ym.
   // Опрос дешёвый и сам останавливается: либо счётчик появился, либо человек
   // так и не дал согласия за отведённые 15 минут.
-  (function waitForMetrika() {
+  var metrikaWaitTimer = null;
+  function waitForMetrika(maxAttempts) {
+    if (metrikaReady) return;
     if (window.ym) {
       onMetrikaReady();
       return;
     }
+    if (metrikaWaitTimer) clearInterval(metrikaWaitTimer);
     var attempts = 0;
-    var timer = setInterval(function () {
+    var limit = maxAttempts || 1800;
+    metrikaWaitTimer = setInterval(function () {
       attempts += 1;
       if (window.ym) {
-        clearInterval(timer);
+        clearInterval(metrikaWaitTimer);
+        metrikaWaitTimer = null;
         onMetrikaReady();
-      } else if (attempts > 1800) {
-        clearInterval(timer);
+      } else if (attempts > limit) {
+        clearInterval(metrikaWaitTimer);
+        metrikaWaitTimer = null;
       }
     }, 500);
-  })();
+  }
+  waitForMetrika();
+
+  // Галочка под формой включает и cookie для аналитики. Человек её уже поставил
+  // (без неё заявка не уходит), так что после успешной отправки согласие можно
+  // записать тем же ключом, что и куки-плашка, и поднять счётчик. Иначе Метрика
+  // видела только тех, кто отдельно нажал «Принять все» - около 13% рекламного
+  // трафика, и Директ почти не получал конверсий.
+  function grantAnalyticsConsentFromForm() {
+    try {
+      if (localStorage.getItem('cookie_consent') === 'all') return;
+    } catch (e) { /* приватный режим: пробуем выдать согласие как есть */ }
+    try {
+      if (typeof window.sgGrantAnalyticsConsent === 'function') {
+        window.sgGrantAnalyticsConsent();
+      }
+    } catch (e) { /* noop */ }
+    // Счётчик поднимается асинхронно: ждём window.ym и досылаем очередь целей.
+    waitForMetrika(120);
+  }
 
   // ── Атрибуция ──────────────────────────────────────────────────────────────
   function readStored() {
@@ -287,6 +312,9 @@
       .then(function (res) { return res.json().catch(function () { return { ok: false }; }); })
       .then(function (data) {
         if (data && data.ok) {
+          // Порядок важен: заявка уже сохранена на сервере, аналитика идёт после
+          // и в try - её падение не должно стоить человеку экрана успеха.
+          try { grantAnalyticsConsentFromForm(); } catch (e) { /* noop */ }
           reachGoal('lead_submit', {
             landing_id: LANDING_ID,
             lead_id: data.lead_id || '',

@@ -31,6 +31,39 @@
     try { window.ym(METRIKA_ID, 'reachGoal', goal); } catch (e) { /* noop */ }
   }
 
+  /* Галочка в форме заказа включает и cookie для аналитики. После принятого
+     заказа записываем согласие тем же ключом, что и куки-плашка (app.js),
+     поднимаем счётчик и ждём window.ym, чтобы цель не потерялась: счётчик
+     появляется асинхронно, а без этого Директ не видел конверсий опта. */
+  function grantAnalyticsConsentFromForm() {
+    try {
+      if (localStorage.getItem('cookie_consent') === 'all') return;
+    } catch (e) { /* приватный режим: пробуем выдать согласие как есть */ }
+    try {
+      if (typeof window.sgGrantAnalyticsConsent === 'function') {
+        window.sgGrantAnalyticsConsent();
+      }
+    } catch (e) { /* noop */ }
+  }
+
+  /* Цель после согласия: ждём счётчик не дольше минуты и тихо сдаёмся. */
+  function reachGoalWhenReady(goal) {
+    if (window.ym) {
+      reachGoal(goal);
+      return;
+    }
+    var attempts = 0;
+    var timer = setInterval(function () {
+      attempts += 1;
+      if (window.ym) {
+        clearInterval(timer);
+        reachGoal(goal);
+      } else if (attempts > 120) {
+        clearInterval(timer);
+      }
+    }, 500);
+  }
+
   /* Насколько «одинаково близкими» считаем ступени по разным осям.
      Та же константа, что в pages/wholesale_pricing.HINT_TOLERANCE. */
   var HINT_TOLERANCE = 0.1;
@@ -622,6 +655,15 @@
       }
       return;
     }
+    var consentInput = form.querySelector('[name="consent"]');
+    if (consentInput && !consentInput.checked) {
+      if (errorNode) {
+        errorNode.textContent = 'Без согласия на обработку данных мы не сможем принять заказ.';
+        errorNode.hidden = false;
+      }
+      return;
+    }
+
     var button = form.querySelector('[data-opt-submit]');
     if (button) button.disabled = true;
 
@@ -663,7 +705,12 @@
         writeCart([]);
         render();
         toggle(document.querySelector('[data-opt-success]'), true);
-        reachGoal('opt_order');
+        // Порядок важен: заказ уже принят сервером, аналитика идёт после и в try,
+        // её падение не должно ломать экран «Заказ принят».
+        try {
+          grantAnalyticsConsentFromForm();
+          reachGoalWhenReady('opt_order');
+        } catch (e) { /* noop */ }
         toggle(form, false);
         toggle(document.querySelector('[data-opt-cart-empty]'), false);
       })

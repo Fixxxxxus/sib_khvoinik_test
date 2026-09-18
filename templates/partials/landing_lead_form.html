@@ -72,6 +72,10 @@
     Согласие (аудит маркетолога, п.9): одна короткая строка вместо двух формулировок,
     ссылки на те же документы. Чекбокс 24x24 - зона тапа не меньше требуемой,
     и весь label кликабельный, так что попасть можно и по тексту.
+
+    В формулировку добавлено использование cookie для аналитики: по этой галочке
+    landing-ozelenenie.js после успешной отправки поднимает Метрику, не дожидаясь
+    отдельного нажатия в куки-плашке.
   {% endcomment %}
   <div>
     <label for="lead-consent-{{ form_id }}" class="flex cursor-pointer items-start gap-2.5 text-[13px] leading-snug text-slate-600">
@@ -85,9 +89,9 @@
       />
       <span class="pt-0.5">
         Согласен на
-        <a href="{% url 'consent' %}" target="_blank" rel="noopener noreferrer" class="text-brand underline underline-offset-2">обработку данных</a>
-        и
+        <a href="{% url 'consent' %}" target="_blank" rel="noopener noreferrer" class="text-brand underline underline-offset-2">обработку данных</a>,
         <a href="{% url 'privacy' %}" target="_blank" rel="noopener noreferrer" class="text-brand underline underline-offset-2">политику конфиденциальности</a>
+        и использование cookie для аналитики
       </span>
     </label>
     <p data-error-for="consent" class="mt-1 hidden text-sm text-red-600"></p>

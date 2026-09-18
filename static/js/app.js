@@ -59,6 +59,35 @@ function syncFloatingUiAboveCookieBanner() {
   if (widget) widget.style.bottom = bannerVisible ? (h + 8) + 'px' : '';
 }
 
+// Ключ согласия один на весь сайт: его же читают landing-ozelenenie.js и opt.js,
+// когда человек отправил форму с галочкой «согласен ... и на cookie для аналитики».
+var COOKIE_CONSENT_KEY = 'cookie_consent';
+
+function readCookieConsent() {
+  try { return localStorage.getItem(COOKIE_CONSENT_KEY); } catch (e) { return null; }
+}
+
+// Записать согласие, спрятать плашку и поднять то, что от согласия зависит.
+// Вынесено из initCookieBanner наружу, чтобы согласие можно было выдать не только
+// кнопкой в плашке, но и галочкой в форме заявки (лендинг, оптовая корзина).
+function setCookieConsent(value) {
+  try { localStorage.setItem(COOKIE_CONSENT_KEY, value); } catch (e) { /* noop */ }
+  var banner = document.getElementById('cookieBanner');
+  if (banner) banner.classList.add('hidden');
+  syncFloatingUiAboveCookieBanner();
+  if (value === 'all') loadConsentedScripts();
+}
+
+// Публичный вход для форм: вызвать можно сколько угодно раз, счётчики поднимутся один.
+window.sgGrantAnalyticsConsent = function () {
+  if (readCookieConsent() === 'all') {
+    loadConsentedScripts();
+    return;
+  }
+  setCookieConsent('all');
+};
+window.sgCookieConsent = readCookieConsent;
+
 function initCookieBanner() {
   const banner = document.getElementById('cookieBanner');
   const acceptAll = document.getElementById('cookieAcceptAll');
@@ -66,7 +95,7 @@ function initCookieBanner() {
   const settingsBtn = document.getElementById('cookieSettingsBtn');
   if (!banner || !acceptAll || !necessaryOnly) return;
 
-  const consent = localStorage.getItem('cookie_consent');
+  const consent = readCookieConsent();
   if (!consent) {
     banner.classList.remove('hidden');
   } else if (consent === 'all') {
@@ -75,12 +104,7 @@ function initCookieBanner() {
   syncFloatingUiAboveCookieBanner();
   window.addEventListener('resize', syncFloatingUiAboveCookieBanner);
 
-  const setConsent = (value) => {
-    localStorage.setItem('cookie_consent', value);
-    banner.classList.add('hidden');
-    syncFloatingUiAboveCookieBanner();
-    if (value === 'all') loadConsentedScripts();
-  };
+  const setConsent = (value) => setCookieConsent(value);
 
   acceptAll.addEventListener('click', () => setConsent('all'));
   necessaryOnly.addEventListener('click', () => setConsent('necessary'));
