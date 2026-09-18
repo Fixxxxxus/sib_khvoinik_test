@@ -907,6 +907,12 @@ class LandingLead(models.Model):
     b24_lead_id = models.IntegerField("ID лида в Б24", null=True, blank=True)
     ip = models.CharField("IP", max_length=64, blank=True)
     created_at = models.DateTimeField("Создана", auto_now_add=True, db_index=True)
+    # Отметка офлайн-конверсий Метрики: ставится после успешной загрузки CSV по
+    # yclid (pages/management/commands/push_metrika_conversions.py), чтобы одну
+    # и ту же заявку не слать в счётчик по второму кругу.
+    metrika_uploaded_at = models.DateTimeField(
+        "Отправлена в Метрику", null=True, blank=True, editable=False
+    )
 
     class Meta:
         ordering = ["-created_at", "-pk"]
@@ -1353,6 +1359,10 @@ class WholesaleOrder(models.Model):
     b24_lead_id = models.IntegerField("ID лида в Б24", null=True, blank=True)
     ip = models.CharField("IP", max_length=64, blank=True)
     created_at = models.DateTimeField("Создан", auto_now_add=True, db_index=True)
+    # Отметка офлайн-конверсий Метрики, см. LandingLead.metrika_uploaded_at.
+    metrika_uploaded_at = models.DateTimeField(
+        "Отправлен в Метрику", null=True, blank=True, editable=False
+    )
 
     class Meta:
         ordering = ["-created_at", "-pk"]

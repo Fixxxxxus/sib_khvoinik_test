@@ -4,4 +4,7 @@ SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 
 0 5 * * 4 root /app/run_email_max_digest.sh >> /var/log/gazony-digest.log 2>&1
+
+# Офлайн-конверсии Метрики по yclid: каждый час в 17 минут.
+17 * * * * root /app/run_metrika_conversions.sh >> /var/log/gazony-digest.log 2>&1
 # Пустая строка в конце обязательна для cron

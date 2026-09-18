@@ -224,3 +224,9 @@ ARTICLE_API_TOKEN = os.environ.get('ARTICLE_API_TOKEN', '').strip()
 
 # JavaScript API Яндекс.Карт (страница «Контакты»). Задайте в окружении: YANDEX_MAPS_API_KEY
 YANDEX_MAPS_API_KEY = os.environ.get('YANDEX_MAPS_API_KEY', '').strip()
+
+# Яндекс.Метрика: офлайн-конверсии по yclid
+# (pages/management/commands/push_metrika_conversions.py).
+# Токен - OAuth с правом на запись в счётчик. Пусто = команда просто ничего не шлёт.
+YANDEX_METRIKA_ACCESS_TOKEN = os.environ.get('YANDEX_METRIKA_ACCESS_TOKEN', '').strip()
+YANDEX_METRIKA_COUNTER_ID = os.environ.get('YANDEX_METRIKA_COUNTER_ID', '108722541').strip()

@@ -42,8 +42,9 @@ RUN mkdir -p /app/staticfiles /app/media
 COPY deploy/gazony-cron/crontab /etc/cron.d/gazony-digest
 COPY deploy/gazony-cron/cron-entrypoint.sh /app/cron-entrypoint.sh
 COPY deploy/gazony-cron/run_email_max_digest.sh /app/run_email_max_digest.sh
+COPY deploy/gazony-cron/run_metrika_conversions.sh /app/run_metrika_conversions.sh
 RUN chmod 0644 /etc/cron.d/gazony-digest \
-    && chmod +x /app/cron-entrypoint.sh /app/run_email_max_digest.sh \
+    && chmod +x /app/cron-entrypoint.sh /app/run_email_max_digest.sh /app/run_metrika_conversions.sh \
     && touch /var/log/gazony-digest.log
 
 EXPOSE 8000
