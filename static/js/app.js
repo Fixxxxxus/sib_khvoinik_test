@@ -926,7 +926,47 @@ function initModal() {
   };
   const LEAD_ROUTING_DEFAULT = 1317;
 
-  const sendLeadToB24 = (tag, payload) => {
+  // Файлы из формы (например «Прикрепить проект») уходят в файловое поле лида
+  // UF_CRM_PROJECT_FILE (создано 21.09.2026): раньше в Б24 попадало только имя
+  // файла строкой в комментарии, сам файл терялся. Лимит на файл - 10 МБ,
+  // больше не читаем: имя останется в комментарии с пометкой.
+  const B24_FILE_FIELD = 'UF_CRM_PROJECT_FILE';
+  const B24_FILE_MAX_BYTES = 10 * 1024 * 1024;
+
+  const readFileAsBase64 = (file) => new Promise((resolve) => {
+    try {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const res = String(reader.result || '');
+        const idx = res.indexOf(',');
+        resolve(idx >= 0 ? res.slice(idx + 1) : '');
+      };
+      reader.onerror = () => resolve('');
+      reader.readAsDataURL(file);
+    } catch (e) { resolve(''); }
+  });
+
+  // Собрать вложения формы: [{ name, base64 }]. Слишком большие и нечитаемые
+  // файлы пропускаются, а их имя помечается в payload для комментария.
+  const collectFormFiles = async (formData, payload) => {
+    const files = [];
+    for (const [k, v] of formData.entries()) {
+      if (!(v instanceof File) || !v.name) continue;
+      if (v.size > B24_FILE_MAX_BYTES) {
+        payload[k] = v.name + ' (больше 10 МБ, не прикреплён)';
+        continue;
+      }
+      const base64 = await readFileAsBase64(v);
+      if (!base64) {
+        payload[k] = v.name + ' (не удалось прочитать файл)';
+        continue;
+      }
+      files.push({ name: v.name, base64 });
+    }
+    return files;
+  };
+
+  const sendLeadToB24 = (tag, payload, files) => {
     const [section, formName] = tag.includes('/') ? tag.split('/', 2) : ['other', tag];
 
     var leadTitle = FORM_TITLES[formName] || formName;
@@ -1022,6 +1062,10 @@ function initModal() {
       });
 
     if (lines.length) fields.COMMENTS = lines.join('<br>');
+
+    if (files && files.length) {
+      fields[B24_FILE_FIELD] = files.map(function (f) { return { fileData: [f.name, f.base64] }; });
+    }
 
     fetch(`${B24_WEBHOOK}/crm.lead.add`, {
       method: 'POST',
@@ -1233,6 +1277,11 @@ function initModal() {
       payload.pagePath = path;
     } catch (e) { /* noop */ }
 
+    // Вложения читаем до отправки: имя уже в payload (для комментария), сам файл
+    // уйдёт в файловое поле лида. Чтение локальное и быстрое, ошибка не роняет форму.
+    let attachedFiles = [];
+    try { attachedFiles = await collectFormFiles(formData, payload); } catch (e) { attachedFiles = []; }
+
     const entry = { tag, payload, ts: new Date().toISOString() };
     const key = 'sg_leads';
     const existing = JSON.parse(localStorage.getItem(key) || '[]');
@@ -1252,7 +1301,7 @@ function initModal() {
       loyaltyOk = await tryRegisterLoyaltyCard(payload);
     }
     if (!careResp && !loyaltyOk) {
-      sendLeadToB24(tag, payload);
+      sendLeadToB24(tag, payload, attachedFiles);
     }
 
     if (window.ym) {
