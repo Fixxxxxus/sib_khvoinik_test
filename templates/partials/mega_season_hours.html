@@ -1,0 +1,24 @@
+{# Режим работы садового центра МЕГА с учётом зимовки (MEGA_SEASON в pages/data.py). #}
+<div class="space-y-2 text-xs leading-relaxed text-slate-600 sm:text-sm">
+  <div class="flex flex-wrap items-center gap-2">
+    <i data-lucide="clock" class="h-4 w-4 shrink-0 text-slate-400" aria-hidden="true"></i>
+    {% if mega_season.closed %}
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-amber-800">Закрыт на зиму</span>
+    {% elif mega_season.closing %}
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-amber-800">Работает до {{ mega_season.last_day }}</span>
+    {% else %}
+      <span class="inline-flex items-center gap-1.5 rounded-full border border-brand/20 bg-brand/5 px-2.5 py-0.5 text-[11px] font-semibold uppercase tracking-wide text-brand">Без выходных</span>
+    {% endif %}
+  </div>
+  {% if mega_season.closed %}
+    <p>Центр ушёл на зимовку, откроемся весной. Сейчас ждём вас в Новопичугово.</p>
+  {% else %}
+    <div class="space-y-0.5">
+      <p>Вс–Чт с 9:00 до 19:00</p>
+      <p>Пт–Сб с 9:00 до 20:00</p>
+    </div>
+    {% if mega_season.closing %}
+      <p>{{ mega_season.last_day|capfirst }} последний день, потом центр закрывается на зиму до весны.</p>
+    {% endif %}
+  {% endif %}
+</div>

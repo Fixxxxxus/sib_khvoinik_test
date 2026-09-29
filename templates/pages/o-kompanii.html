@@ -107,6 +107,7 @@
             <figcaption class="p-4 text-sm text-slate-600">
               <span class="font-semibold text-slate-900">Садовые центры.</span>
               У ТЦ МЕГА (ул. Ватутина, 107) и в селе Новопичугово.
+              {% if mega_season.closed %}Центр у МЕГИ на зимовке до весны, Новопичугово работает.{% elif mega_season.closing %}Центр у МЕГИ работает до {{ mega_season.last_day }}, потом закрывается на зиму.{% endif %}
             </figcaption>
           </figure>
         </aside>

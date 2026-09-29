@@ -1,0 +1,14 @@
+{# Кто из садовых центров работает, а кто на зимовке (MEGA_SEASON в pages/data.py). #}
+{% if mega_season.closed or mega_season.closing %}
+  <div class="{{ notice_class|default:'mt-6' }} flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm leading-relaxed text-amber-900">
+    <i data-lucide="info" class="mt-0.5 h-5 w-5 shrink-0" aria-hidden="true"></i>
+    <p>
+      {% if mega_season.closed %}
+        <span class="font-semibold">Садовый центр МЕГА закрыт на зиму</span> и откроется весной.
+      {% else %}
+        <span class="font-semibold">Садовый центр МЕГА закрывается на зиму:</span> последний день {{ mega_season.last_day }}.
+      {% endif %}
+      Садовый центр Новопичугово работает в обычном режиме, без выходных.
+    </p>
+  </div>
+{% endif %}

@@ -10,3 +10,8 @@ class PagesConfig(AppConfig):
         from pages.catalog_cache import register_invalidation_signals
 
         register_invalidation_signals()
+
+        # Регистронезависимый поиск кириллицы в админке (pages/admin_search.py).
+        from pages.admin_search import register_unicode_lower
+
+        register_unicode_lower()

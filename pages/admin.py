@@ -4,12 +4,13 @@ from io import BytesIO
 from typing import Any
 
 from django.contrib import admin, messages
-from django.db.models import Q, QuerySet
+from django.db.models import Count, Q, QuerySet
 from django.http import FileResponse, HttpRequest, HttpResponseRedirect
 from django.template.response import TemplateResponse
 from django.urls import path, reverse
 from django.utils.html import format_html
 
+from pages.admin_search import UnicodeSearchMixin, unicode_search
 from pages.catalog_io import export_catalog_workbook, import_catalog_workbook
 from pages.forms_catalog import PlantAdminForm
 from pages.models import (
@@ -89,6 +90,33 @@ class InStockFilter(admin.SimpleListFilter):
         return queryset
 
 
+# Группы разделов для фильтра в админке. Сортовые яблони, груши и вишни живут в
+# «Плодовых», декоративные деревья в «Деревьях»: чтобы найти все деревья разом,
+# в фильтре есть общий пункт.
+CATEGORY_GROUPS = {
+    "trees": ("Все деревья (лиственные, плодовые, хвойные)", ("derevya", "plodovye", "hvoynye-derevya")),
+}
+
+
+class CategoryFilter(admin.SimpleListFilter):
+    title = "Раздел"
+    parameter_name = "razdel"
+
+    def lookups(self, request: HttpRequest, model_admin: admin.ModelAdmin) -> list[tuple[str, str]]:
+        groups = [(f"group:{key}", label) for key, (label, _slugs) in CATEGORY_GROUPS.items()]
+        categories = [(str(c.pk), c.label) for c in CatalogCategory.objects.order_by("sort_order", "label")]
+        return groups + categories
+
+    def queryset(self, request: HttpRequest, queryset: QuerySet[Plant]) -> QuerySet[Plant]:
+        value = self.value()
+        if not value:
+            return queryset
+        if value.startswith("group:"):
+            group = CATEGORY_GROUPS.get(value.removeprefix("group:"))
+            return queryset.filter(category__slug__in=group[1]) if group else queryset
+        return queryset.filter(category_id=value) if value.isdigit() else queryset
+
+
 @admin.register(CatalogCategory)
 class CatalogCategoryAdmin(admin.ModelAdmin):
     inlines = (CatalogSubcategoryInline,)
@@ -128,7 +156,7 @@ class CatalogCategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(Plant)
-class PlantAdmin(admin.ModelAdmin):
+class PlantAdmin(UnicodeSearchMixin, admin.ModelAdmin):
     form = PlantAdminForm
     change_form_template = "admin/pages/plant/change_form.html"
     save_on_top = True
@@ -142,7 +170,7 @@ class PlantAdmin(admin.ModelAdmin):
         "updated_at",
     )
     list_display_links = ("name",)
-    list_filter = ("category", "is_new", "is_published", InStockFilter)
+    list_filter = (CategoryFilter, "is_new", "is_published", InStockFilter)
     search_fields = ("name", "description", "slug")
     ordering = ("category", "name")
     autocomplete_fields = ("category",)
@@ -197,6 +225,44 @@ class PlantAdmin(admin.ModelAdmin):
 
     class Media:
         css = {"all": ("admin/css/catalog_admin.css",)}
+
+    def changelist_view(self, request: HttpRequest, extra_context: dict | None = None) -> Any:
+        self._hint_outside_filter(request)
+        return super().changelist_view(request, extra_context)
+
+    def _hint_outside_filter(self, request: HttpRequest) -> None:
+        """Поиск при выбранном разделе: подсказать, что ещё нашлось в других разделах.
+
+        Иначе сортовые яблони (раздел «Плодовые») при фильтре «Деревья» выглядят
+        как пропавшие.
+        """
+        term = request.GET.get("q", "").strip()
+        razdel = request.GET.get(CategoryFilter.parameter_name, "")
+        if not term or not razdel:
+            return
+        found = unicode_search(Plant.objects.all(), tuple(self.search_fields), term)
+        inside = CategoryFilter(request, {CategoryFilter.parameter_name: razdel}, Plant, self).queryset(request, found)
+        outside = (
+            found.exclude(pk__in=inside.values("pk"))
+            .values_list("category__label")
+            .annotate(n=Count("pk"))
+            .order_by("category__sort_order")
+        )
+        if not outside:
+            return
+        where = ", ".join(f"{label or 'без раздела'}: {n}" for label, n in outside)
+        params = request.GET.copy()
+        params.pop(CategoryFilter.parameter_name, None)
+        messages.info(
+            request,
+            format_html(
+                "По запросу «{}» есть ещё позиции в других разделах ({}). "
+                '<a href="?{}">Показать по всему каталогу</a>',
+                term,
+                where,
+                params.urlencode(),
+            ),
+        )
 
     def get_urls(self) -> list[Any]:
         urls = super().get_urls()
@@ -700,7 +766,7 @@ class WholesaleItemVariantInline(admin.TabularInline):
 
 
 @admin.register(WholesaleItem)
-class WholesaleItemAdmin(admin.ModelAdmin):
+class WholesaleItemAdmin(UnicodeSearchMixin, admin.ModelAdmin):
     """Позиции оптового каталога.
 
     Цена отсюда - единственная, которой верит сервер при оформлении заказа:
@@ -720,6 +786,8 @@ class WholesaleItemAdmin(admin.ModelAdmin):
     )
     list_filter = ("section", "is_active", "is_highlighted", "is_demo")
     search_fields = ("title", "slug", "size", "availability")
+    # Сорта и размеры живут вариантами позиции: ищем и по ним.
+    unicode_search_fields = ("title", "slug", "size", "availability", "variants__title")
     prepopulated_fields = {"slug": ("title",)}
     inlines = [WholesaleItemPhotoInline, WholesaleItemVariantInline]
     readonly_fields = ("preview",)

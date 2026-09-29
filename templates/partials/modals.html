@@ -1567,6 +1567,7 @@
         <li>
           <span class="font-medium">Садовый центр МЕГА</span><br>
           г. Новосибирск, ул. Ватутина, 107
+          {% if mega_season.closed %}<br><span class="text-amber-800">Закрыт на зиму, откроется весной</span>{% elif mega_season.closing %}<br><span class="text-amber-800">Работает до {{ mega_season.last_day }}</span>{% endif %}
         </li>
         <li>
           <span class="font-medium">Садовый центр Новопичугово</span><br>

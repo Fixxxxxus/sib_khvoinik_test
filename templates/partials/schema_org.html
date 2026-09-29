@@ -93,11 +93,11 @@
         "addressLocality": "Новосибирск",
         "addressRegion": "Новосибирская область",
         "addressCountry": "RU"
-      },
+      },{% if not mega_season.closed %}
       "openingHoursSpecification": [
         {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday"], "opens": "09:00", "closes": "19:00"},
         {"@type": "OpeningHoursSpecification", "dayOfWeek": ["Friday", "Saturday"], "opens": "09:00", "closes": "20:00"}
-      ],
+      ],{% endif %}
       "priceRange": "₽₽",
       "aggregateRating": {
         "@type": "AggregateRating",
