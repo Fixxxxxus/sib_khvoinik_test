@@ -12,6 +12,7 @@ from typing import Any
 
 from django.http import HttpResponse
 from django.urls import reverse
+from django.views.decorators.cache import cache_page
 
 SITE_ORIGIN = "https://gazony.ru"
 
@@ -330,6 +331,7 @@ def _sitemap_url_xml(path: str, priority: float, changefreq: str, lastmod: str |
     return "  <url>" + "".join(parts) + "</url>"
 
 
+@cache_page(60 * 60)
 def sitemap_xml(request):
     from .catalog_merge import get_merged_catalog_plants
     from .catalog_subcategories import all_catalog_category_slugs
@@ -421,6 +423,25 @@ LLMS_TXT = """# Сибирские газоны
 - [Статьи](https://gazony.ru/stati/): практические материалы об уходе за растениями в Сибири
 - [О компании](https://gazony.ru/o-kompanii/): история, производство, реквизиты
 - [Контакты](https://gazony.ru/kontakty/): телефоны, адреса, форма обратной связи
+
+## Рулонный газон: цены и характеристики
+
+- Розничный прайс 2026 (с НДС 5%, за м²): 1-500 м² - 590 ₽, 500-1000 м² - 585 ₽, свыше 1000 м² - 575 ₽, от 2500 м² (VIP) - 540 ₽
+- Рулон 40 × 250 см закрывает ровно 1 м², вес около 25 кг; поддон - 45 м², стоимость поддона 350 ₽
+- Мятлик луговой, на выращивание уходит не менее двух лет
+- Отгрузка до 8 000 м² в день, собственные поля около 200 га
+- Подробные цены: https://gazony.ru/prais-rulonnyy-gazon/
+
+## Сезон укладки
+
+- Основной сезон с мая по начало октября; лучшие окна: конец мая - июнь и август - начало сентября
+- Газон срезаем под дату укладки; в штабеле свежий срез живёт 24-48 часов
+- Вопросы и ответы по газону: https://gazony.ru/gazon/
+
+## Кому
+
+- Частные участки (B2C): газон, укладка под ключ от 100 м², озеленение: https://gazony.ru/ozelenenie-b2c/
+- Бизнес (B2B): поставки, озеленение жилых комплексов, опт: https://gazony.ru/b2b/
 
 ## Контакты
 

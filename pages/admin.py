@@ -3,6 +3,7 @@ from __future__ import annotations
 from io import BytesIO
 from typing import Any
 
+from django import forms
 from django.contrib import admin, messages
 from django.db.models import Count, Q, QuerySet
 from django.http import FileResponse, HttpRequest, HttpResponseRedirect
@@ -42,8 +43,13 @@ from django.templatetags.static import static as static_url
 class CatalogSubcategoryInline(admin.TabularInline):
     model = CatalogSubcategory
     extra = 1
-    fields = ("sort_order", "label", "slug")
+    fields = ("sort_order", "label", "slug", "seo_intro")
     prepopulated_fields = {"slug": ("label",)}
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == "seo_intro":
+            kwargs["widget"] = forms.Textarea(attrs={"rows": 3, "cols": 60})
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
 class PlantVariantInline(admin.TabularInline):
@@ -138,6 +144,14 @@ class CatalogCategoryAdmin(admin.ModelAdmin):
             },
         ),
         (
+            "SEO-текст",
+            {
+                "fields": ("seo_intro",),
+                "description": "Выводится под заголовком страницы раздела вместо фразы «Выберите позицию в списке ниже». "
+                "Пусто - на сайте остаётся текст из pages/catalog_seo_intros.py, если он там есть.",
+            },
+        ),
+        (
             "Дополнительно",
             {
                 "fields": ("hub_links", "legacy_paths"),
@@ -146,6 +160,11 @@ class CatalogCategoryAdmin(admin.ModelAdmin):
             },
         ),
     )
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == "seo_intro":
+            kwargs["widget"] = forms.Textarea(attrs={"rows": 10, "cols": 100})
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
     @admin.display(description="Растений")
     def plant_count(self, obj: CatalogCategory) -> int:

@@ -9,6 +9,7 @@ from .catalog_context import get_catalog_page_for_template
 from .catalog_nav import enrich_catalog_context
 from .catalog_merge import find_merged_plant, get_merged_catalog_plants
 from .catalog_products import plant_belongs_to_category, similar_plants_for_detail
+from .catalog_seo_intros import seo_intro_for_slug
 from .catalog_subcategories import all_catalog_category_slugs, category_heading_for_slug
 from .calendar_live import merge_calendar_base
 from . import seo
@@ -451,6 +452,7 @@ def catalog_item(request, slug):
         cat = next((c for c in categories if c.get("slug") == slug), None)
         ctx["category_label"] = category_heading_for_slug(slug, categories)
         ctx["category_hub_links"] = (cat or {}).get("category_hub_links")
+        ctx["category_seo_intro"] = seo_intro_for_slug(slug)
         ctx["plants"] = [p for p in merged_plants if plant_belongs_to_category(p, slug)]
         ctx["canonical_path"] = f"/catalog/{slug}/"
         label = ctx["category_label"]

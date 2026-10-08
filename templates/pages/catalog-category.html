@@ -20,6 +20,11 @@
           <h1 class="text-3xl font-semibold leading-tight tracking-tight md:text-4xl">
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-brand to-brand2">{{ category_label }}</span>
           </h1>
+          {% if category_seo_intro|default:'' %}
+          <div class="mt-4 max-w-3xl space-y-3 text-slate-600 leading-relaxed md:text-lg">
+            {{ category_seo_intro|safe }}
+          </div>
+          {% else %}
           <p class="mt-3 max-w-xl text-slate-600 leading-relaxed md:text-lg">
             {% if category_hub_links %}
               Раздел разделён на два направления - выберите нужное.
@@ -29,6 +34,7 @@
               Позиции и цены скоро появятся.
             {% endif %}
           </p>
+          {% endif %}
           {% if plants %}
             <p class="mt-3 text-sm text-slate-500">
               Цены указаны розничные.

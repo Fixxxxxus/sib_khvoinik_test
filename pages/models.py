@@ -41,6 +41,12 @@ class CatalogCategory(models.Model):
         blank=True,
         help_text="Подзаголовок на карточке раздела. Рекомендуется 30–160 символов, без перегруза техническими деталями.",
     )
+    seo_intro = models.TextField(
+        blank=True,
+        default="",
+        verbose_name="SEO-интро под заголовком",
+        help_text="SEO-текст под заголовком, 150-220 слов, допускается простой HTML (p, a, strong)",
+    )
     sort_order = models.PositiveIntegerField(
         "Порядок в списке",
         default=0,
@@ -112,6 +118,12 @@ class CatalogSubcategory(models.Model):
         "Порядок в списке",
         default=0,
         help_text="В боковом меню и в админке: меньше — выше.",
+    )
+    seo_intro = models.TextField(
+        blank=True,
+        default="",
+        verbose_name="SEO-интро под заголовком",
+        help_text="SEO-текст под заголовком, 150-220 слов, допускается простой HTML (p, a, strong)",
     )
 
     class Meta:
