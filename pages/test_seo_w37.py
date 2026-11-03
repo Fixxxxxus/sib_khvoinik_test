@@ -163,7 +163,6 @@ class InboundLinksTest(TestCase):
     def test_static_articles_link_to_ukladka(self):
         for slug in (
             "kak-ukladyvat-gazon",
-            "rulonnyy-ili-posevnoy-gazon",
             "rulonnyy-gazon-v-zharu",
         ):
             html = Client().get("/stati/%s/" % slug).content.decode("utf-8")

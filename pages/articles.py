@@ -80,7 +80,7 @@ def article_to_dict(obj) -> dict[str, Any]:
 
 # Похожие статьи для старых статей из data.py (их related нельзя задать через API).
 # Статьи из БД перелинкованы миграцией 0020. Дубль rulonnyy-ili-posevnoy-gazon
-# ссылается на другие, но сам целью нигде не стоит.
+# удалён и уходит 301 на rulonnyy-ili-posevnoy-gazon-sibir (pages/urls.py).
 STATIC_RELATED: dict[str, list[str]] = {
     "rulonnyy-gazon-v-zharu": ["uhod-za-rulonnym-gazonom-posle-ukladki", "uhod-za-gazonom-novosibirsk"],
     "hvoynye-leto-pochemu-zhelteet-hvoya": [
@@ -90,8 +90,6 @@ STATIC_RELATED: dict[str, list[str]] = {
     "kak-ukladyvat-gazon": [
         "podgotovka-uchastka-pod-rulonnyy-gazon", "uhod-za-rulonnym-gazonom-posle-ukladki",
         "skolko-stoit-rulonnyy-gazon-pod-klyuch"],
-    "rulonnyy-ili-posevnoy-gazon": [
-        "skolko-stoit-rulonnyy-gazon-pod-klyuch", "podgotovka-uchastka-pod-rulonnyy-gazon", "kak-ukladyvat-gazon"],
     "osobennosti-klimata-sibiri": [
         "vybor-rasteniy-dlya-tene", "uhod-za-gazonom-osenyu-sibir", "hvoynye-leto-pochemu-zhelteet-hvoya"],
     "vybor-rasteniy-dlya-tene": [

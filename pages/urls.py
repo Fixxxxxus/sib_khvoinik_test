@@ -53,6 +53,12 @@ urlpatterns = [
         "stati/kak-ulozhit-rulonnyy-gazon/",
         RedirectView.as_view(url="/stati/kak-ukladyvat-gazon/", permanent=True),
     ),
+    # Дубль из data.py с тем же заголовком, что у статьи фабрики (найден 02.11.2026
+    # скриптом related_articles.py): склеиваем 301 на версию из БД.
+    path(
+        "stati/rulonnyy-ili-posevnoy-gazon/",
+        RedirectView.as_view(url="/stati/rulonnyy-ili-posevnoy-gazon-sibir/", permanent=True),
+    ),
     # 301 со старых URL каталога /product/<категория>/<товар>/ на актуальные /catalog/.
     re_path(r"^product/", views.legacy_product_redirect),
     path("", views.home, name="home"),

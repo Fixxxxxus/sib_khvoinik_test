@@ -135,3 +135,15 @@ class StaticRelatedMapTests(TestCase):
             self.assertNotIn("rulonnyy-ili-posevnoy-gazon", targets)
         by_slug = {a["slug"]: a for a in static_articles()}
         self.assertEqual(by_slug["kak-ukladyvat-gazon"]["related"], STATIC_RELATED["kak-ukladyvat-gazon"])
+
+
+class DuplicateRedirectTests(TestCase):
+    def test_duplicate_301_to_factory_version(self):
+        resp = Client().get("/stati/rulonnyy-ili-posevnoy-gazon/")
+        self.assertEqual(resp.status_code, 301)
+        self.assertEqual(resp["Location"], "/stati/rulonnyy-ili-posevnoy-gazon-sibir/")
+
+    def test_duplicate_removed_from_static(self):
+        from pages.articles import static_articles
+
+        self.assertNotIn("rulonnyy-ili-posevnoy-gazon", {a["slug"] for a in static_articles()})
