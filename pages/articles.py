@@ -78,8 +78,34 @@ def article_to_dict(obj) -> dict[str, Any]:
     return data
 
 
+# Похожие статьи для старых статей из data.py (их related нельзя задать через API).
+# Статьи из БД перелинкованы миграцией 0020. Дубль rulonnyy-ili-posevnoy-gazon
+# ссылается на другие, но сам целью нигде не стоит.
+STATIC_RELATED: dict[str, list[str]] = {
+    "rulonnyy-gazon-v-zharu": ["uhod-za-rulonnym-gazonom-posle-ukladki", "uhod-za-gazonom-novosibirsk"],
+    "hvoynye-leto-pochemu-zhelteet-hvoya": [
+        "kupit-hvoynye-novosibirsk", "pitomnik-hvoynyh-novosibirsk", "osobennosti-klimata-sibiri"],
+    "gortenziya-v-iyule-poliv": [
+        "vybor-rasteniy-dlya-tene", "osobennosti-klimata-sibiri", "kogda-obrezat-lapchatku-kustarnikovuyu"],
+    "kak-ukladyvat-gazon": [
+        "podgotovka-uchastka-pod-rulonnyy-gazon", "uhod-za-rulonnym-gazonom-posle-ukladki",
+        "skolko-stoit-rulonnyy-gazon-pod-klyuch"],
+    "rulonnyy-ili-posevnoy-gazon": [
+        "skolko-stoit-rulonnyy-gazon-pod-klyuch", "podgotovka-uchastka-pod-rulonnyy-gazon", "kak-ukladyvat-gazon"],
+    "osobennosti-klimata-sibiri": [
+        "vybor-rasteniy-dlya-tene", "uhod-za-gazonom-osenyu-sibir", "hvoynye-leto-pochemu-zhelteet-hvoya"],
+    "vybor-rasteniy-dlya-tene": [
+        "gortenziya-v-iyule-poliv", "pitomnik-rasteniy-novosibirsk", "ozelenenie-uchastka-novosibirsk"],
+}
+
+
 def static_articles() -> list[dict[str, Any]]:
-    return list(STATI_PAGE.get("articles") or [])
+    out = []
+    for art in STATI_PAGE.get("articles") or []:
+        if not art.get("related") and art.get("slug") in STATIC_RELATED:
+            art = {**art, "related": STATIC_RELATED[art["slug"]]}
+        out.append(art)
+    return out
 
 
 _static_articles = static_articles

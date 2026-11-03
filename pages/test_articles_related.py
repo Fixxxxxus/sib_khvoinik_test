@@ -120,3 +120,18 @@ class RelatedRenderTests(TestCase):
     def test_no_block_without_related(self):
         self.make("odinokaya")
         self.assertEqual(self.related_block(self.html("odinokaya")), "")
+
+
+class StaticRelatedMapTests(TestCase):
+    def test_static_map_points_to_real_static_keys(self):
+        from pages.articles import STATIC_RELATED, static_articles
+        from pages.data import STATI_PAGE
+
+        static_slugs = {a["slug"] for a in STATI_PAGE["articles"]}
+        self.assertTrue(set(STATIC_RELATED) <= static_slugs)
+        for slug, targets in STATIC_RELATED.items():
+            self.assertLessEqual(len(targets), 3)
+            self.assertNotIn(slug, targets)
+            self.assertNotIn("rulonnyy-ili-posevnoy-gazon", targets)
+        by_slug = {a["slug"]: a for a in static_articles()}
+        self.assertEqual(by_slug["kak-ukladyvat-gazon"]["related"], STATIC_RELATED["kak-ukladyvat-gazon"])
