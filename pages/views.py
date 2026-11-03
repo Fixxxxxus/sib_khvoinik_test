@@ -4,7 +4,7 @@ from django.conf import settings
 from django.http import Http404, HttpResponsePermanentRedirect, JsonResponse
 from django.shortcuts import render
 
-from .articles import find_article, merged_articles
+from .articles import find_article, merged_articles, related_articles
 from .catalog_context import get_catalog_page_for_template
 from .catalog_nav import enrich_catalog_context
 from .catalog_merge import find_merged_plant, get_merged_catalog_plants
@@ -565,6 +565,9 @@ def stati_detail(request, article_slug):
         ctx["noindex"] = True
     ctx["active_article_slug"] = article_slug
     ctx["article"] = article
+    ctx["related_articles"] = related_articles(article)
+    related_slugs = {a["slug"] for a in ctx["related_articles"]}
+    ctx["articles"] = [a for a in ctx["articles"] if a["slug"] not in related_slugs]
     ctx["seo_title"] = article.get("seo_title") or article["title"]
     ctx["og_title"] = article["title"]
     ctx["meta_description"] = article.get("meta_description") or article["excerpt"]

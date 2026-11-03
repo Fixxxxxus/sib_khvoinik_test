@@ -10,7 +10,13 @@ API публикации статей из контент-фабрики (про
 
     POST   /api/articles/               upsert статьи по slug (JSON)
     POST   /api/articles/<slug>/image/  загрузка обложки (multipart, поле image)
-    GET    /api/articles/               список статей из БД со статусами и ссылками
+    GET    /api/articles/list/          список статей из БД со статусами и ссылками,
+                                        плюс старые статьи из data.py (static_articles)
+
+Перелинковка: `related` - до 3 slug похожих статей (блок «Читайте также»,
+обратная ссылка у похожей статьи появляется сама), `sections[].links[]` -
+абзац со ссылкой внутри текста {before, anchor, href, after}, href только
+внутренний путь сайта.
 """
 from __future__ import annotations
 
@@ -26,7 +32,7 @@ from django.http import HttpRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 
-from .articles import preview_path
+from .articles import preview_path, static_articles
 from .models import Article
 
 logger = logging.getLogger(__name__)
@@ -34,6 +40,10 @@ logger = logging.getLogger(__name__)
 SLUG_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 MAX_IMAGE_BYTES = 8 * 1024 * 1024
 ALLOWED_IMAGE_EXT = {".jpg", ".jpeg", ".png", ".webp"}
+
+MAX_RELATED = 3
+# Внутренний путь сайта: /stati/slug/, /gazon/ и т.п. Без схемы, хоста и "//".
+INTERNAL_HREF_RE = re.compile(r"^/(?!/)[a-z0-9\-_/]*(?:#[a-z0-9\-_]+)?$")
 
 STATUSES = {Article.STATUS_DRAFT, Article.STATUS_SCHEDULED, Article.STATUS_PUBLISHED}
 
@@ -91,6 +101,51 @@ def _str_list(raw: Any, field: str, warnings: list[str]) -> list[str]:
     return out
 
 
+def _parse_links(raw: Any, field: str, warnings: list[str]) -> list[dict[str, str]]:
+    """Абзацы со ссылкой: before + <a href>anchor</a> + after."""
+    if raw is None:
+        return []
+    if not isinstance(raw, list):
+        raise ApiError(f"Поле «{field}» должно быть списком объектов {{before, anchor, href, after}}.")
+    links = []
+    for i, item in enumerate(raw):
+        if not isinstance(item, dict):
+            raise ApiError(f"«{field}[{i}]» должен быть объектом.")
+        values = {}
+        for key in ("before", "anchor", "href", "after"):
+            value = item.get(key) or ""
+            if not isinstance(value, str):
+                raise ApiError(f"«{field}[{i}].{key}» должно быть строкой.")
+            values[key] = _clean_dashes(value.strip() if key in ("anchor", "href") else value, f"{field}[{i}].{key}", warnings)
+        if not values["anchor"]:
+            raise ApiError(f"«{field}[{i}].anchor» обязателен.")
+        if not INTERNAL_HREF_RE.match(values["href"]):
+            raise ApiError(
+                f"«{field}[{i}].href»: только внутренний путь сайта вида /stati/slug/, получено «{values['href']}»."
+            )
+        links.append(values)
+    return links
+
+
+def _parse_related(raw: Any, own_slug: str) -> list[str]:
+    if raw is None:
+        return []
+    if not isinstance(raw, list):
+        raise ApiError("Поле «related» должно быть списком slug.")
+    out: list[str] = []
+    for i, item in enumerate(raw):
+        if not isinstance(item, str) or not SLUG_RE.match(item.strip()):
+            raise ApiError(f"«related[{i}]»: slug из строчной латиницы, цифр и дефисов.")
+        slug = item.strip()
+        if slug == own_slug:
+            raise ApiError("«related»: статья не может ссылаться сама на себя.")
+        if slug not in out:
+            out.append(slug)
+    if len(out) > MAX_RELATED:
+        raise ApiError(f"«related»: не больше {MAX_RELATED} похожих статей.")
+    return out
+
+
 def _parse_sections(raw: Any, warnings: list[str]) -> list[dict[str, Any]]:
     if not isinstance(raw, list) or not raw:
         raise ApiError("Поле «sections» обязательно: непустой список разделов статьи.")
@@ -105,9 +160,12 @@ def _parse_sections(raw: Any, warnings: list[str]) -> list[dict[str, Any]]:
             "heading": _clean_dashes(heading.strip(), f"sections[{i}].heading", warnings)
         }
         paragraphs = _str_list(item.get("paragraphs"), f"sections[{i}].paragraphs", warnings)
-        if not paragraphs:
+        links = _parse_links(item.get("links"), f"sections[{i}].links", warnings)
+        if not paragraphs and not links:
             raise ApiError(f"«sections[{i}].paragraphs» обязателен: хотя бы один абзац.")
         section["paragraphs"] = paragraphs
+        if links:
+            section["links"] = links
         for key in ("steps", "list"):
             values = _str_list(item.get(key), f"sections[{i}].{key}", warnings)
             if values:
@@ -173,6 +231,8 @@ def _article_payload(request: HttpRequest, obj: Article) -> dict[str, Any]:
     return {
         "slug": obj.slug,
         "title": obj.title,
+        "excerpt": obj.excerpt,
+        "related": list(obj.related or []),
         "status": obj.status,
         "date_published": obj.date_published.isoformat() if obj.date_published else "",
         "visible": obj.is_visible(),
@@ -216,6 +276,7 @@ def articles_upsert(request: HttpRequest) -> JsonResponse:
             "image_alt": _text(payload, "image_alt", warnings, limit=300),
             "sections": _parse_sections(payload.get("sections"), warnings),
             "faq": _parse_faq(payload.get("faq"), warnings),
+            "related": _parse_related(payload.get("related"), slug),
             "status": status,
             "date_published": _parse_date(payload.get("date_published"), "date_published", required=True),
             "date_modified": _parse_date(payload.get("date_modified"), "date_modified"),
@@ -308,7 +369,20 @@ def articles_list(request: HttpRequest) -> JsonResponse:
             json_dumps_params={"ensure_ascii": False},
         )
     items = [_article_payload(request, obj) for obj in Article.objects.all()]
+    origin = f"{request.scheme}://{request.get_host()}"
+    db_slugs = {item["slug"] for item in items}
+    # Старые статьи из data.py: через API их не обновить, но на них можно ссылаться.
+    legacy = [
+        {
+            "slug": a["slug"],
+            "title": a.get("title", ""),
+            "excerpt": a.get("excerpt", ""),
+            "url": f"{origin}/stati/{a['slug']}/",
+        }
+        for a in static_articles()
+        if a.get("slug") and a["slug"] not in db_slugs
+    ]
     return JsonResponse(
-        {"ok": True, "count": len(items), "articles": items},
+        {"ok": True, "count": len(items), "articles": items, "static_articles": legacy},
         json_dumps_params={"ensure_ascii": False},
     )

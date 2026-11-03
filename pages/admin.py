@@ -650,7 +650,7 @@ class ArticleAdmin(admin.ModelAdmin):
             "fields": ("status", "date_published", "date_modified", "preview_link", "source"),
             "description": "«Запланирована» - статья появится на сайте сама в дату публикации.",
         }),
-        ("Текст", {"fields": ("slug", "title", "excerpt", "lead", "sections", "faq")}),
+        ("Текст", {"fields": ("slug", "title", "excerpt", "lead", "sections", "faq", "related")}),
         ("Обложка", {"fields": ("image_upload", "image_path", "image_alt")}),
         ("SEO", {"fields": ("seo_title", "meta_description")}),
         ("Служебное", {"fields": ("created_at", "updated_at"), "classes": ("collapse",)}),

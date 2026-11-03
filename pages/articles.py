@@ -54,6 +54,7 @@ def article_to_dict(obj) -> dict[str, Any]:
         "lead": obj.lead,
         "sections": obj.sections or [],
         "faq": obj.faq or [],
+        "related": list(obj.related or []),
         "seo_title": obj.seo_title or obj.title,
         "meta_description": obj.meta_description or obj.excerpt,
         "date_published": obj.date_published.isoformat() if obj.date_published else "",
@@ -77,8 +78,13 @@ def article_to_dict(obj) -> dict[str, Any]:
     return data
 
 
-def _static_articles() -> list[dict[str, Any]]:
+def static_articles() -> list[dict[str, Any]]:
     return list(STATI_PAGE.get("articles") or [])
+
+
+_static_articles = static_articles
+
+RELATED_LIMIT = 4
 
 
 def db_articles(include_hidden: bool = False) -> list[dict[str, Any]]:
@@ -121,3 +127,33 @@ def find_article(slug: str, preview: str = "") -> tuple[dict[str, Any] | None, b
         if art.get("slug") == slug:
             return art, False
     return None, False
+
+
+def related_articles(article: dict[str, Any], limit: int = RELATED_LIMIT) -> list[dict[str, Any]]:
+    """
+    Блок «Читайте также»: сначала статьи из article['related'] в заданном
+    порядке, затем обратные ссылки - видимые статьи из БД, у которых эта
+    статья стоит в related. Так перелинковка работает в обе стороны, и старую
+    статью не нужно перезаливать. Скрытые (черновик, план) не показываются.
+    """
+    from .models import Article
+
+    slug = article.get("slug")
+    visible = {a["slug"]: a for a in merged_articles()}
+    picked: list[str] = []
+
+    for target in article.get("related") or []:
+        if target != slug and target in visible and target not in picked:
+            picked.append(target)
+
+    today = timezone.localdate()
+    backlinks = [
+        obj
+        for obj in Article.objects.exclude(slug=slug)
+        if slug in (obj.related or []) and obj.is_visible(today)
+    ]
+    for obj in backlinks:  # ordering модели: свежие сверху
+        if obj.slug not in picked and obj.slug in visible:
+            picked.append(obj.slug)
+
+    return [visible[s] for s in picked[:limit]]

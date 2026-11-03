@@ -113,6 +113,20 @@
               </div>
             </section>
           {% endif %}
+
+          {% if related_articles %}
+            <section data-related-articles>
+              <h2 class="text-2xl font-semibold leading-snug">Читайте также</h2>
+              <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {% for a in related_articles %}
+                  <a href="/stati/{{ a.slug }}/" class="rounded-2xl border border-brand/20 bg-brand/5 p-5 hover:shadow-soft hover:border-brand/40 transition">
+                    <div class="font-semibold text-slate-900">{{ a.title }}</div>
+                    <div class="mt-1 text-sm text-slate-600">{{ a.excerpt }}</div>
+                  </a>
+                {% endfor %}
+              </div>
+            </section>
+          {% endif %}
         </div>
 
         <div class="mt-10 rounded-3xl border border-black/5 bg-gradient-to-br from-brand/10 via-white to-brand2/10 p-8 md:p-10">

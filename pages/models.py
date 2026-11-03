@@ -814,6 +814,15 @@ class Article(models.Model):
         blank=True,
         help_text="Список объектов {q, a}. Идёт в FAQPage JSON-LD.",
     )
+    related = models.JSONField(
+        "Похожие статьи",
+        default=list,
+        blank=True,
+        help_text=(
+            "Список slug похожих статей (до 3). Рендерится блоком «Читайте также»; "
+            "у похожей статьи обратная ссылка появляется сама."
+        ),
+    )
 
     seo_title = models.CharField("SEO-заголовок (title)", max_length=300, blank=True)
     meta_description = models.CharField("Meta description", max_length=500, blank=True)
